@@ -606,8 +606,13 @@ function CommunityBlock({ file, onEdge }: { file: DiseaseFile; onEdge: (e: Edge)
           <HonestGap
             variant="section"
             title="No patient organisation linked"
-            reason="The curated organisation list has no entry for this diagnosis in the current data."
+            reason="The curated organisation list has no entry for this diagnosis in the current data. Nearest communities come from the related diseases on this page."
             searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
+            nearest={[...file.neighbours]
+              .sort((a, b) => Number(Boolean(a.mechanism_differs)) - Number(Boolean(b.mechanism_differs)) || b.edge.confidence - a.edge.confidence)
+              .slice(0, 5)
+              .map((n) => ({ id: n.id, label: n.label, via: RELATION_LABEL[n.edge.type] ?? n.edge.type, confidence: n.edge.confidence, edge: n.edge }))}
+            onEdge={onEdge}
             close={["A hand-verified organisation entry with URL and verification date"]}
           />
         </div>

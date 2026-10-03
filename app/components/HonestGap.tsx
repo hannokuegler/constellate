@@ -80,7 +80,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
       <Heading className={`mt-1 font-semibold leading-snug ${variant === "screen" ? "text-[22px] md:text-[28px]" : "text-[17px]"}`}>{title}</Heading>
       <p className="mt-2 max-w-[68ch] text-[15px] text-ink-2">{reason}</p>
 
-      <div className={`mt-5 grid gap-5 ${variant === "screen" ? "md:grid-cols-3" : ""}`}>
+      <div className={`mt-5 grid grid-cols-1 gap-5 ${variant === "screen" ? "md:grid-cols-3" : ""}`}>
         <div>
           <h4 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">What was searched{asOf ? `, as of ${formatDate(asOf)}` : ""}</h4>
           {searched.length ? (

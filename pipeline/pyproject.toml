@@ -12,4 +12,11 @@ dependencies = [
   "tqdm>=4.66",
   "python-dotenv>=1.0",
   "lxml>=5.2",
+  "rapidfuzz>=3.14.6",
+  "numpy>=2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
 ]

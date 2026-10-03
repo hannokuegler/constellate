@@ -44,6 +44,11 @@ ORPHA_FREQ_TO_CONF = {"Obligate (100%)": 1.0, "Very frequent (99-80%)": 0.9, "Fr
 
 nodes: dict[str, dict] = {}
 edges: dict[tuple[str, str, str], dict] = {}
+GENE_CANON: dict[str, str] = {}  # upper-case symbol -> first spelling seen (Orphanet runs first, so its HGNC casing wins)
+
+
+def canon_gene(symbol: str) -> str:
+    return GENE_CANON.setdefault(symbol.upper(), symbol)
 
 
 def add_node(node_id: str, node_type: str, label: str, **extra) -> None:
@@ -107,6 +112,7 @@ def build_from_genes_to_phenotype() -> None:
             continue
         ncbi_gene_id, symbol, hpo_id, hpo_name, frequency, disease_id = cols[:6]
         mondo_id = XREF_TO_MONDO.get(disease_id.replace("ORPHA:", "Orphanet:"))
+        symbol = canon_gene(symbol)
         if not mondo_id or (mondo_id, symbol) in seen:
             continue
         seen.add((mondo_id, symbol))
@@ -130,6 +136,7 @@ def build_from_orphanet_genes() -> None:
             continue
         for assoc in disorder.iterfind(".//DisorderGeneAssociation"):
             symbol = assoc.findtext(".//Gene/Symbol")
+            symbol = canon_gene(symbol) if symbol else symbol
             assoc_type = assoc.findtext(".//DisorderGeneAssociationType/Name") or ""
             status = assoc.findtext(".//DisorderGeneAssociationStatus/Name") or ""
             if not symbol:

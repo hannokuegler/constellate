@@ -28,7 +28,7 @@ Umgebaut nach Osmans Feedback (04.10., 01:15 und 01:40): Das Team-Video zeigt **
 
 **Zuschauer:** Jury, Hack-Nation-Community.
 
-**Kernbotschaft:** Drei verschiedene Hintergründe (Wirtschaftsinformatik, Risiko und Geodaten, KI-Automation), gemeinsames Interesse an Daten und Gesundheit. Der Bogen zum Projekt kommt erst im gemeinsamen Schluss.
+**Kernbotschaft:** Drei verschiedene Hintergründe (Daten und Rettungsdienst, Risiko und Geodaten, KI-Automation), gemeinsames Interesse an Daten und Gesundheit. Der Bogen zum Projekt kommt erst im gemeinsamen Schluss.
 
 **Form:** Handy quer (16:9), gleicher Ort, Tageslicht, derselbe Hintergrund, Kamera auf Augenhöhe, eine Person pro Take, ohne Zoom. Keine KI-Stimme, kein Avatar, kein Voice-over. Einwilligung aller drei vorher (Recep holt sie ein). Namens-Einblendung unten links für zwei Sekunden, Untertitel aus dem Schnittprogramm.
 
@@ -37,7 +37,7 @@ Umgebaut nach Osmans Feedback (04.10., 01:15 und 01:40): Das Team-Video zeigt **
 | Zeit | Bild | Einblendung | Text |
 |---|---|---|---|
 | 0:00–0:02 | Titelkarte, Klartext: „Constellate · Vienna Hub · Hack-Nation C5" | – | kein Ton |
-| 0:02–0:18 | Hanno, Brustbild | Hanno Kügler · Business Informatics (WU Vienna) · starting MSc at TU Wien and WU | Text H unten |
+| 0:02–0:18 | Hanno, Brustbild | Hanno Kügler · BSc WU Vienna (Data Science) · MSc WU & Dipl.-Ing. TU Wien · EMT, Red Cross | Text H unten |
 | 0:18–0:34 | Osman, Brustbild | Osman [Nachname] · Business Informatics (WU Vienna) · Retail Risk Methodology, Raiffeisen Bank International | Text O unten |
 | 0:34–0:50 | Recep, Brustbild | Recep [Nachname] · TGM Vienna, Industrial Engineering & Business Informatics | Text R unten |
 | 0:50–0:57 | alle drei im Bild | – | Hanno: „Your family is not the first." Recep: „What you need may already exist under another disease's name." Osman: „We're Constellate, Vienna Hub." |
@@ -49,10 +49,10 @@ Summe 0:58. Je Person 16 s, Sprechtext 34 bis 39 Wörter (echte Stimmen sprechen
 
 Aufbau je Person: wer ich bin → was ich studiere/mache → meine Interessen. **Kein eigener Schlusssatz mit Projektbezug mehr** (Osman: „auf Krampf", verwirrend). Die Interessen dürfen allgemein Richtung Gesundheit/Medizin zeigen, nicht auf seltene Krankheiten. Den Bogen zum Projekt macht nur der gemeinsame Schluss.
 
-**Text H · Hanno (37 Wörter)**
+**Text H · Hanno (38 Wörter)**
 
 ```
-Hi, I'm Hanno. I studied business informatics at WU Vienna, and I'm starting two master's degrees, at TU Wien and at WU. I'm into data, AI and automation, and I teach first aid with the Red Cross.
+Hi, I'm Hanno. I studied business and economics with a data science focus at WU Vienna, now a double master's at WU and TU Wien. I'm an EMT and first-aid trainer with the Red Cross, and I'm into AI and automation.
 ```
 
 **Text O · Osman (39 Wörter)**
@@ -69,7 +69,7 @@ Hi, I'm Recep. I graduated from TGM in Vienna, in industrial engineering with a 
 
 Woher die Begriffe kommen:
 
-- Hanno: Bachelor Wirtschaftsinformatik an der WU (laut Osman; **Hanno bestätigt**, sein Profil sagt Data Science und Produktionsmanagement, Option „business informatics at WU Vienna, with a focus on data science"), ab WS26 Dipl.-Ing. Wirtschaftsinformatik an der TU Wien und MSc Digital Economics an der WU. Länger, falls Zeit: „… two master's degrees: business informatics at TU Wien and digital economics at WU."
+- Hanno (geprüft 01:50 gegen `Landa/20_Beruf/Profil-Beruflich.md`, Ableitung des CV): B.Sc. Wirtschafts- und Sozialwissenschaften an der WU mit SBWL Data Science (also **nicht** Wirtschaftsinformatik, Osmans Angabe war falsch), ab 10/2026 Doppelmaster MSc Digital Economy (WU) und Dipl.-Ing. Business Informatics (TU Wien); Rettungssanitäter beim ÖRK (ca. 20 Monate hauptberuflich, seit 10/2024 ehrenamtlich) und zertifizierter Erste-Hilfe-Lehrbeauftragter. „EMT" ist die übliche englische Entsprechung für Rettungssanitäter. Offen: Ist die TU-Zulassung durch (Steckbrief Stand 09/2026: „Zulassungsverfahren läuft")? Wenn nicht: „now a master's at WU".
 - Osman: „geospatial data" ist der Oberbegriff für Hochwasser-, HORA-, Satelliten- und Klimadaten (alles Daten mit Ortsbezug). Alternativen: „environmental risk data" (betont Risiko statt Ort), „geodata". Empfehlung „geospatial", weil es Hochwasser, HORA und Satelliten gleichermaßen abdeckt und international verstanden wird.
 - Recep: Der Gesundheitsbezug („medical knowledge easier to understand") ist ein Vorschlag nach Osmans Wunsch; **Recep bestätigt, dass das wirklich sein Interesse ist**, sonst streichen.
 - Keine erfundene persönliche Krankheitsgeschichte (Regel 2).
@@ -78,7 +78,7 @@ Woher die Begriffe kommen:
 
 1. Osman: Darf der Arbeitgeber (Raiffeisen Bank International) in einem öffentlichen Video genannt werden? Viele Banken haben Social-Media-Regeln. Ausweichsatz ohne Namen: „… and work in retail risk and methodology at a bank."
 2. Recep: Was machst du seit dem TGM (Studium, Job)? Ein Halbsatz macht den Background vollständiger; nicht raten, bitte selbst ergänzen. Englische Bezeichnung des Zweigs prüfen (Vorschlag: „industrial engineering, business informatics").
-3. Hanno: Bachelor Wirtschaftsinformatik oder Data Science an der WU? Rotes Kreuz nennen ok?
+3. Hanno: TU-Zulassung durch? „EMT" als Übersetzung für Rettungssanitäter ok?
 4. Nachnamen von Osman und Recep für die Einblendung.
 
 Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisationsnamen aus der Patientenwelt, keine Geschichte einer fremden Familie.

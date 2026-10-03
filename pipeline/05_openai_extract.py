@@ -46,6 +46,8 @@ SLICE = ROOT / "data" / "slice.json"
 OUT_DIR = ROOT / "data" / "extract"
 CACHE_DIR = ROOT / "data" / "cache" / "openai" / "extract"
 PROMPT_FILE = Path(__file__).resolve().parent / "prompts" / "extract.md"
+# Review gate: an independent model (not the extractor) judged every accepted claim; "wrong" claims do not ship.
+MODEL_REVIEW = ROOT / "data" / "curated" / "extract_model_review.csv"
 
 # ---------------------------------------------------------------------------------------------------- vocabulary
 # Closed predicate vocabulary (subject -> object). Shown to the model and enforced in code.
@@ -360,6 +362,15 @@ def accept(raw: dict, record: dict, placement: tuple, index: EntityIndex, model:
     }
 
 
+def review_wrong(path: Path) -> dict[str, str]:
+    """claim_id -> reason for every claim the independent review marked wrong (empty without a review file)."""
+    if not path.exists():
+        return {}
+    import csv
+    with path.open(newline="", encoding="utf-8") as fh:
+        return {r["claim_id"]: r.get("reason", "") for r in csv.DictReader(fh) if r.get("verdict", "").strip().lower() == "wrong"}
+
+
 def build_edges(claims: list[dict]) -> list[dict]:
     edges: dict[tuple[str, str, str], dict] = {}
     for claim in claims:
@@ -411,6 +422,11 @@ def run(records: list[dict], client, model: str, index: EntityIndex, out_dir: Pa
             if claim["claim_id"] not in accepted or claim["confidence_model"] > accepted[claim["claim_id"]]["confidence_model"]:
                 accepted[claim["claim_id"]] = claim
     claims = list(accepted.values())
+    wrong = review_wrong(MODEL_REVIEW)
+    for claim in [c for c in claims if c["claim_id"] in wrong]:
+        rejected.append({"pmid": claim["pmid"], "reasons": ["independent_review_wrong"], "claim": claim, "review_reason": wrong[claim["claim_id"]],
+                         "model": model, "prompt_version": version})
+    claims = [c for c in claims if c["claim_id"] not in wrong]
     edges = build_edges(claims)
 
     fresh = [r for r in results if r.get("claims") is not None and not r.get("from_cache")]

@@ -268,6 +268,21 @@ def main() -> int:
                 if positive > PHENOTYPE_SHARD_CAP:
                     err(f"{where}: {positive} diseases listed (cap {PHENOTYPE_SHARD_CAP})")
 
+    # ---- trial details (08, optional: a missing folder means the app shows trials without countries)
+    listed_trials = {it.get("node", {}).get("id") for s in shards.values() for it in s.get("enrichment", {}).get("trials", [])}
+    for f in sorted((OUT / "trial").glob("*.json")) if (OUT / "trial").is_dir() else []:
+        where = f"trial/{f.name}"
+        if f.stat().st_size >= SHARD_BUDGET:
+            err(f"budget: {where} is {f.stat().st_size/1e3:.0f} KB (limit 150 KB)")
+        t = load(f) or {}
+        if t.get("id") != f.stem or t.get("id") not in listed_trials:
+            err(f"{where}: id must match the file name and a trial listed in a disease shard")
+        if not all(k in t for k in ("status", "retrieved", "url", "contact_url", "source", "eligibility", "countries", "sites", "sites_total")):
+            err(f"{where}: incomplete trial detail")
+        if any(k in json.dumps(t) for k in ('"email"', '"phone"')):
+            err(f"{where}: personal contact data must not be exported")
+    shard_counts["trial"] = len(list((OUT / "trial").glob("*.json"))) if (OUT / "trial").is_dir() else 0
+
     # ---- hero path
     def children_closure(root: str) -> set[str]:
         seen, stack = set(), [root]

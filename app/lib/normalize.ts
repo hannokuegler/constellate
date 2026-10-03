@@ -129,3 +129,38 @@ export function aiOrigin(ev: { db?: string; origin?: string; model?: string; lev
   if (origin.includes("judge")) return "Matched by an OpenAI judge from the organisation website";
   return "Produced by a language model";
 }
+
+const OPEN_STATUSES = new Set(["RECRUITING", "NOT_YET_RECRUITING", "ENROLLING_BY_INVITATION", "AVAILABLE"]);
+
+export function isOpenStatus(status: unknown): boolean {
+  return typeof status === "string" && OPEN_STATUSES.has(status);
+}
+
+/** Trials of this disease that take participants now or soon: recruiting first, then by target size. */
+export function openTrials(file: DiseaseFile): EnrichmentItem[] {
+  const rank = (s: unknown) => (s === "RECRUITING" ? 0 : s === "ENROLLING_BY_INVITATION" ? 1 : s === "NOT_YET_RECRUITING" ? 2 : 3);
+  return enrichmentItems(file, "trials")
+    .filter((i) => isOpenStatus(i.node.status))
+    .sort((a, b) => rank(a.node.status) - rank(b.node.status) || (Number(b.node.enrollment) || 0) - (Number(a.node.enrollment) || 0));
+}
+
+const STATUS_LABEL: Record<string, string> = {
+  RECRUITING: "Recruiting now",
+  NOT_YET_RECRUITING: "Opens soon",
+  ENROLLING_BY_INVITATION: "By invitation",
+  AVAILABLE: "Available",
+};
+export function trialStatusLabel(status: unknown): string {
+  return typeof status === "string" ? STATUS_LABEL[status] ?? status.toLowerCase().replaceAll("_", " ") : "status unknown";
+}
+
+/** "18 Years" / "6 Months" → readable age range for families. */
+export function ageRange(min?: string | null, max?: string | null): string | null {
+  const clean = (v?: string | null) => (v ? v.toLowerCase().replace(/^(\d+) (\w+?)s?$/, (_, n, u) => `${n} ${u}${n === "1" ? "" : "s"}`) : null);
+  const lo = clean(min);
+  const hi = clean(max);
+  if (lo && hi) return `${lo} to ${hi}`;
+  if (lo) return `${lo} and older`;
+  if (hi) return `up to ${hi}`;
+  return null;
+}

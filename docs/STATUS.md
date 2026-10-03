@@ -37,6 +37,7 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 |---|---|---|
 | Reconcile mit verifizierten Orgs laufen lassen | nächste Session | sobald `data/curated/orgs.csv` Zeilen mit `verified_date` hat: `make reconcile && make analytics && make validate` |
 | `hero_path.yaml` aus dem Entwurf übernehmen (R1) | Recep | Block A (17 Einträge) geprüft, Block-B-Stichprobe ok, VERIFIED nach `hero_path.yaml` |
+| Länder und Standorte der offenen Studien laden (`make trials && make validate`, ca. 3 Abfragen für 142 Studien) | Hanno lokal (ClinicalTrials.gov ist in der Cloud-Umgebung gesperrt) | `app/public/data/trial/` hat Dateien, Länderfilter erscheint auf der Krabbe-Seite |
 | `orgs.csv` (O2) | Osman | mindestens 25 Zeilen, jede URL selbst geöffnet, `verified_date` gesetzt; heute enthält die Datei nur die Kopfzeile |
 | Moonshot-Zahlen (R2) | Recep | `docs/MOONSHOT.md` mit Quelle je Zahl und 4 bis 6 Annahmen; Datei fehlt noch |
 | README (O3) | Osman | alle Abschnitte laut ROLES-TASKS; Status, Scope-Zahl und Reactome-Lizenz sind nachgezogen |

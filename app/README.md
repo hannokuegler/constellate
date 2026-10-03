@@ -56,6 +56,10 @@ disease/<MONDO_…>.json     {node: {id, label, definition, synonyms, xrefs, par
                             enrichment?: {trials, papers, grants}, coverage?: [{source, query, hits, fetched_at}], orgs?: [...]}
 gene/<SYMBOL>.json         {node, diseases: [edge], pathways?: [...]}
 phenotype/<HP_…>.json      {node, diseases: [...]}        (addition to v1, optional; missing shard = Honest Gap)
+trial/<NCT…>.json          {id, status, last_update, retrieved, url, contact_url, source, eligibility: {min_age, max_age, sex, std_ages},
+                            countries: [{country, sites, open_sites}], sites: [{facility, city, country, status}], sites_total, officials}
+                           (step 08 `make trials`, only open trials; optional: missing file = the study card links to the registry;
+                            never personal contact data of study staff)
 edge                       {id: "e_<12 hex>", source, target, type, evidence: [{db, origin, record, url, level, date, confidence, snippet}],
                             contradicting: [...], confidence, level, independent_sources, formula?, rolled_up_from?}
 ```

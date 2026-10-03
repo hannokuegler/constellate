@@ -229,3 +229,20 @@ export interface PhenotypeFile {
   diseases: (Edge | { id: string; label: string; edge: Edge; confidence?: number })[];
   diseases_total?: number;
 }
+
+/** trial/<NCT>.json (pipeline step 08): where an open study runs and whom it takes. No personal contact data. */
+export interface TrialDetail {
+  id: string;
+  status: string | null;
+  last_update?: string | null;
+  retrieved: string;
+  url: string;
+  /** the study's official contact section on ClinicalTrials.gov */
+  contact_url: string;
+  source: { db: string; record: string; url: string };
+  eligibility: { min_age?: string | null; max_age?: string | null; sex?: string | null; std_ages?: string[]; healthy_volunteers?: boolean | null };
+  countries: { country: string; sites: number; open_sites: number }[];
+  sites: { facility?: string | null; city?: string | null; country: string; status?: string | null }[];
+  sites_total: number;
+  officials?: { affiliation?: string | null; role?: string | null }[];
+}

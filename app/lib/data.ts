@@ -1,4 +1,4 @@
-import type { Core, DiseaseFile, GeneFile, IndexEntry, Meta, OrgFile, PhenotypeFile } from "./types";
+import type { Core, DiseaseFile, GeneFile, IndexEntry, Meta, OrgFile, PhenotypeFile, TrialDetail } from "./types";
 import { toFileKey } from "./ids";
 
 const cache = new Map<string, Promise<unknown>>();
@@ -25,6 +25,7 @@ export const loadCore = () => loadJson<Core>("core.json");
 export const loadDisease = (id: string) => loadJson<DiseaseFile>(`disease/${toFileKey(id)}.json`);
 export const loadGene = (symbol: string) => loadJson<GeneFile>(`gene/${encodeURIComponent(symbol)}.json`);
 export const loadPhenotype = (id: string) => loadJson<PhenotypeFile>(`phenotype/${toFileKey(id)}.json`);
+export const loadTrial = (nct: string) => loadJson<TrialDetail>(`trial/${encodeURIComponent(nct)}.json`);
 export const loadOrg = (slug: string) => loadJson<OrgFile>(`org/${encodeURIComponent(slug)}.json`);
 
 let labelMap: Promise<Map<string, IndexEntry>> | null = null;

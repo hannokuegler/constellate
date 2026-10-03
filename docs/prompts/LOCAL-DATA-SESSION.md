@@ -1,10 +1,10 @@
-# Prompt · lokale Daten-Session (Hannos Mac, freies Netz)
+# Prompt · Data Chief (lokale Session auf Hannos Mac, freies Netz)
 
-In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Grund: Die Cloud-Umgebung erreicht nur GitHub und PyPI, alle Datenhosts liefern 403. Stand Sa 03.10.2026, 23:40 Wien.
+In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Grund: Die Cloud-Umgebung erreicht nur GitHub und PyPI, alle Datenhosts liefern 403. Stand So 04.10.2026, 00:45 Wien (v2: Feldformate mit der App abgeglichen, Phase D/E ergänzt).
 
 ---
 
-Du bist die Daten-Session für Constellate, einen evidenzgestuften Wissensgraphen für seltene Erkrankungen (Hack-Nation 7th Global AI Hackathon, Challenge 05 "AI Atlas for the World's Rare Diseases", Buffalo Initiative x OpenAI). Abgabe So 04.10.2026 15:00 Wien, Feature-Freeze 12:00. Zwischenstand spätestens So 02:00, fertig spätestens So 05:00 (Uhrzeit immer mit `TZ=Europe/Vienna date`). Lieber B1 bis B3 sauber als alles halb. Deutsch, knapp.
+Du bist der **Data Chief** für Constellate. Du ziehst alle fehlenden Daten, prüfst sie wie ein Reviewer, legst sie reproduzierbar ab und übergibst sie per PR. Du bist der einzige mit freiem Netz; die Cloud-Sessions bauen App und Integration und warten auf dich. Constellate ist, ein evidenzgestufter Wissensgraph für seltene Erkrankungen (Hack-Nation 7th Global AI Hackathon, Challenge 05 "AI Atlas for the World's Rare Diseases", Buffalo Initiative x OpenAI). Abgabe So 04.10.2026 15:00 Wien, Feature-Freeze 12:00. Zwischenstand spätestens So 02:00, fertig spätestens So 05:00 (Uhrzeit immer mit `TZ=Europe/Vienna date`). Lieber B1 bis B3 sauber als alles halb. Deutsch, knapp.
 
 Dein Auftrag: die fehlenden Daten aus dem Internet ziehen, prüfen, sauber und reproduzierbar ablegen und die Daten-Doku aktualisieren. Parallel arbeiten Cloud-Sessions an `app/` und `pipeline/07_analytics.py`. Halte dich strikt an deinen Schreibbereich.
 
@@ -22,6 +22,20 @@ Auf `data-v2` liegt schon:
 - Es fehlen: `pipeline/04b_enrich_extra.py`, Therapien (B2), NBS-Daten, Monarch (B5), Coverage-Audit (B6), `pipeline/tests/test_enrich_extra.py`, `data/curated/assets.csv`, MANIFEST und DATA-SOURCES.
 
 Produktentscheidungen (Hanno, `docs/DECISIONS.md` P1 bis P8): eine Mutter in zwei Momenten (frisch diagnostiziert, später Gruppenleiterin); Side-Feature offene Studien mit Ländern, Standorten, Alter und Link zum offiziellen Studienkontakt. Die offenen **Interventions**studien macht schon `pipeline/08_trial_details.py` (Branch `claude/friendly-heisenberg-bh6pfd`, geht nach `main`). Nicht duplizieren: dein B1 sind Beobachtungs-, Natural-History- und Register-Studien als wiederverwendbare Assets. UI ist Englisch, Snippets bleiben wörtlich in Quellsprache.
+
+## Feldformat, auf das die App schon wartet (verbindlich)
+
+Die App liest die neuen Felder bereits (Branch `origin/integrate`, `app/README.md` Abschnitt "Upcoming fields (data-v2)", `app/lib/normalize.ts`). Lies den Abschnitt mit `git show origin/integrate:app/README.md`. Liefere die Knoten so, dann ist die Integration in 07 ein reines Durchreichen:
+
+| Kante | Ziel-Knoten | Pflichtfelder am Knoten |
+|---|---|---|
+| `has_asset` (curated) | `ASSET:<asset_id>` | `label` (= name), `asset_type`, `country`, `status`, `source_type`, `source_id`, `url`, `check` |
+| `approved_therapy` (curated) | `DRUG:<name>` | `label`, `authority` (`EMA`/`FDA`), `approved` (YYYY-MM-DD), `holder`, `url`; Zulassungsdatum zusätzlich in `evidence[].date`, Behörde in `evidence[].db` |
+| `screened_in` (curated) | `COUNTRY:<iso>` | `label`, `status` (`screened`/`pilot/research`/`not screened`/`UNBELEGT`), `url`; Status auch im Snippet |
+| `kol_overlap` (inferred) | Krankheit ↔ Krankheit | Formel in `edge.formula` und im Snippet; in `data/enrich/extra_kol_overlap.json` je Paar `people: [{name, orcid, affiliation, records: [{db, record, url}]}]`, **keine Mailadressen** |
+| Prävalenz (kein Edge) | Krankheitsknoten | `prevalence: [{type, class, value, region, validation, source: {db, record, url}, retrieved}]` |
+
+Zusätzlich je Krankheit und Abschnitt (assets, therapies, screening, kol) ein `searched`-Protokoll `[{source, retrieved, hits}]` in `data/enrich/extra_searched.jsonl`. Daraus baut die App den Honest-Gap-Satz "Not found in … as of …". Eine Krankheit ohne Treffer ist ein Ergebnis, kein Fehler.
 
 ## Regeln
 
@@ -106,10 +120,35 @@ Diese Skripte nur ausführen, nicht ändern.
    - Integrations-Anleitung für 07: Dateien, Felder, welche Kantentypen in die Disease-Shards gehören. Den Einbau macht die Cloud-Session.
 5. Je Phase ein Commit auf `data-v2`, Branch pushen, PR gegen `main` mit Zahlen, Stichprobe, Lücken und Integrationsschritten.
 
-## Phase D (optional, nur wenn B1 bis B3 fertig sind und vor 05:00)
+## Phase D: Studien-Shards für die Karte "open studies" (Pflicht, ca. 10 min)
 
-Die Studien-Shards für die Karte "open studies" erzeugen. Dazu in einem **eigenen** Worktree auf Branch `data-trials` von `main` (nachdem `claude/friendly-heisenberg-bh6pfd` gemergt ist): `make trials && make validate`, dann nur `app/public/data/trial/` committen (`data: open-study shards (countries, sites, eligibility) from ClinicalTrials.gov`) und pushen. Kein PR, die Cloud-Session prüft und merged.
+Die App zeigt offene Interventionsstudien mit Ländern, Standorten und Alter, aber die Shards fehlen, weil die Cloud ClinicalTrials.gov nicht erreicht.
 
-## Endbericht (max. 15 Zeilen)
+```bash
+git fetch origin && git worktree add ../constellate-trials origin/main && cd ../constellate-trials
+git switch -c data-trials
+make setup && make trials && make validate
+git add app/public/data/trial/ && git commit -m "data: open-study shards (countries, sites, eligibility) from ClinicalTrials.gov"
+git push -u origin data-trials
+cd - && git worktree remove ../constellate-trials
+```
+
+Kein PR, die Cloud-Session prüft und merged. Falls `make trials` mehr als `app/public/data/trial/` ändert (z. B. `index.json`), nur die Trial-Dateien committen und den Rest im Bericht nennen.
+
+## Phase E: Messwerte für die Jury (ca. 15 min)
+
+Schreibe `data/enrich/extra_metrics.json` (gitignored, aber im PR-Text die Werte nennen) mit:
+- `monarch_spearman`: `{value, n, source: "Monarch API v3 semsim, <Datum>"}` aus B5
+- `coverage`: Anzahl Kern-Krankheiten (von 350) mit mindestens 1 Trial, 1 Paper, 1 Asset, 1 verifizierter Org, plus `denominator: 350`
+- `extract_precision`: nur wenn B7 lief und eine Handprüfung vorliegt, sonst `null`
+- `hero_sample`: Krabbe, MLD, PMD je Anzahl Assets, Therapien, NBS-Länder, KOL-Personen
+
+Die Werte landen später über `pipeline/09_metrics.py` (baut die Cloud) in `meta.json` und auf der Seite `/methods`.
+
+## Takt und Endbericht
+
+- Melde nach Phase A kurz (5 Zeilen) und um 02:00 einen Zwischenstand, auch wenn noch nicht alles fertig ist: was gepusht ist, was läuft, was blockiert.
+- Push früh und oft (je Phase), damit die Cloud schon integrieren kann. Was bis 05:00 nicht sauber ist, bleibt draußen und steht als Lücke im Report.
+- Endbericht (max. 15 Zeilen):
 
 Branch/PR-URL, Zahlen je Quelle (Records/Kanten), Hero-Stichprobe Krabbe/MLD/PMD, Testergebnis, Lücken, was in 07 integriert werden muss, was von Receps Code übernommen oder verworfen wurde.

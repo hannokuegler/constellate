@@ -22,7 +22,20 @@ export function loadJson<T>(path: string): Promise<T | null> {
 export const loadMeta = () => loadJson<Meta>("meta.json");
 export const loadIndex = () => loadJson<IndexEntry[]>("index.json");
 export const loadCore = () => loadJson<Core>("core.json");
-export const loadDisease = (id: string) => loadJson<DiseaseFile>(`disease/${toFileKey(id)}.json`);
+const loadDiseaseShard = (id: string) => loadJson<DiseaseFile>(`disease/${toFileKey(id)}.json`);
+
+/**
+ * Dev switch NEXT_PUBLIC_USE_FIXTURES=1: overlays the data-v2 fields from app/fixtures/disease-v2.json onto the real shard.
+ * Without the switch the condition is a build-time constant, the fixture import is dropped from the bundle.
+ */
+export const loadDisease: (id: string) => Promise<DiseaseFile | null> =
+  process.env.NEXT_PUBLIC_USE_FIXTURES === "1"
+    ? async (id) => {
+        const [shard, fixture] = await Promise.all([loadDiseaseShard(id), import("../fixtures/disease-v2.json")]);
+        const overlay = (fixture.default.shards as Record<string, Partial<DiseaseFile>>)[shard?.node.id ?? ""];
+        return shard && overlay ? { ...shard, ...overlay } : shard;
+      }
+    : loadDiseaseShard;
 export const loadGene = (symbol: string) => loadJson<GeneFile>(`gene/${encodeURIComponent(symbol)}.json`);
 export const loadPhenotype = (id: string) => loadJson<PhenotypeFile>(`phenotype/${toFileKey(id)}.json`);
 export const loadTrial = (nct: string) => loadJson<TrialDetail>(`trial/${encodeURIComponent(nct)}.json`);

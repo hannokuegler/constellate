@@ -26,6 +26,12 @@ export const RELATION_LABEL: Record<string, string> = {
   treated_by: "treated by",
   shares_mechanism_with: "shares mechanism with",
   causes: "causes",
+  has_asset: "reusable asset",
+  screened_in: "newborn screening",
+  approved_therapy: "approved therapy",
+  kol_overlap: "researchers active in both",
+  authored_by: "authored by",
+  investigator_of: "investigator of",
 };
 
 export function hasCounterEvidence(edge: Edge): boolean {

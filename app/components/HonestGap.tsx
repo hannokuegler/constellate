@@ -61,6 +61,16 @@ interface Props {
   onEdge?: (edge: Edge) => void;
 }
 
+/** One-line gap state inside a card section: "Not found in X as of D" or "Data pending". Never an empty box. */
+export function GapNote({ kind, children }: { kind: "gap" | "pending"; children: React.ReactNode }) {
+  return (
+    <p className="rounded-[12px] border border-dashed border-line px-3 py-2 text-[13px] text-ink-2">
+      <span className="mr-2 text-[12px] font-semibold uppercase tracking-wide text-warn">{kind === "gap" ? "Honest gap" : "Pending"}</span>
+      {children}
+    </p>
+  );
+}
+
 /** A first-class state: what we looked for, when, and what would change the answer. Never an error page. */
 export default function HonestGap({ variant, title, reason, searched, asOf, nearest = [], close, onEdge }: Props) {
   const Heading = variant === "screen" ? "h1" : "h3";

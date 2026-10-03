@@ -1,6 +1,6 @@
 # Status · Constellate
 
-**Letzte Aktualisierung: So 04.10.2026, 00:30 (Wien)**. Freeze So 12:00 (in 11:30 h), Abgabe So 15:00 (in 14:30 h). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
+**Letzte Aktualisierung: So 04.10.2026, 01:00 (Wien)**. Freeze So 12:00 (in 11 h), Abgabe So 15:00 (in 14 h). Mentor-Gespräch Woan-Yu Lin 03:45. **Orchestrierung ab jetzt lokal:** [prompts/LOCAL-ORCHESTRATOR.md](prompts/LOCAL-ORCHESTRATOR.md), Daten: [prompts/LOCAL-DATA-STEWARD.md](prompts/LOCAL-DATA-STEWARD.md). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
 
 Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).
 

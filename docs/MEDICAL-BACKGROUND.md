@@ -56,12 +56,14 @@ Hinweis fürs Produkt: Niemann-Pick C ist mechanistisch ein Transport-, kein Enz
 
 **Newborn Screening (USA).** New York seit 07.08.2006 als erster Staat (Orsini 2016, PMID 27638592). Laut KrabbeConnect (Stand 2025) 18 Staaten: NY 2006, MO 2012, OH 2016, KY 2016, TN 2017, IL 2017, NJ 2019, IN 2020, GA 2021, PA 2021, SC 2023, MN 2024, MD/IA/TX/KS/NM/OR 2025 (krabbeconnect.org/krabbe-disease/newborn-screening; MN: Pressemitteilung MDH 26.02.2024). Hunter's Hope nennt „19 Staaten" (Stand 07/2024) – Zählweise differiert ⚠️. **RUSP:** Das Bundes-Beratungsgremium ACHDNC stimmte am 30.01.2024 für die Aufnahme (HRSA chair letter); der HHS-Secretary hat Krabbe 2024 in den Recommended Uniform Screening Panel aufgenommen (Datum 01.07.2024 laut Pressemitteilung Rep. Langworthy ⚠️ Primärquelle HHS nicht abgerufen).
 
+**Newborn Screening (Österreich).** Kein Krabbe-Screening: Die Zielkrankheiten-Liste des österreichischen Neugeborenen-Screenings (MedUni Wien) nennt Krabbe nicht; MLD läuft dort seit Dezember 2024 als Forschungsprojekt (Seite undatiert, abgerufen 03.10.2026: https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/). Für die Nora-Story: Österreich screent die Nachbarkrankheit MLD (Forschung), Krabbe nicht.
+
 **Therapie-Status.**
 - **HSCT nur präsymptomatisch:** Nabelschnurblut-Transplantation bei 11 asymptomatischen Neugeborenen (12–44 Tage alt): 100 % Überleben, bei 14 symptomatischen Säuglingen 43 % und kein neurologischer Nutzen (Escolar 2005, NEJM, PMID 15901860). 15-Jahres-Daten: Transplantation in den ersten 7 Lebenswochen verändert den Verlauf, heilt aber nicht – motorische Defizite bleiben (Wright 2017, Neurology, PMID 28855403).
 - **Zugelassenes Medikament: keines.** Weltweit gibt es keine zugelassene medikamentöse Therapie für Krabbe; HSCT ist die einzige etablierte Option (GeneReviews NBK1238; Übersicht Frontiers Pediatrics 2021, 10.3389/fped.2021.764626).
 - **Gentherapie-Trials:**
-  - **FBX-101 (Forge Biologics):** AAVrh10-GALC i.v. nach HSCT, Phase 1/2 „RESKUE", NCT04693598, Start 05.11.2021, Status active-not-recruiting, Ende geplant 11/2026. Folgestudie bei bereits transplantierten Kindern NCT05739643; Langzeit-Follow-up NCT06308718. Erste 2 Patienten mit motorischer Entwicklung über Natural-History-Erwartung (Forge-PR 29.01.2024, BusinessWire).
-  - **PBKR03 (Passage Bio):** AAVhu68-GALC intra-cisterna magna, „GALax-C", NCT04771416 – **suspendiert** („changes in company strategy", ClinicalTrials.gov, verifiziert 11/2025).
+  - **FBX-101 (Forge Biologics):** AAVrh10-GALC i.v. nach HSCT. Die ursprüngliche Registrierung „RESKUE“ NCT04693598 leitet bei ClinicalTrials.gov per 301 auf **NCT05739643** um (Gentransfer bei infantilem/late-infantile Krabbe nach HSCT, Start 03.02.2023, active-not-recruiting; geprüft 03.10.2026). Langzeit-Follow-up NCT06308718: **terminated** (Start 06.08.2024). Erste 2 Patienten mit motorischer Entwicklung über Natural-History-Erwartung (Forge-PR 29.01.2024, BusinessWire). Maria Escolar ist CMO bei Forge (Sponsor) ⚠️ laut Hero-Draft, nicht selbst geöffnet.
+  - **PBKR03 (ursprünglich Passage Bio, Sponsor laut ClinicalTrials.gov jetzt Gemma Biotherapeutics):** AAVhu68-GALC intra-cisterna magna, „GALax-C", NCT04771416 – **suspendiert** („changes in company strategy", ClinicalTrials.gov, Status SUSPENDED, geprüft 03.10.2026).
 
 **Patientenorganisationen.**
 - **Hunter's Hope Foundation** (huntershope.org): 1997 gegründet von NFL-Quarterback Jim Kelly (Buffalo Bills) und Jill Kelly, nachdem ihr Sohn Hunter (geb. 14.02.1997) mit infantilem Krabbe diagnostiziert wurde; Hunter starb am 05.08.2005 mit 8 Jahren (ESPN 2005; huntershope.org). Treiber des NY-Screenings 2006 und der RUSP-Aufnahme; jährliches Medical Symposium seit 2008 (Wadsworth Center).
@@ -70,7 +72,7 @@ Hinweis fürs Produkt: Niemann-Pick C ist mechanistisch ein Transport-, kein Enz
 **Register / Natural History.**
 - Prospektive Single-Center-Naturverlaufsstudie Pittsburgh: 35 Patienten mit Beginn 6–36 Monate, Beobachtung 2000–2017 (Bascou 2018, PMID 30089515).
 - Deutschlandweite Naturverlaufsstudie Krabbe mit klinischen und MRT-Daten, Tübingen (Krieg et al., Orphanet J Rare Dis 2020, PMID 32912261) — Koautorin I. Krägeloh-Mann steht auch auf der GMFC-MLD-Publikation (Kehrer 2011, PMID 21707604), also eine belegte Krabbe-MLD-Brücke.
-- „Natural History of Infantile Globoid Cell Leukodystrophy" NCT00983879; Pittsburgh „Longitudinal Study of Neurodegenerative Disorders" NCT03333200 (deckt Krabbe + MLD, geplant 1.500 Patienten, Ende 2035).
+- „Natural History of Infantile Globoid Cell Leukodystrophy" NCT00983879 (Sponsor Zymenex A/S, Start 09/2009, completed; geprüft 03.10.2026); Pittsburgh „Longitudinal Study of Neurodegenerative Disorders" NCT03333200 (deckt Krabbe + MLD, geplant 1.500 Patienten, Ende 2035).
 
 ---
 

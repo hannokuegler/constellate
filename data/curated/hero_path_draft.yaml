@@ -1,0 +1,733 @@
+# Hero path evidence DRAFT. Prepared 2026-10-03 for Recep (Task R1). Do NOT merge blindly into hero_path.yaml.
+# All sources were fetched by Claude where technically possible; snippets were machine-checked as verbatim substrings of the fetched text. Where the page itself blocks bots (OMIM, Orphanet, NCBI pages, HPO/Open Targets web UI) the text comes from a mirror/API and the note says so (confidence low or medium, tier A in hero_path_CHECK.md).
+# Recep: check the link, then set status: DRAFT -> VERIFIED and copy the entry (from its '# E..' comment line to the blank line) into hero_path.yaml. Details: hero_path_CHECK.md
+# Format as in docs/WORKFLOW.md; extra field 'status'. source_type URL is used for databases without own type (UniProt, Reactome, NCBI Gene/ClinVar, HPO, Open Targets, HHS, patient orgs, MedUni Wien).
+# Snippets with ' | ' consist of several verbatim fragments from the same page (list rows / term labels). German snippets (Austria) are verbatim German.
+# Claims: English (may go into the product). Notes: German. UNBELEGT = no source found, see note.
+# Entries per step: S1=5, S2=3, S3=4, S4=8, S5=3, S6=6, S7=14, S8=12, S9=6, S10=5  (total 66)
+
+# E01 · step 1 · PMID 20301416
+- step: 1
+  claim: "Targeted therapy for infantile-onset Krabbe disease is hematopoietic stem cell transplantation (HSCT), indicated only for presymptomatic or minimally symptomatic patients; no drug therapy is listed."
+  source_type: PMID
+  id: "20301416"
+  url: "https://pubmed.ncbi.nlm.nih.gov/20301416/"
+  snippet: "Targeted therapy: Hematopoietic stem cell transplantation (HSCT) for those with predicted infantile-onset Krabbe disease who are presymptomatic or minimally symptomatic and show neuroimaging or neurophysiological evidence of disease."
+  confidence: high
+  note: "GeneReviews 'Krabbe Disease' (Orsini, Escolar, Wasserstein, Caggana; Update 08.09.2026), Abstract auf PubMed. GeneReviews-Volltext (NBK1238) blockt Bots, daher PubMed-Seite. 'Keine zugelassene Medikation' steht dort nicht wörtlich, siehe Negativ-Beleg im Eintrag mit PMC13528073. Achtung SCOPE: 'nur präsymptomatisch' ist enger als GeneReviews ('presymptomatic or minimally symptomatic')."
+  status: DRAFT
+
+# E02 · step 1 · PMID 15901860
+- step: 1
+  claim: "HSCT in symptomatic infants with infantile Krabbe disease gave no substantive neurologic improvement; transplantation in presymptomatic newborns favorably altered the natural history."
+  source_type: PMID
+  id: "15901860"
+  url: "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+  snippet: "Transplantation of umbilical-cord blood from unrelated donors in newborns with infantile Krabbe's disease favorably altered the natural history of the disease. Transplantation in babies after symptoms had developed did not result in substantive neurologic improvement."
+  confidence: high
+  note: "Escolar et al., NEJM 2005 (11 asymptomatische Neugeborene, 14 symptomatische Säuglinge). Zahlen im Abstract: Überleben 100 % vs. 43 %."
+  status: DRAFT
+
+# E03 · step 1 · PMC PMC13528073
+- step: 1
+  claim: "As of 2026, HSCT is described as the only available disease-modifying treatment for Krabbe disease and is not curative (supports: no approved drug therapy)."
+  source_type: PMC
+  id: "PMC13528073"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC13528073/"
+  snippet: "While HSCT is not curative it is currently the only available disease modifying treatment option."
+  confidence: medium
+  note: "NEGATIV-BELEG, deshalb nur medium. Kirkpatrick et al. 2026, Orphanet J Rare Dis (PMID 42310767). Zweite Quelle: PMC12870309 (PMID 41501923, 'the only established disease-modifying therapy to date is HSCT'). Gegencheck 03.10.2026: ClinicalTrials.gov zeigt für Krabbe keine zugelassene Therapie: Phase-1/2-Gentherapien (NCT05739643 ACTIVE_NOT_RECRUITING, NCT04771416 SUSPENDED) und ein Phase-2-Kandidat (PLX-200, NCT07740512, noch nicht rekrutierend, Start geplant 12/2026); Websuche nach einer Zulassung ohne Treffer. Im Produkt vorsichtig formulieren: 'no approved drug therapy to our knowledge'."
+  status: DRAFT
+
+# E04 · step 1 · PMC PMC12870309
+- step: 1
+  claim: "HSCT is the only established disease-modifying therapy for Krabbe disease (2026 review of caregiver-reported burden)."
+  source_type: PMC
+  id: "PMC12870309"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12870309/"
+  snippet: "Regarding treatment, the only established disease-modifying therapy to date is hematopoietic stem cell transplantation (HSCT)"
+  confidence: medium
+  note: "Bascou et al. 2026, Orphanet J Rare Dis (PMID 41501923). Zweitquelle zum Negativ-Beleg. Das Paper nennt Escolar und Kurtzberg als Evidenzquelle."
+  status: DRAFT
+
+# E05 · step 1 · ORPHA 487
+- step: 1
+  claim: "Krabbe disease is Orphanet ORPHA:487 (equivalent to MONDO:0009499 and OMIM 245200), a rare lysosomal disorder of the CNS and PNS white matter."
+  source_type: ORPHA
+  id: "487"
+  url: "https://www.orpha.net/en/disease/detail/487"
+  snippet: "A rare lysosomal disorder that affects the white matter of the central and peripheral nervous systems characterized by neurodegeneration with severity depending on the age of onset (infantile, late-infantile, juvenile, adolescent and adulthood)."
+  confidence: medium
+  note: "Orphanet-Seite blockt Bots (JS-Schranke). Zitat aus Orphadata en_product1.xml (CC-BY, Stand 03.10.2026), das ist derselbe ORDO-Text wie die Definition auf der Seite. Dort auch: OMIM 245200 und MONDO:0009499 'Exact mapping'; OMIM 611722 (Saposin A) hängt als 'broader than the targeted code' unter ORPHA:487. Recep: Seite im Browser öffnen, ORPHAcode + Definition vergleichen."
+  status: DRAFT
+
+# E06 · step 2 · URL P54803
+- step: 2
+  claim: "Variants in GALC cause Krabbe disease (OMIM 245200)."
+  source_type: URL
+  id: "P54803"
+  url: "https://www.uniprot.org/uniprotkb/P54803/entry"
+  snippet: "An autosomal recessive disorder characterized by insufficient catabolism of several galactolipids that are important for normal myelin production."
+  confidence: high
+  note: "UniProt P54803 (GALC_HUMAN), Abschnitt 'Disease & Variants', Krankheit 'Krabbe disease', MIM:245200 verlinkt. Der Text stammt aus OMIM; OMIM selbst blockt Bots (403)."
+  status: DRAFT
+
+# E07 · step 2 · URL Gene:2581
+- step: 2
+  claim: "GALC encodes the lysosomal enzyme galactosylceramidase; mutations in GALC are associated with Krabbe disease (globoid cell leukodystrophy)."
+  source_type: URL
+  id: "Gene:2581"
+  url: "https://www.ncbi.nlm.nih.gov/gene/2581"
+  snippet: "Mutations in this gene have been associated with Krabbe disease, also known as globoid cell leukodystrophy."
+  confidence: high
+  note: "NCBI Gene GALC, RefSeq-Summary (Jul 2008). NCBI-Seite war für mich per curl hinter reCAPTCHA; Text per E-utilities (esummary db=gene) gezogen, im Browser steht er unter 'Summary'."
+  status: DRAFT
+
+# E08 · step 2 · URL ClinVar VCV 4855581
+- step: 2
+  claim: "ClinVar classifies GALC variants as Pathogenic for 'Galactosylceramide beta-galactosidase deficiency' (the ClinVar condition name for Krabbe disease); 544 pathogenic or likely pathogenic GALC records on 03.10.2026."
+  source_type: URL
+  id: "ClinVar VCV 4855581"
+  url: "https://www.ncbi.nlm.nih.gov/clinvar/variation/4855581/"
+  snippet: "NM_000153.4(GALC):c.1670+2T>G | Pathogenic | Galactosylceramide beta-galactosidase deficiency"
+  confidence: medium
+  note: "Beispielvariante c.1670+2T>G. 544 = esearch 'GALC[gene] AND (pathogenic OR likely pathogenic)[clinsig]' am 03.10.2026, davon 478 mit Condition 'Galactosylceramide beta-galactosidase deficiency'; Zahl ändert sich laufend, nicht ins Produkt hartkodieren. Recep prüft: Condition-Name = Krabbe (MedGen/OMIM 245200 verlinkt)."
+  status: DRAFT
+
+# E09 · step 3 · URL R-HSA-1606564
+- step: 3
+  claim: "In Reactome, GALC hydrolyses galactosylceramide in lysosomal glycosphingolipid catabolism; defects in GALC cause Krabbe disease (MIM:245200)."
+  source_type: URL
+  id: "R-HSA-1606564"
+  url: "https://reactome.org/content/detail/R-HSA-1606564"
+  snippet: "Defects in GALC are the cause of leukodystrophy globoid cell (GLD) (MIM:245200), also called Krabbe disease"
+  confidence: high
+  note: "Reaktion 'GALC hydrolyzes GalCer', Teil von Pathway R-HSA-9840310 'Glycosphingolipid catabolism'. Dieselbe Seite: 'Defects in Sap A cause an atypical form of Krabbe disease (KRBSAPA, MIM:611722)'."
+  status: DRAFT
+
+# E10 · step 3 · URL R-HSA-9840310
+- step: 3
+  claim: "Reactome pathway 'Glycosphingolipid catabolism': saposins are essential cofactors, and lack of any enzyme or cofactor causes sphingolipidoses."
+  source_type: URL
+  id: "R-HSA-9840310"
+  url: "https://reactome.org/content/detail/R-HSA-9840310"
+  snippet: "Lack of any participating enzyme or cofactor leads to the accumulation of glycosphingolipids in lysosomes and sphingolipidoses, including Gaucher's and Niemann–Pick diseases"
+  confidence: high
+  note: "Pathway-Beleg für den Mechanismus-Knoten; Reactome-Eintrag, Release-Datum 2023-09-13. Nennt Gaucher und Niemann-Pick, Krabbe/MLD stehen in den Einzelreaktionen (Krabbe: R-HSA-1606564, MLD: R-HSA-1606807)."
+  status: DRAFT
+
+# E11 · step 3 · PMC PMC8633897
+- step: 3
+  claim: "Absence of GALC results in accumulation of psychosine, which is toxic at high concentrations."
+  source_type: PMC
+  id: "PMC8633897"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8633897/"
+  snippet: "The absence of GALC results in the accumulation of psychosine, which is toxic at high concentrations."
+  confidence: high
+  note: "Nasir et al. 2021, Front Med (PMID 34869463), Review. Gleicher Text: 'GALC is the only enzyme that can degrade psychosine'."
+  status: DRAFT
+
+# E12 · step 3 · PMC PMC8633897
+- step: 3
+  claim: "Psychosine-mediated loss of oligodendrocytes and Schwann cells is proposed to cause demyelination in Krabbe disease (mechanism partly debated)."
+  source_type: PMC
+  id: "PMC8633897"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8633897/"
+  snippet: "Psychosine-mediated loss of oligodendrocytes and Schwann cells leads to widespread demyelination within both the CNS and PNS, and impacts non-neuronal organs as well."
+  confidence: medium
+  note: "medium, weil Hypothese: derselbe Review schreibt 'Recent research suggests that psychosine's impact on demyelination may also proceed through pathways that are independent of oligodendrocytes and Schwann cells' (Gegenevidenz-Slot!). 'Precise mechanism is unknown'. Mikroglia-Hypothese ebenfalls offen."
+  status: DRAFT
+
+# E13 · step 4 · PMID 31439510
+- step: 4
+  claim: "Saposin A deficiency (PSAP) causes a clinical picture identical to infantile Krabbe disease, with preserved GALC enzyme activity."
+  source_type: PMID
+  id: "31439510"
+  url: "https://pubmed.ncbi.nlm.nih.gov/31439510/"
+  snippet: "Deficiency of saposin A leads to a clinical picture identical to that of early-infantile Krabbe disease caused by GALC enzyme deficiency."
+  confidence: high
+  note: "Calderwood et al. 2020, Mol Genet Metab. Fallbericht: 'preserved GALC enzyme activity and negative GALC gene sequencing', Psychosin im Trockenblut trotzdem erhöht (12 nmol/L). Erstbeschreibung: Spiegel 2005, PMID 15773042."
+  status: DRAFT
+
+# E14 · step 4 · PMID 19267410
+- step: 4
+  claim: "Saposin B deficiency (PSAP) presents as a metachromatic-leukodystrophy-like disorder with normal arylsulfatase A activity."
+  source_type: PMID
+  id: "19267410"
+  url: "https://pubmed.ncbi.nlm.nih.gov/19267410/"
+  snippet: "the other with SapB-d, who presented with a metachromatic leukodystrophy-like disorder but had normal arylsulfatase activity."
+  confidence: high
+  note: "Kuchar et al. 2009, Am J Med Genet A (Koautorin Krägeloh-Mann, 13. von 15). Ergänzend im Abstract: 'SapB-d is heterogeneous with a spectrum similar to that in metachromatic leukodystrophy'."
+  status: DRAFT
+
+# E15 · step 4 · PMID 22652185
+- step: 4
+  claim: "Saposin C deficiency (PSAP) results in a Gaucher-like phenotype despite normal in vitro glucocerebrosidase activity."
+  source_type: PMID
+  id: "22652185"
+  url: "https://pubmed.ncbi.nlm.nih.gov/22652185/"
+  snippet: "In humans, saposin C deficiency due to mutations in PSAP results in a Gaucher-like phenotype, despite normal in vitro glucocerebrosidase activity."
+  confidence: high
+  note: "Tamargo et al. 2012, Mol Genet Metab (Sidransky-Gruppe, NIH)."
+  status: DRAFT
+
+# E16 · step 4 · URL P07602
+- step: 4
+  claim: "PSAP encodes prosaposin, which is cleaved into four saposins (A, B, C, D) that act as activators for lysosomal sphingolipid-degrading enzymes."
+  source_type: URL
+  id: "P07602"
+  url: "https://www.uniprot.org/uniprotkb/P07602/entry"
+  snippet: "They are derived from a common precursor protein, prosaposin, which is proteolytically cleaved to yield four homologous proteins (saposin A, B, C, and D), each with distinct but partially overlapping lipid and enzyme specificities"
+  confidence: high
+  note: "UniProt P07602 (SAP_HUMAN), Function. Derselbe Eintrag, Reiter 'Disease & Variants', listet die drei Krankheiten mit MIM-Nummern: Krabbe, atypical, saposin A (MIM:611722); MLD due to saposin B (MIM:249900); Gaucher, atypical, saposin C (MIM:610539), plus combined saposin deficiency (MIM:611721). Dieselbe Seite nennt PSAP als Cofaktor für GALC und für ARSA."
+  status: DRAFT
+
+# E17 · step 4 · OMIM 611722
+- step: 4
+  claim: "OMIM 611722 is 'Krabbe disease, atypical, due to saposin A deficiency' (gene PSAP)."
+  source_type: OMIM
+  id: "611722"
+  url: "https://omim.org/entry/611722"
+  snippet: "Krabbe disease, atypical, due to saposin A deficiency"
+  confidence: low
+  note: "OMIM blockt Bots (HTTP 403), Seite NICHT selbst gesehen, deshalb low. Titel exakt so in HPO phenotype.hpoa (Release 2026-09-01) und in UniProt P07602 (Disease-Sektion, MIM:611722). Reactome R-HSA-1606564 nennt die Nummer ebenfalls. Recep: OMIM-Seite im Browser öffnen, Titel + 'PSAP' prüfen, dann confidence auf high."
+  status: DRAFT
+
+# E18 · step 4 · OMIM 249900
+- step: 4
+  claim: "OMIM 249900 is 'Metachromatic leukodystrophy due to saposin B deficiency' (gene PSAP)."
+  source_type: OMIM
+  id: "249900"
+  url: "https://omim.org/entry/249900"
+  snippet: "Metachromatic leukodystrophy due to saposin B deficiency"
+  confidence: low
+  note: "OMIM blockt Bots, Seite NICHT selbst gesehen, deshalb low. Titel exakt so in HPO phenotype.hpoa und UniProt P07602 (MIM:249900). ACHTUNG Reactome R-HSA-1606807 schreibt 'MIM:249290' (vermutlich Zahlendreher), die Nummer 249900 ist durch UniProt, HPO und Orphadata (Orphanet: 249900 unter ORPHA:512) abgesichert. Recep: OMIM-Seite prüfen."
+  status: DRAFT
+
+# E19 · step 4 · OMIM 610539
+- step: 4
+  claim: "OMIM 610539 is 'Gaucher disease, atypical, due to saposin C deficiency' (gene PSAP)."
+  source_type: OMIM
+  id: "610539"
+  url: "https://omim.org/entry/610539"
+  snippet: "Gaucher disease, atypical, due to saposin C deficiency"
+  confidence: low
+  note: "OMIM blockt Bots, Seite NICHT selbst gesehen, deshalb low. Titel exakt in UniProt P07602 (MIM:610539); HPO führt die Nummer verkürzt als 'Gaucher disease, atypical'. Orphanet: ORPHA:309252 'Atypical Gaucher disease due to saposin C deficiency' = OMIM 610539 (exact). Recep: OMIM-Seite prüfen."
+  status: DRAFT
+
+# E20 · step 4 · URL ENSG00000197746
+- step: 4
+  claim: "Open Targets lists PSAP as associated with saposin-C-deficiency Gaucher disease, saposin-A-deficiency Krabbe disease and metachromatic leukodystrophy."
+  source_type: URL
+  id: "ENSG00000197746"
+  url: "https://platform.opentargets.org/target/ENSG00000197746/associations"
+  snippet: "Gaucher disease due to saposin C deficiency | Krabbe disease due to saposin A deficiency | combined PSAP deficiency | metachromatic leukodystrophy"
+  confidence: medium
+  note: "Open Targets Platform (JS-Seite), Zitat = Zeilenlabels der Assoziationsliste (GraphQL-API, 03.10.2026): Scores Gaucher/SapC 0.81, Krabbe/SapA 0.80, combined 0.79, MLD 0.59. Generischer 'Gaucher disease' (MONDO_0018150) steht mit 0.51 ebenfalls drin. Scores ändern sich mit Releases."
+  status: DRAFT
+
+# E21 · step 5 · URL P15289
+- step: 5
+  claim: "ARSA deficiency causes metachromatic leukodystrophy (OMIM 250100): lysosomal accumulation of cerebroside-3-sulfate with progressive demyelination."
+  source_type: URL
+  id: "P15289"
+  url: "https://www.uniprot.org/uniprotkb/P15289/entry"
+  snippet: "An autosomal recessive disease caused by abnormal intralysosomal accumulation of cerebroside-3-sulfate in central and peripheral nervous systems, as well as other organs."
+  confidence: high
+  note: "UniProt P15289 (ARSA_HUMAN), 'Disease & Variants': Metachromatic leukodystrophy, MIM:250100. Function nennt Saposin B als nötigen Aktivator der ARSA-Reaktion (Verbindung zu PSAP)."
+  status: DRAFT
+
+# E22 · step 5 · URL R-HSA-9840310
+- step: 5
+  claim: "GALC (Krabbe) and ARSA (MLD) both act in the same Reactome pathway 'Glycosphingolipid catabolism' (R-HSA-9840310)."
+  source_type: URL
+  id: "R-HSA-9840310"
+  url: "https://reactome.org/content/detail/R-HSA-9840310"
+  snippet: "GALC hydrolyzes GalCer | ARSA removes sulfate from PSAP(195-273):Sulfatide"
+  confidence: high
+  note: "Zeilen aus der Ereignisliste des Pathways (Sub-Events). Reactome-UniProt-Mapping 03.10.2026: GALC (P54803), ARSA (P15289), PSAP (P07602) und GBA1 (P04062) liegen alle in R-HSA-9840310. 'Gleicher Pathway' ist damit belegt; 'gleiches Zielgewebe' (Myelin/Nervensystem) siehe UniProt-Einträge."
+  status: DRAFT
+
+# E23 · step 5 · URL OMIM:245200 | OMIM:250100
+- step: 5
+  claim: "HPO annotates Krabbe disease (OMIM:245200) and MLD (OMIM:250100) with six identical phenotype terms, including peripheral demyelination (HP:0011096), optic atrophy, seizure, hypotonia and decreased nerve conduction velocity."
+  source_type: URL
+  id: "OMIM:245200 | OMIM:250100"
+  url: "https://hpo.jax.org/browse/disease/OMIM:250100"
+  snippet: "Peripheral demyelination | Optic atrophy | Decreased nerve conduction velocity | Seizure | Hypotonia"
+  confidence: medium
+  note: "Eigene Zählung aus phenotype.hpoa (HPO-Release 2026-09-01), nur exakter Term-Overlap: Krabbe∩MLD = 6 Terme (zusätzlich 'Increased CSF protein concentration'). ACHTUNG: Krabbe∩PMD ebenfalls 6, MLD∩PMD sogar 9, d. h. exakter Overlap trennt PMD NICHT von MLD; 'Spastik' und 'Regression' stehen bei Krabbe/MLD unter verschiedenen Terms. Die IC-gewichtete Ähnlichkeit (07_analytics) muss die Aussage 'überlappende Phänotype' tragen, nicht diese Zählung. HPO-Seite ist JS-App, Zitat = Termlabels aus der Annotationsliste."
+  status: DRAFT
+
+# E24 · step 6 · EMA EMEA/H/C/005321
+- step: 6
+  claim: "Libmeldy (atidarsagene autotemcel) received EU marketing authorisation on 17 December 2020."
+  source_type: EMA
+  id: "EMEA/H/C/005321"
+  url: "https://www.ema.europa.eu/en/medicines/human/EPAR/libmeldy"
+  snippet: "Libmeldy received a marketing authorisation valid throughout the EU on 17 December 2020."
+  confidence: high
+  note: "EMA-Produktseite, Abschnitt 'Other information about Libmeldy'. Antragsteller Orchard Therapeutics."
+  status: DRAFT
+
+# E25 · step 6 · EMA EMEA/H/C/005321
+- step: 6
+  claim: "EMA scientific advice accepted untreated MLD patients from the SR-TIGET natural-history (NHx) study as comparator for the non-randomised pivotal Libmeldy trial."
+  source_type: EMA
+  id: "EMEA/H/C/005321"
+  url: "https://www.ema.europa.eu/en/documents/assessment-report/libmeldy-epar-public-assessment-report_en.pdf"
+  snippet: "The SAWP also agreed that untreated MLD patients from the SR-TIGET NHx study was an appropriate comparator, provided “these historical controls match the treated population with respect to disease stage, age and genotype”."
+  confidence: high
+  note: "EPAR Public Assessment Report, PDF (ca. Seite 17 von 158 im PDF), Abschnitt 'Design of the pivotal clinical Study 201222'. Dort auch: 'Data from TIGET NHx Study consists of a cohort of 31 untreated LI and EJ MLD subjects'. PDF ist 4 MB, deshalb Suche mit Strg+F nach 'SAWP' nutzen."
+  status: DRAFT
+
+# E26 · step 6 · EMA EMEA/H/C/005321
+- step: 6
+  claim: "In the EPAR, the 2-year gross motor function score after Libmeldy was 72.5 in late-infantile MLD versus 7.4 in records of similar untreated children."
+  source_type: EMA
+  id: "EMEA/H/C/005321"
+  url: "https://www.ema.europa.eu/en/documents/overview/libmeldy-epar-medicine-overview_en.pdf"
+  snippet: "was 72.5 in the group with late infantile MLD, compared to 7.4 in records of similar untreated children."
+  confidence: high
+  note: "EPAR Medicine overview (EMA/559368/2020), Seite 2, Abschnitt 'What benefits of Libmeldy have been shown in studies?'. Early juvenile: 76.5 vs. 36.3. Achtung: Overview nennt 'main study involving 20 children'; die Lancet-Publikation (Fumagalli 2022) hat 29 behandelte Kinder (Phase 1/2 + Expanded Access), das ist kein Widerspruch, aber Zahlen nicht mischen."
+  status: DRAFT
+
+# E27 · step 6 · FDA Lenmeldy (BLA), press release 2024-03-18
+- step: 6
+  claim: "FDA approved Lenmeldy (atidarsagene autotemcel) on 18 March 2024, the first FDA-approved gene therapy for children with MLD (pre-symptomatic late infantile, pre-symptomatic or early symptomatic early juvenile)."
+  source_type: FDA
+  id: "Lenmeldy (BLA), press release 2024-03-18"
+  url: "https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapy-children-metachromatic-leukodystrophy"
+  snippet: "Today, the U.S. Food and Drug Administration approved Lenmeldy (atidarsagene autotemcel), the first FDA-approved gene therapy indicated for the treatment of children with pre-symptomatic late infantile, pre-symptomatic early juvenile or early symptomatic early juvenile metachromatic leukodystrophy (MLD)."
+  confidence: high
+  note: "FDA-Pressemitteilung, 'For Immediate Release: March 18, 2024'. Zulassungsinhaber Orchard Therapeutics (letzter Satz der Mitteilung). Die FDA-Produktseite (vaccines-blood-biologics/lenmeldy) gibt per curl 404, deshalb Pressemitteilung als Quelle."
+  status: DRAFT
+
+# E28 · step 6 · FDA Lenmeldy (BLA), press release 2024-03-18
+- step: 6
+  claim: "FDA approval of Lenmeldy compared treated children with untreated children from a natural history cohort (primary endpoint: severe motor impairment-free survival)."
+  source_type: FDA
+  id: "Lenmeldy (BLA), press release 2024-03-18"
+  url: "https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapy-children-metachromatic-leukodystrophy"
+  snippet: "Children who received treatment with Lenmeldy were compared to untreated children (natural history)."
+  confidence: high
+  note: "Gleiche Pressemitteilung, Absatz 'The safety and effectiveness of Lenmeldy was assessed based on data from 37 children ... in two single-arm, open-label clinical trials and in an expanded access program'. Alle präsymptomatisch behandelten late-infantile Kinder lebten mit 6 Jahren vs. 58 % in der Natural-History-Gruppe. Den vollen FDA Summary Basis for Regulatory Action habe ich nicht geöffnet."
+  status: DRAFT
+
+# E29 · step 6 · PMID 35065785
+- step: 6
+  claim: "29 treated children with early-onset MLD were compared with an untreated natural-history cohort of 31 patients matched by age and disease subtype."
+  source_type: PMID
+  id: "35065785"
+  url: "https://pubmed.ncbi.nlm.nih.gov/35065785/"
+  snippet: "compared with an untreated natural history (NHx) cohort of 31 patients with early-onset MLD, matched by age and disease subtype."
+  confidence: high
+  note: "Fumagalli et al., Lancet 2022 (PMC8795071), Abstract METHODS. 29 behandelte Kinder (Phase 1/2 NCT01560182 + Expanded Access). GMFM-Differenz nach 2 Jahren: 66 % (late-infantile) und 42 % (early-juvenile) vs. NHx. Förderung: Orchard, Fondazione Telethon, GSK (Interessenkonflikt-Hinweis fürs Produkt)."
+  status: DRAFT
+
+# E30 · step 7 · NCT NCT04628364
+- step: 7
+  claim: "The MLD HOME study (sponsor NORD, FDA collaborator; observational, 21 participants, completed 03/2025) was designed to create natural-history data usable as external control data."
+  source_type: NCT
+  id: "NCT04628364"
+  url: "https://clinicaltrials.gov/study/NCT04628364"
+  snippet: "Design and implement a natural history study for metachromatic leukodystrophy to serve as a source of external control data, to augment or replace concurrent controls in clinical trials"
+  confidence: high
+  note: "KORREKTUR bestätigt: Sponsor = National Organization for Rare Disorders (NORD), Collaborator = FDA (nicht Orchard). Start 2020-10-01, Completion 2025-03-30, Status COMPLETED, Enrollment 21. Offizieller Titel: 'A Systems-based Approach to Patient-focused Rare Disease Research and Product Development'."
+  status: DRAFT
+
+# E31 · step 7 · PMID 21707604
+- step: 7
+  claim: "The GMFC-MLD (Gross Motor Function Classification for MLD) was applied to 59 patients of the nationwide German LEUKONET natural-history survey (Kehrer et al. 2011)."
+  source_type: PMID
+  id: "21707604"
+  url: "https://pubmed.ncbi.nlm.nih.gov/21707604/"
+  snippet: "Gross motor function was assessed using the Gross Motor Function Classification for MLD."
+  confidence: high
+  note: "Kehrer et al., Dev Med Child Neurol 2011 (Tübingen; Krägeloh-Mann 4. Autorin). Im Abstract: 59 Patienten, 'These data can serve as a reference for clinical studies'. Der Abstract sagt NICHT '7 Stufen' (das steht bei Chang 2024, PMC10946116, nächster Eintrag). Kehrer-Volltext habe ich nicht geöffnet."
+  status: DRAFT
+
+# E32 · step 7 · PMC PMC10946116
+- step: 7
+  claim: "GMFC-MLD is a clinician-rated classification of motor decline in MLD with seven categories, from normal (0) to loss of all locomotion (6)."
+  source_type: PMC
+  id: "PMC10946116"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10946116/"
+  snippet: "It has seven categories representing clinically relevant stages from normal (category 0) to loss of all locomotion (category 6) including head and trunk control"
+  confidence: high
+  note: "Chang et al. 2024, Eur J Med Res (PMID 38494502), systematischer Review zu MLD-Naturverlauf. Zitat steht im Abschnitt 'Gross Motor Function Classification in MLD (GMFC-MLD) level at baseline'. Primärquelle der Skala: Kehrer 2011 (PMID 21707604)."
+  status: DRAFT
+
+# E33 · step 7 · NCT NCT03333200
+- step: 7
+  claim: "The University of Pittsburgh longitudinal natural-history study (NCT03333200, est. 1,500 participants, recruiting) covers MLD, Krabbe disease, Pelizaeus-Merzbacher disease, Gaucher disease and other leukodystrophies and lysosomal diseases."
+  source_type: NCT
+  id: "NCT03333200"
+  url: "https://clinicaltrials.gov/study/NCT03333200"
+  snippet: "The purpose of this study is to understand the course of rare genetic disorders that affect the brain."
+  confidence: high
+  note: "Sponsor University of Pittsburgh, Start 2012-01-11, Ende geschätzt 2035-01, Status RECRUITING (Update 2026-02-09). Conditions-Liste enthält u. a. MLD, Krabbe Disease, Pelizaeus-Merzbacher Disease, Gaucher Disease. Gemeinsame NHS über beide Krankheiten = Rückenwind für das Cluster-Argument."
+  status: DRAFT
+
+# E34 · step 7 · URL mld.foundation/about-us
+- step: 7
+  claim: "The MLD Foundation was formed in May 2001 to serve MLD families worldwide."
+  source_type: URL
+  id: "mld.foundation/about-us"
+  url: "https://mld.foundation/about-us/"
+  snippet: "MLD Foundation was formed in May 2001 to serve families throughout the world affected by metachromatic leukodystrophy (MLD), an ultra-rare, terminal, neurometabolic, genetic disease."
+  confidence: high
+  note: "Domain mldfoundation.org leitet auf mld.foundation um (die alte history.php gibt 522). ACHTUNG für Action Card (Schritt 9): dieselbe Seite sagt 'we are specifically focused on MLD in all aspects of our work'."
+  status: DRAFT
+
+# E35 · step 7 · PMID 41283365
+- step: 7
+  claim: "Nationwide newborn screening for MLD is carried out in Norway; large prospective pilots run in Germany, Austria, Italy and the US."
+  source_type: PMID
+  id: "41283365"
+  url: "https://pubmed.ncbi.nlm.nih.gov/41283365/"
+  snippet: "Nationwide NBS for MLD is currently carried out in Norway and large prospective pilots are running in Germany, Austria, Italy and the US."
+  confidence: high
+  note: "Laugwitz et al. 2025, Int J Neonatal Screen (PMC12641716). Im Volltext: 'three US states, Illinois, Minnesota and Pennsylvania, have approved the inclusion of MLD to their NBS panels' und deutscher Pilot ab 2021 (109.259 Neugeborene, 3 bestätigte MLD). KORREKTUR zu MEDICAL-BACKGROUND §4 ('kein Regelscreening in USA/DE'): in IL, MN, PA ist MLD beschlossen."
+  status: DRAFT
+
+# E36 · step 7 · URL krabbeconnect NBS-Seite
+- step: 7
+  claim: "KrabbeConnect lists 18 US states that screen newborns for Krabbe disease, starting with New York in 2006."
+  source_type: URL
+  id: "krabbeconnect NBS-Seite"
+  url: "https://krabbeconnect.org/krabbe-disease/krabbe-disease-newborn-screening/"
+  snippet: "Currently there are 18 states screening for Krabbe disease."
+  confidence: medium
+  note: "medium: Seite ist undatiert; bei Minnesota fehlt das Startjahr in der Tabelle; Hunter's Hope soll laut MEDICAL-BACKGROUND '19 Staaten' (Stand 07/2024) zählen, das habe ich nicht geprüft. Liste laut Seite: NY 2006, MO 2012, OH 2016, KY 2016, TN 2017, IL 2017, NJ 2019, IN 2020, GA 2021, PA 2021, SC 2023, MN, MD/IA/TX/KS/NM/OR 2025. Dieselbe Seite schreibt noch 'if the U.S. Secretary of Health ... adds Krabbe disease to the RUSP' (veraltet, siehe HHS-Brief). Alte URL /krabbe-disease/newborn-screening/ leitet hierher um. Im Produkt 'at least 18 states, per KrabbeConnect, as of 2026-10' sagen."
+  status: DRAFT
+
+# E37 · step 7 · URL HHS letter 2024-07-01
+- step: 7
+  claim: "On 1 July 2024 the HHS Secretary accepted adding infantile Krabbe disease (low GALC and psychosine ≥ 10 nM) to the Recommended Uniform Screening Panel (RUSP)."
+  source_type: URL
+  id: "HHS letter 2024-07-01"
+  url: "https://www.hrsa.gov/sites/default/files/hrsa/advisory-committees/heritable-disorders/reports-recommendations/infantile-krabbe-final-response.pdf"
+  snippet: "I accept the Committee’s recommendation to expand the RUSP to include infantile Krabbe disease (low GALC and psychosine ≥ 10nM)."
+  confidence: high
+  note: "Brief des Secretary of HHS (Xavier Becerra) an ACHDNC-Chair Calonge, datiert July 1, 2024. hrsa.gov blockt Bots (403); ich habe den Text über die Wayback-Kopie gelesen: https://web.archive.org/web/20251014221931/https://www.hrsa.gov/sites/default/files/hrsa/advisory-committees/heritable-disorders/reports-recommendations/infantile-krabbe-final-response.pdf . Recep: Original-Link im Browser testen, sonst Wayback-Link. Achtung: nur 'infantile' Krabbe; kein Muss für Staaten (Brief: 'does not constitute a requirement for states'). Datum 01.07.2024 deckt sich mit Hunter's Hope; die Pressemitteilung von Rep. Langworthy (09.07.2024) ist nur Sekundärquelle."
+  status: DRAFT
+
+# E38 · step 7 · URL huntershope.org/about-us
+- step: 7
+  claim: "Hunter's Hope was established in 1997 by Jim Kelly and his wife Jill after their son Hunter was diagnosed with Krabbe leukodystrophy."
+  source_type: URL
+  id: "huntershope.org/about-us"
+  url: "https://www.huntershope.org/about-us/"
+  snippet: "Hunter’s Hope was established in 1997 by Pro Football Hall of Fame Member and former Buffalo Bills Quarterback, Jim Kelly and his wife Jill, after their infant son, Hunter (2/14/97—8/5/05) was diagnosed with Krabbe Leukodystrophy"
+  confidence: high
+  note: "Hunter's Hope Foundation (Buffalo). Bezug zur Challenge (Buffalo × OpenAI). Nicht verwechseln: KrabbeConnect ist eine andere Organisation."
+  status: DRAFT
+
+# E39 · step 7 · NCT NCT05739643
+- step: 7
+  claim: "FBX-101 (AAVrh10-GALC) for Krabbe disease after HSCT is in Phase 1/2 (active, not recruiting); NCT04693598 is an alias that redirects to NCT05739643."
+  source_type: NCT
+  id: "NCT05739643"
+  url: "https://clinicaltrials.gov/study/NCT05739643"
+  snippet: "This is a non-blinded, non-randomized dose escalation study of intravenous FBX-101 in which subjects will receive a single infusion of an adeno-associated virus gene therapy product, after more than 21 days of the HSCT"
+  confidence: high
+  note: "KLÄRUNG NCT04693598: der Aufruf von /api/v2/studies/NCT04693598 liefert HTTP 301 mit Location /api/v2/studies/NCT05739643; NCT05739643 trägt nctIdAliases = ['NCT04693598']. Es gibt also EINEN Datensatz, 'REKLAIM', Sponsor Forge Biologics, Status ACTIVE_NOT_RECRUITING, Start 2023-02-03 (nicht 05.11.2021 wie in MEDICAL-BACKGROUND), geplantes Ende 2026-11, Enrollment 9 (geschätzt). Beide IDs notieren, im Produkt NCT05739643 verwenden. Das Langzeit-Follow-up NCT06308718 ist TERMINATED (2 Teilnehmer, Ende 04/2025). Escolar nennt in PMID 39499628 'Chief Medical Officer at Forge Biologics'."
+  status: DRAFT
+
+# E40 · step 7 · NCT NCT02993796
+- step: 7
+  claim: "A world-wide clinical Krabbe disease registry (SUNY Buffalo, Institute for Myelin and Glia Exploration) is recruiting (NCT02993796)."
+  source_type: NCT
+  id: "NCT02993796"
+  url: "https://clinicaltrials.gov/study/NCT02993796"
+  snippet: "The purpose of this study is to develop a clinical database of individuals diagnosed with Krabbe disease in order to determine which symptoms herald the onset of clinical disease in the various phenotypes of Krabbe disease"
+  confidence: high
+  note: "Sponsor State University of New York at Buffalo; Collaborators RDCRN, NCATS, Lysosomal Disease Network, NICHD; Status RECRUITING; Enrollment 60 (geschätzt), Ende 2026-09 (geschätzt, Update 2026-07-17). Das ist das Krabbe-Register-Asset."
+  status: DRAFT
+
+# E41 · step 7 · URL ÖNGS Erkrankungen (MedUni Wien)
+- step: 7
+  claim: "Austria's national newborn screening (run by MedUni Wien/AKH Wien) covers 2 hormonal disorders, 25 metabolic diseases, cystic fibrosis, and (project-based since 7 June 2021) severe combined immunodeficiencies and SMA; Krabbe disease is not on the list."
+  source_type: URL
+  id: "ÖNGS Erkrankungen (MedUni Wien)"
+  url: "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/"
+  snippet: "Im Rahmen des Neugeborenen-Screenings werden derzeit zwei Hormonstörungen, 25 Stoffwechselkrankheiten und Cystische Fibrose (Mukoviszidose) sowie (seit 7. 6. 2021 vorerst projektbasiert) schwere angeborene Immundefekte und spinale Muskelatrophie (SMA) erfasst."
+  confidence: high
+  note: "Antwort auf Noras Frage: NEIN, kein Krabbe-Screening in Österreich. NEGATIV-BELEG: Auf der Seite kommt 'Krabbe' nirgends vor (Strg+F 'Krabbe' = 0 Treffer, auch 'Globoid' und 'Lysosom' nur bei MLD), die Detailliste führt Hormonstörungen, Aminoazidopathien, Organoazidopathien, Fettsäureoxidation, Carnitinzyklus, Biotinidase, Galaktosämie, Zystische Fibrose, SMA, SCID, MLD. Seite undatiert, abgerufen 03.10.2026; Zielkrankheiten-Zahl 'mehr als 30' stützt die Pressemitteilung vom 24.06.2026 (nächster Eintrag). Der Screening-Auftrag kommt vom Wissenschaftsministerium (BMFWF), nicht vom Gesundheitsministerium."
+  status: DRAFT
+
+# E42 · step 7 · URL ÖNGS Erkrankungen (MedUni Wien)
+- step: 7
+  claim: "Since December 2024 the Austrian newborn screening also screens for metachromatic leukodystrophy (MLD) as part of a research project."
+  source_type: URL
+  id: "ÖNGS Erkrankungen (MedUni Wien)"
+  url: "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/"
+  snippet: "Seit Dezember 2024 screenen wir im Rahmen eines Forschungsprojekts auch auf Metachromatische Leukodystrophie (MLD)."
+  confidence: high
+  note: "Für Nora: Wien screent seit 12/2024 auf MLD (Forschungsprojekt, soll laut Seite 'zu einer regulären Integration von MLD in das Neugeborenen-Screening führen'), aber nicht auf Krabbe. Passt zur Aussage von Laugwitz 2025 ('large prospective pilots ... Austria'). Therapie laut Seite 'in ausgewählten europäischen Zentren, darunter dem Universitätsklinikum Tübingen' verfügbar."
+  status: DRAFT
+
+# E43 · step 7 · URL MedUni Wien Presseinformation 2026-06-24
+- step: 7
+  claim: "The Austrian newborn screening programme currently comprises more than 30 conditions (hormonal, metabolic, cystic fibrosis, SMA, severe combined immunodeficiencies), per a MedUni Wien press release of 24 June 2026."
+  source_type: URL
+  id: "MedUni Wien Presseinformation 2026-06-24"
+  url: "https://www.meduniwien.ac.at/web/fileadmin/content/presseservice/presseaussendungen/pdf_2026/PA_60_Jahre_Neugeborenen-Screening_de.pdf"
+  snippet: "Heute umfasst das Programm mehr als 30 Krankheitsbilder, darunter Hormonstörungen, Stoffwechselerkrankungen, Cystische Fibrose, spinale Muskelatrophie und schwere angeborene Immundefekte."
+  confidence: medium
+  note: "Presseinformation '60 Jahre österreichisches Neugeborenen-Screening' (24.06.2026). Bestätigt Größenordnung und Ausrichtung der Liste, nennt aber Krabbe nicht ausdrücklich nicht, daher nur Zusatzbeleg. Aufnahmekriterien laut Text: 'Verfügbarkeit wirksamer Therapien und diagnostischer Zuverlässigkeit'. Auch gesundheit.gv.at (Letzte Aktualisierung 27.05.2025) beschreibt das Screening, nennt aber nur Beispiele (adrenogenitales Syndrom, Hypothyreose, PKU, Cystische Fibrose), keine Vollliste."
+  status: DRAFT
+
+# E44 · step 8 · PMID 15901860
+- step: 8
+  claim: "Maria L. Escolar (first author) and Joanne Kurtzberg (last author) published on Krabbe disease: Escolar et al., NEJM 2005."
+  source_type: PMID
+  id: "15901860"
+  url: "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+  snippet: "Transplantation of umbilical-cord blood in babies with infantile Krabbe's disease."
+  confidence: high
+  note: "Autorenzeile PubMed (13 Autoren): Escolar ML Erstautorin, Kurtzberg J Letztautorin. Krabbe-PMID 1 von 2 für Escolar UND für Kurtzberg."
+  status: DRAFT
+
+# E45 · step 8 · PMID 28855403
+- step: 8
+  claim: "Maria L. Escolar (last author) published on Krabbe disease: Wright et al., Neurology 2017, 15-year follow-up of cord blood transplantation."
+  source_type: PMID
+  id: "28855403"
+  url: "https://pubmed.ncbi.nlm.nih.gov/28855403/"
+  snippet: "Developmental outcomes of cord blood transplantation for Krabbe disease: A 15-year study."
+  confidence: high
+  note: "Autoren (5): Wright MD, Poe MD, DeRenzo A, Haldal S, Escolar ML (Letztautorin). Krabbe-PMID 2 von 2 für Escolar."
+  status: DRAFT
+
+# E46 · step 8 · PMID 35042231
+- step: 8
+  claim: "Joanne Kurtzberg (last author) published on Krabbe disease: Page et al., Blood Adv 2022 (newborn screening and HCT in infantile Krabbe disease)."
+  source_type: PMID
+  id: "35042231"
+  url: "https://pubmed.ncbi.nlm.nih.gov/35042231/"
+  snippet: "Benefits of newborn screening and hematopoietic cell transplant in infantile Krabbe disease."
+  confidence: high
+  note: "Autoren (11): Page KM, Ream MA, ... Kurtzberg J (Letztautorin, Duke). Krabbe-PMID 2 von 2 für Kurtzberg. Abstract: 'newborn screening (NBS) has been instituted in 8 US states'."
+  status: DRAFT
+
+# E47 · step 8 · PMID 23348427
+- step: 8
+  claim: "Maria L. Escolar (last author) and Joanne Kurtzberg (4th of 6 authors) published on metachromatic leukodystrophy: Martin et al., Biol Blood Marrow Transplant 2013."
+  source_type: PMID
+  id: "23348427"
+  url: "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+  snippet: "Neurodevelopmental outcomes of umbilical cord blood transplantation in metachromatic leukodystrophy."
+  confidence: high
+  note: "Autoren (6): Martin HR, Poe MD, Provenzale JM, Kurtzberg J, Mendizabal A, Escolar ML. MLD-PMID 1 von 2 für Escolar UND für Kurtzberg."
+  status: DRAFT
+
+# E48 · step 8 · PMID 38964050
+- step: 8
+  claim: "Maria L. Escolar (last author) and Ingeborg Krägeloh-Mann (45th of 48 authors) published on MLD: Adang et al., Mol Genet Metab 2024 (international cohort of 351 subjects)."
+  source_type: PMID
+  id: "38964050"
+  url: "https://pubmed.ncbi.nlm.nih.gov/38964050/"
+  snippet: "Developmental delay can precede neurologic regression in early onset metachromatic leukodystrophy."
+  confidence: high
+  note: "Autoren (48): Adang LA, Groeschel S, ... Kehrer C(44), Krägeloh-Mann I(45), Shults J, Vanderver A, Escolar ML(48). MLD-PMID 2 von 2 für Escolar; MLD-PMID für Krägeloh-Mann (Escolar + Krägeloh-Mann auf demselben Paper)."
+  status: DRAFT
+
+# E49 · step 8 · PMID 35065771
+- step: 8
+  claim: "Joanne Kurtzberg (sole author) wrote the Lancet commentary on the MLD gene therapy study by Fumagalli et al. (2022)."
+  source_type: PMID
+  id: "35065771"
+  url: "https://pubmed.ncbi.nlm.nih.gov/35065771/"
+  snippet: "Gene therapy offers new hope for children with metachromatic leukodystrophy."
+  confidence: high
+  note: "Lancet-Kommentar (kein Originalpaper) zu PMID 35065785; Einzelautorin Kurtzberg J. MLD-PMID 2 von 2 für Kurtzberg. Falls ein Originalpaper gewünscht ist: Martin 2013 (PMID 23348427) steht schon dabei. COI-Hinweis im Paper: Kurtzberg ist Beraterin einer Krabbe-Gentherapie-Firma (Neurogene)."
+  status: DRAFT
+
+# E50 · step 8 · PMID 32912261
+- step: 8
+  claim: "Ingeborg Krägeloh-Mann (2nd of 7 authors) published on Krabbe disease: Krieg et al., Orphanet J Rare Dis 2020, nationwide German natural-history study."
+  source_type: PMID
+  id: "32912261"
+  url: "https://pubmed.ncbi.nlm.nih.gov/32912261/"
+  snippet: "Natural history of Krabbe disease - a nationwide study in Germany using clinical and MRI data."
+  confidence: high
+  note: "Autoren (7): Krieg SI, Krägeloh-Mann I, Groeschel S, Beck-Wödl S, Husain RA, Schöls L, Kehrer C (Tübingen). Krabbe-PMID 1 von 2 für Krägeloh-Mann. 38 Patienten, 79 % infantil. Bestätigt die neue Info (PMID 32912261)."
+  status: DRAFT
+
+# E51 · step 8 · PMID 28109651
+- step: 8
+  claim: "Ingeborg Krägeloh-Mann (first author) published on Krabbe disease: late-onset Krabbe disease due to the GALC p.Ala543Pro variant (Eur J Paediatr Neurol 2017)."
+  source_type: PMID
+  id: "28109651"
+  url: "https://pubmed.ncbi.nlm.nih.gov/28109651/"
+  snippet: "Late onset Krabbe disease due to the new GALC p.Ala543Pro mutation, with intriguingly high residual GALC activity in vitro."
+  confidence: high
+  note: "Autoren (10): Krägeloh-Mann I (Erstautorin), Harzer K, Rostásy K, ... Pechan M. Krabbe-PMID 2 von 2 für Krägeloh-Mann."
+  status: DRAFT
+
+# E52 · step 8 · PMID 21707604
+- step: 8
+  claim: "Ingeborg Krägeloh-Mann (4th of 5 authors, senior) published on MLD: Kehrer et al., Dev Med Child Neurol 2011 (GMFC-MLD natural course, 59 patients)."
+  source_type: PMID
+  id: "21707604"
+  url: "https://pubmed.ncbi.nlm.nih.gov/21707604/"
+  snippet: "The natural course of gross motor deterioration in metachromatic leukodystrophy."
+  confidence: high
+  note: "Autoren: Kehrer C, Blumenstock G, Gieselmann V, Krägeloh-Mann I; GERMAN LEUKONET. MLD-PMID 1 von 2 für Krägeloh-Mann (zugleich GMFC-MLD-Paper, Brücke zur Krabbe-Studie PMID 32912261)."
+  status: DRAFT
+
+# E53 · step 8 · PMID 20571983
+- step: 8
+  claim: "Ingeborg Krägeloh-Mann (2nd of 2 authors) co-wrote the MLD review 'Metachromatic leukodystrophy - an update' (Neuropediatrics 2010)."
+  source_type: PMID
+  id: "20571983"
+  url: "https://pubmed.ncbi.nlm.nih.gov/20571983/"
+  snippet: "Metachromatic leukodystrophy--an update."
+  confidence: high
+  note: "Autoren: Gieselmann V, Krägeloh-Mann I (nur zwei). MLD-PMID 2 von 2 für Krägeloh-Mann. Übersichtsartikel. Abstract-Satz: 'Demyelination is the hallmark of MLD.'"
+  status: DRAFT
+
+# E54 · step 8 · URL mld.foundation/about-us
+- step: 8
+  claim: "Maria Escolar sits on the Medical & Scientific Advisory Board of the MLD Foundation (patient organisation) while also publishing on Krabbe disease."
+  source_type: URL
+  id: "mld.foundation/about-us"
+  url: "https://mld.foundation/about-us/"
+  snippet: "Dr. Maria Escolar … Neurodevelopmental pediatrician … MS Director, Program for the Study of Neurodevelopment in Rare Disorders (NDRD), Children’s Hospital of Pittsburgh"
+  confidence: high
+  note: "Abschnitt Medical & Scientific Advisory Board (Seite listet auch Alessandra Biffi und Adeline Vanderver, Gründerin/Chair von GLIA). Zeigt die Brücke KOL ↔ Patientengruppe. 'MS Director' steht so auf der Seite."
+  status: DRAFT
+
+# E55 · step 8 · PMID 39499628
+- step: 8
+  claim: "Maria Escolar discloses being Chief Medical Officer at Forge Biologics, the sponsor of the FBX-101 Krabbe gene therapy trial (conflict-of-interest statement, 2024)."
+  source_type: PMID
+  id: "39499628"
+  url: "https://pubmed.ncbi.nlm.nih.gov/39499628/"
+  snippet: "MLE is the Chief Medical Officer at Forge Biologics with an ownership interest greater than 5% and maintains full time employment since February of 2022."
+  confidence: high
+  note: "Greco et al., Ann Clin Transl Neurol 2024 (Infantile Krabbe disease, recommended endpoints). Relevant für die Action Card/Ethik: Escolar ist Mitarbeiterin des FBX-101-Sponsors. MEDICAL-BACKGROUND nennt sie 'Prüfärztin im FBX-101-Trial', das ist nach dieser COI-Angabe zu kurz gegriffen."
+  status: DRAFT
+
+# E56 · step 9 · UNBELEGT
+- step: 9
+  claim: "The MLD Foundation is a suitable partner to adopt NHS design and GMFC-MLD for Krabbe disease (Action Card proposal)."
+  source_type: UNBELEGT
+  id: ""
+  url: ""
+  snippet: ""
+  confidence: low
+  note: "Das ist ein Vorschlag der Action Card, keine Tatsachenbehauptung, und gehört als 'Proposal/Hypothese' gekennzeichnet. GEGENINDIZ: mld.foundation/about-us sagt 'we are specifically focused on MLD in all aspects of our work'. Bessere Adressaten für die Krabbe-Seite: Hunter's Hope, KrabbeConnect, das SUNY-Buffalo-Krabbe-Register (NCT02993796) und das Pittsburgh-Programm; MLD Foundation eher als Methodengeber. Hanno entscheidet, ob die Action Card umgedreht wird."
+  status: DRAFT
+
+# E57 · step 9 · PMID 37461315
+- step: 9
+  claim: "GMFC-MLD has been used as an age-independent functional score outside MLD (validation in TUBB4A-related leukodystrophy), so transfer to other leukodystrophies is plausible."
+  source_type: PMID
+  id: "37461315"
+  url: "https://pubmed.ncbi.nlm.nih.gov/37461315/"
+  snippet: "GMFC-MLD shows a strong correlation with GMFCS-ER and GMFM-88, supporting its use as an age-independent functional score in TUBB4A-related leukodystrophy."
+  confidence: medium
+  note: "Gavazzi et al., J Child Neurol 2023 (Vanderver-Gruppe, CHOP). medium: belegt Übertragbarkeit nur für TUBB4A-Leukodystrophie (35 Probanden), NICHT für Krabbe. Siehe nächster Eintrag."
+  status: DRAFT
+
+# E58 · step 9 · UNBELEGT
+- step: 9
+  claim: "GMFC-MLD has been validated as a motor endpoint in Krabbe disease."
+  source_type: UNBELEGT
+  id: ""
+  url: ""
+  snippet: ""
+  confidence: low
+  note: "Kein Beleg gefunden. PubMed-Suche 03.10.2026: '(Krabbe OR globoid cell leukodystrophy) AND (GMFC OR gross motor function classification)' = 2 Treffer, beide TUBB4A (PMID 37461315, 39951964), keine Krabbe-Validierung. 'Krabbe disease gross motor function' = 13 Treffer, keine GMFC-Validierung. Krabbe-eigene Endpunkte schlägt Greco 2024 (PMID 39499628) vor. Action Card muss das als offene Expertenfrage ausweisen (steht schon im Entwurf: 'Expertenprüfung: Validität der Motorikskala bei Krabbe')."
+  status: DRAFT
+
+# E59 · step 9 · PMID 32912261
+- step: 9
+  claim: "MRI severity scoring (Loes score) is used in a Krabbe natural-history cohort, so MRI scoring is a shared endpoint between Krabbe and MLD studies."
+  source_type: PMID
+  id: "32912261"
+  url: "https://pubmed.ncbi.nlm.nih.gov/32912261/"
+  snippet: "MRI was assessed using the scoring system by Loes et al. (1999) and in addition a pattern recognition approach"
+  confidence: high
+  note: "Krieg et al. 2020 (Krabbe-NHS Deutschland, Tübingen). Gegenstück MLD: nächster Eintrag (Martin 2013)."
+  status: DRAFT
+
+# E60 · step 9 · PMID 23348427
+- step: 9
+  claim: "Modified Loes MRI scores predict cognitive and gross motor outcomes after transplantation in MLD."
+  source_type: PMID
+  id: "23348427"
+  url: "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+  snippet: "To evaluate whether signal intensity abnormalities on magnetic resonance imaging (ie, modified Loes scores) predict post-transplant cognitive and gross motor development, a general linear mixed model was fit to the data."
+  confidence: high
+  note: "Martin et al. 2013 (Escolar/Kurtzberg). Ergebnis im Abstract: 'Pretransplant modified Loes scores were highly correlated with developmental outcomes and predictive of cognitive and motor function.'"
+  status: DRAFT
+
+# E61 · step 9 · PMID 33832819
+- step: 9
+  claim: "Infants identified by newborn screening for Krabbe disease are assigned to structured clinical follow-up pathways based on GALC activity, psychosine and genotype, so NBS-positive cohorts exist for follow-up studies."
+  source_type: PMID
+  id: "33832819"
+  url: "https://pubmed.ncbi.nlm.nih.gov/33832819/"
+  snippet: "Infants identified by newborn screening with possible KD should enter one of three clinical follow-up pathways (Early infantile KD, at-risk for LOKD, or unaffected), based on galactocerebrosidase (GALC) activity, psychosine concentration, and GALC genotype."
+  confidence: medium
+  note: "Thompson-Stone et al. 2021 (Koautoren Escolar, Kurtzberg, Gelb). medium: belegt NBS-Follow-up-Kohorten, NICHT dass sie als NHS-Rekrutierungsquelle genutzt werden; der Schluss 'NBS-Kohorte als Rekrutierungsquelle' ist unsere Folgerung."
+  status: DRAFT
+
+# E62 · step 10 · URL P60201
+- step: 10
+  claim: "Pelizaeus-Merzbacher disease (OMIM 312080, PLP1) is an X-linked disorder in which myelin is not formed properly (hypomyelination)."
+  source_type: URL
+  id: "P60201"
+  url: "https://www.uniprot.org/uniprotkb/P60201/entry"
+  snippet: "An X-linked recessive disorder of the central nervous system in which myelin is not formed properly."
+  confidence: high
+  note: "UniProt P60201 (MYPR_HUMAN), 'Disease & Variants': 'Leukodystrophy, hypomyelinating, 1', MIM:312080 (HPO führt dieselbe Nummer noch als 'Pelizaeus-Merzbacher disease'). Subcellular location laut UniProt: Cell membrane, Myelin membrane (nicht lysosomal)."
+  status: DRAFT
+
+# E63 · step 10 · PMC PMC9313024
+- step: 10
+  claim: "PMD is the prototype of hypo/dys-myelinating leukodystrophies (defective myelin formation), as opposed to demyelinating leukodystrophies in which myelin is destroyed."
+  source_type: PMC
+  id: "PMC9313024"
+  url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9313024/"
+  snippet: "Pelizaeus–Merzbacher Disease (PMD) became the prototype of inborn errors of CNS myelin formation (hypo/dys-myelinating leukodystrophies) in opposition to genetic diseases leading to myelin destruction (demyelinating leukodystrophies)."
+  confidence: high
+  note: "Khalaf et al. 2022, Biomedicines (PMID 35885014). Das ist der Kernsatz für 'Hypo- statt Demyelinisierung'. Prävalenz im selben Paper 1,45–1,9 pro 100.000."
+  status: DRAFT
+
+# E64 · step 10 · PMID 20301361
+- step: 10
+  claim: "PLP1-related disorders (PMD to SPG2) are disorders of CNS myelin formation."
+  source_type: PMID
+  id: "20301361"
+  url: "https://pubmed.ncbi.nlm.nih.gov/20301361/"
+  snippet: "PLP1-related disorders of central nervous system myelin formation include a range of phenotypes from Pelizaeus-Merzbacher disease (PMD) to spastic paraplegia 2 (SPG2)."
+  confidence: high
+  note: "GeneReviews 'PLP1-Related Disorders' (Wolf, van Spaendonk, Hobson; Update 12.06.2025), Abstract auf PubMed (NBK1182-Volltext blockt Bots)."
+  status: DRAFT
+
+# E65 · step 10 · URL OMIM:312080 | OMIM:245200
+- step: 10
+  claim: "HPO annotates PMD (OMIM:312080) with CNS hypomyelination (HP:0003429), whereas Krabbe disease (OMIM:245200) carries CNS demyelination (HP:0007305)."
+  source_type: URL
+  id: "OMIM:312080 | OMIM:245200"
+  url: "https://hpo.jax.org/browse/disease/OMIM:312080"
+  snippet: "CNS hypomyelination | CNS demyelination"
+  confidence: medium
+  note: "phenotype.hpoa (Release 2026-09-01): OMIM:312080 → HP:0003429 'CNS hypomyelination' (1/1); OMIM:245200 → HP:0007305 'CNS demyelination' (5/22). HPO-Seite ist eine JS-App, Zitat = Termlabels. Gegenwert: PMD teilt mit Krabbe 6 exakte Terme (u. a. Nystagmus, Hypotonie, Seizure), mit MLD 9. Hohe Phänotyp-Ähnlichkeit bei fehlendem Mechanismus-Overlap ist damit plausibel, die IC-Zahl liefert aber erst 07_analytics."
+  status: DRAFT
+
+# E66 · step 10 · URL P60201
+- step: 10
+  claim: "Reactome has no pathway annotation for PLP1 (UniProt P60201), i.e. zero pathway overlap with the lysosomal glycosphingolipid pathway of Krabbe/MLD."
+  source_type: URL
+  id: "P60201"
+  url: "https://reactome.org/ContentService/data/mapping/UniProt/P60201/pathways?species=9606"
+  snippet: "No pathways found for UniProt:P60201"
+  confidence: low
+  note: "low: Abwesenheit in Reactome ist KEIN Beleg für einen anderen Mechanismus, nur für 'nicht annotiert'. Der Mechanismus-Beleg ist PMC9313024 + UniProt (Myelinmembran, kein Enzym). 'Pathway-Overlap = 0' im Produkt als 'PLP1 has no Reactome pathway annotation' formulieren. Antwort der API (03.10.2026): HTTP 404, reason NOT_FOUND."
+  status: DRAFT

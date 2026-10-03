@@ -46,7 +46,7 @@ Zusätzlich je Krankheit und Abschnitt (assets, therapies, screening, kol) ein `
 5. Git: nur Branch `data-v2`, nie `main`, nie force-push, vor jedem Push `git pull --rebase`. Commit-Präfixe `pipeline:` / `data:` / `docs:`, ein Satz, **keine Co-Authored-By-Trailer**, keine AI-Attribution. Nur eigene Dateien stagen, nie `git add .`. Je Phase ein Commit. Am Ende Branch pushen und PR gegen `main` öffnen (`gh pr create`); ohne gh die PR-Beschreibung in `docs/DATA-REPORT.md`.
 6. Schreibbereich, nur hier ändern:
    - `pipeline/04b_enrich_extra.py`, `pipeline/enrich_extra/`, `pipeline/tests/test_enrich_extra.py`
-   - `data/curated/assets.csv`, `data/enrich/*` (gitignored)
+   - `data/curated/assets.csv`, `data/curated/orgs_extracted_draft.csv` (nur B8), `data/enrich/*` (gitignored)
    - `data/MANIFEST.md`, `docs/DATA-SOURCES.md`, `docs/DATA-REPORT.md`
    - `Makefile`: nur das neue Target `enrich-extra`
    - `pipeline/pyproject.toml` und `uv.lock`: nur neue Pakete
@@ -98,6 +98,14 @@ Alles als `pipeline/04b_enrich_extra.py` mit Modulen in `pipeline/enrich_extra/`
 **B5 Cross-Check der Ähnlichkeit:** Für die Top-50-Paare similar_phenotype aus `app/public/data/core.json` die Monarch API v3 `semsim/compare/<MONDO>/<MONDO>` abfragen. Spearman-Korrelation zu unserem simGIC in `docs/DATA-REPORT.md`. Nur Validierung, keine Kanten. (Die Zahl wird eine der Metriken für die Jury.)
 
 **B6 Coverage-Audit:** Für Kern-Krankheiten mit 0 Trials, 0 Grants oder 0 Papers in `data/enrich/coverage.jsonl` alternative Suchbegriffe probieren (Orphanet-Synonyme aus `en_product1.xml`, MONDO-Synonyme, OMIM-Titel aus HPO). Ergebnis nach `data/enrich/extra_coverage_audit.jsonl`. Bleibt es bei 0, ist es eine echte Lücke und wird so markiert.
+
+**B8 Bright Data als Fetch-Fallback und Org-Vorfilter** (nach B1 bis B3; Konzept und Ablauf in `docs/RESOURCES.md` §3)
+
+Nur wenn `BRIGHTDATA_API_KEY` und `BRIGHTDATA_ZONE` (Web-Unlocker-Zone) in `.env.local` stehen, sonst überspringen und vermerken.
+1. Neues Modul `pipeline/enrich_extra/brightdata.py`: `POST https://api.brightdata.com/request` mit `{zone, url, format: "raw"}` (Endpoint laut RESOURCES §3/B2 vor Nutzung in der Bright-Data-Doku bestätigen). Gleicher Cache wie `common.fetch_document` (`data/cache/extra/`), Offline-Lauf muss gehen.
+2. **Nur als Fallback** in `common.fetch_document`: erst direkt abrufen; nur bei 403/429/Bot-Sperre über Bright Data. robots.txt bleibt Pflicht: ist der Pfad per robots.txt gesperrt oder meldet Bright Data `ub_bad_endpoint_robots`, wird die Seite übersprungen und als Lücke protokolliert. Kein KYC beantragen. Nie für lizenzierte Datenbanken (OMIM, Orphanet-Org-Listen).
+3. Einsatz: (a) offizielle NBS-Seiten aus B1, die direkt blocken; (b) **Org-Vorfilter für Osman**: die URLs aus `data/curated/orgs_draft.csv` holen und, falls `OPENAI_API_KEY` gesetzt ist, mit Structured Outputs je Seite `{org_name, country, disease_names[], has_registry, registry_url, has_natural_history_study, nhs_url, has_biobank, contact_url}` plus wörtlichem Snippet je Feld extrahieren (Snippet als Teilstring der Seite geprüft). Ausgabe nach `data/curated/orgs_extracted_draft.csv` mit Spalte `check=machine`. Das ist ein **Entwurf**: ins Produkt kommt weiterhin nur, was Osman selbst geöffnet und nach `orgs.csv` übernommen hat.
+4. Zähle Requests (Credits) und schreibe sie in `docs/DATA-REPORT.md`. Lege offen: "Pages that blocked direct access were fetched via Bright Data Web Unlocker, robots.txt respected" in `docs/DATA-SOURCES.md`.
 
 **B7 Nur wenn `OPENAI_API_KEY` in der Env ist**
 1. `uv run --project pipeline python pipeline/openai_config.py --list`

@@ -7,6 +7,17 @@ inferred edges carry a `formula`, size budgets hold (core+index < 3 MB, every di
 path is complete:
 Krabbe -> GALC, Krabbe family -> PSAP, PSAP -> MLD family, MLD -> ARSA, Krabbe <-> PMD with mechanism_differs = true
 (and Krabbe <-> MLD not flagged).
+
+data-v2 fields of disease shards (07 step 11, optional): assets / approved_therapies / newborn_screening as array or
+{items: [{node, edge}], items_total?, searched?}, kol_overlap as {items: [{disease, edge, people}]}, prevalence as array.
+Edge type and level per field (approved_therapy / screened_in curated, has_asset curated or text_mined and never curated
+for a Europe PMC abstract hit, no WITHDRAWN study, kol_overlap inferred with formula), NBS snippet verbatim, <= 24 KB
+of data-v2 fields per shard, <= 4 prevalence records without XML snippet, no phone numbers in people,
+edge source = the shard's disease, target = node id (ASSET: / DRUG: / COUNTRY:), every evidence with a snippet unless the
+item is UNBELEGT, no "email" / "phone" keys and no e-mail addresses in people, shard-only nodes never in index.json.
+Hero checks (only when the field is in the export, otherwise a note): MLD has approved_therapy Libmeldy and Lenmeldy,
+Krabbe has no approved_therapy, Krabbe has >= 1 has_asset.
+`run()` returns {errors, warnings, notes, hero}; 09_metrics imports it for meta.metrics.hero_regression.
 """
 from __future__ import annotations
 
@@ -31,9 +42,18 @@ REQUIRED_EDGE_KEYS = ("id", "source", "target", "type", "evidence", "contradicti
 REQUIRED_EVIDENCE_KEYS = ("db", "record", "url", "level", "date")
 ID_RE = re.compile(r"^e_[0-9a-f]{12}$")
 PMID_RE = re.compile(r"^PMID:\d+$")
+EMAIL_RE = re.compile(r"[^\s@]+@[^\s@]+\.[A-Za-z]{2,}")
+V2_ITEM_FIELDS = {"assets": ("has_asset", "ASSET:"), "approved_therapies": ("approved_therapy", "DRUG:"),
+                  "newborn_screening": ("screened_in", "COUNTRY:")}
+V2_SHARD_ONLY_PREFIXES = ("ASSET:", "DRUG:", "COUNTRY:", "PERSON:")
+PERSONAL_KEYS = {"email", "e_mail", "mail", "phone", "telephone"}
+PHONE_RE = re.compile(r"(?:\b(?:tel|phone|fax)\b\.?:?\s*\+?\d)|(?:\+\d[\d\s().-]{7,}\d)|(?:\(\d{2,4}\)\s*\d{3,}[\s.-]?\d{3,})", re.I)
+V2_SHARD_BYTES = 24_000  # all data-v2 fields of one disease shard together (same cap as 07)
+V2_PREVALENCE_MAX = 4
 
 errors: list[str] = []
 warnings: list[str] = []
+notes: list[str] = []  # data-v2 hints that are no error (e.g. field not delivered yet)
 seen_ids: dict[str, tuple[str, str, str]] = {}
 edge_counter: Counter = Counter()
 
@@ -46,7 +66,7 @@ def load(path: Path):
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:  # noqa: BLE001
-        err(f"{path.relative_to(ROOT)}: unreadable ({exc})")
+        err(f"{path.relative_to(ROOT) if path.is_relative_to(ROOT) else path}: unreadable ({exc})")
         return None
 
 
@@ -121,12 +141,162 @@ def check_edge(where: str, edge: dict, endpoints: set | None = None) -> None:
                 err(f"{loc}: {end} {edge.get(end)} does not exist")
 
 
+def v2_rows(where: str, shard: dict, field: str) -> list | None:
+    """Array or {items, items_total?, searched?}; None = field absent. Format errors are reported."""
+    if field not in shard:
+        return None
+    raw = shard[field]
+    if isinstance(raw, list):
+        return raw
+    if not isinstance(raw, dict) or not isinstance(raw.get("items"), list):
+        err(f"{where}: `{field}` must be an array or {{items: [...], searched?: [...]}}")
+        return []
+    if "searched" in raw and (not isinstance(raw["searched"], list) or
+                              any(not isinstance(s_, dict) or not isinstance(s_.get("source"), str) for s_ in raw["searched"])):
+        err(f"{where}: `{field}.searched` must be a list of {{source, retrieved?, hits?}}")
+    if "items_total" in raw and (not isinstance(raw["items_total"], int) or raw["items_total"] < len(raw["items"])):
+        err(f"{where}: `{field}.items_total` must be an int >= len(items)")
+    return raw["items"]
+
+
+def personal_keys(obj, path: str = "") -> list[str]:
+    found = []
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if str(k).lower() in PERSONAL_KEYS:
+                found.append(f"{path}.{k}")
+            found += personal_keys(v, f"{path}.{k}")
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            found += personal_keys(v, f"{path}[{i}]")
+    return found
+
+
+def check_v2(where: str, shard: dict) -> None:
+    node_id = shard.get("node", {}).get("id")
+    for field, (etype, prefix) in V2_ITEM_FIELDS.items():
+        for i, it in enumerate(v2_rows(where, shard, field) or []):
+            it = it if isinstance(it, dict) else {}
+            node, edge = it.get("node") or {}, it.get("edge") or {}
+            loc = f"{where} {field}[{i}]"
+            if not isinstance(node.get("id"), str) or not node["id"].startswith(prefix) or not node.get("label"):
+                err(f"{loc}: node needs id {prefix}... and a label")
+            check_edge(loc, edge)
+            if edge.get("type") != etype or edge.get("source") != node_id or edge.get("target") != node.get("id"):
+                err(f"{loc}: edge must be {etype} from {node_id} to the item node")
+            allowed = ("curated", "text_mined") if etype == "has_asset" else ("curated",)
+            if edge.get("level") not in allowed:
+                err(f"{loc}: {etype} must be {' or '.join(allowed)}, is {edge.get('level')!r}")
+            if etype == "has_asset":
+                if str(node.get("status") or "").upper() == "WITHDRAWN":
+                    err(f"{loc}: withdrawn study exported as asset")
+                if any(ev.get("level") == "curated" and (ev.get("db") == "Europe PMC" or str(ev.get("record", "")).startswith("PMID:"))
+                       for ev in edge.get("evidence", [])):
+                    err(f"{loc}: scale from a Europe PMC abstract hit must not be curated (text_mined at most)")
+            if etype == "screened_in" and any(str(ev.get("snippet") or "").startswith("[") for ev in edge.get("evidence", [])):
+                err(f"{loc}: screening snippet must be the verbatim quote, not '[status] ...'")
+            unbelegt = "UNBELEGT" in (str(node.get("status")), str(node.get("check")))
+            if not unbelegt and any(not (ev.get("snippet") or "").strip() for ev in edge.get("evidence", [])):
+                err(f"{loc}: evidence without snippet (only UNBELEGT items may lack one)")
+    for i, it in enumerate(v2_rows(where, shard, "kol_overlap") or []):
+        loc = f"{where} kol_overlap[{i}]"
+        it = it if isinstance(it, dict) else {}
+        other, edge = it.get("disease") or {}, it.get("edge") or {}
+        if not other.get("id") or not other.get("label") or not isinstance(it.get("people"), list):
+            err(f"{loc}: entry needs disease {{id, label}}, edge and people")
+            continue
+        check_edge(loc, edge)
+        if edge.get("type") != "kol_overlap" or {edge.get("source"), edge.get("target")} != {node_id, other["id"]}:
+            err(f"{loc}: edge must be kol_overlap between {node_id} and {other['id']}")
+        if edge.get("level") != "inferred" or not (edge.get("formula") or "").strip():
+            err(f"{loc}: kol_overlap must be inferred with a formula")
+        if any(not (ev.get("snippet") or "").strip() for ev in edge.get("evidence", [])):
+            err(f"{loc}: evidence without snippet")
+        for p in it["people"]:
+            if not isinstance(p, dict) or not isinstance(p.get("name"), str) or not isinstance(p.get("records"), list):
+                err(f"{loc}: person needs name and records")
+                continue
+            text = " ".join(str(p.get(k) or "") for k in ("name", "affiliation"))
+            if EMAIL_RE.search(text):
+                err(f"{loc}: e-mail address in a person entry")
+            if PHONE_RE.search(text):
+                err(f"{loc}: phone number in a person entry")
+            if any(not (isinstance(r_, dict) and r_.get("db") and r_.get("record")) for r_ in p["records"]):
+                err(f"{loc}: person record needs db and record")
+    if "prevalence" in shard:
+        prev = shard["prevalence"]
+        if not isinstance(prev, list) or any(not isinstance(p, dict) for p in prev):
+            err(f"{where}: `prevalence` must be an array of records")
+        else:
+            if len(prev) > V2_PREVALENCE_MAX:
+                err(f"{where}: {len(prev)} prevalence records (cap {V2_PREVALENCE_MAX})")
+            for i, p in enumerate(prev):
+                if "snippet" in p:
+                    err(f"{where} prevalence[{i}]: XML snippet must not be exported")
+                src = p.get("source") or {}
+                if not (src.get("db") and src.get("record")):
+                    err(f"{where} prevalence[{i}]: needs source {{db, record}}")
+                if p.get("value") is not None and not isinstance(p["value"], str):
+                    err(f"{where} prevalence[{i}]: value must be a display string (e.g. '0.3 per 100 000') or null")
+    v2_part = {k: shard[k] for k in (*V2_ITEM_FIELDS, "kol_overlap", "prevalence") if k in shard}
+    if bad := personal_keys(v2_part):
+        err(f"{where}: personal contact keys in data-v2 fields: {bad[:3]}")
+    if (size := len(json.dumps(v2_part, ensure_ascii=False, separators=(",", ":")).encode())) > V2_SHARD_BYTES:
+        err(f"budget: {where} data-v2 fields are {size} bytes (limit {V2_SHARD_BYTES})")
+
+
+def v2_hero(shards: dict) -> dict[str, bool]:
+    """Active only when the field exists in the export; otherwise a note (data-v2 not delivered yet)."""
+    hero: dict[str, bool] = {}
+
+    def items(disease: str, field: str):
+        shard = shards.get(disease) or {}
+        if field not in shard:
+            notes.append(f"hero (data-v2): `{field}` not in the {disease} shard (pending), check skipped")
+            return None
+        raw = shard[field]
+        if isinstance(raw, list):
+            return raw
+        return raw.get("items", []) if isinstance(raw, dict) else []
+
+    mld = items(MLD, "approved_therapies")
+    if mld is not None:
+        names = {str((it.get("node") or {}).get(k) or "").lower() for it in mld for k in ("label", "id")}
+        names |= {n.split(":", 1)[1] for n in names if ":" in n}
+        hero["MLD approved_therapy Libmeldy + Lenmeldy"] = {"libmeldy", "lenmeldy"} <= names
+    krabbe_t = items(KRABBE, "approved_therapies")
+    if krabbe_t is not None:
+        hero["Krabbe has no approved_therapy"] = not krabbe_t
+    krabbe_a = items(KRABBE, "assets")
+    if krabbe_a is not None:
+        hero["Krabbe has >= 1 has_asset"] = any((it.get("edge") or {}).get("type") == "has_asset" for it in krabbe_a)
+    return hero
+
+
+def run(out: Path | None = None) -> dict:
+    """All checks; returns {errors, warnings, notes, hero}. Safe to call repeatedly (state is reset)."""
+    global OUT
+    if out is not None:
+        OUT = Path(out)
+    for state in (errors, warnings, notes):
+        state.clear()
+    seen_ids.clear()
+    edge_counter.clear()
+    hero = check_all()
+    return {"errors": list(errors), "warnings": list(warnings), "notes": list(notes), "hero": hero}
+
+
 def main() -> int:
+    run()
+    return report()
+
+
+def check_all() -> dict[str, bool]:
     meta = load(OUT / "meta.json")
     index = load(OUT / "index.json")
     core = load(OUT / "core.json")
     if meta is None or index is None or core is None:
-        return report()
+        return {}
 
     # ---- meta
     for k in ("version", "built_at", "fixture", "sources", "counts", "hero"):
@@ -150,6 +320,8 @@ def main() -> int:
             err(f"index.json: incomplete entry {n.get('id')}")
         if len(n.get("synonyms", [])) > 8:
             err(f"index.json: {n.get('id')} has more than 8 synonyms")
+        if str(n.get("id", "")).startswith(V2_SHARD_ONLY_PREFIXES):
+            err(f"index.json: {n.get('id')} is a shard-only data-v2 node (no search hit)")
     index_set = set(index_ids)
     by_type = Counter(n["type"] for n in index)
 
@@ -238,6 +410,7 @@ def main() -> int:
                             err(f"{where}: gap.nearest_communities must be <= 3 diseases that have orgs")
                         elif not any(s_.get("source") == "curated org list" for s_ in gap["searched"]):
                             err(f"{where}: gap.searched must name the curated org list")
+                check_v2(where, shard)
             elif kind == "org":
                 if not all(shard.get("node", {}).get(k) for k in ("id", "label")):
                     err(f"{where}: org node needs id + label")
@@ -327,6 +500,7 @@ def main() -> int:
     hero["Krabbe <-> PMD mechanism_differs = true"] = nb.get(PMD, {}).get("mechanism_differs") is True
     hero["Krabbe <-> MLD not a counterexample"] = MLD in nb and nb[MLD].get("mechanism_differs") is not True
     hero["Krabbe -> MLD neighbour has formula"] = bool(nb.get(MLD, {}).get("edge", {}).get("formula"))
+    hero.update(v2_hero(shards))
     for name, ok in hero.items():
         if not ok:
             err(f"hero path: {name} FAILED")
@@ -336,10 +510,12 @@ def main() -> int:
           f"{(sizes['core.json'] + sizes['index.json'])/1e6:.2f} MB · largest shard {max_shard[1]} {max_shard[0]/1e3:.0f} KB · "
           f"shards {shard_counts} · {len(seen_ids)} distinct edge ids")
     print("hero: " + " · ".join(f"{name} {'ok' if ok else 'FAIL'}" for name, ok in hero.items()))
-    return report()
+    return hero
 
 
 def report() -> int:
+    for n in notes:
+        print(f"note: {n}")
     if warnings:
         kinds = Counter(w.split("(type ")[-1].rstrip(")") for w in warnings)
         print(f"warnings: {len(warnings)} edge ids outside the sha1 scheme by type {dict(kinds)}")

@@ -73,23 +73,23 @@ edge                       {id: "e_<12 hex>", source, target, type, evidence: [{
 The app reads all of this through `lib/normalize.ts`, which also accepts the variants the pipeline publishes:
 `parents`/`children` as ids plus `parents_labels`/`children_labels`, `is_group`, `mechanism_classes`, neighbour `mechanism_note` (used verbatim in the action card, each sentence citing the neighbour edge), `enrichment.papers_mentioning` (flat records without edge, shown as "mention", no evidence level), `enrichment.targets`, `enrichment.totals`, coverage `hits_raw`/`retrieved`, gene `pathways`/`pathways_more` as `{node, edge}`, trial `phase_label`/`phases`, phenotype shards with `{id, label, edge, confidence}` rows and `diseases_total`, nested `meta.counts`, and `core.json` edges with `evidence_omitted: true` (the edge panel then loads the full edge from the disease shard).
 
-## Upcoming fields (data-v2)
+## Data-v2 fields (written by step 07 from the 04b output)
 
-Not in the pipeline output yet. The app reads them tolerantly (`lib/normalize.ts`, `v2*` readers) and renders them in the action card (`components/ActionCardV2.tsx`). Edge types and columns follow `docs/prompts/LOCAL-DATA-SESSION.md` (branch `data-v2`); everything marked **ASSUMED** is the app's guess for what that prompt leaves open, to be confirmed by the integration into step 07.
+Step 07 (part 11, `build_v2`) writes these fields from `data/enrich/extra_*` (`make enrich-extra`, then `make analytics`); without those files the fields are absent and the app shows "Data pending". The app reads them tolerantly (`lib/normalize.ts`, `v2*` readers) and renders them in the action card (`components/ActionCardV2.tsx`). Edge types follow `docs/DATA-REPORT.md` (integration guide). The former **ASSUMED** shapes below are now what 07 writes and `pipeline/validate.py` checks. A field is only written for a disease that 04b searched for that section (or where it found something), so "absent" also means "not searched".
 
 Rule for each field: **absent** from the shard = "Data pending"; **present but empty** = Honest Gap "Not found in <sources> as of <date>"; items = rows with source link, evidence level and `[e_id]` citation. Never an empty box, never invented content.
 
 | Shard field | Edge type (curated unless noted) | Item shape |
 |---|---|---|
-| `assets` | `has_asset`: disease → `ASSET:<id>` | `{node: {id, label, asset_type: natural_history_study\|registry\|outcome_scale\|biobank, country, status, source_type: NCT\|PMID\|EMA\|FDA\|URL\|ORPHA, source_id, url, check}, edge}`. Columns = `data/curated/assets.csv`; `label` = `name` |
-| `approved_therapies` | `approved_therapy`: disease → `DRUG:<name>` | `{node: {id, label, authority: EMA\|FDA, approved: YYYY-MM-DD, holder?, url?}, edge}`; **ASSUMED**: approval date also in `edge.evidence[].date`, authority in `evidence[].db` |
-| `newborn_screening` | `screened_in`: disease → `COUNTRY:<iso>` | `{node: {id, label, status: screened\|pilot/research\|not screened\|UNBELEGT, url?}, edge}`; status also in the evidence snippet |
-| `kol_overlap` | `kol_overlap`: disease ↔ disease, `inferred`, formula in `edge.formula` or snippet | **ASSUMED** entry `{disease: {id, label}, edge, people: [{name, orcid?, affiliation?, records: [{db, record, url?}]}]}` (records = PMID/NCT behind `authored_by` / `investigator_of`). No e-mail addresses. Shown for the pair (disease, via) from either shard |
-| `prevalence` | none, node attribute | **ASSUMED** `[{type, class, value, region, validation, source: {db, record, url}, retrieved}]` (from `en_product9_prev.xml`); `node.prevalence` is accepted too |
+| `assets` | `has_asset`: disease → `ASSET:<id>` | `{node: {id, label, asset_type: natural_history_study\|registry\|outcome_scale\|biobank, country, status, source_type: NCT\|PMID\|EMA\|FDA\|URL\|ORPHA, source_id, url, check}, edge}`. Columns = `data/curated/assets.csv`; `label` = `name`. Withdrawn studies are never exported; an outcome scale whose only basis is a Europe PMC abstract hit has level `text_mined`; `source_*`/`url` of a scale come from its own edge |
+| `approved_therapies` | `approved_therapy`: disease → `DRUG:<name>` | `{node: {id, label, authority: EMA\|FDA, approved: YYYY-MM-DD, holder?, url?}, edge}`; approval date also in `edge.evidence[].date`, authority in `evidence[].db`; node also has `inn` and `approvals[]` (all authorities) |
+| `newborn_screening` | `screened_in`: disease → `COUNTRY:<iso>` | `{node: {id, label, status: screened\|pilot/research\|not screened\|UNBELEGT, url?}, edge}`; status per item (from the edge, not the shared COUNTRY node); the evidence snippet is the verbatim quote |
+| `kol_overlap` | `kol_overlap`: disease ↔ disease, `inferred`, formula in `edge.formula` (the evidence snippet is the formula) | entry `{disease: {id, label}, edge, people_total, people: [{name, orcid?, affiliation?, records: [{db, record, url?}], records_total?}]}` (records = PMID/NCT/grant behind `authored_by` / `investigator_of`). No e-mail addresses or phone numbers. Shown for the pair (disease, via) from either shard. Caps: 5 strongest partners (shared people) plus every partner that is a graph neighbour (so the card finds `via`) and the hero pairs; 6 people per pair, 2 records per person |
+| `prevalence` | none, node attribute | `[{type, class, value, value_number, unit, region, validation, source: {db, record, url}, retrieved, qualification?}]` (from `en_product9_prev.xml`), at most 4, Worldwide and Europe first, no XML snippet. Only records with an explicit Orphanet ValMoy: `value` = `"0.33 per 100 000"`, for type Cases/families `"12 cases/families"`; never a class midpoint. Every core disease gets the field when 04b ran prevalence for the whole core (empty = not found); `node.prevalence` is accepted too |
 
-Each of `assets`, `approved_therapies`, `newborn_screening` and `kol_overlap` may be a plain array or `{items: [...], searched: [{source, retrieved, hits?}]}`. **ASSUMED**: `searched` feeds the Honest Gap sentence; without it the app names the default sources of that section (`lib/actionv2.ts`, `DEFAULT_SOURCES`) and the build date from `meta.json`. The card shows the fields of both diseases (the one opened and the one it is compared with), so "no approved therapy for Krabbe" appears next to "Libmeldy for MLD".
+Each of `assets`, `approved_therapies`, `newborn_screening` and `kol_overlap` may be a plain array or `{items: [...], searched: [{source, retrieved, hits?}]}`; 07 always writes the object form plus `items_total` (full count before caps; `assets` is capped at 8 per disease, never for Krabbe, MLD, PMD; all data-v2 fields of a shard together stay under 12 KB, kol_overlap gives way first). A search that failed carries `error` and "(fetch failed)" in its source name. `searched` feeds the Honest Gap sentence; without it the app names the default sources of that section (`lib/actionv2.ts`, `DEFAULT_SOURCES`) and the build date from `meta.json`. The card shows the fields of both diseases (the one opened and the one it is compared with), so "no approved therapy for Krabbe" appears next to "Libmeldy for MLD".
 
-### meta.metrics (expected schema, written by a pipeline step; `/methods` shows "pending" until it exists)
+### meta.metrics (written by `pipeline/09_metrics.py`, `make metrics`; `/methods` shows "pending" for null entries)
 
 ```
 meta.metrics = {
@@ -100,6 +100,8 @@ meta.metrics = {
   hero_regression:    {pass: boolean, checked_at: "YYYY-MM-DD"}
 }
 ```
+
+Extra keys 09 adds (ignored by the app): `monarch_spearman.p`, `.label`, `.secondary` (disease-disease variant, also named in `source`), `hero_regression.checks` and `.failed`. A coverage count is null when no shard carries that field. Inputs: `data/curated/extract_review.csv` with columns `pmid,claim_id,correct,reviewer` (`correct` = yes or no; one row per review, a claim counts once and is correct only if every review says yes; fallback `extract_check.csv` from `extract_sample.py` with `check` = ok / wrong: …), `data/curated/orgs.csv` (verified rows with `orpha_ids`) against `data/reconcile/org_disease_edges.json`, `data/enrich/extra_metrics.json` (Monarch), the export itself (coverage) and the hero checks of `pipeline/validate.py`.
 
 ### Fixtures (dev only)
 

@@ -39,3 +39,23 @@ Startliste für Osman (Namen zum Verifizieren, keine URLs raten): National Gauch
 
 ## Lizenz-Zeile fürs README (Osman, Task O3)
 HPO (frei mit Attribution, Köhler et al.) · MONDO CC-BY 4.0 · Orphanet/Orphadata CC-BY 4.0 · HPO-Annotationen enthalten OMIM-abgeleitete Daten (Attribution OMIM) · ClinVar, ClinicalTrials.gov, PubMed, RePORTER: US Public Domain · Open Targets CC0 · Reactome CC0 (laut reactome.org/license, geprüft 03.10.2026) · Europe PMC: Open-Access-Teilmenge · Monarch CC-BY 4.0.
+
+## data-v2 · zusätzliche Quellen (pipeline/04b_enrich_extra.py, live geprüft Sa 03.10.2026)
+
+Alle Abrufe laufen über `pipeline/enrich_extra/common.py` (robots.txt je Host, Crawl-delay, Retry, Disk-Cache unter `data/cache/extra/`). Ein zweiter Lauf geht mit `--offline` ohne Netz.
+
+| Quelle | Zweck | Endpoint / Datei | Lizenz / Nutzung | Rate-Limit | Prüfdatum |
+|---|---|---|---|---|---|
+| ClinicalTrials.gov API v2 | B1 Natural-History-, Register- und Longitudinal-Studien (Beobachtungsstudien), Outcome-Measures, Overall Officials, NCT-Aliase | `GET https://clinicaltrials.gov/api/v2/studies?query.cond=<term>&filter.advanced=AREA[StudyType]OBSERVATIONAL` · `?filter.ids=<NCT,…>` | US public domain | ~50 req/min, wir 1 req/s | 2026-10-03 |
+| Europe PMC REST | B1 Skalen aus Abstracts, B4 Autoren mit ORCID und Affiliation, Hero-PMIDs | `GET https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=EXT_ID:<pmid> AND SRC:MED&resultType=core` | Metadaten CC0, Abstracts Verlagsbedingungen (nur Snippets) | 0,3 s Abstand | 2026-10-03 |
+| Offizielle Neugeborenen-Screening-Seiten | B1 NBS-Status je Land: MedUni Wien (AT), Oslo universitetssykehus (NO), Regione Toscana (IT, regional), Minnesota Dept. of Health und NY Wadsworth Center (US, je Bundesstaat), HRSA RUSP (US, blockt Bots mit 403), G-BA Kinder-Richtlinie (DE, nur PDF) | URLs in `pipeline/enrich_extra/nbs.py` | amtliche Seiten; wir speichern nur ein kurzes wörtliches Zitat mit Link | 1 Abruf je Seite | 2026-10-03 |
+| EMA „Download medicine data" | B2 zugelassene Arzneimittel EU (Indikation, Zulassungsdatum, Inhaber) | `https://www.ema.europa.eu/en/documents/report/medicines-output-medicines-report_en.xlsx` | © EMA, Wiedergabe mit Quellenangabe erlaubt | 1 Download | 2026-10-03 |
+| openFDA drug label | B2 Indikationstexte US (nur NDA/BLA, keine Generika) | `GET https://api.fda.gov/drug/label.json?search=indications_and_usage:("<t1>" "<t2>" …)` | CC0 / US public domain | 240 req/min, 1.000/Tag ohne Key | 2026-10-03 |
+| openFDA Drugs@FDA | B2 Datum der Erstzulassung (ORIG, AP) | `GET https://api.fda.gov/drug/drugsfda.json?search=application_number:"<NDA/BLA>"` | CC0 / US public domain | wie oben | 2026-10-03 |
+| FDA CBER Produktseiten | B2 Zulassungsdatum von Zell- und Gentherapien (nicht in Drugs@FDA), z. B. „March 18, 2024 Approval Letter - LENMELDY" | `https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products/<brand>` | US public domain | robots Crawl-delay 2 s | 2026-10-03 |
+| Orphanet `en_product9_prev.xml` | B3 Prävalenz (Typ, Klasse, Mittelwert pro 100 000, Region, Validierung, Referenzen) | lokal aus `data/raw/` (01_fetch) | CC-BY 4.0 | – | 2026-10-03 |
+| Orphanet `en_product1.xml`, HPO `phenotype.hpoa` | B6 Alternativnamen (Orphanet-Synonyme, OMIM-Titel) für das Coverage-Audit | lokal aus `data/raw/` | CC-BY 4.0 / HPO-Lizenz | – | 2026-10-03 |
+| NIH RePORTER v2 | B6 Audit-Suche, B4 PIs (aus `reporter.jsonl`, NIH-Profil-ID als Personen-ID) | `POST https://api.reporter.nih.gov/v2/projects/search` | US public domain | 1 req/s | 2026-10-03 |
+| Monarch Initiative API v3 | B5 Validierung unserer Ähnlichkeit (nur Metrik, keine Kanten) | `GET /v3/api/semsim/compare/<MONDO>/<MONDO>` · `POST /v3/api/semsim/compare` mit HPO-Sets | Monarch-Daten CC-BY 4.0 | keine Angabe, wir 4 req/s | 2026-10-03 |
+
+Bright Data (B8) und OpenAI (B7) liefen in dieser Session nicht: in `.env.local` fehlten `BRIGHTDATA_ZONE` und `OPENAI_API_KEY`. Keine Seite wurde über einen Proxy oder Unlocker geholt; Seiten, die direkt blocken (HRSA, 403), stehen als Lücke (`UNBELEGT`) im Datensatz.

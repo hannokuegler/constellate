@@ -80,6 +80,11 @@ MIN_SNIPPET_CHARS = 20
 MAX_SNIPPET_CHARS = 500       # snippets only: abstracts can carry publisher rights
 LEVEL = "text_mined"
 ORIGIN = "OpenAI extract"
+
+
+def origin_for(model: str) -> str:
+    """Provenance names the model family that answered: OpenAI via API, or Claude answers written to the same cache."""
+    return "Claude extract" if model.lower().startswith("claude") else ORIGIN
 DB = "PubMed"
 
 
@@ -362,7 +367,7 @@ def build_edges(claims: list[dict]) -> list[dict]:
         edge = edges.setdefault(key, {"id": claim["edge_id"], "source": key[0], "target": key[1], "type": key[2],
                                       "evidence": [], "contradicting": []})
         evidence = {
-            "db": DB, "origin": ORIGIN, "record": f"PMID:{claim['pmid']}", "url": claim["url"], "level": LEVEL,
+            "db": DB, "origin": origin_for(claim["model"]), "record": f"PMID:{claim['pmid']}", "url": claim["url"], "level": LEVEL,
             "date": claim["date"], "confidence": claim["confidence"], "snippet": claim["snippet"],
             "claim": claim_text(claim["subject"], claim["predicate"], claim["object"], claim["polarity"]),
             "claim_id": claim["claim_id"], "predicate": claim["predicate"], "polarity": claim["polarity"],
@@ -430,7 +435,7 @@ def run(records: list[dict], client, model: str, index: EntityIndex, out_dir: Pa
     (out_dir / "claims.jsonl").write_text("".join(json.dumps(c, ensure_ascii=False) + "\n" for c in claims))
     (out_dir / "rejected.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rejected))
     meta = {"generated": now_iso(), "step": "05_openai_extract", "model": model, "prompt_version": version, "scope": scope,
-            "level": LEVEL, "origin": ORIGIN, "confidence_cap": CONFIDENCE_CAP, "predicates": PREDICATES,
+            "level": LEVEL, "origin": origin_for(model), "confidence_cap": CONFIDENCE_CAP, "predicates": PREDICATES,
             "note": "every edge has a PMID and a verbatim abstract snippet; model claims that failed a grounding check are in rejected.jsonl",
             **{k: v for k, v in summary.items() if k != "usage"}}
     (out_dir / "edges_text_mined.json").write_text(json.dumps({"meta": meta, "edges": edges}, ensure_ascii=False, indent=0))

@@ -1,0 +1,498 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { Core, DiseaseFile, Edge, IndexEntry, Meta, Neighbour } from "@/lib/types";
+import { loadCore, loadDisease, loadIndexMap, loadMeta } from "@/lib/data";
+import { diseaseHref, geneHref, hrefFor, phenotypeHref, refOf, xrefUrl } from "@/lib/ids";
+import { formatConfidence, hasCounterEvidence, RELATION_LABEL } from "@/lib/evidence";
+import type { PanelSection } from "@/lib/persona";
+import { useEdgePanel, usePrefs } from "./Providers";
+import EgoGraph from "./EgoGraph";
+import type { GraphLink, GraphNode } from "./ForceGraphClient";
+import { LevelBadge } from "./Badges";
+import HonestGap from "./HonestGap";
+import ActionCard from "./ActionCard";
+import { pickDefaultVia } from "@/lib/actioncard";
+import { Skeleton } from "./Skeleton";
+import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
+
+type State =
+  | { status: "loading" }
+  | { status: "ready"; file: DiseaseFile }
+  | { status: "missing"; entry: IndexEntry | null; core: Core | null }
+  | { status: "error"; message: string };
+
+export default function DiseaseView({ id }: { id: string }) {
+  const [state, setState] = useState<State>({ status: "loading" });
+  const [meta, setMeta] = useState<Meta | null>(null);
+
+  useEffect(() => {
+    let alive = true;
+    loadMeta().then((m) => alive && setMeta(m), () => undefined);
+    loadDisease(id)
+      .then(async (file) => {
+        if (!alive) return;
+        if (file) return setState({ status: "ready", file });
+        const [index, core] = await Promise.all([loadIndexMap(), loadCore().catch(() => null)]);
+        if (alive) setState({ status: "missing", entry: index.get(id) ?? null, core });
+      })
+      .catch((error: Error) => alive && setState({ status: "error", message: error.message }));
+    return () => {
+      alive = false;
+    };
+  }, [id]);
+
+  if (state.status === "loading") return <Skeleton />;
+  if (state.status === "error")
+    return (
+      <div className="card mt-6 px-5 py-5" role="alert">
+        <p className="font-semibold">⚠️ The data for {id} could not be loaded.</p>
+        <p className="mt-1 text-[15px] text-ink-2">{state.message}</p>
+      </div>
+    );
+  if (state.status === "missing") return <MissingDisease id={id} entry={state.entry} core={state.core} meta={meta} />;
+  return <DiseaseReady file={state.file} meta={meta} />;
+}
+
+function MissingDisease({ id, entry, core, meta }: { id: string; entry: IndexEntry | null; core: Core | null; meta: Meta | null }) {
+  const { openEdge, register } = useEdgePanel();
+  const nearest = useMemo(() => {
+    if (!core) return [];
+    const labels = new Map(core.nodes.map((n) => [n.id, n.label]));
+    return core.edges
+      .filter((e) => (e.source === id || e.target === id) && labels.has(e.source === id ? e.target : e.source) && e.type !== "caused_by" && e.type !== "associated_gene")
+      .sort((a, b) => b.confidence - a.confidence)
+      .slice(0, 5)
+      .map((e) => {
+        const other = e.source === id ? e.target : e.source;
+        return { id: other, label: labels.get(other) ?? other, via: RELATION_LABEL[e.type] ?? e.type, confidence: e.confidence, edge: e as Edge };
+      });
+  }, [core, id]);
+  useEffect(() => {
+    register(nearest.map((n) => n.edge), Object.fromEntries([[id, entry?.label ?? id], ...nearest.map((n) => [n.id, n.label])]));
+  }, [nearest, register, id, entry]);
+
+  const label = entry?.label ?? id;
+  return (
+    <div className="mx-auto mt-8 max-w-[1100px]">
+      <p className="mb-3 text-[13px] text-ink-2">
+        <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / {id}
+      </p>
+      <HonestGap
+        variant="screen"
+        title={entry ? `${label}: no mapped neighbourhood yet` : `${id} is not in this dataset`}
+        reason={
+          entry
+            ? `${label} is in the search index, but Constellate has no detail file for it${meta?.fixture ? " in the development fixture" : ""}. We do not show a guess instead.`
+            : "This identifier does not match any disease in the current slice (lysosomal storage diseases and their 2-hop neighbours)."
+        }
+        searched={(meta?.sources ?? []).map((s) => ({ source: s.db, query: s.version ? `version ${s.version}` : undefined }))}
+        asOf={meta?.built_at}
+        nearest={nearest}
+        onEdge={openEdge}
+        close={[
+          "Run the pipeline for this disease so phenotype similarity and source coverage are computed",
+          "More HPO phenotype annotations or a curated causal gene for this disease",
+          "A verified patient organisation entry (curated list with verification date)",
+        ]}
+      />
+    </div>
+  );
+}
+
+function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) {
+  const { persona } = usePrefs();
+  const { openEdge, register } = useEdgePanel();
+  const router = useRouter();
+  const node = file.node;
+  const cardRef = useRef<HTMLDivElement>(null);
+  const defaultVia = pickDefaultVia(file.neighbours);
+  const [via, setVia] = useState<string | null>(defaultVia);
+  const [cardOpen, setCardOpen] = useState(false);
+  const [showAllPhenotypes, setShowAllPhenotypes] = useState(false);
+
+  const labels = useMemo(() => nodeLabels(file), [file]);
+
+  useEffect(() => {
+    register(allDiseaseEdges(file), labels);
+  }, [file, labels, register]);
+
+  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes), [file, persona.graphPhenotypes]);
+
+  const openCard = useCallback((neighbourId: string) => {
+    setVia(neighbourId);
+    setCardOpen(true);
+    requestAnimationFrame(() => cardRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }, []);
+
+  const omim = node.xrefs.filter((x) => /^(OMIM|ORPHA|Orphanet):/.test(x)).slice(0, 4);
+  const noNeighbours = file.neighbours.length === 0;
+  const coverage = coverageRows(file.coverage);
+  const gapSearched: CoverageRow[] = coverage.length ? coverage : (meta?.sources ?? []).map((s) => ({ source: s.db }));
+
+  const sections: Record<PanelSection, React.ReactNode> = {
+    neighbours: (
+      <Section key="neighbours" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
+        {noNeighbours ? (
+          <p className="text-[15px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
+        ) : (
+          <ul className="divide-y divide-line">
+            {file.neighbours.map((n) => (
+              <NeighbourRow key={n.id} n={n} onEdge={openEdge} onCard={openCard} />
+            ))}
+          </ul>
+        )}
+      </Section>
+    ),
+    genes: (
+      <Section key="genes" title="Genes" hint="Disease–gene annotations" count={file.genes.length}>
+        {file.genes.length ? (
+          <ul className="divide-y divide-line">
+            {file.genes.map((e) => (
+              <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
+                <Link href={geneHref(e.target)} className="inline-flex min-h-11 min-w-11 items-center text-[15px] font-semibold text-accent underline-offset-2 hover:underline">
+                  {e.target}
+                </Link>
+                <span className="text-[13px] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}</span>
+                {e.rolled_up_from?.length ? <span className="text-[12px] text-warn">via subtype</span> : null}
+                <span className="ml-auto flex items-center gap-2">
+                  <LevelBadge level={e.level} small />
+                  <EvidenceButton edge={e} onEdge={openEdge} />
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-[15px] text-ink-2">No gene annotation recorded for this disease.</p>
+        )}
+      </Section>
+    ),
+    phenotypes: (
+      <Section key="phenotypes" title="Key phenotypes" hint="Most specific first (information content)" count={file.phenotypes.length}>
+        <ul className="divide-y divide-line">
+          {(showAllPhenotypes ? file.phenotypes : file.phenotypes.slice(0, 8)).map(({ edge, phenotype }) => (
+            <li key={edge.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
+              <Link href={phenotypeHref(phenotype.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
+                {phenotype.label}
+              </Link>
+              <span className="tabular text-[12px] text-ink-2" title="information content">IC {phenotype.ic.toFixed(1)}</span>
+              <span className="flex items-center gap-2">
+                {hasCounterEvidence(edge) ? <span className="rounded-full bg-contra-soft px-2 text-[12px] font-semibold text-contra">counter-evidence</span> : <LevelBadge level={edge.level} small />}
+                <EvidenceButton edge={edge} onEdge={openEdge} />
+              </span>
+            </li>
+          ))}
+        </ul>
+        {file.phenotypes.length > 8 && (
+          <button onClick={() => setShowAllPhenotypes((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-accent">
+            {showAllPhenotypes ? "Show fewer" : `Show all ${file.phenotypes.length}`}
+          </button>
+        )}
+      </Section>
+    ),
+    research: <ResearchSection key="research" file={file} onEdge={openEdge} gapSearched={gapSearched} />,
+  };
+
+  return (
+    <div className="mt-6">
+      <nav className="mb-3 text-[13px] text-ink-2" aria-label="Breadcrumb">
+        <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link>
+        {node.parents.slice(0, 2).map((p) => {
+          const ref = refOf(p, labels);
+          return (
+            <span key={ref.id}>
+              {" / "}
+              <Link href={diseaseHref(ref.id)} className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">{ref.label}</Link>
+            </span>
+          );
+        })}
+      </nav>
+      <div className="flex flex-wrap items-start gap-x-4 gap-y-3">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-[28px] font-bold leading-tight tracking-tight">{node.label}</h1>
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px]">
+            <span className="rounded-full bg-surface-2 px-2.5 py-1 font-medium">{node.id}</span>
+            {omim.map((x) => {
+              const url = xrefUrl(x.replace("Orphanet:", "ORPHA:"));
+              const text = x.replace("Orphanet:", "ORPHA:");
+              return url ? (
+                <a key={x} href={url} target="_blank" rel="noreferrer" className="-my-1.5 inline-flex min-h-11 items-center">
+                  <span className="rounded-full border border-line px-2.5 py-1 font-medium underline-offset-2 hover:underline">{text}</span>
+                </a>
+              ) : (
+                <span key={x} className="rounded-full border border-line px-2.5 py-1">{text}</span>
+              );
+            })}
+            {node.in_core && <span className="rounded-full bg-accent-soft px-2.5 py-1 font-semibold text-accent">core cluster</span>}
+            {node.is_group && <span className="rounded-full border border-line px-2.5 py-1" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
+            {node.mechanism_classes?.map((m) => (
+              <span key={m.key} className="rounded-full bg-surface-2 px-2.5 py-1" title={m.via_label ? `via ${m.via_label}` : undefined}>
+                mechanism: {m.label}
+              </span>
+            ))}
+          </div>
+        </div>
+        {!noNeighbours && (
+          <button
+            onClick={() => (cardOpen ? setCardOpen(false) : openCard(via ?? defaultVia!))}
+            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-ink"
+            aria-expanded={cardOpen}
+            aria-controls="action-card"
+          >
+            {cardOpen ? "Hide action card" : "Action card"}
+          </button>
+        )}
+      </div>
+
+      {noNeighbours && (
+        <div className="mt-6">
+          <HonestGap
+            variant="section"
+            title={`No related community found for ${node.label}`}
+            reason="No other disease in this slice shares a disease gene or enough specific phenotypes to pass the threshold. Here is what was checked."
+            searched={gapSearched}
+            asOf={meta?.built_at}
+            close={[
+              `More HPO phenotype annotations for ${node.label} (currently ${file.phenotypes.length} shown)`,
+              file.genes.length ? "Pathway data for its genes, to compare mechanisms" : "A curated causal gene annotation",
+              "A verified patient organisation entry for this diagnosis",
+            ]}
+          />
+        </div>
+      )}
+
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="lg:sticky lg:top-20 lg:self-start">
+          <EgoGraph
+            nodes={graph.nodes}
+            links={graph.links}
+            height={typeof window !== "undefined" && window.innerWidth < 768 ? 380 : 560}
+            caption={`Neighbourhood of ${node.label}`}
+            onLinkClick={openEdge}
+            onNodeClick={(n) => n.kind !== "center" && router.push(hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id))}
+          />
+        </div>
+        <div className="space-y-4">
+          {node.definition && (
+            <section className="card px-4 py-4">
+              <h2 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Definition</h2>
+              <p className="mt-1 text-[15px] leading-relaxed">{node.definition}</p>
+              <p className="mt-2 text-[12px] text-ink-2">Source: MONDO disease ontology</p>
+              {node.children.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {node.children.map((c) => {
+                    const ref = refOf(c, labels);
+                    return (
+                      <Link key={ref.id} href={diseaseHref(ref.id)} className="inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[13px] hover:bg-surface-2">
+                        {ref.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </section>
+          )}
+          {persona.panelOrder.map((key) => sections[key])}
+        </div>
+      </div>
+
+      {!noNeighbours && cardOpen && via && (
+        <div ref={cardRef} id="action-card" className="mt-8 scroll-mt-20">
+          <ActionCard disease={file} viaId={via} onViaChange={setVia} meta={meta} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function buildGraph(file: DiseaseFile, phenotypeCount: number): { nodes: GraphNode[]; links: GraphLink[] } {
+  const nodes = new Map<string, GraphNode>();
+  const links: GraphLink[] = [];
+  const center = file.node.id;
+  nodes.set(center, { id: center, label: file.node.label, kind: "center" });
+  for (const e of file.genes) {
+    nodes.set(e.target, { id: e.target, label: e.target, kind: "gene" });
+    links.push({ source: center, target: e.target, edge: e });
+  }
+  const positive = file.phenotypes.filter((p) => p.edge.evidence.length).slice(0, phenotypeCount);
+  const contra = file.phenotypes.filter((p) => hasCounterEvidence(p.edge)).slice(0, 2);
+  for (const { edge, phenotype } of [...positive, ...contra]) {
+    if (nodes.has(phenotype.id)) continue;
+    nodes.set(phenotype.id, { id: phenotype.id, label: phenotype.label, kind: "phenotype" });
+    links.push({ source: center, target: phenotype.id, edge });
+  }
+  for (const n of file.neighbours) {
+    nodes.set(n.id, { id: n.id, label: n.label, kind: n.mechanism_differs ? "counter" : "neighbour" });
+    links.push({ source: center, target: n.id, edge: n.edge });
+    // second hop: the neighbour's shared genes and phenotypes that are on screen
+    for (const g of n.shared_genes.map((x) => refOf(x).id)) if (nodes.has(g)) links.push({ source: n.id, target: g, edge: n.edge, secondHop: true });
+    for (const p of n.shared_phenotypes) if (nodes.has(p.id)) links.push({ source: n.id, target: p.id, edge: n.edge, secondHop: true });
+  }
+  return { nodes: [...nodes.values()], links };
+}
+
+function Section({ title, hint, count, children }: { title: string; hint: string; count: number; children: React.ReactNode }) {
+  return (
+    <section className="card px-4 py-4">
+      <div className="mb-1 flex items-baseline gap-2">
+        <h2 className="text-[17px] font-semibold">{title}</h2>
+        <span className="tabular text-[13px] text-ink-2">{count}</span>
+      </div>
+      <p className="mb-2 text-[13px] text-ink-2">{hint}</p>
+      {children}
+    </section>
+  );
+}
+
+export function EvidenceButton({ edge, onEdge, label = "Evidence" }: { edge: Edge; onEdge: (e: Edge) => void; label?: string }) {
+  return (
+    <button
+      onClick={() => onEdge(edge)}
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft"
+      aria-label={`${label}: ${edge.type.replaceAll("_", " ")} ${edge.source} to ${edge.target}`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) => void; onCard: (id: string) => void }) {
+  const genes = n.shared_genes.map((g) => refOf(g).id);
+  return (
+    <li className="py-3">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[15px] font-semibold underline-offset-2 hover:underline">
+          {n.label}
+        </Link>
+        <span className="tabular flex items-center gap-2 text-[12px] text-ink-2" title="similarity (edge confidence)">
+          <span className="relative h-1.5 w-16 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
+            <span className="absolute inset-y-0 left-0 rounded-full bg-neighbour" style={{ width: `${Math.min(100, Math.round(n.edge.confidence * 100 * 2.5))}%` }} />
+          </span>
+          {formatConfidence(n.edge.confidence)}
+        </span>
+      </div>
+      <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[12px]">
+        {genes.map((g) => (
+          <Link key={g} href={geneHref(g)} className="-my-2.5 inline-flex min-h-11 items-center">
+            <span className="rounded-full bg-[color-mix(in_srgb,var(--n-gene)_14%,transparent)] px-2 py-0.5 font-semibold text-[color-mix(in_srgb,var(--n-gene)_60%,var(--ink))]">shares {g}</span>
+          </Link>
+        ))}
+        {n.mechanism_differs === true && (
+          <span className="rounded-full bg-warn-soft px-2 py-0.5 font-semibold text-warn" title="No shared disease gene and no shared Reactome pathway">
+            mechanism differs
+          </span>
+        )}
+        {n.mechanism_differs === null && <span className="rounded-full border border-line px-2 py-0.5 text-ink-2" title="Pathway data missing for at least one gene">mechanism not compared</span>}
+        {n.shared_phenotypes.length > 0 && (
+          <span className="text-ink-2">
+            {n.shared_phenotypes.length}+ shared phenotypes, e.g. {n.shared_phenotypes[0].label.toLowerCase()}
+          </span>
+        )}
+      </div>
+      {n.mechanism_note && (
+        <details className="mt-1 text-[13px]">
+          <summary className="min-h-11 cursor-pointer py-2 text-ink-2">Why the mechanism call</summary>
+          <p className="rounded-[12px] bg-surface-2 px-3 py-2 leading-relaxed">{n.mechanism_note}</p>
+        </details>
+      )}
+      <div className="mt-1 flex flex-wrap gap-1">
+        <EvidenceButton edge={n.edge} onEdge={onEdge} label="Why linked" />
+        <button onClick={() => onCard(n.id)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+          Action card
+        </button>
+      </div>
+    </li>
+  );
+}
+
+function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onEdge: (e: Edge) => void; gapSearched: CoverageRow[] }) {
+  const groups = [
+    { key: "trials" as const, title: "Trials", items: enrichmentItems(file, "trials") },
+    { key: "grants" as const, title: "Grants", items: enrichmentItems(file, "grants") },
+    { key: "papers" as const, title: "Papers", items: enrichmentItems(file, "papers") },
+  ];
+  const papers = paperRecords(file);
+  const total = groups.reduce((n, g) => n + g.items.length, 0) + papers.length;
+  return (
+    <Section title="Research and community" hint="Trials, grants, papers and patient organisations" count={total + (file.orgs?.length ?? 0)}>
+      {total === 0 ? (
+        <HonestGap
+          variant="section"
+          title="No trials, grants or papers linked"
+          reason="Nothing from the enrichment step is attached to this disease yet."
+          searched={gapSearched}
+          close={["Run the enrichment for this disease's name and synonyms (ClinicalTrials.gov, NIH RePORTER, Europe PMC)"]}
+        />
+      ) : (
+        <div className="space-y-4">
+          {groups.map((g) =>
+            g.items.length ? (
+              <div key={g.key}>
+                <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">
+                  {g.title} <span className="tabular">({enrichmentTotal(file, g.key, g.items.length)})</span>
+                </h3>
+                <ul className="mt-1 divide-y divide-line">
+                  {g.items.slice(0, 4).map((item) => (
+                    <li key={item.edge.id} className="flex min-h-11 items-center gap-2 py-1.5">
+                      <span className="min-w-0 flex-1">
+                        <span className="line-clamp-2 text-[13px]">{String(item.node.label)}</span>
+                        <span className="text-[12px] text-ink-2">{[item.node.id, g.key === "trials" ? trialPhase(item.node) : null, typeof item.node.status === "string" ? item.node.status.toLowerCase().replaceAll("_", " ") : null].filter(Boolean).join(" · ")}</span>
+                      </span>
+                      <LevelBadge level={item.edge.level} small />
+                      <EvidenceButton edge={item.edge} onEdge={onEdge} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null,
+          )}
+          {papers.length > 0 && (
+            <div>
+              <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">
+                Papers mentioning it <span className="tabular">({enrichmentTotal(file, "papers_mentioning", papers.length)})</span>
+              </h3>
+              <p className="text-[12px] text-ink-2">Mentions found by a literature search. A mention is not a fact and carries no evidence level.</p>
+              <ul className="mt-1 divide-y divide-line">
+                {papers.slice(0, 4).map((p) => (
+                  <li key={p.id} className="flex min-h-11 items-center gap-2 py-1.5">
+                    <span className="min-w-0 flex-1">
+                      {p.url ? (
+                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[13px] text-accent underline-offset-2 hover:underline">{p.title ?? p.id}</a>
+                      ) : (
+                        <span className="line-clamp-2 text-[13px]">{p.title ?? p.id}</span>
+                      )}
+                      <span className="text-[12px] text-ink-2">{[p.journal, p.year, p.id].filter(Boolean).join(" · ")}</span>
+                    </span>
+                    <span className="shrink-0 rounded-full border border-line px-2 text-[12px] text-ink-2">mention</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+      <div className="mt-4">
+        {file.orgs?.length ? (
+          <ul className="divide-y divide-line">
+            {file.orgs.map((o) => (
+              <li key={o.name} className="py-2 text-[15px]">
+                {o.url ? <a href={o.url} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">{o.name}</a> : o.name}
+                {o.verified_date && <span className="ml-2 text-[12px] text-ink-2">verified {o.verified_date}</span>}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <HonestGap
+            variant="section"
+            title="No patient organisation linked"
+            reason="The curated organisation list has no verified entry for this diagnosis in the current data."
+            searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
+            close={["A hand-verified organisation entry with URL and verification date"]}
+          />
+        )}
+      </div>
+    </Section>
+  );
+}

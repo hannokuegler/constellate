@@ -1,0 +1,200 @@
+@import "tailwindcss";
+
+/* Tokens. Light is the default; dark follows the OS unless the user picks a theme (data-theme on <html>).
+   Type ladder 11 · 12 · 13 · 15 · 17 · 22 · 28 (+ 40 for the start title), spacing on the 4 px grid,
+   radii 12 (chips, fields) · 20 (cards) · 999 (pills). */
+:root {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --surface-2: #eef0f5;
+  --ink: #141826;
+  --ink-2: #4a5168;
+  --line: #dfe2ea;
+  --accent: #4b49c8;
+  --accent-ink: #ffffff;
+  --accent-soft: #e9e8fb;
+
+  --n-disease: #4b49c8;
+  --n-center: #e0a100;
+  --n-gene: #0f8a78;
+  --n-phenotype: #8a6a1d;
+  --n-neighbour: #8e44c4;
+  --n-pathway: #2f6fb0;
+
+  --lvl-strong: #3c4357;
+  --lvl-text: #2f6fb0;
+  --lvl-inferred: #8e44c4;
+  --contra: #c62f3a;
+  --contra-soft: #fbe9ea;
+  --warn: #9a5b00;
+  --warn-soft: #fff1d6;
+  --ok: #17794a;
+  --ok-soft: #e1f4ea;
+
+  --shadow: 0 1px 2px rgb(20 24 38 / 0.06), 0 8px 24px rgb(20 24 38 / 0.06);
+  --anim: 180ms;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1020;
+    --surface: #161a2e;
+    --surface-2: #1f2440;
+    --ink: #eef0f8;
+    --ink-2: #a9b0cc;
+    --line: #2c3254;
+    --accent: #a4a2ff;
+    --accent-ink: #12142a;
+    --accent-soft: #262a52;
+
+    --n-disease: #8f8dff;
+    --n-center: #ffc94a;
+    --n-gene: #42d1b9;
+    --n-phenotype: #d9b45a;
+    --n-neighbour: #c48af0;
+    --n-pathway: #6fb1f0;
+
+    --lvl-strong: #c9cee3;
+    --lvl-text: #6fb1f0;
+    --lvl-inferred: #c48af0;
+    --contra: #ff6b74;
+    --contra-soft: #3a1a24;
+    --warn: #ffb648;
+    --warn-soft: #3a2a12;
+    --ok: #5fd39a;
+    --ok-soft: #14301f;
+
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d1020;
+  --surface: #161a2e;
+  --surface-2: #1f2440;
+  --ink: #eef0f8;
+  --ink-2: #a9b0cc;
+  --line: #2c3254;
+  --accent: #a4a2ff;
+  --accent-ink: #12142a;
+  --accent-soft: #262a52;
+
+  --n-disease: #8f8dff;
+  --n-center: #ffc94a;
+  --n-gene: #42d1b9;
+  --n-phenotype: #d9b45a;
+  --n-neighbour: #c48af0;
+  --n-pathway: #6fb1f0;
+
+  --lvl-strong: #c9cee3;
+  --lvl-text: #6fb1f0;
+  --lvl-inferred: #c48af0;
+  --contra: #ff6b74;
+  --contra-soft: #3a1a24;
+  --warn: #ffb648;
+  --warn-soft: #3a2a12;
+  --ok: #5fd39a;
+  --ok-soft: #14301f;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-gene: var(--n-gene);
+  --color-phenotype: var(--n-phenotype);
+  --color-neighbour: var(--n-neighbour);
+  --color-node-center: var(--n-center);
+  --color-contra: var(--contra);
+  --color-contra-soft: var(--contra-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* visible keyboard focus everywhere, never removed without replacement */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* start page: a quiet star field behind the hero, only decoration */
+.starfield {
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 28%, var(--n-disease) 50%, transparent 51%),
+    radial-gradient(1px 1px at 32% 72%, var(--n-gene) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 58% 18%, var(--n-center) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 62%, var(--n-neighbour) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 30%, var(--n-disease) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 44% 44%, var(--n-phenotype) 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 82%, var(--n-neighbour) 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 88%, var(--n-gene) 50%, transparent 51%);
+  opacity: 0.8;
+}
+
+.drawer-enter {
+  animation: drawer-in var(--anim) ease-out;
+}
+@keyframes drawer-in {
+  from { transform: translateX(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@media (max-width: 767px) {
+  @keyframes drawer-in {
+    from { transform: translateY(24px); opacity: 0; }
+    to { transform: none; opacity: 1; }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  header, .no-print { display: none !important; }
+  body { background: #fff; color: #000; }
+  .card { border-color: #ccc; }
+}

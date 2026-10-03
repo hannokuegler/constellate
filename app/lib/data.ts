@@ -1,0 +1,31 @@
+import type { Core, DiseaseFile, GeneFile, IndexEntry, Meta, PhenotypeFile } from "./types";
+import { toFileKey } from "./ids";
+
+const cache = new Map<string, Promise<unknown>>();
+
+/** Fetch a static data file from /data. Resolves null on 404 (missing file is a state, not an error). */
+export function loadJson<T>(path: string): Promise<T | null> {
+  const hit = cache.get(path);
+  if (hit) return hit as Promise<T | null>;
+  const request = fetch(`/data/${path}`).then(async (response) => {
+    if (response.status === 404) return null;
+    if (!response.ok) throw new Error(`/data/${path}: HTTP ${response.status}`);
+    return (await response.json()) as T;
+  });
+  request.catch(() => cache.delete(path)); // allow retry after a network error
+  cache.set(path, request);
+  return request;
+}
+
+export const loadMeta = () => loadJson<Meta>("meta.json");
+export const loadIndex = () => loadJson<IndexEntry[]>("index.json");
+export const loadCore = () => loadJson<Core>("core.json");
+export const loadDisease = (id: string) => loadJson<DiseaseFile>(`disease/${toFileKey(id)}.json`);
+export const loadGene = (symbol: string) => loadJson<GeneFile>(`gene/${encodeURIComponent(symbol)}.json`);
+export const loadPhenotype = (id: string) => loadJson<PhenotypeFile>(`phenotype/${toFileKey(id)}.json`);
+
+let labelMap: Promise<Map<string, IndexEntry>> | null = null;
+export function loadIndexMap(): Promise<Map<string, IndexEntry>> {
+  labelMap ??= loadIndex().then((entries) => new Map((entries ?? []).map((e) => [e.id, e])));
+  return labelMap;
+}

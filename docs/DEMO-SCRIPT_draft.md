@@ -6,17 +6,17 @@ Owner: Recep. Stand So 04.10.2026, 01:30. Dieser Entwurf vom 03.10. (Demo 2:00, 
 
 | Zeit | Screen / Route | Was passiert |
 |---|---|---|
-| 0:00–0:09 | `/` | Nora als Komposit vorgestellt, Karte „We just got the diagnosis", „Krabbe" tippen |
-| 0:09–0:18 | `/d/MONDO_0009499` | Linie Krabbe → GALC, Edge-Panel: Quelle, Konfidenz, Counter-evidence (`e_3dbc42738b5a`) |
-| 0:18–0:25 | `/g/PSAP` | „One gene, 4 disease names", Zeilen Saposin A, B, C (OMIM 611722, 249900, 610539) |
-| 0:25–0:34 | `/d/MONDO_0009499`, „I lead a patient group" | „Related communities" → MLD, „Why linked", Badge `inferred`, Formel (`e_e270315fe572`) |
-| 0:34–0:49 | `/d/MONDO_0009499/action?via=MONDO_0018868` | Action Card: What transfers / What differs / Needs expert review, `[e_…]`-Zitat, „Approved therapies" (nur Pipeline-Daten) |
-| 0:49–0:55 | `/d/MONDO_0012720` | Honest Gap: „What was searched, as of …", „What would close this gap" |
-| 0:55–0:58 | `/about` | Schlusssatz, URL sichtbar |
+| 0:00–0:10 | `/` | Maria als Persona aus dem C5-Brief vorgestellt (seit 02:00, vorher Nora), Karte „We just got the diagnosis", „Krabbe" tippen |
+| 0:10–0:17 | `/d/MONDO_0009499` | Linie Krabbe → GALC, Edge-Panel: Quelle, Konfidenz, Counter-evidence (`e_3dbc42738b5a`) |
+| 0:17–0:24 | `/g/PSAP` | „One gene, 4 disease names", Zeilen Saposin A, B, C (OMIM 611722, 249900, 610539) |
+| 0:24–0:33 | `/d/MONDO_0009499`, „I lead a patient group" | „Related communities" → MLD, „Why linked", Badge `inferred`, Formel (`e_e270315fe572`) |
+| 0:33–0:48 | `/d/MONDO_0009499/action?via=MONDO_0018868` | Action Card: What transfers / What differs / Needs expert review, `[e_…]`-Zitat, „Approved therapies" (nur Pipeline-Daten) |
+| 0:48–0:54 | `/d/MONDO_0012720` | Honest Gap: „What was searched, as of …", „What would close this gap" |
+| 0:54–0:58 | `/about` | Schlusssatz, URL sichtbar |
 
 ## Was aus dem alten Entwurf entschieden oder erledigt ist
 
-- Geparkte Punkte A bis E sind entschieden (DECISIONS P9 bis P11): Einstieg „Your family is not the first …", Schluss „Don't rebuild what a neighbouring disease already built.", Name Constellate, Komposit-Mutter Nora, Honest-Gap-Fall `MONDO:0012720`, Kernversprechen „join instead of build".
+- Geparkte Punkte A bis E sind entschieden (DECISIONS P9 bis P11): Einstieg „Your family is not the first …", Schluss „Don't rebuild what a neighbouring disease already built.", Name Constellate, Komposit-Mutter Nora (04.10. 02:00 auf Wunsch des Teams zurück zu Maria aus dem Brief), Honest-Gap-Fall `MONDO:0012720`, Kernversprechen „join instead of build".
 - Szene 4 des alten Entwurfs war falsch: `e_e270315fe572` ist eine `similar_phenotype`-Kante (inferred), nicht „shared gene PSAP". Die PSAP-Brücke zeigt `/g/PSAP`.
 - Das Gegenbeispiel Pelizaeus-Merzbacher passt nicht in 60 s und bleibt im Tool und im Technical Walkthrough.
 - Die Liste „Bewusst weggelassen" (Zeitvergleiche, US-Screening-Staaten, Österreich-Screening, Namen von Forschenden, Organisationen, FBX-101/PBKR03-Status) gilt weiter und steht in [pitch/STORY.md](../pitch/STORY.md) §9.

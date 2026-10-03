@@ -1,6 +1,6 @@
 # Voice-over-Plan · ElevenLabs Eleven v4
 
-Stand So 04.10.2026, 01:20 (Wien). Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
+Stand So 04.10.2026, 02:00 (Wien); Persona heißt wieder Maria (C5-Brief), D1–D7 gegen 2,3 Wörter/s nachgerechnet, Stimmen-Kandidaten in §2a. Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
 
 ## 1. Welche Videos bekommen Voice-over
 
@@ -8,7 +8,7 @@ Seit der Team-Vorgabe (drei Videos, je maximal 60 s) gibt es **nur noch zwei** V
 
 | Video | Voice-over | Request-Aufteilung | Wörter | Zeichen (ca.) |
 |---|---|---|---|---|
-| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 135 | 800 |
+| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 126 | 760 |
 | Technical Walkthrough ≤ 60 s | gleiche Stimme | **ein Request** (T1), Absätze als Pausen; falls der Schnitt es braucht, sechs Requests T1a bis T1f je Szene | 132 | 850 |
 | Team Introduction ≤ 60 s | **keine KI-Stimme**, echte Stimmen, echte Gesichter | – | – | – |
 
@@ -33,10 +33,22 @@ Tempo-Kontrolle: Jeder Block muss in seine Szenenzeit passen (Spalte „Zeit" in
 
 ```
 [calm, measured narration]
-Nora is a composite, not a real person.
+Meet Maria, from the challenge brief. Her son has Krabbe disease.
 
 One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Metachromatic leukodystrophy.
 ```
+
+## 2a. Stimmen-Kandidaten (Auswahl So 09:00, Hanno)
+
+Aus den Default-Voices von ElevenLabs (für alle Accounts freigeschaltet, Beschreibungen laut [ElevenLabs Default Voices](https://elevenlabs.io/docs/voices/default-voices), Suche 04.10. 02:00). Ob jede Stimme mit `eleven_v4` angeboten wird, im Dashboard prüfen; sonst dieselbe Stimme mit `eleven_multilingual_v2`.
+
+| # | Stimme | Profil laut ElevenLabs | Warum | Risiko |
+|---|---|---|---|---|
+| 1 | **Matilda** (Empfehlung) | weiblich, mittleres Alter, amerikanisch, freundlich, Narration | warm ohne Werbeton; eine Frauenstimme erzählt Marias Weg glaubwürdig, ohne nach Maria selbst zu klingen (die Stimme erzählt über sie, nicht als sie) | kann im Tech-Video zu weich wirken; dort Stability 0,65 |
+| 2 | **Brian** | männlich, mittleres Alter, amerikanisch, tief, Narration, ruhig | sehr ruhig, trägt Tech und Demo gleich gut | tiefe Männerstimme kann bei einer Kinderkrankheit schwer und dokumentarisch wirken |
+| 3 | **George** | männlich, mittleres Alter, britisch, warm, Narration | warm, international, „neighbouring" passt zur britischen Schreibweise im Skript | britischer Akzent bei US-geprägten Inhalten (FDA, „KRAH-bay") etwas fremd |
+
+Vorgehen: alle drei mit den Testsätzen oben, je ein Take, Hanno und Recep hören blind (ohne Namen) und wählen. Bei Gleichstand Matilda. Gewählten Namen hier und in RESOURCES §4.4 eintragen.
 
 ## 3. Ablauf, wer was wann
 
@@ -61,7 +73,8 @@ v4 versteht IPA in Schrägstrichen mit Anführungszeichen, z. B. `"/ˌbaɪoʊˈk
 | Begriff | Im `.tts.txt` schreiben | Hinweis |
 |---|---|---|
 | Krabbe | `Krabbe` zuerst testen; wenn falsch: `"/ˈkrɑːbeɪ/"` oder `KRAH-bay` | US-Patientencommunity sagt „KRAH-bay"; deutsche Aussprache „KRAH-be" wäre für die Jury ungewohnt. Entscheidung nach Hörprobe |
-| Nora | `Nora` | NOR-ah, meist korrekt |
+| Maria | `Maria` | mah-REE-ah, meist korrekt |
+| Libmeldy / Lenmeldy | `Libmeldy`, bei Fehlern `LIB-mel-dee` | wird nicht gesprochen, nur im Bild; für Q&A und Pitch 10.10. |
 | metachromatic leukodystrophy | `metachromatic leukodystrophy`, bei Fehlern `"/ˌmɛtəkroʊˈmætɪk ˌluːkoʊˈdɪstrəfi/"` | nur einmal voll (Demo D4), danach `M-L-D` |
 | MLD | `M-L-D` | buchstabieren |
 | PSAP | `P-S-A-P` | buchstabieren, nie „psap" |
@@ -71,68 +84,73 @@ v4 versteht IPA in Schrägstrichen mit Anführungszeichen, z. B. `"/ˌbaɪoʊˈk
 | Next.js | `Next J-S` | Tech T1 |
 | JSON | `jay-son` | Tech T1 |
 | Playwright | `Playwright` | meist korrekt |
-| Pelizaeus-Merzbacher, saposin, lysosomal, hypomyelinating, simGIC, Resnik, Louvain, PMID, NCT, jsonl | nicht mehr gesprochen | nur im Bild oder auf `/methods` |
+| Pelizaeus-Merzbacher | in den Videos nicht gesprochen; für Pitch 10.10. und Q&A: `pel-ih-ZAY-us MERTS-bah-ker`, IPA `"/ˌpɛlɪˈzeɪəs ˈmɛrtsbɑːkər/"` | deutscher Ursprung (Friedrich Pelizaeus, Ludwig Merzbacher), im Englischen meist anglisiert wie links; Hörprobe vor dem 10.10. |
+| saposin, lysosomal, hypomyelinating, simGIC, Resnik, Louvain, PMID, NCT, jsonl | nicht mehr gesprochen | nur im Bild oder auf `/methods` |
 
 ## 5. Skript-Blöcke je Request
 
 Jeder Block ist ein Request. Erste Zeile ist der Audio-Tag. Absätze sind Pausen. Sätze mit Stern nur, wenn der Beleg im Tool sichtbar ist (VIDEO-STRATEGY §2, Fußnoten * und **); sonst Ersatzsatz einsetzen, **bevor** erzeugt wird. Kanten-IDs werden nie vorgelesen.
 
-### Demo · D1 (0:00–0:09)
+### Demo · D1 (0:00–0:10) · 20 Wörter
 
 ```
 [calm, measured narration]
-Nora is a composite, not a real person. Her son was diagnosed with Krabbe disease; there is no approved medicine anywhere in the world.
+Meet Maria, from the challenge brief. Her son has Krabbe disease.
+
+There is no approved medicine, anywhere in the world.
 ```
 
-Ersatz für D1, falls „Approved therapies: Not found in EMA, FDA as of …" für Krabbe nicht aus Pipeline-Daten im Bild ist: `Nora is a composite, not a real person. Her son was just diagnosed with Krabbe disease, a disease so rare that families end up organising the research themselves.`
+Im Bild dazu die Einblendung „Maria: persona from the challenge brief, not a real person". Ersatz, nur falls Krabbe vor dem Dreh unter „Approved therapies" nicht mehr „Honest Gap: Not found …" zeigt: `Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research.`
 
-### Demo · D2 (0:09–0:18)
+### Demo · D2 (0:10–0:17) · 16 Wörter
 
 ```
 [calm, measured narration]
-She types Krabbe. Every line shows its source, how sure we are, and what speaks against it.
+She types Krabbe. Every line shows its source, how sure we are, what speaks against it.
 ```
 
-### Demo · D3 (0:18–0:25)
+### Demo · D3 (0:17–0:24) · 16 Wörter
 
 ```
 [calm, measured narration]
 One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Names hide what they share.
 ```
 
-### Demo · D4 (0:25–0:34)
+### Demo · D4 (0:24–0:33) · 20 Wörter
 
 ```
 [calm, measured narration]
-Later she leads a group. Her neighbour on the map: metachromatic leukodystrophy… M-L-D, linked by shared symptoms, formula shown.
+Now she leads a patient group. Her neighbour on the map: metachromatic leukodystrophy… M-L-D, linked by shared symptoms, formula shown.
 ```
 
-### Demo · D5 (0:34–0:49)
+### Demo · D5 (0:33–0:48) · 33 Wörter
 
 ```
 [calm, measured narration]
-The Action Card: what carries over, what differs, what an expert must check, every sentence sourced.
+The Action Card: what carries over, what differs, what an expert must check.
 
-M-L-D has an approved gene therapy, proven with a study that followed untreated children for years.
+M-L-D has an approved gene therapy, and a study of how the disease unfolds over time.
 
 That study design exists.
 ```
 
-Ersatz für den zweiten und dritten Absatz von D5, falls „Approved therapies" für MLD nicht aus Pipeline-Daten sichtbar ist: `The M-L-D community already runs studies this group can ask to join, instead of starting from zero.`
+Geändert gegenüber 01:20: „proven with a study that followed untreated children for years" ist raus, weil diese Vergleichskohorte (Fumagalli 2022) nicht im Tool sichtbar ist; gesprochen wird nur, was die Karte zeigt (Libmeldy unter „Approved therapies", HOME-Studie unter „Reusable assets"). Ersatz für Absatz 2 und 3, falls „Approved therapies" für MLD vor dem Dreh fehlt: `The M-L-D community already runs studies this group can ask to join, instead of starting from zero.`
 
-### Demo · D6 (0:49–0:55)
+### Demo · D6 (0:48–0:54) · 13 Wörter
 
 ```
 [calm, measured narration]
-Where there is no trail, we say so: what we searched, what to test next.
+Where there is no trail, we say so, and show what we searched.
 ```
 
-### Demo · D7 (0:55–0:58)
+### Demo · D7 (0:54–0:58) · 8 Wörter
 
 ```
 [calm, measured narration]
 Don't rebuild what a neighbouring disease already built.
 ```
+
+Tempo-Check (02:00, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 2,3 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
 
 ### Tech · T1 (0:00–0:58, ein Request)
 
@@ -155,7 +173,7 @@ Falls T1 als sechs Einzel-Requests gebraucht wird (T1a bis T1f): je Absatz ein R
 
 ## 6. Streichreihenfolge, falls ein Block zu lang wird
 
-Demo: D5 „every sentence sourced" → D2 „and what speaks against it" wird „what speaks against it" → D4 „formula shown" → D1 „anywhere in the world". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „or none" → Absatz 4 „never hard-coded" → Absatz 6 ganz (dann Untertitel statt gesprochen).
+Demo (die ersten zwei Kürzungen von 01:20 sind seit 02:00 schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „or none" → Absatz 4 „never hard-coded" → Absatz 6 ganz (dann Untertitel statt gesprochen).
 
 ## 7. Offenlegung
 
@@ -166,7 +184,7 @@ Demo: D5 „every sentence sourced" → D2 „and what speaks against it" wird �
   The Team Introduction uses our real voices. No voice of a real person was cloned.
 ```
 
-**Video-Beschreibung (HackOS, YouTube unlisted oder Drive):** „Voice-over generated with ElevenLabs (Eleven v4). Nora, the patient-group leader in this video, is a composite character, not a real person. Constellate is a research-navigation tool, not medical advice."
+**Video-Beschreibung (HackOS, YouTube unlisted oder Drive):** „Voice-over generated with ElevenLabs (Eleven v4). Maria, the patient-group leader in this video, is the persona from the challenge brief, not a real person. Constellate is a research-navigation tool, not medical advice."
 
 Pflicht-Attribution „elevenlabs.io" im Titel gilt nur beim Free-Plan oder nicht eingeloggt (§4.3); mit aktivem Creator-Plan ist die Offenlegung freiwillig, wir machen sie trotzdem.
 

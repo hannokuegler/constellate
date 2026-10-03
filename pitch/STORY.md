@@ -1,6 +1,6 @@
 # Die Verkaufsgeschichte · Constellate
 
-Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
+Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Persona seit 04.10. 02:00 Maria statt Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
 
 ## 1. Das Problem in einem Satz, den jeder fühlt
 
@@ -12,19 +12,33 @@ Warum das jeder fühlt, auch ohne Medizinwissen: Jeder kennt das Gefühl, bei nu
 
 ## 2. Drei Blickwinkel
 
-### (a) Die Mutter · Komposit-Figur
+### (a) Die Mutter · Maria, Persona aus dem Brief
 
-**Name-Vorschlag: Nora.** Begründung: Der Name steht bereits in [docs/STORY.md](../docs/STORY.md) und im Code (`app/lib/persona.ts`, Persona-ID `nora`), er ist zweisilbig, in Englisch und Deutsch gleich auszusprechen, klingt europäisch ohne Klischee, ist kein Name einer bekannten realen Patientin oder Gründerin in diesem Feld (geprüft gegen MEDICAL-BACKGROUND §3 und §4: Jill Kelly, Stacy Pike-Langenfeld, Anne Rugari, Teryn Suhr), und er ist nicht „Maria", die jedes Team aus dem Brief übernimmt. Alternativen: „Lena" (ähnlich neutral, aber häufiger in Hackathon-Demos), „Maria mit unseren Details" (sicherste Jury-Kompatibilität, austauschbar). Empfehlung aus [docs/briefing/WIRTSCHAFT-NUTZER.md](../docs/briefing/WIRTSCHAFT-NUTZER.md) W2: Nora als „our Maria", ein Satz Brücke. **Entscheidung: Hanno.**
+**Name: Maria** (seit 04.10. 02:00, auf Osmans Feedback; vorher Nora). Abgleich mit dem C5-Brief, Seite für Seite:
 
-**Das Kind bleibt namenlos** („her son"). Begründung: Ein Kindername plus Diagnose plus Stadt liest sich wie eine echte Familie, auch mit Komposit-Hinweis. „Her son" hält die Figur erkennbar als Konstruktion und schützt reale Familien. Keine Kinderfotos, kein Stock-Leid, kein Krankenhausbild (VIDEOS.md, RESOURCES Video-Pipeline).
+| Prüfpunkt | Brief | Passt? |
+|---|---|---|
+| Rolle | „Maria, Patient organization leader": leitet eine Patientengruppe für eine Krankheit **ohne zugelassene Therapie**, baut Familien, Register und Forschungspartner von null auf (S. 3) | ja: Krabbe hat keine zugelassene Therapie (im Tool belegt, EMA/FDA 0 Treffer); Moment 2 „I lead a patient group" ist wörtlich Maria |
+| Mutter? | S. 1: „Imagine learning that your child has a rare genetic disease … Like Maria, the patient leader …" | ja, implizit: der Brief erzählt Maria als Elternteil, das durch die Diagnose zur Organisatorin wird |
+| Krankheit | im Brief nicht festgelegt | ja, Krabbe ist unsere Wahl und widerspricht nichts |
+| Ihre drei Fragen | „Who shares our disease characteristics? What useful work already exists? What should we do together next?" (S. 2) | ja: verwandte Gemeinschaft (MLD), vorhandenes Asset (Studie, Register), Action Card |
+| App | Persona-Linse heißt live schon „Group leader (Maria)" | ja, Name im Video = Name im Tool (mit Nora hätten wir einen Widerspruch gehabt) |
+| **Moment 1** | die Nacht nach der Diagnose, 2-Uhr-Suche ohne Vorwissen, ist im Brief **Devon** („Newly diagnosed patient / caregiver", S. 3), nicht Maria | **Reibung:** ein Juror, der den Brief kennt, sieht Maria in Devons Szene. Lösung: Moment 1 als Marias Vorgeschichte erzählen (deckt S. 1 des Briefs: „A diagnosis has made you the organizer …"), und im Pitch/Q&A sagen, dass die Startkarte „We just got the diagnosis" Devons Bedarf abdeckt |
+| Fiktion | Maria ist eine Brief-Persona, keine reale Person | Einführung „Meet Maria, from the challenge brief" plus Einblendung „not a real person"; „Komposit" ist damit nicht mehr nötig |
+| **Unterscheidbarkeit** | jedes C5-Team kann Maria verwenden | **Risiko:** weniger eigen als Maria. Dafür maximale Wiedererkennung bei der Jury, und der Unterschied liegt bei uns im Tool (Quelle je Linie, Honest Gap), nicht im Namen |
+| Name realer Personen | Maria ist ein sehr häufiger Vorname, keine bekannte Gründerin in diesem Feld laut MEDICAL-BACKGROUND §3/§4 | ja |
 
-**Moment 1 · die ersten Nächte (Startkarte „We just got the diagnosis").** Nora sucht um zwei Uhr nachts. Sie findet Abstracts, die für Fachleute geschrieben sind, oder nichts. Was sie braucht: Gibt es Familien wie uns? Gibt es eine Studie, die Kinder wie unseres sucht? Wenn es keine Gruppe gibt: Sagt mir das ehrlich, und sagt mir, wer am nächsten dran ist. In der App: Startseite, Suche „Krabbe", Ego-Graph, MomentBar mit drei Antworten (Patientengruppen, offene Studien, verwandte Diagnosen), Edge-Panel, Honest Gap.
+Fazit: Maria passt zum Brief. Die eine echte Reibung ist Moment 1 (Devon); sie ist mit der Vorgeschichte-Erzählung gelöst. DECISIONS P9 nennt noch Maria und sagt „Maria aus dem Brief als Hauptfigur" sei verworfen; das muss Hanno bzw. der Orchestrator nachtragen.
+
+**Das Kind bleibt namenlos** („her son"). Begründung: Ein Kindername plus Diagnose plus Stadt liest sich wie eine echte Familie, auch mit Persona-Hinweis. „Her son" hält die Figur erkennbar als Konstruktion und schützt reale Familien. Keine Kinderfotos, kein Stock-Leid, kein Krankenhausbild (VIDEOS.md, RESOURCES Video-Pipeline).
+
+**Moment 1 · die ersten Nächte (Startkarte „We just got the diagnosis").** Maria sucht um zwei Uhr nachts. Sie findet Abstracts, die für Fachleute geschrieben sind, oder nichts. Was sie braucht: Gibt es Familien wie uns? Gibt es eine Studie, die Kinder wie unseres sucht? Wenn es keine Gruppe gibt: Sagt mir das ehrlich, und sagt mir, wer am nächsten dran ist. In der App: Startseite, Suche „Krabbe", Ego-Graph, MomentBar mit drei Antworten (Patientengruppen, offene Studien, verwandte Diagnosen), Edge-Panel, Honest Gap.
 
 **Moment 2 · Monate später (Startkarte „I lead a patient group").** Dieselbe Mutter leitet jetzt eine Gruppe. Sie baut ein Register mit einem Online-Formular, schreibt Kliniken an, bekommt keine Antwort. Was sie nicht weiß: Die Nachbarkrankheit MLD hat eine zugelassene Gentherapie (EMA 17.12.2020, FDA 18.03.2024), und deren Wirksamkeit wurde nicht gegen Placebo, sondern gegen eine Natural-History-Kohorte belegt: 29 behandelte gegen 31 unbehandelte Kinder (Fumagalli et al., Lancet 2022, PMID 35065785). Dieses Studiendesign existiert. Eine Motorik-Skala existiert (GMFC-MLD, Kehrer 2011, PMID 21707604). Eine clusterweite Langzeitstudie, die Krabbe und MLD gemeinsam beobachtet, existiert (NCT03333200, Pittsburgh, geplant 1.500 Patienten). In der App: Umschalter auf Moment 2, „Related communities", Edge-Panel MLD, Gegenbeispiel Pelizaeus-Merzbacher, Action Card mit `[e_…]`-Zitaten und Export.
 
-**Was Nora am Ende hat:** keinen Heilsversprechen-Satz, sondern einen Ein-Seiter, den sie diese Woche an eine Partnergruppe oder ein Zentrum schicken kann, mit „übertragbar / unterschiedlich / Expertenprüfung" und einer Quelle hinter jedem Satz. Das ist der Brief wörtlich: „Here is what must be checked before we join forces."
+**Was Maria am Ende hat:** keinen Heilsversprechen-Satz, sondern einen Ein-Seiter, den sie diese Woche an eine Partnergruppe oder ein Zentrum schicken kann, mit „übertragbar / unterschiedlich / Expertenprüfung" und einer Quelle hinter jedem Satz. Das ist der Brief wörtlich: „Here is what must be checked before we join forces."
 
-**Was Nora nicht bekommt (und wir sagen es):** keine Diagnose, keine Therapieempfehlung, keine Zusage einer Studie. Teilnahme entscheiden Studienteam und Ärztin (DECISIONS P4). Constellate ist Forschungs-Navigation, nicht medizinische Beratung.
+**Was Maria nicht bekommt (und wir sagen es):** keine Diagnose, keine Therapieempfehlung, keine Zusage einer Studie. Teilnahme entscheiden Studienteam und Ärztin (DECISIONS P4). Constellate ist Forschungs-Navigation, nicht medizinische Beratung.
 
 ### (b) Ein normaler Zuschauer ohne Medizinwissen
 
@@ -45,7 +59,7 @@ Der Satz, den der Zuschauer mitnimmt: **Don't rebuild what a neighbouring diseas
 |---|---|---|---|
 | **Graph quality** | sinnvolle Knoten und Kanten, verteidigbares Clustering, nützliche Pfade, Gegenbeispiele, klarer Umgang mit Unsicherheit | Szene Pelizaeus-Merzbacher: ähnliche Symptome, anderer Mechanismus, „assets do not transfer" | 251 Gegenbeispiel-Paare, 17 Cluster, Modularität 0,678 (`meta.json`); Kante `e_00a92bfb7837` mit `mechanism_differs` |
 | **Evidence integrity** | belegte, gegengeprüfte Aussagen, Daten getrennt von Hypothesen und klinischem Beweis | jedes Edge-Panel: Quelle, Datum, Stufe, Konfidenz, Gegenevidenz-Slot, der nie fehlt; `inferred` zeigt die Formel | 14.512 observed, 27.066 curated, 4.181 inferred, 488 contradicted (`meta.json`); Krabbe→PSAP als `inferred`, Roll-up markiert, Konfidenz 0,47 (`e_2c5236d2f740`) |
-| **Patient progress** | eine Familie oder Gruppe geht von isolierter Diagnose zu begründeter Kooperation, wiederverwendbarem Asset, nächstem Meilenstein | Nora in zwei Momenten, Action Card als Artefakt zum Verschicken | `/d/MONDO_0009499/action?via=MONDO_0018868`, Export proposal |
+| **Patient progress** | eine Familie oder Gruppe geht von isolierter Diagnose zu begründeter Kooperation, wiederverwendbarem Asset, nächstem Meilenstein | Maria in zwei Momenten, Action Card als Artefakt zum Verschicken | `/d/MONDO_0009499/action?via=MONDO_0018868`, Export proposal |
 | **10× impact** | Meilenstein, heutige Timeline gegen unsere Route, Annahmen | Meilenstein „nutzbarer externer Kontrollarm", Präzedenz Libmeldy (29 vs. 31, PMID 35065785) | **offen:** `docs/MOONSHOT.md` fehlt (Recep, R2). Bis dahin keine 10×-Zahl in Videos oder Pitch, nur die Annahmen in Worten |
 | **Ambition and product craft** | intuitive Erfahrung, Zusammenarbeit über Communitys hinweg | eine Suche, zwei Momente, Progressive Reveal, Honest Gap als eigener Screen | Startseite, MomentBar, `/methods`, `/about` |
 
@@ -53,7 +67,7 @@ Jury-Zusatz, den fast kein Team hat: Das Tool sagt **Nein**. Das Gegenbeispiel w
 
 ## 3. Der Moment, der ans Herz geht
 
-Nicht die Diagnose. Nicht die Zahl. Sondern der Moment, in dem Nora sieht, dass sie nicht allein ist, obwohl ihre Krankheit es behauptet.
+Nicht die Diagnose. Nicht die Zahl. Sondern der Moment, in dem Maria sieht, dass sie nicht allein ist, obwohl ihre Krankheit es behauptet.
 
 Konkret, in der App: Sie hat „Krabbe" getippt und sieht eine Karte mit Nachbarn. Sie klickt „metachromatic leukodystrophy" und liest im Edge-Panel, warum die Krankheiten verbunden sind. Dann öffnet sie die Action Card, und dort steht in Klartext, mit Quelle, dass die Nachbar-Community ein Studiendesign hat, das eine Zulassung getragen hat. Der emotionale Kern ist **Erleichterung, nicht Hoffnung auf Heilung**: „Ich muss das nicht alleine erfinden."
 
@@ -87,9 +101,9 @@ Emotionaler Ton für die Gap-Szene: ruhig, respektvoll, kein Bedauern in der Sti
 
 - Keine Kinderfotos, kein Krankenhausflur, keine Musik, keine Zeitlupe.
 - Die Lebenserwartungs-Zahl (GeneReviews NBK1238) wird nicht gesprochen. Wer sie kennt, braucht sie nicht; wer sie nicht kennt, soll nicht mit ihr erschlagen werden.
-- Nora hat keinen Monolog. Sie wird in zwei Sätzen eingeführt und dann durch Klicks erzählt.
+- Maria hat keinen Monolog. Sie wird in zwei Sätzen eingeführt und dann durch Klicks erzählt.
 - Jeder emotionale Satz steht neben einem Screen mit Quelle. Gefühl und Beleg im selben Bild.
-- Der Komposit-Hinweis kommt im ersten Satz, nicht im Kleingedruckten.
+- Der Hinweis „persona from the challenge brief" kommt im ersten Satz, nicht im Kleingedruckten.
 
 ## 7. Einstiegssatz · drei Varianten
 
@@ -128,4 +142,4 @@ Emotionaler Ton für die Gap-Szene: ruhig, respektvoll, kein Bedauern in der Sti
 
 1. **Drei Türen, ein Raum.** PSAP als Bild für „Namen verstecken Mechanismen": ein Gen, drei Krankheitsnamen, drei getrennte Communitys (OMIM 611722, 249900, 610539). Jeder versteht es in zehn Sekunden, und es steht als eigener Screen in der App (`/g/PSAP`).
 2. **Das Tool sagt Nein.** Pelizaeus-Merzbacher als aktives Gegenbeispiel und die Honest Gap als eigener Screen. Vertrauen durch Verzicht.
-3. **From graph to e-mail.** Die Action Card ist ein Dokument, nicht ein Screen. Nora verlässt die App mit etwas, das sie diese Woche verschicken kann, und jeder Satz trägt seine Kante.
+3. **From graph to e-mail.** Die Action Card ist ein Dokument, nicht ein Screen. Maria verlässt die App mit etwas, das sie diese Woche verschicken kann, und jeder Satz trägt seine Kante.

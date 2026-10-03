@@ -1,6 +1,6 @@
 # Dauer-Prompt · Marketing-Maus (Pitch, Story, Videos, Abgabetexte)
 
-Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 01:45 (Abgabetexte v1); Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
+Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 02:00 (Osman-Feedback: Team-Video, Maria; Voice-over); Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
 
 **Schnellstart für eine frische Session** (eine Zeile reicht): `Lies docs/prompts/MARKETING-STANDING.md im Worktree ../constellate-marketing (Branch marketing) und mach bei Abschnitt 5a weiter.`
 
@@ -57,7 +57,7 @@ Dann Hanno 5 Zeilen: was steht, was fehlt, was er entscheiden muss, nächster Sc
 
 Quelle der Wahrheit ist `docs/DECISIONS.md`. Bei Widerspruch gilt DECISIONS, und diese Datei wird nachgezogen.
 
-- **Persona (P1, P9):** Nora, eine Mutter in zwei Momenten (frisch diagnostiziert; Monate später Leiterin einer Patientengruppe). Komposit-Figur, immer als solche gekennzeichnet, das Kind ohne Namen.
+- **Persona (P1, P9, geändert 04.10. 02:00 auf Osmans Feedback, Hanno: „date das up"):** **Maria**, die Patient-Leader-Persona aus dem C5-Brief, als Mutter in zwei Momenten (frisch diagnostiziert; Monate später Leiterin einer Patientengruppe). Immer als Persona aus dem Brief eingeführt („Meet Maria, from the challenge brief" plus Einblendung „not a real person"), das Kind ohne Namen. DECISIONS P9 sagt noch Nora: Nachtrag durch Orchestrator/Hanno offen.
 - **Pitch (P9):** Fassung "Herz zuerst". Einstieg "Your family is not the first. What you need may already exist under another disease's name." Schluss "Don't rebuild what a neighbouring disease already built."
 - **Team-Feedback zum Pitch (verbindlich):** wenig Fachbegriffe, die Message muss ankommen; sofort klar: 1. Problem, 2. Herangehensweise, 3. Lösung. Ersetzungsliste in `pitch/PITCH-60S.md`.
 - **Videos (verbindlich):** genau drei, je max. 60 s: Team Introduction (echte Gesichter, kein Voice-over), Product Demo, Technical Walkthrough. MP4 (H.264, 1920×1080, 30 fps) oder MOV, Englisch, Querformat, Live-URL sichtbar. Shotlists und Wort-für-Wort-Texte in `pitch/VIDEO-STRATEGY.md`.
@@ -71,7 +71,7 @@ Datenstand für die Sterne-Sätze (geprüft 04.10. 01:10, Export `2026-10-04+f35
 ## 4 · Harte Regeln (wörtlich, gelten immer)
 
 1. Jede Zahl und jede medizinische Aussage in Pitch, Videos, Slides und Texten braucht eine Primärquelle (PMID, NCT, EMA/FDA, ORPHA) aus `docs/MEDICAL-BACKGROUND.md` oder den App-Daten, und im Demo-Video muss sie im Tool sichtbar sein. Kein "cure", keine Heilsversprechen, keine Prognosen; Constellate ist Forschungs-Navigation, keine medizinische Beratung.
-2. Keine Patientenorganisation nennen, die nicht verifiziert ist (`data/curated/orgs.csv`). Keine echten Patientengeschichten; Nora ist Komposit.
+2. Keine Patientenorganisation nennen, die nicht verifiziert ist (`data/curated/orgs.csv`). Keine echten Patientengeschichten; Maria ist die Persona aus dem Brief.
 3. Keine Logins, Keys, Codes (HackOS, ElevenLabs, Bright Data, Lovable), privaten Mailadressen oder Telefonnummern ins Repo; ab 11:00 ist es öffentlich. Keine Blockquotes (`>`) in neuen Docs.
 4. Git: eigener Worktree, Branch `marketing`. Commits unter `hannokuegler` / `50925342+hannokuegler@users.noreply.github.com` (nach jedem Commit `git log --format='%an <%ae>' -1` prüfen; abweichend → sofort stoppen und melden). Präfix `docs:`, ein Satz, keine Co-Authored-By-Zeile, keine AI-Attribution. Nur eigene Pfade stagen (`pitch/`, `docs/MOONSHOT.md` nur gemeinsam mit Recep, `docs/PITCH-OUTLINE_draft.md`, `docs/DEMO-SCRIPT_draft.md`). Vor dem Push `git pull --rebase`, nie force-push, nie `git clean`. Nach `main` nur über den Orchestrator bzw. mit Hannos Go.
 5. Nicht anfassen: `app/`, `pipeline/`, `data/` (außer lesen), `CLAUDE.md`, `docs/DECISIONS.md` (Entscheidungen schlägst du vor, Hanno trägt ein oder gibt Go). Videos und große Mediendateien nicht ins Repo (nur Links); Bilder in `pitch/` nur < 300 KB.
@@ -88,7 +88,7 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 | 0 | 01:30 | Übernahme, Dauer-Prompt | ☑ | diese Datei |
 | 1 | 03:30 | Mentor-Briefing schärfen: 60-s-Vorstellung in `docs/mentoring/MENTOR-LIN.md` auf Pitch-v2-Sprache (weniger Fachwörter), Kernfrage beibehalten. Nach 03:45 Osmans Protokoll lesen, Pitch/Story/Demo-Text anpassen, vorgeschlagene Entscheidungen als Liste an Hanno | ◐ | Vorstellung fertig: `pitch/MENTOR-INTRO.md` (Vorschlag, MENTOR-LIN.md gehört dem Orchestrator); Nachlauf nach 03:45 offen |
 | 2 | 08:00 | Moonshot-Story mit Recep: `docs/MOONSHOT.md` (Meilenstein, heute vs. mit Constellate, 4–6 Annahmen, Quelle je Zahl; keine 10×-Zahl ohne Annahmen). Daraus eine Folie und ein Satz für Pitch und README | ☐ | |
-| 3 | 09:00 | Voice-over vorbereiten: 2–3 Stimmen-Vorschläge mit Begründung (warm, ruhig, glaubwürdig), finale Skriptblöcke Demo und Tech mit Aussprache-Hilfen (Krabbe, MLD, PSAP, Pelizaeus-Merzbacher), Länge je Block gegen 60 s (ca. 2,3 Wörter/s) | ☐ | `pitch/VOICE-ELEVENLABS.md` |
+| 3 | 09:00 | Voice-over vorbereiten: 2–3 Stimmen-Vorschläge mit Begründung (warm, ruhig, glaubwürdig), finale Skriptblöcke Demo und Tech mit Aussprache-Hilfen (Krabbe, MLD, PSAP, Pelizaeus-Merzbacher), Länge je Block gegen 60 s (ca. 2,3 Wörter/s) | ☑ | `pitch/VOICE-ELEVENLABS.md` §2a (Matilda empfohlen, Brian, George), D1–D7 nachgerechnet (126 Wörter), D5-Satz an das Tool angepasst, Pelizaeus-Merzbacher und Libmeldy in §4 |
 | 4 | 11:00 | Abgabetexte in `pitch/SUBMISSION-TEXTS.md` (Englisch): Name, Einzeiler (≤ 15 Wörter), Kurzbeschreibung (≤ 50 Wörter), Langbeschreibung (Problem, Ansatz, Lösung, Evidenzmodell, Built with OpenAI an 3 Stellen, was als Nächstes validiert wird), Tech-Stack, Datenquellen mit Lizenz, Team. Felder an HackOS/Google Form anpassen, sobald Osman sie kennt. README-Einleitung als Diff an Osman | ◐ | v1 fertig: `pitch/SUBMISSION-TEXTS.md` (Einzeiler A/B, 50 Wörter, Langtext, OpenAI-Absatz in Variante A/B, Stack, Quellen, Team, Links, Offenlegung); offen: Feldanpassung (v2), README-Diff |
 | 5 | ab 12:00 | Videos produzieren: Aufnahme-Checklisten aus `pitch/VIDEO-STRATEGY.md`, Schnittplan, Intro/Outro-Clip (≤ 3 s, Motion oder Higgsfield), Export prüfen, Untertitel optional, Upload nach HackOS-Vorgabe, Links in `pitch/SUBMISSION-TEXTS.md` | ☐ | |
 | 6 | laufend | Social: 2–3 Discord-Oneliner für Osman (Challenge-Kanal, ohne Interna), Memes nur aus `memes/` (Osman postet) | ☐ | |
@@ -102,7 +102,8 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 |---|---|---|---|---|
 | ☑ | bis 01:10 | Übernahme, Dauer-Prompt, Mentor-Vorstellung | Marketing | diese Datei, `pitch/MENTOR-INTRO.md` |
 | ☑ | 01:15–01:45 | Abgabetexte Entwurf (Aufgabe 4): Einzeiler, 50 Wörter, Langbeschreibung, Stack, Quellen mit Lizenz aus `meta.json`, Team | Marketing | `pitch/SUBMISSION-TEXTS.md` v1 |
-| ☐ | 02:30–03:30 | Voice-over (Aufgabe 3): 2–3 Stimmen mit Begründung, Skriptblöcke D1–D7 und T1 final, Wortzahl je Block gegen Szenenzeit, Aussprache inkl. Pelizaeus-Merzbacher | Marketing | `pitch/VOICE-ELEVENLABS.md` |
+| ☑ | 01:45–02:00 | Osman-Feedback: Team-Video auf Background umgebaut (VIDEO-STRATEGY §1, Texte H/O/R), Persona Nora → Maria mit Brief-Abgleich (STORY §2a) | Marketing | `pitch/` |
+| ☑ | 02:00 | Voice-over (Aufgabe 3): 2–3 Stimmen mit Begründung, Skriptblöcke D1–D7 und T1 final, Wortzahl je Block gegen Szenenzeit, Aussprache inkl. Pelizaeus-Merzbacher | Marketing | `pitch/VOICE-ELEVENLABS.md` |
 | ☐ | 03:30 | Go für die Mentor-Vorstellung, Pitch-v2-Feedback von Osman und Recep einarbeiten | Hanno, Marketing | MENTOR-LIN.md §2, PITCH-60S.md |
 | ☐ | 03:45–04:00 | Mentor-Gespräch Woan-Yu Lin | Hanno, Recep, Osman (Protokoll) | Protokoll |
 | ☐ | 04:00–04:45 | Nachlauf (Aufgabe 1b): Protokoll lesen, Antwort A/B/C zuordnen (`pitch/MENTOR-INTRO.md`), Entscheidungsliste an Hanno (W9, W16, ggf. P14), Pitch, Story, Demo-Text anpassen | Marketing | Liste an Hanno, Diffs in `pitch/` |
@@ -129,7 +130,7 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 - [ ] Englisch, Querformat, keine Musik, keine Effekte
 - [ ] Live-URL `constellate-vert.vercel.app` mindestens einmal lesbar im Bild (Product Demo und Tech: in der Browserleiste)
 - [ ] Jeder gesprochene Fakt ist im selben Moment im Tool sichtbar (Quelle, Kante, Action Card); Sterne-Sätze nur mit Beleg, sonst Ersatzsatz
-- [ ] Nora im ersten Satz als Komposit gekennzeichnet (Demo); keine echten Personen in generiertem Material
+- [ ] Maria im ersten Satz als Persona aus dem Brief eingeführt, Einblendung „not a real person" (Demo); keine echten Personen in generiertem Material
 - [ ] Kein "cure", keine Prognose, keine nicht verifizierte Organisation
 - [ ] Offenlegung Voice-over in Video-Beschreibung und README ("Voice-over generated with ElevenLabs (Eleven v4)"), Team-Video ohne KI-Stimme
 - [ ] Intro/Outro-Clip ≤ 3 s, Asset mit Lizenz in `pitch/ASSETS.md`

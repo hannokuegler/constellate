@@ -1,8 +1,8 @@
 # Video-Strategie · drei Pflichtvideos, je maximal 60 Sekunden
 
-Stand So 04.10.2026, 01:15 (Wien). Verbindliche Vorgabe des Teams: **genau drei Videos, jedes höchstens 60 Sekunden, MP4 oder MOV.** (1) Team Introduction, (2) Product Demo, (3) Technical Walkthrough. Die früheren Formate (Demo 2:00, Tech 3:00, Team 60–90 s, separater 1-min-Walkthrough) gelten nicht mehr; der C5-Brief („a 1-minute walkthrough: follow a family or patient group through the graph …", S. 6) wird durch die Product Demo erfüllt.
+Stand So 04.10.2026, 02:00 (Wien); Team-Video nach Osmans Feedback auf Background umgebaut, Persona heißt wieder **Maria** (wie im C5-Brief und in der App-Linse „Group leader (Maria)"), Demo-Timing gegen 2,3 Wörter/s nachgerechnet. Verbindliche Vorgabe des Teams: **genau drei Videos, jedes höchstens 60 Sekunden, MP4 oder MOV.** (1) Team Introduction, (2) Product Demo, (3) Technical Walkthrough. Die früheren Formate (Demo 2:00, Tech 3:00, Team 60–90 s, separater 1-min-Walkthrough) gelten nicht mehr; der C5-Brief („a 1-minute walkthrough: follow a family or patient group through the graph …", S. 6) wird durch die Product Demo erfüllt.
 
-Für alle drei: Englisch, Querformat, keine Musik, keine Effekte, Aufnahme erst nach dem Freeze (So 12:00), Upload bis 14:00. Shotlists summieren auf höchstens 0:58, zwei Sekunden Puffer für Schnitt und Export. Voice-over (Demo, Tech) mit ca. 2,3 Wörtern pro Sekunde, also höchstens 135 Wörter je Video; Skript-Blöcke für ElevenLabs in [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md). Jede Aussage im Voice-over steht im Tool als Kante mit Quelle oder mit Primärquelle in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) (ohne ⚠️). Nora ist eine Komposit-Figur und wird im ersten Satz so genannt. Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird.
+Für alle drei: Englisch, Querformat, keine Musik, keine Effekte, Aufnahme erst nach dem Freeze (So 12:00), Upload bis 14:00. Shotlists summieren auf höchstens 0:58, zwei Sekunden Puffer für Schnitt und Export. Voice-over (Demo, Tech) mit ca. 2,3 Wörtern pro Sekunde, also höchstens 135 Wörter je Video; Skript-Blöcke für ElevenLabs in [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md). Jede Aussage im Voice-over steht im Tool als Kante mit Quelle oder mit Primärquelle in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) (ohne ⚠️). Maria ist die Persona aus dem C5-Brief (keine reale Person) und wird im ersten Satz so eingeführt; dazu eine Einblendung „Maria: persona from the challenge brief, not a real person". Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird.
 
 **Export für alle drei:** MP4, H.264, 1920×1080, 30 fps, Ton AAC 48 kHz; MOV ist als Alternative erlaubt (Vorgabe). Dateinamen `constellate_team.mp4`, `constellate_demo.mp4`, `constellate_tech.mp4`. Länge nach Export mit `ffprobe` oder im Player prüfen: **unter 60,0 s**, sonst wird der Clip nicht angenommen.
 
@@ -13,7 +13,7 @@ Geprüft gegen `app/public/data/` (Version `2026-10-03+397464a`, kein Fixture), 
 | Befund | Folge |
 |---|---|
 | `e_e270315fe572` (Krabbe → MLD) ist eine `similar_phenotype`-Kante, `inferred`, Konfidenz 0,216, Formel vorhanden, `mechanism_differs = false`. Es ist nicht die „shared gene PSAP"-Kante. | Demo sagt „linked by shared symptoms, formula shown"; die PSAP-Brücke zeigt `/g/PSAP`. |
-| `approved_therapies`, `assets`, `newborn_screening` fehlen im aktuellen Export (PR #1 `data-v2` im Review). | Die Sätze „no approved medicine" (Krabbe) und „MLD has an approved gene therapy" nur sprechen, wenn die Action Card die Abschnitte „Approved therapies" mit EMA/FDA-Quelle und „Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (kein Fixture-Badge). Sonst die markierten Ersatzsätze. |
+| **Update 04.10. 01:30, Export `2026-10-04+f35b3a5`:** `approved_therapies`, `assets`, `newborn_screening` sind live. Action Card zeigt Libmeldy (`e_f3ef159024b6`, EMA 2020-12-17), Lenmeldy (`e_62876fa60e22`, FDA 2024-03-18), für Krabbe „Honest Gap: Not found in EMA … FDA … as of 2026-10-03", HOME-Studie `e_7ee9ef63ec03` (NCT04628364, Natural history study). Stand davor: fehlten (PR #1). | Die Sätze „no approved medicine" (Krabbe) und „MLD has an approved gene therapy" nur sprechen, wenn die Action Card die Abschnitte „Approved therapies" mit EMA/FDA-Quelle und „Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (kein Fixture-Badge). Sonst die markierten Ersatzsätze. |
 | `data/curated/orgs.csv` hat nur die Kopfzeile; `docs/MOONSHOT.md` fehlt. | Keine Organisation, keine 10×-Zahl in keinem Video. |
 | Honest-Gap-Fall `MONDO:0012720` „Krabbe disease due to saposin A deficiency" (P11): ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2, abgefragt 2026-10-03; Gen PSAP (`e_795da9c4a6cd`, OMIM:611722). | Gap-Szene zeigt „What was searched, as of …" und „What would close this gap". Zahlen werden nicht vorgelesen, sie stehen im Bild. |
 | `app/public/data/trial/` enthält 142 Studien-Shards. | Die Studienliste darf kurz im Bild sein; kein eigener Satz dazu (Zeit). |
@@ -22,40 +22,67 @@ Hero-Kanten im Export verifiziert: `e_3dbc42738b5a` (Krabbe → GALC, curated, O
 
 ## 1. Team Introduction · ≤ 60 s · Osman filmt, echte Gesichter, echte Stimmen, kein Voice-over
 
-**Ziel:** Drei Menschen, denen man eine Mutter um zwei Uhr nachts anvertrauen würde: ruhig, konkret, kein Pitch. Die Jury sieht, wer hinter dem Tool steht und warum.
+Umgebaut nach Osmans Feedback (04.10., ca. 01:30): Das Team-Video zeigt **den Hintergrund der Menschen**, nicht ihren Beitrag zum Projekt. Wer was gebaut hat, sieht die Jury in Demo und Tech-Video.
+
+**Ziel:** Drei Menschen, denen man eine Mutter um zwei Uhr nachts anvertrauen würde: ruhig, konkret, kein Pitch. Die Jury sieht, wer hinter dem Tool steht, was jeder mitbringt und warum ihn das Thema packt.
 
 **Zuschauer:** Jury, Hack-Nation-Community.
 
-**Kernbotschaft:** Drei Leute, drei Rollen, ein Grund: Niemand soll bei null anfangen, wenn die Nachbarkrankheit schon weiter ist.
+**Kernbotschaft:** Drei verschiedene Hintergründe (Daten, Risiko, Automation), ein Grund: Niemand soll bei null anfangen, wenn die Nachbarkrankheit schon weiter ist.
 
-**Form:** Handy quer (16:9), gleicher Ort, Tageslicht, derselbe Hintergrund, Kamera auf Augenhöhe, eine Person pro Take, ohne Zoom. Keine KI-Stimme, kein Avatar, kein Voice-over. Einwilligung aller drei vorher (Recep holt sie ein). Namens-Einblendung (Name, Rolle) unten links für zwei Sekunden, Untertitel aus dem Schnittprogramm.
+**Form:** Handy quer (16:9), gleicher Ort, Tageslicht, derselbe Hintergrund, Kamera auf Augenhöhe, eine Person pro Take, ohne Zoom. Keine KI-Stimme, kein Avatar, kein Voice-over. Einwilligung aller drei vorher (Recep holt sie ein). Namens-Einblendung unten links für zwei Sekunden, Untertitel aus dem Schnittprogramm.
 
 ### Shotlist
 
-| Zeit | Bild | Wer | Text (frei, in ganzen Sätzen, Leitfragen unten) |
+| Zeit | Bild | Einblendung | Text |
 |---|---|---|---|
-| 0:00–0:03 | Titelkarte, Klartext: „Constellate · Vienna Hub · Hack-Nation C5" | – | kein Ton |
-| 0:03–0:18 | Hanno, Brustbild | Hanno Kügler · Tech Lead | Name. „I built the pipeline and the app." Ein Satz Hintergrund. Ein Satz warum. |
-| 0:18–0:33 | Osman, Brustbild | Osman · Ops und Kuration | Name. „I checked the data by hand: patient organisations, licences, the reproduce test." Ein Satz Hintergrund. Ein Satz warum. |
-| 0:33–0:48 | Recep, Brustbild | Recep · Story, Evidenz, Videos | Name. „I wrote the story and checked every medical claim against its source." Ein Satz Hintergrund. Ein Satz warum. |
-| 0:48–0:56 | alle drei im Bild | alle | Hanno: „Your family is not the first." Recep: „What you need may already exist under another disease's name." Osman: „We're Constellate, Vienna Hub." |
-| 0:56–0:58 | Schlussbild: `/about` im Browser mit URL, oder die Titelkarte | – | kein Ton |
+| 0:00–0:02 | Titelkarte, Klartext: „Constellate · Vienna Hub · Hack-Nation C5" | – | kein Ton |
+| 0:02–0:18 | Hanno, Brustbild | Hanno Kügler · Data Science (WU Vienna) · Business Informatics (TU Wien) | Text H unten |
+| 0:18–0:34 | Osman, Brustbild | Osman [Nachname] · Business Informatics (WU Vienna) · Retail Risk, Raiffeisen Bank International | Text O unten |
+| 0:34–0:50 | Recep, Brustbild | Recep [Nachname] · TGM Vienna, Business Informatics | Text R unten |
+| 0:50–0:57 | alle drei im Bild | – | Hanno: „Your family is not the first." Recep: „What you need may already exist under another disease's name." Osman: „We're Constellate, Vienna Hub." |
+| 0:57–0:58 | Schlussbild `/about` mit URL, oder die Titelkarte | – | kein Ton |
 
-Summe 0:58.
+Summe 0:58. Je Person 16 s, Sprechtext 36 bis 40 Wörter (echte Stimmen sprechen etwas schneller als die KI, ca. 2,5 Wörter/s). Die Teile in eckigen Klammern sind optional; mit ihnen sind es 44 bis 45 Wörter, das ist für 16 s zu schnell. Erst mit Stoppuhr proben, dann entscheiden.
 
-**Leitfragen je Person (höchstens 15 s, vorher mit Stoppuhr proben):**
+### Sprechtexte (Vorschlag, jeder sagt es in eigenen Worten nach)
 
-1. Wer bist du, was hast du hier gemacht? (ein Satz, siehe Tabelle)
-2. Dein Hintergrund in einem Satz (Studium oder Beruf).
-3. Warum diese Challenge? Persönlich, kein Pitch: die Stelle im Brief, die hängen geblieben ist; was beim Prüfen der Organisationen auffiel; der Moment, als klar wurde, dass ein Gen drei Krankheitsnamen hat.
+**Text H · Hanno (39 Wörter ohne Klammer)**
 
-Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisationsnamen, keine Geschichte einer fremden Familie. Wer über 15 s liegt, streicht Frage 2.
+```
+I'm Hanno. I studied data science at WU Vienna, and I'm starting business informatics at TU Wien. I also teach first aid for the Red Cross. [There's one thing you learn there:] in a crisis, people don't need a textbook. They need the next step.
+```
 
-**Aufnahme-Checkliste:** Handy quer, 1080p 30 fps, Flugmodus an; Mikro des Handys reicht, wenn der Raum ruhig ist; Licht von vorn, Fenster nicht im Rücken; drei Takes je Person, den ruhigsten nehmen. **Schnitt:** nur kürzen, harte Schnitte, keine Übergänge, keine Musik; Untertitel; Export MP4 H.264 1920×1080 30 fps. **Wer:** Osman filmt und schneidet, Recep prüft Länge und Untertitel. **Deadline:** Dreh 12:00–12:30, Schnitt bis 13:15, Upload bis 14:00.
+**Text O · Osman (40 Wörter ohne Klammer)**
+
+```
+I'm Osman. I study business informatics at WU Vienna and work in retail risk and methodology at Raiffeisen Bank International. I'm into machine learning and automation. In risk, a number only counts if you can trace where it came from. [Families deserve that too.]
+```
+
+**Text R · Recep (38 Wörter ohne Klammer)**
+
+```
+I'm Recep. I graduated from TGM in Vienna, industrial engineering with a focus on business informatics. I'm into general-purpose AI and automation: [systems that don't just answer, but] do the work. Here, that's the search a parent would otherwise do alone at 2 a.m.
+```
+
+**Warum diese „Warum"-Sätze:** Jeder Satz hängt am echten Hintergrund der Person, nicht an einer erfundenen Krankengeschichte. Hanno: Erste Hilfe → „der nächste Schritt" (genau das, was die Action Card liefert). Osman: Risikomethodik → „keine Zahl ohne Herkunft" (genau das Evidenzmodell, jede Linie mit Quelle). Recep: KI-Automation → „die Suche um zwei Uhr nachts" (genau Devon aus dem Brief). Damit erzählt das Team-Video nebenbei schon das Produkt, ohne über das Projekt zu reden.
+
+**Bewusst nicht erfunden:** Osman wollte eine „kurze gute Story". Eine erfundene persönliche Verbindung zu einer seltenen Krankheit (Verwandte, Freunde) kommt nicht in Frage: Das Video zeigt echte Gesichter, die Jury nimmt es als wahr, und es widerspricht Regel 2 (keine erfundenen Patientengeschichten). Wer eine **echte** Verbindung hat, darf sie in einem Satz statt des Warum-Satzes sagen.
+
+**Vor dem Dreh klären (je Person selbst):**
+
+1. Osman: Darf der Arbeitgeber (Raiffeisen Bank International) in einem öffentlichen Video genannt werden? Viele Banken haben Social-Media-Regeln. Ausweichsatz ohne Namen: „… and work in retail risk and methodology at a bank."
+2. Recep: Was machst du seit dem TGM (Studium, Job)? Ein Halbsatz macht den Background vollständiger; nicht raten, bitte selbst ergänzen. Englische Bezeichnung des Zweigs prüfen (Vorschlag: „industrial engineering, business informatics").
+3. Hanno: Bachelor-Abschluss als „studied" ok? Rotes Kreuz nennen ok?
+4. Nachnamen von Osman und Recep für die Einblendung.
+
+Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisationsnamen aus der Patientenwelt, keine Geschichte einer fremden Familie.
+
+**Aufnahme-Checkliste:** Handy quer, 1080p 30 fps, Flugmodus an; Mikro des Handys reicht, wenn der Raum ruhig ist; Licht von vorn, Fenster nicht im Rücken; drei Takes je Person, den ruhigsten nehmen; jeder spricht frei nach dem Text oben, nicht abgelesen. **Schnitt:** nur kürzen, harte Schnitte, keine Übergänge, keine Musik; Untertitel; Export MP4 H.264 1920×1080 30 fps. **Wer:** Osman filmt und schneidet, Recep prüft Länge und Untertitel. **Deadline:** Dreh 12:00–12:30, Schnitt bis 13:15, Upload bis 14:00.
 
 ## 2. Product Demo · ≤ 60 s · Recep nimmt auf, Voice-over ElevenLabs (P10)
 
-**Ziel:** Die Jury sieht in einem Take das Problem, die Herangehensweise und die Lösung an Noras Weg, dazu einmal die ehrliche Lücke. Kriterien aus dem Brief: Patient progress, Evidence integrity, Product craft. Erfüllt zugleich die Brief-Vorgabe „1-minute walkthrough".
+**Ziel:** Die Jury sieht in einem Take das Problem, die Herangehensweise und die Lösung an Marias Weg, dazu einmal die ehrliche Lücke. Kriterien aus dem Brief: Patient progress, Evidence integrity, Product craft. Erfüllt zugleich die Brief-Vorgabe „1-minute walkthrough".
 
 **Zuschauer:** Jury und Öffentlichkeit ohne Medizinwissen.
 
@@ -69,19 +96,19 @@ Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisations
 
 | Zeit | Screen / Route | Klick / sichtbar | Voice-over (Englisch, Wort für Wort) | Beleg im Bild |
 |---|---|---|---|---|
-| 0:00–0:09 | `/` Startseite, Karten „We just got the diagnosis" und „I lead a patient group" | Karte Moment 1 anklicken, „Krabbe" tippen | „Nora is a composite, not a real person. Her son was diagnosed with Krabbe disease; there is no approved medicine anywhere in the world.*" | Komposit gesprochen; Karten im Bild |
-| 0:09–0:18 | `/d/MONDO_0009499` Krabbe disease, Graph | Linie Krabbe → GALC anklicken, Edge-Panel öffnet | „She types Krabbe. Every line shows its source, how sure we are, and what speaks against it." | `e_3dbc42738b5a`, Badge `curated`, OMIM:245200, Konfidenz 0,90, „Counter-evidence (0)" |
-| 0:18–0:25 | `/g/PSAP` „One gene, 4 disease names" | vom Gen-Kästchen PSAP auf die Gen-Seite, Zeilen Saposin A, B, C sichtbar | „One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Names hide what they share." | `e_795da9c4a6cd` OMIM:611722 · `e_316e60c8ee91` OMIM:249900 · `e_b4f9b02250a7` ORPHA:309252 / OMIM:610539 |
-| 0:25–0:34 | zurück `/d/MONDO_0009499`, Umschalter „I lead a patient group", „Related communities" | Zeile „metachromatic leukodystrophy", Button „Why linked", Edge-Panel | „Later she leads a group. Her neighbour on the map: metachromatic leukodystrophy, M-L-D, linked by shared symptoms, formula shown." | `e_e270315fe572`, Badge `inferred`, Abschnitt „Formula (inferred)", Konfidenz 0,22 |
-| 0:34–0:49 | `/d/MONDO_0009499/action?via=MONDO_0018868` Action Card | Spalten „What transfers / What differs / Needs expert review", ein `[e_…]`-Zitat anklicken, Abschnitt „Approved therapies" ins Bild | „The Action Card: what carries over, what differs, what an expert must check, every sentence sourced. MLD has an approved gene therapy, proven with a study that followed untreated children for years.** That study design exists." | `[e_…]` öffnet Edge-Panel; „Approved therapies" mit EMA/FDA-Datum (nur Pipeline-Daten) |
-| 0:49–0:55 | `/d/MONDO_0012720` Krabbe disease due to saposin A deficiency | Abschnitte „What was searched, as of …" und „What would close this gap" | „Where there is no trail, we say so: what we searched, what to test next." | ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2, Datum 2026-10-03 (Export prüfen) |
-| 0:55–0:58 | `/about`, Überschrift „Your family is not the first …", URL sichtbar | kein Klick, Cursor weg | „Don't rebuild what a neighbouring disease already built." | URL |
+| 0:00–0:10 | `/` Startseite, Karten „We just got the diagnosis" und „I lead a patient group" | Karte Moment 1 anklicken, „Krabbe" tippen | „Meet Maria, from the challenge brief. Her son has Krabbe disease. There is no approved medicine, anywhere in the world.*" | Einblendung „Maria: persona from the challenge brief, not a real person"; Karten im Bild |
+| 0:10–0:17 | `/d/MONDO_0009499` Krabbe disease, Graph | Linie Krabbe → GALC anklicken, Edge-Panel öffnet | „She types Krabbe. Every line shows its source, how sure we are, what speaks against it." | `e_3dbc42738b5a`, Badge `curated`, OMIM:245200, Konfidenz 0,90, „Counter-evidence (0)" |
+| 0:17–0:24 | `/g/PSAP` „One gene, 4 disease names" | vom Gen-Kästchen PSAP auf die Gen-Seite, Zeilen Saposin A, B, C sichtbar | „One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Names hide what they share." | `e_795da9c4a6cd` OMIM:611722 · `e_316e60c8ee91` OMIM:249900 · `e_b4f9b02250a7` ORPHA:309252 / OMIM:610539 |
+| 0:24–0:33 | zurück `/d/MONDO_0009499`, Umschalter „I lead a patient group", „Related communities" | Zeile „metachromatic leukodystrophy", Button „Why linked", Edge-Panel | „Now she leads a patient group. Her neighbour on the map: metachromatic leukodystrophy, M-L-D, linked by shared symptoms, formula shown." | `e_e270315fe572`, Badge `inferred`, Abschnitt „Formula (inferred)", Konfidenz 0,22 |
+| 0:33–0:48 | `/d/MONDO_0009499/action?via=MONDO_0018868` Action Card | Spalten „What transfers / What differs / Needs expert review", ein `[e_…]`-Zitat anklicken, Abschnitt „Approved therapies" ins Bild | „The Action Card: what carries over, what differs, what an expert must check. MLD has an approved gene therapy, and a study of how the disease unfolds over time.** That study design exists." | `[e_…]` öffnet Edge-Panel; „Approved therapies" Libmeldy `e_f3ef159024b6` (EMA 2020-12-17); „Reusable assets" HOME-Studie `e_7ee9ef63ec03` (NCT04628364, Natural history study) |
+| 0:48–0:54 | `/d/MONDO_0012720` Krabbe disease due to saposin A deficiency | Abschnitte „What was searched, as of …" und „What would close this gap" | „Where there is no trail, we say so, and show what we searched." | ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2, Datum 2026-10-03 (Export prüfen) |
+| 0:54–0:58 | `/about`, Überschrift „Your family is not the first …", URL sichtbar | kein Klick, Cursor weg | „Don't rebuild what a neighbouring disease already built." | URL |
 
-Summe 0:58. Wortzahl Voice-over: 135.
+Summe 0:58. Wortzahl Voice-over: 126 (je Szene ≤ 2,3 Wörter/s, nachgerechnet 02:00). Szenenzeiten gegenüber 01:15 verschoben (D1 +1 s, D2 −2 s, D7 +1 s), weil D1, D5, D6 und D7 vorher zu dicht waren.
 
-\* Nur, wenn die Action Card für Krabbe „Approved therapies: Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (im Bild ab 0:34, also auch dann sprechbar, wenn es in Szene 1 noch nicht sichtbar ist). Ersatzsatz: „Nora is a composite, not a real person. Her son was just diagnosed with Krabbe disease, a disease so rare that families end up organising the research themselves." (C5-Brief S. 2.)
+\* Nur, wenn die Action Card für Krabbe „Approved therapies: Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (im Bild ab 0:34, also auch dann sprechbar, wenn es in Szene 1 noch nicht sichtbar ist). Stand 01:30: im Live-Tool belegt (Krabbe „Honest Gap" unter „Approved therapies"). Ersatzsatz nur noch für den Notfall: „Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research." (C5-Brief S. 1.)
 
-\** Nur, wenn der Abschnitt „Approved therapies" für MLD die Zulassung mit EMA- oder FDA-Quelle zeigt (Pipeline-Daten, kein „FIXTURE"-Badge). Ersatzsatz: „The MLD community already runs studies this group can ask to join, instead of starting from zero." (dazu die Studienliste der MLD-Seite kurz ins Bild; 48 Studien im Export). „That study design exists." entfällt dann.
+\** Stand 01:30 im Live-Tool belegt: Libmeldy (EMA) und Lenmeldy (FDA) unter „Approved therapies", HOME-Studie unter „Reusable assets". **Geändert gegenüber 01:15:** Früher hieß es „proven with a study that followed untreated children for years". Das ist medizinisch richtig (Fumagalli et al., Lancet 2022, PMID 35065785), aber diese Vergleichskohorte ist **nicht** im Tool sichtbar; die HOME-Studie im Bild ist eine andere Studie. Die Demo sagt deshalb nur, was die Karte zeigt. Im Pitch (ohne Tool im Bild, mit Fußnote) bleibt der alte Satz. Ersatz, falls die Karte vor dem Dreh anders aussieht: Nur, wenn der Abschnitt „Approved therapies" für MLD die Zulassung mit EMA- oder FDA-Quelle zeigt (Pipeline-Daten, kein „FIXTURE"-Badge). Ersatzsatz: „The MLD community already runs studies this group can ask to join, instead of starting from zero." (dazu die Studienliste der MLD-Seite kurz ins Bild; 48 Studien im Export). „That study design exists." entfällt dann.
 
 Das Gegenbeispiel Pelizaeus-Merzbacher passt nicht in 60 s und bleibt im Tool (`mechanism differs`) und im Tech-Video.
 

@@ -53,7 +53,7 @@ Problem. There are about 10,000 known rare diseases, and fewer than 5 % have an 
 
 Approach. Constellate is a map of rare diseases sorted by what goes wrong in the body, not by name. An offline pipeline joins open primary sources (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, Europe PMC, NIH RePORTER, Open Targets, Reactome, EMA and FDA records) into a graph of 874 diseases (350 lysosomal and leukodystrophy core diseases plus 524 neighbours), 1,066 genes and 5,642 phenotypes. Every link carries its source, date, evidence level, confidence and a slot for counter-evidence.
 
-Solution. We follow Nora, a composite mother, in two moments. The night after the diagnosis, her child has Krabbe disease; Constellate shows open studies, patient groups from a hand-checked list, or an honest answer. Months later, she leads a patient group and finds metachromatic leukodystrophy (MLD) as a neighbour on the map. MLD has an approved gene therapy (EMA 2020, FDA 2024) and a natural-history study that followed untreated children. The Action Card turns this into a one-page proposal: what transfers, what differs, what needs expert review, every sentence citing the links it rests on. Where there is no trail, the Honest Gap screen lists what was searched, when, and what would close the gap.
+Solution. We follow Maria, the patient leader from the challenge brief, in two moments. The night after the diagnosis, her child has Krabbe disease; Constellate shows open studies, patient groups from a hand-checked list, or an honest answer. Months later, she leads a patient group and finds metachromatic leukodystrophy (MLD) as a neighbour on the map. MLD has an approved gene therapy (EMA 2020, FDA 2024) and a natural-history study that shows how the disease unfolds over time. The Action Card turns this into a one-page proposal: what transfers, what differs, what needs expert review, every sentence citing the links it rests on. Where there is no trail, the Honest Gap screen lists what was searched, when, and what would close the gap.
 
 Evidence model. Four levels: observed, curated, text-mined, inferred. A level is never raised, and computed links show their formula. 251 disease pairs that look alike but differ in mechanism are flagged automatically, for example Pelizaeus-Merzbacher disease next to Krabbe disease.
 
@@ -63,7 +63,7 @@ What we measured. Our symptom similarity agrees with Monarch semantic similarity
 
 What we validate next. Extract precision and Reconcile accuracy on hand-labelled samples, and, with patient-group leaders, whether an Action Card leads to a real conversation with a neighbouring community.
 
-Constellate is research navigation, not medical advice. Nora is a composite persona, not a real patient.
+Constellate is research navigation, not medical advice. Maria is the persona from the challenge brief, not a real patient.
 ```
 
 ### 5b · Built with OpenAI
@@ -126,7 +126,7 @@ Ein Link gilt erst als eingetragen, wenn er im privaten Fenster geklickt wurde.
 Video-Beschreibung (Demo und Tech, je unter das Video):
 
 ```
-Constellate, Hack-Nation 7th Global AI Hackathon, Challenge 5 "AI Atlas for the World's Rare Diseases", Vienna Hub. Live demo: https://constellate-vert.vercel.app. Voice-over generated with ElevenLabs (Eleven v4). Nora is a composite persona. Research navigation, not medical advice.
+Constellate, Hack-Nation 7th Global AI Hackathon, Challenge 5 "AI Atlas for the World's Rare Diseases", Vienna Hub. Live demo: https://constellate-vert.vercel.app. Voice-over generated with ElevenLabs (Eleven v4). Maria is the persona from the challenge brief, not a real person. Research navigation, not medical advice.
 ```
 
 Team-Video: dieselbe Zeile ohne den Voice-over-Satz (echte Stimmen).
@@ -134,7 +134,7 @@ Team-Video: dieselbe Zeile ohne den Voice-over-Satz (echte Stimmen).
 ## 10 · Offenlegung (für ein Feld „Anything else" oder das README)
 
 ```
-Voice-over in the demo and technical videos generated with ElevenLabs (Eleven v4); the team video uses our own voices. Nora is a composite persona; no real patient story is used. Patient organisations appear only after a team member verified them by hand.
+Voice-over in the demo and technical videos generated with ElevenLabs (Eleven v4); the team video uses our own voices. Maria is the persona from the challenge brief; no real patient story is used. Patient organisations appear only after a team member verified them by hand.
 ```
 
 Offen für Hanno (siehe §12): ob ein Satz zur Entwicklung mit KI-Coding-Assistenten dazukommt.

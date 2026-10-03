@@ -162,5 +162,5 @@ Duration: 15 seconds. Aspect ratio: 16:9.
 ## Was bewusst nicht gebrieft wird
 
 - Kein „Erklärclip" zur Krankheit oder zum Mechanismus: jede inhaltliche Aussage gehört in die App und die Pflichtvideos, wo sie mit Kante und Quelle steht.
-- Keine Nora-Figur als Animation: Die Komposit-Figur lebt in zwei Sätzen und Klicks, nicht als gezeichnete Person.
+- Keine Maria-Figur als Animation: Die Persona aus dem Brief lebt in zwei Sätzen und Klicks, nicht als gezeichnete Person.
 - Kein Clip mit dem Brief-Slogan „Five thousand points of light": Jedes Team hat ihn.

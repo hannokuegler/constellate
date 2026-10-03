@@ -1,4 +1,4 @@
-.PHONY: setup fetch slice build enrich enrich-extra extract reconcile analytics trials validate reproduce dev
+.PHONY: setup fetch slice build enrich enrich-extra extract reconcile analytics trials validate reproduce dev explain
 PY=uv run --project pipeline python
 
 setup:          ## install python + node deps
@@ -30,3 +30,5 @@ reproduce: fetch slice build enrich extract reconcile analytics trials  ## full 
 
 dev:            ## run the app locally
 	cd app && npm run dev
+explain:        ## precompute /api/explain answers for action cards (needs OPENAI_API_KEY + OPENAI_MODEL_EXPLAIN), see app/README.md
+	cd app && npm run explain -- --core 50

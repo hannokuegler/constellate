@@ -283,6 +283,20 @@ def main() -> int:
             err(f"{where}: personal contact data must not be exported")
     shard_counts["trial"] = len(list((OUT / "trial").glob("*.json"))) if (OUT / "trial").is_dir() else 0
 
+    # ---- precomputed explanations (app/scripts/precompute-explain.ts, optional)
+    for f in sorted((OUT / "explain").glob("*.json")) if (OUT / "explain").is_dir() else []:
+        where = f"explain/{f.name}"
+        x = load(f) or {}
+        ids = set(x.get("edge_ids", []))
+        if x.get("key") != f.stem or not ids or not x.get("model") or not x.get("generated_at"):
+            err(f"{where}: key must match the file name, edge_ids, model and generated_at are required")
+        if unknown := sorted(i for i in ids if i not in seen_ids):
+            err(f"{where}: edge ids not in the export: {unknown[:3]}")
+        for s_ in x.get("sentences", []):
+            if not s_.get("edge_ids") or not set(s_["edge_ids"]) <= ids:
+                err(f"{where}: sentence without a valid citation: {str(s_.get('text'))[:60]}")
+    shard_counts["explain"] = len(list((OUT / "explain").glob("*.json"))) if (OUT / "explain").is_dir() else 0
+
     # ---- hero path
     def children_closure(root: str) -> set[str]:
         seen, stack = set(), [root]

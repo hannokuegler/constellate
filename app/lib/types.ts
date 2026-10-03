@@ -2,7 +2,7 @@
 
 export type EvidenceLevel = "observed" | "curated" | "text_mined" | "inferred";
 export type EdgeLevel = EvidenceLevel | "contradicted" | "search_hit";
-export type NodeType = "disease" | "gene" | "phenotype";
+export type NodeType = "disease" | "gene" | "phenotype" | "org";
 
 export interface Evidence {
   db: string;
@@ -13,6 +13,16 @@ export interface Evidence {
   date?: string;
   confidence?: number;
   snippet?: string;
+  /** LLM-produced evidence (05 extract, 06 reconcile judge) stays attributable */
+  model?: string;
+  prompt_version?: string;
+  claim?: string;
+  predicate?: string;
+  polarity?: string;
+  study_context?: string;
+  reason?: string;
+  free_text_name?: string;
+  draft_input?: boolean;
 }
 
 export interface Edge {
@@ -114,14 +124,58 @@ export interface PaperRecord {
   date?: string;
 }
 
-export interface Org {
-  name: string;
-  url?: string;
-  country?: string;
-  has_registry?: boolean;
-  has_natural_history_study?: boolean;
-  verified_date?: string;
-  edge?: Edge;
+/** Flags come from the curated CSV: booleans or strings such as "yes" / "no". */
+export type Flag = boolean | string | null | undefined;
+
+export interface OrgCard {
+  id: string;
+  label: string;
+  url?: string | null;
+  country?: string | null;
+  has_registry?: Flag;
+  registry_url?: string | null;
+  has_natural_history_study?: Flag;
+  nhs_url?: string | null;
+  has_biobank?: Flag;
+  contact_url?: string | null;
+  verified_date?: string | null;
+  draft_input?: boolean;
+}
+
+export interface OrgFile {
+  node: OrgCard & { disease_names?: string[]; orpha_ids?: string[]; input_file?: string; notes?: string | null };
+  diseases: { id: string; label: string; in_core?: boolean; edge: Edge }[];
+}
+
+export interface GapCommunity {
+  id: string;
+  label: string;
+  relation: string;
+  tier?: number;
+  simgic?: number;
+  shared_genes?: string[];
+  shared_pathways?: { id: string; label: string }[];
+  mechanism_differs?: boolean | null;
+  orgs?: { id: string; label: string; url?: string | null; edge_id?: string }[];
+}
+
+export interface GapSearched {
+  source: string;
+  retrieved?: string | null;
+  hits_raw?: number | null;
+  hits_kept?: number | null;
+  n_orgs?: number;
+  verified?: string | null;
+  draft?: boolean;
+  note?: string | null;
+}
+
+/** Pipeline honest-gap block for a disease without a patient organisation. */
+export interface Gap {
+  orgs: string;
+  nearest_communities: GapCommunity[];
+  searched: GapSearched[];
+  closing_the_gap: string | string[];
 }
 
 export interface DiseaseFile {
@@ -152,7 +206,10 @@ export interface DiseaseFile {
     totals?: Record<string, number>;
   };
   coverage?: Coverage[];
-  orgs?: Org[];
+  orgs?: { org: OrgCard; edge: Edge }[];
+  gap?: Gap;
+  /** AI-extracted literature edges of other types (associated_with, biomarker_of, …) */
+  text_mined?: Edge[];
 }
 
 export interface GeneFile {
@@ -163,6 +220,7 @@ export interface GeneFile {
   /** generic pathways (pipeline), shown collapsed */
   pathways_more?: { id?: string; label?: string; node?: { id: string; label: string }; edge: Edge }[];
   pathways_note?: string;
+  text_mined?: Edge[];
 }
 
 export interface PhenotypeFile {

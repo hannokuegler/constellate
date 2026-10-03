@@ -1,5 +1,5 @@
 // Tolerant readers: the fixture and the pipeline differ in a few optional shapes. Views only use these helpers.
-import type { Coverage, DiseaseFile, Edge, EnrichmentItem, GeneFile, Meta, PaperRecord, PhenotypeFile } from "./types";
+import type { Coverage, DiseaseFile, Edge, EnrichmentItem, Flag, Gap, GeneFile, Meta, OrgCard, PaperRecord, PhenotypeFile } from "./types";
 
 export function nodeLabels(file: DiseaseFile): Record<string, string> {
   const labels: Record<string, string> = { [file.node.id]: file.node.label, ...file.node.parents_labels, ...file.node.children_labels };
@@ -8,6 +8,7 @@ export function nodeLabels(file: DiseaseFile): Record<string, string> {
   for (const n of file.neighbours) labels[n.id] = n.label;
   for (const kind of ["trials", "grants", "papers", "targets"] as const)
     for (const item of enrichmentItems(file, kind)) labels[item.node.id] = String(item.node.label ?? item.node.id);
+  for (const { org } of orgItems(file)) labels[org.id] = org.label;
   return labels;
 }
 
@@ -33,6 +34,8 @@ export function allDiseaseEdges(file: DiseaseFile): Edge[] {
     ...file.phenotypes.map((p) => p.edge),
     ...file.neighbours.map((n) => n.edge),
     ...(["trials", "grants", "papers", "targets"] as const).flatMap((k) => enrichmentItems(file, k).map((i) => i.edge)),
+    ...orgItems(file).map((o) => o.edge),
+    ...(file.text_mined ?? []),
   ];
 }
 
@@ -88,4 +91,41 @@ export function trialPhase(node: Record<string, unknown>): string | null {
   if (typeof node.phase_label === "string" && node.phase_label) return node.phase_label;
   if (Array.isArray(node.phases) && node.phases.length) return node.phases.map((p) => String(p).toLowerCase().replace("phase", "phase ")).join("/");
   return null;
+}
+
+/** "yes" / "true" / true → true, "no" / false → false, empty → null */
+export function flag(value: Flag): boolean | null {
+  if (typeof value === "boolean") return value;
+  if (typeof value !== "string" || !value.trim()) return null;
+  const v = value.trim().toLowerCase();
+  if (["yes", "y", "true", "1", "ja"].includes(v)) return true;
+  if (["no", "n", "false", "0", "nein"].includes(v)) return false;
+  return null;
+}
+
+export function orgItems(file: DiseaseFile): { org: OrgCard; edge: Edge }[] {
+  return Array.isArray(file.orgs) ? file.orgs.filter((o) => o && o.org && o.edge) : [];
+}
+
+export function orgSlug(id: string): string {
+  return (id.includes(":") ? id.split(":").slice(1).join(":") : id).replace(/[^A-Za-z0-9._-]/g, "_");
+}
+
+export function closingList(gap: Gap): string[] {
+  const value = gap.closing_the_gap;
+  return (Array.isArray(value) ? value : [value]).filter(Boolean);
+}
+
+const TIER_LABEL = ["same disease family", "shared causal gene", "shared pathway", "phenotype similarity only"];
+export function tierLabel(tier: number | undefined): string | null {
+  return tier === undefined ? null : TIER_LABEL[tier] ?? null;
+}
+
+/** Evidence produced by a model: who made it, with which prompt. */
+export function aiOrigin(ev: { db?: string; origin?: string; model?: string; level?: string }): string | null {
+  if (!ev.model && ev.level !== "text_mined") return null;
+  const origin = (ev.origin ?? "").toLowerCase();
+  if (ev.db === "PubMed" || origin.includes("extract")) return "Extracted by OpenAI from a PubMed abstract";
+  if (origin.includes("judge")) return "Matched by an OpenAI judge from the organisation website";
+  return "Produced by a language model";
 }

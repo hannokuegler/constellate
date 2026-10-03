@@ -23,8 +23,15 @@ export function phenotypeHref(id: string): string {
   return `/p/${toFileKey(id)}`;
 }
 
+/** ORG:mld-foundation -> /o/mld-foundation (same slug rule as the pipeline's org shard names) */
+export function orgHref(id: string): string {
+  const slug = (id.includes(":") ? id.split(":").slice(1).join(":") : id).replace(/[^A-Za-z0-9._-]/g, "_");
+  return `/o/${encodeURIComponent(slug)}`;
+}
+
 export function hrefFor(type: string, id: string): string {
   if (type === "gene") return geneHref(id);
+  if (type === "org") return orgHref(id);
   if (type === "phenotype") return phenotypeHref(id);
   return diseaseHref(id);
 }

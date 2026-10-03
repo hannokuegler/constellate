@@ -23,7 +23,7 @@ export const PERSONAS: Persona[] = [
     role: "Patient-group leader",
     goal: "Find a related community and assets to reuse",
     placeholder: "Search a disease, gene, symptom or ID",
-    typeBoost: { disease: 0.06 },
+    typeBoost: { disease: 0.06, org: 0.06 },
     panelOrder: ["neighbours", "genes", "phenotypes", "research"],
     graphPhenotypes: 8,
     wording: { neighbours: "Related communities", neighboursHint: "Diseases linked by shared genes or phenotypes" },

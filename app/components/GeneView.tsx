@@ -15,6 +15,7 @@ import { EvidenceButton } from "./DiseaseView";
 import HonestGap from "./HonestGap";
 import { Skeleton } from "./Skeleton";
 import { pathwayRefs } from "@/lib/normalize";
+import TextMined from "./TextMined";
 
 /** "infantile Krabbe disease", "Krabbe disease due to saposin A deficiency" → "Krabbe disease" (display grouping only). */
 export function familyName(label: string): string {
@@ -63,7 +64,11 @@ export default function GeneView({ symbol }: { symbol: string }) {
       nodes.push({ id: e.source, label: lab(e.source), kind: e.type === "caused_by" ? "disease" : "neighbour" });
       links.push({ source: file.node.id, target: e.source, edge: e });
     }
-    const labels: Record<string, string> = Object.fromEntries([[file.node.id, file.node.id], ...file.diseases.map((e) => [e.source, lab(e.source)])]);
+    const labels: Record<string, string> = Object.fromEntries([
+      [file.node.id, file.node.id],
+      ...file.diseases.map((e) => [e.source, lab(e.source)]),
+      ...(file.text_mined ?? []).flatMap((e) => [[e.source, lab(e.source)], [e.target, lab(e.target)]]),
+    ]);
     const pathways = pathwayRefs(file);
     const pathwaysMore = pathwayRefs(file, "pathways_more");
     for (const p of [...pathways, ...pathwaysMore]) labels[p.id] = p.label;
@@ -71,7 +76,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
   }, [file, index]);
 
   useEffect(() => {
-    if (view && file) register([...file.diseases, ...view.pathways.map((p) => p.edge), ...view.pathwaysMore.map((p) => p.edge)], view.labels);
+    if (view && file) register([...file.diseases, ...view.pathways.map((p) => p.edge), ...view.pathwaysMore.map((p) => p.edge), ...(file.text_mined ?? [])], view.labels);
   }, [view, file, register]);
 
   if (error) return <p className="card mt-6 px-5 py-5" role="alert">⚠️ Gene data could not be loaded: {error}</p>;
@@ -154,6 +159,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
               ))}
             </ul>
           </section>
+          <TextMined edges={file.text_mined ?? []} labelOf={(id) => v.labels[id] ?? id} onEdge={openEdge} />
           <section className="card px-4 py-4">
             <h2 className="text-[17px] font-semibold">Pathways <span className="tabular text-[13px] font-normal text-ink-2">{v.pathways.length}</span></h2>
             {file.pathways_note && <p className="mt-1 text-[13px] text-ink-2">{file.pathways_note}</p>}

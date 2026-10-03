@@ -20,6 +20,12 @@ export const RELATION_LABEL: Record<string, string> = {
   funded_by: "grant",
   mentioned_in: "paper",
   target_score: "target association",
+  advocated_by: "patient organisation",
+  associated_with: "associated with",
+  biomarker_of: "biomarker of",
+  treated_by: "treated by",
+  shares_mechanism_with: "shares mechanism with",
+  causes: "causes",
 };
 
 export function hasCounterEvidence(edge: Edge): boolean {

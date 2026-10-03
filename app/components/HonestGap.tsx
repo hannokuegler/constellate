@@ -1,6 +1,8 @@
 import Link from "next/link";
 import type { Edge } from "@/lib/types";
-import { diseaseHref } from "@/lib/ids";
+import { diseaseHref, orgHref } from "@/lib/ids";
+import type { Gap } from "@/lib/types";
+import { closingList, tierLabel } from "@/lib/normalize";
 import { formatConfidence, formatDate } from "@/lib/evidence";
 
 export interface GapSearch {
@@ -9,6 +11,7 @@ export interface GapSearch {
   hits?: number;
   fetched_at?: string;
   note?: string | null;
+  draft?: boolean;
 }
 
 export interface GapNeighbour {
@@ -17,6 +20,34 @@ export interface GapNeighbour {
   via: string;
   confidence?: number;
   edge?: Edge;
+  tier?: string | null;
+  mechanismDiffers?: boolean | null;
+  orgs?: { id: string; label: string }[];
+}
+
+/** Adapter: the pipeline's `gap` block → HonestGap props (built-in texts stay the fallback). */
+export function gapProps(gap: Gap): Pick<Props, "searched" | "nearest" | "close" | "asOf"> {
+  const dates = gap.searched.map((s) => s.retrieved ?? s.verified).filter((d): d is string => Boolean(d)).sort();
+  return {
+    searched: gap.searched.map((s) => ({
+      source: s.source,
+      hits: s.hits_raw ?? undefined,
+      fetched_at: s.retrieved ?? s.verified ?? undefined,
+      note: s.note ?? (s.hits_kept !== undefined && s.hits_kept !== null && s.hits_raw !== s.hits_kept ? `${s.hits_kept} kept` : null),
+      draft: s.draft,
+    })),
+    nearest: gap.nearest_communities.map((n) => ({
+      id: n.id,
+      label: n.label,
+      via: n.relation,
+      confidence: n.simgic,
+      tier: tierLabel(n.tier),
+      mechanismDiffers: n.mechanism_differs,
+      orgs: n.orgs,
+    })),
+    close: closingList(gap),
+    asOf: dates[dates.length - 1],
+  };
 }
 
 interface Props {
@@ -49,7 +80,9 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                   <span className="font-semibold">{s.source}</span>
                   {s.hits !== undefined && <span className="tabular text-ink-2">{s.hits} hits</span>}
                   {s.fetched_at && <span className="text-ink-2">{formatDate(s.fetched_at)}</span>}
+                  {s.draft && <span className="rounded-full bg-warn-soft px-2 text-[12px] font-semibold text-warn">draft list</span>}
                   {s.query && <span className="w-full truncate text-[12px] text-ink-2" title={s.query}>{s.query}</span>}
+                  {s.note && <span className="w-full text-[12px] text-ink-2">{s.note}</span>}
                 </li>
               ))}
             </ul>
@@ -61,7 +94,28 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
           <h4 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Nearest related communities</h4>
           {nearest.length ? (
             <ul className="mt-2 space-y-1">
-              {nearest.map((n) => (
+              {nearest.map((n) => n.tier !== undefined || n.orgs ? (
+                <li key={n.id} className="border-b border-line py-2 last:border-0">
+                  <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center text-[15px] font-medium text-accent underline-offset-2 hover:underline">
+                    {n.label}
+                  </Link>
+                  <p className="text-[12px] text-ink-2">
+                    {n.tier && <span className="font-semibold">{n.tier}: </span>}
+                    {n.via}
+                    {n.confidence !== undefined && n.confidence !== null && ` · simGIC ${formatConfidence(n.confidence)}`}
+                  </p>
+                  {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full bg-warn-soft px-2 text-[12px] font-semibold text-warn">mechanism differs</span>}
+                  {!!n.orgs?.length && (
+                    <p className="mt-1 flex flex-wrap gap-x-2 text-[13px]">
+                      {n.orgs.map((o) => (
+                        <Link key={o.id} href={orgHref(o.id)} className="inline-flex min-h-11 items-center underline underline-offset-2">
+                          {o.label}
+                        </Link>
+                      ))}
+                    </p>
+                  )}
+                </li>
+              ) : (
                 <li key={n.id} className="flex min-h-11 items-center gap-2">
                   <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center truncate text-[15px] font-medium text-accent underline-offset-2 hover:underline">
                     {n.label}

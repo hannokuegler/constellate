@@ -1,15 +1,17 @@
-import type { Core, DiseaseFile, GeneFile, IndexEntry, Meta, PhenotypeFile } from "./types";
+import type { Core, DiseaseFile, GeneFile, IndexEntry, Meta, OrgFile, PhenotypeFile } from "./types";
 import { toFileKey } from "./ids";
 
 const cache = new Map<string, Promise<unknown>>();
+// dev/test hook: serve data from another origin (CDN or a local mock) without touching public/data
+const DATA_BASE = (process.env.NEXT_PUBLIC_DATA_BASE || "/data").replace(/\/$/, "");
 
 /** Fetch a static data file from /data. Resolves null on 404 (missing file is a state, not an error). */
 export function loadJson<T>(path: string): Promise<T | null> {
   const hit = cache.get(path);
   if (hit) return hit as Promise<T | null>;
-  const request = fetch(`/data/${path}`).then(async (response) => {
+  const request = fetch(`${DATA_BASE}/${path}`).then(async (response) => {
     if (response.status === 404) return null;
-    if (!response.ok) throw new Error(`/data/${path}: HTTP ${response.status}`);
+    if (!response.ok) throw new Error(`${DATA_BASE}/${path}: HTTP ${response.status}`);
     return (await response.json()) as T;
   });
   request.catch(() => cache.delete(path)); // allow retry after a network error
@@ -23,6 +25,7 @@ export const loadCore = () => loadJson<Core>("core.json");
 export const loadDisease = (id: string) => loadJson<DiseaseFile>(`disease/${toFileKey(id)}.json`);
 export const loadGene = (symbol: string) => loadJson<GeneFile>(`gene/${encodeURIComponent(symbol)}.json`);
 export const loadPhenotype = (id: string) => loadJson<PhenotypeFile>(`phenotype/${toFileKey(id)}.json`);
+export const loadOrg = (slug: string) => loadJson<OrgFile>(`org/${encodeURIComponent(slug)}.json`);
 
 let labelMap: Promise<Map<string, IndexEntry>> | null = null;
 export function loadIndexMap(): Promise<Map<string, IndexEntry>> {

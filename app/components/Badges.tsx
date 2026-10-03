@@ -36,6 +36,7 @@ const TYPE_STYLE: Record<NodeType, { label: string; dot: string }> = {
   disease: { label: "Disease", dot: "var(--n-disease)" },
   gene: { label: "Gene", dot: "var(--n-gene)" },
   phenotype: { label: "Symptom", dot: "var(--n-phenotype)" },
+  org: { label: "Patient group", dot: "var(--n-pathway)" },
 };
 
 export function TypeBadge({ type }: { type: NodeType }) {

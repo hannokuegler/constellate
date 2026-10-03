@@ -1,7 +1,7 @@
 // Action Card = template sentences built only from edges. Every sentence carries the edge ids it rests on.
 import type { DiseaseFile, Edge, GeneFile, Neighbour } from "./types";
 import { refOf } from "./ids";
-import { enrichmentItems, nodeLabels, paperRecords, pathwayRefs, trialPhase } from "./normalize";
+import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase } from "./normalize";
 import { RELATION_LABEL, formatConfidence, formatDate } from "./evidence";
 
 export interface CardSentence {
@@ -100,6 +100,13 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
     const phase = trialPhase(trial.node);
     transfers.push({ text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected`, edgeIds: cite(trial.edge) });
   }
+  for (const { org, edge } of (neighbourFile ? orgItems(neighbourFile) : []).slice(0, 2)) {
+    const assets = [flag(org.has_registry) && "a patient registry", flag(org.has_natural_history_study) && "a natural history study", flag(org.has_biobank) && "a biobank"].filter(Boolean) as string[];
+    transfers.push({
+      text: `${org.label}${org.country ? ` (${org.country})` : ""} is a patient organisation for ${N}${assets.length ? ` and lists ${list(assets)}` : ""}${org.draft_input ? " (unverified draft entry)" : ""}`,
+      edgeIds: cite(edge),
+    });
+  }
   const grants = neighbourFile ? enrichmentItems(neighbourFile, "grants") : [];
   if (grants[0]) {
     const org = typeof grants[0].node.organization === "string" ? ` at ${grants[0].node.organization}` : "";
@@ -163,8 +170,12 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
       { key: "review", title: "Needs expert review", hint: "Computed links and open questions", sentences: review },
     ],
     edges,
-    labels: { ...labels, ...pathwayLabels, ...labelsFrom(disease, neighbourFile) },
+    labels: { ...labels, ...pathwayLabels, ...orgLabels(neighbourFile), ...labelsFrom(disease, neighbourFile) },
   };
+}
+
+function orgLabels(file: DiseaseFile | null): Record<string, string> {
+  return Object.fromEntries((file ? orgItems(file) : []).map(({ org }) => [org.id, org.label]));
 }
 
 function labelsFrom(disease: DiseaseFile, other: DiseaseFile | null): Record<string, string> {

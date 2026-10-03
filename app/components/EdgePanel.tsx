@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { loadDisease } from "@/lib/data";
-import { allDiseaseEdges } from "@/lib/normalize";
+import { aiOrigin, allDiseaseEdges } from "@/lib/normalize";
 import type { Edge, Evidence } from "@/lib/types";
 import { LEVEL_INFO, RELATION_LABEL, formatConfidence, formatDate, hasCounterEvidence } from "@/lib/evidence";
 import { LevelBadge } from "./Badges";
@@ -182,7 +182,24 @@ function EvidenceItem({ ev, contra = false }: { ev: Evidence; contra?: boolean }
           )}
         </p>
       )}
+      {aiOrigin(ev) && (
+        <div className="mt-2 rounded-[12px] bg-accent-soft px-3 py-2 text-[13px] text-accent">
+          <p className="font-semibold">{aiOrigin(ev)}</p>
+          <p className="text-[12px]">
+            {ev.model ? `model ${ev.model}` : "model not recorded"}
+            {ev.prompt_version ? ` · prompt ${ev.prompt_version}` : ""} · unverified until a person checks the source
+          </p>
+        </div>
+      )}
+      {ev.draft_input && <p className="mt-2 text-[12px] font-semibold text-warn">From an unverified draft list</p>}
+      {ev.claim && (
+        <p className="mt-2 text-[13px]">
+          Claim: <span className="font-medium">{ev.claim}</span>
+          {ev.study_context && ev.study_context !== "not_stated" ? ` (${ev.study_context.replaceAll("_", " ")})` : ""}
+        </p>
+      )}
       {ev.snippet && <p className="mt-2 text-[13px] leading-relaxed text-ink-2">“{ev.snippet}”</p>}
+      {ev.reason && <p className="mt-1 text-[12px] text-ink-2">Reason given: {ev.reason}</p>}
       <p className="tabular mt-2 text-[12px] text-ink-2">
         {formatDate(ev.date)} · confidence {formatConfidence(ev.confidence)}
       </p>

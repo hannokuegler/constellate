@@ -12,11 +12,13 @@ import { useEdgePanel, usePrefs } from "./Providers";
 import EgoGraph from "./EgoGraph";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 import { LevelBadge } from "./Badges";
-import HonestGap from "./HonestGap";
+import HonestGap, { gapProps } from "./HonestGap";
+import { OrgList } from "./Orgs";
+import TextMined from "./TextMined";
 import ActionCard from "./ActionCard";
 import { pickDefaultVia } from "@/lib/actioncard";
 import { Skeleton } from "./Skeleton";
-import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
+import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, orgItems, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
 
 type State =
   | { status: "loading" }
@@ -113,13 +115,28 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const [cardOpen, setCardOpen] = useState(false);
   const [showAllPhenotypes, setShowAllPhenotypes] = useState(false);
 
-  const labels = useMemo(() => nodeLabels(file), [file]);
+  const [indexLabels, setIndexLabels] = useState<Record<string, string>>({});
+  const labels = useMemo(() => ({ ...indexLabels, ...nodeLabels(file) }), [file, indexLabels]);
+
+  useEffect(() => {
+    // text-mined edges can point at nodes this shard does not describe: take their labels from the search index
+    const ids = (file.text_mined ?? []).flatMap((e) => [e.source, e.target]);
+    if (!ids.length) return;
+    let alive = true;
+    loadIndexMap().then((index) => {
+      if (alive) setIndexLabels(Object.fromEntries(ids.map((id) => [id, index.get(id)?.label ?? id])));
+    }, () => undefined);
+    return () => {
+      alive = false;
+    };
+  }, [file]);
 
   useEffect(() => {
     register(allDiseaseEdges(file), labels);
   }, [file, labels, register]);
 
-  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes), [file, persona.graphPhenotypes]);
+  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes, labels), [file, persona.graphPhenotypes, labels]);
+  const orgs = orgItems(file);
 
   const openCard = useCallback((neighbourId: string) => {
     setVia(neighbourId);
@@ -226,6 +243,17 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
               );
             })}
             {node.in_core && <span className="rounded-full bg-accent-soft px-2.5 py-1 font-semibold text-accent">core cluster</span>}
+            {orgs.length > 0 ? (
+              <a href="#patient-organisations" className="-my-1.5 inline-flex min-h-11 items-center">
+                <span className="rounded-full bg-ok-soft px-2.5 py-1 font-semibold text-ok">
+                  {orgs.length} patient organisation{orgs.length > 1 ? "s" : ""}
+                </span>
+              </a>
+            ) : file.gap ? (
+              <a href="#patient-organisations" className="-my-1.5 inline-flex min-h-11 items-center">
+                <span className="rounded-full bg-warn-soft px-2.5 py-1 font-semibold text-warn">no patient organisation · honest gap</span>
+              </a>
+            ) : null}
             {node.is_group && <span className="rounded-full border border-line px-2.5 py-1" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
             {node.mechanism_classes?.map((m) => (
               <span key={m.key} className="rounded-full bg-surface-2 px-2.5 py-1" title={m.via_label ? `via ${m.via_label}` : undefined}>
@@ -295,6 +323,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
             </section>
           )}
           {persona.panelOrder.map((key) => sections[key])}
+          <TextMined edges={file.text_mined ?? []} labelOf={(id) => labels[id] ?? id} onEdge={openEdge} />
         </div>
       </div>
 
@@ -307,7 +336,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   );
 }
 
-function buildGraph(file: DiseaseFile, phenotypeCount: number): { nodes: GraphNode[]; links: GraphLink[] } {
+function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<string, string>): { nodes: GraphNode[]; links: GraphLink[] } {
   const nodes = new Map<string, GraphNode>();
   const links: GraphLink[] = [];
   const center = file.node.id;
@@ -329,6 +358,16 @@ function buildGraph(file: DiseaseFile, phenotypeCount: number): { nodes: GraphNo
     // second hop: the neighbour's shared genes and phenotypes that are on screen
     for (const g of n.shared_genes.map((x) => refOf(x).id)) if (nodes.has(g)) links.push({ source: n.id, target: g, edge: n.edge, secondHop: true });
     for (const p of n.shared_phenotypes) if (nodes.has(p.id)) links.push({ source: n.id, target: p.id, edge: n.edge, secondHop: true });
+  }
+  // AI-extracted literature links: drawn dashed (level text_mined), at most 8 so they do not crowd the curated picture
+  for (const e of (file.text_mined ?? []).slice(0, 8)) {
+    const other = e.source === center ? e.target : e.target === center ? e.source : null;
+    if (!other) continue;
+    if (!nodes.has(other)) {
+      const kind = other.startsWith("HP:") ? "phenotype" : other.startsWith("MONDO:") ? "neighbour" : "gene";
+      nodes.set(other, { id: other, label: labels[other] ?? other, kind });
+    }
+    links.push({ source: e.source, target: e.target, edge: e });
   }
   return { nodes: [...nodes.values()], links };
 }
@@ -415,8 +454,9 @@ function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onE
   ];
   const papers = paperRecords(file);
   const total = groups.reduce((n, g) => n + g.items.length, 0) + papers.length;
+  const orgCount = orgItems(file).length;
   return (
-    <Section title="Research and community" hint="Trials, grants, papers and patient organisations" count={total + (file.orgs?.length ?? 0)}>
+    <Section title="Research and community" hint="Trials, grants, papers and patient organisations" count={total + orgCount}>
       {total === 0 ? (
         <HonestGap
           variant="section"
@@ -473,24 +513,29 @@ function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onE
           )}
         </div>
       )}
-      <div className="mt-4">
-        {file.orgs?.length ? (
-          <ul className="divide-y divide-line">
-            {file.orgs.map((o) => (
-              <li key={o.name} className="py-2 text-[15px]">
-                {o.url ? <a href={o.url} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">{o.name}</a> : o.name}
-                {o.verified_date && <span className="ml-2 text-[12px] text-ink-2">verified {o.verified_date}</span>}
-              </li>
-            ))}
-          </ul>
+      <div className="mt-4" id="patient-organisations">
+        <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Patient organisations</h3>
+        {orgItems(file).length ? (
+          <OrgList orgs={orgItems(file)} onEdge={onEdge} />
+        ) : file.gap ? (
+          <div className="mt-2">
+            <HonestGap
+              variant="section"
+              title={`No patient organisation for ${file.node.label} in the curated list`}
+              reason="Nearest communities are ranked by mechanism before symptoms: same disease family, shared causal gene, shared pathway, then phenotype similarity."
+              {...gapProps(file.gap)}
+            />
+          </div>
         ) : (
-          <HonestGap
-            variant="section"
-            title="No patient organisation linked"
-            reason="The curated organisation list has no verified entry for this diagnosis in the current data."
-            searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
-            close={["A hand-verified organisation entry with URL and verification date"]}
-          />
+          <div className="mt-2">
+            <HonestGap
+              variant="section"
+              title="No patient organisation linked"
+              reason="The curated organisation list has no entry for this diagnosis in the current data."
+              searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
+              close={["A hand-verified organisation entry with URL and verification date"]}
+            />
+          </div>
         )}
       </div>
     </Section>

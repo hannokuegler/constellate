@@ -1,0 +1,561 @@
+{
+ "_comment": "FIXTURE for development only. Loaded when NEXT_PUBLIC_USE_FIXTURES=1; never part of public/data. Content restates docs/MEDICAL-BACKGROUND.md; snippets are marked FIXTURE and are not verbatim source quotes.",
+ "shards": {
+  "MONDO:0009499": {
+   "fixture_v2": true,
+   "assets": {
+    "items": [
+     {
+      "node": {
+       "id": "ASSET:krabbe-tuebingen-natural-history",
+       "label": "Natural history study of Krabbe disease, Germany (clinical and MRI data)",
+       "asset_type": "natural_history_study",
+       "country": "Germany",
+       "status": "published",
+       "source_type": "PMID",
+       "source_id": "32912261",
+       "url": "https://pubmed.ncbi.nlm.nih.gov/32912261/"
+      },
+      "edge": {
+       "id": "e_ef7487906f59",
+       "source": "MONDO:0009499",
+       "target": "ASSET:krabbe-tuebingen-natural-history",
+       "type": "has_asset",
+       "evidence": [
+        {
+         "db": "PubMed",
+         "origin": "PubMed",
+         "record": "PMID:32912261",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/32912261/",
+         "date": "2020",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: Nationwide German natural history study of Krabbe disease with clinical and MRI data, Tuebingen (Krieg et al., Orphanet J Rare Dis 2020), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "PubMed"
+       ]
+      }
+     }
+    ],
+    "searched": [
+     {
+      "source": "ClinicalTrials.gov",
+      "retrieved": "2026-10-03"
+     },
+     {
+      "source": "Europe PMC",
+      "retrieved": "2026-10-03"
+     }
+    ]
+   },
+   "approved_therapies": {
+    "items": [],
+    "searched": [
+     {
+      "source": "EMA medicine list",
+      "retrieved": "2026-10-03"
+     },
+     {
+      "source": "openFDA drug labels",
+      "retrieved": "2026-10-03"
+     }
+    ]
+   },
+   "newborn_screening": {
+    "items": [
+     {
+      "node": {
+       "id": "COUNTRY:US",
+       "label": "United States (New York first, 2006)",
+       "status": "screened"
+      },
+      "edge": {
+       "id": "e_601c7fd86852",
+       "source": "MONDO:0009499",
+       "target": "COUNTRY:US",
+       "type": "screened_in",
+       "evidence": [
+        {
+         "db": "PubMed",
+         "origin": "PubMed",
+         "record": "PMID:27638592",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/27638592/",
+         "date": "2016",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: New York began newborn screening for Krabbe disease on 2006-08-07, the first US state (Orsini et al. 2016), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "PubMed"
+       ]
+      }
+     },
+     {
+      "node": {
+       "id": "COUNTRY:AT",
+       "label": "Austria",
+       "status": "not screened",
+       "url": "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/"
+      },
+      "edge": {
+       "id": "e_9c864e1073a9",
+       "source": "MONDO:0009499",
+       "target": "COUNTRY:AT",
+       "type": "screened_in",
+       "evidence": [
+        {
+         "db": "MedUni Wien",
+         "origin": "MedUni Wien",
+         "record": "newborn-screening target list",
+         "url": "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/",
+         "date": "2026-10-03",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: The Austrian target-disease list does not name Krabbe disease (checked 2026-10-03), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "MedUni Wien"
+       ]
+      }
+     }
+    ]
+   },
+   "kol_overlap": [
+    {
+     "disease": {
+      "id": "MONDO:0018868",
+      "label": "metachromatic leukodystrophy"
+     },
+     "edge": {
+      "id": "e_ab9500b094c5",
+      "source": "MONDO:0009499",
+      "target": "MONDO:0018868",
+      "type": "kol_overlap",
+      "evidence": [
+       {
+        "db": "Constellate",
+        "origin": "Constellate",
+        "record": "kol_overlap",
+        "url": null,
+        "date": "2026-10-03",
+        "confidence": 0.6,
+        "snippet": "FIXTURE: 3 people with records in both diseases",
+        "level": "inferred",
+        "retrieved": "2026-10-03"
+       }
+      ],
+      "contradicting": [],
+      "confidence": 0.6,
+      "level": "inferred",
+      "independent_sources": [
+       "Constellate"
+      ],
+      "formula": "inferred: person has at least one record in each disease; matched by ORCID, or by identical full name plus institution (FIXTURE example)"
+     },
+     "people": [
+      {
+       "name": "Maria L. Escolar",
+       "affiliation": "University of Pittsburgh",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:15901860",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:23348427",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+        }
+       ]
+      },
+      {
+       "name": "Joanne Kurtzberg",
+       "affiliation": "Duke University",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:15901860",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:23348427",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+        }
+       ]
+      },
+      {
+       "name": "Ingeborg Krägeloh-Mann",
+       "affiliation": "University of Tuebingen",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:32912261",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/32912261/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:21707604",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/21707604/"
+        }
+       ]
+      }
+     ]
+    }
+   ],
+   "prevalence": [
+    {
+     "type": "Birth prevalence",
+     "class": null,
+     "value": "about 1 in 100,000 births (FIXTURE, from docs/MEDICAL-BACKGROUND.md citing Orphanet 487)",
+     "region": "Worldwide",
+     "validation": "FIXTURE",
+     "source": {
+      "db": "Orphanet",
+      "record": "ORPHA:487",
+      "url": "https://www.orpha.net/en/disease/detail/487"
+     },
+     "retrieved": "2026-10-03",
+     "level": "curated"
+    }
+   ]
+  },
+  "MONDO:0018868": {
+   "fixture_v2": true,
+   "assets": {
+    "items": [
+     {
+      "node": {
+       "id": "ASSET:mld-home-study",
+       "label": "HOME Study, MLD natural history (NORD, with FDA)",
+       "asset_type": "natural_history_study",
+       "country": "United States",
+       "status": "completed",
+       "source_type": "NCT",
+       "source_id": "NCT04628364",
+       "url": "https://clinicaltrials.gov/study/NCT04628364"
+      },
+      "edge": {
+       "id": "e_50f8b4994a1f",
+       "source": "MONDO:0018868",
+       "target": "ASSET:mld-home-study",
+       "type": "has_asset",
+       "evidence": [
+        {
+         "db": "ClinicalTrials.gov",
+         "origin": "ClinicalTrials.gov",
+         "record": "NCT04628364",
+         "url": "https://clinicaltrials.gov/study/NCT04628364",
+         "date": "2026-10-03",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: Observational natural history study, sponsor NORD, 21 patients, 10/2020 to 03/2025, completed (checked 2026-10-03), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "ClinicalTrials.gov"
+       ]
+      }
+     },
+     {
+      "node": {
+       "id": "ASSET:gmfc-mld",
+       "label": "GMFC-MLD, Gross Motor Function Classification for MLD (7 levels)",
+       "asset_type": "outcome_scale",
+       "country": "Germany",
+       "status": "published",
+       "source_type": "PMID",
+       "source_id": "21707604",
+       "url": "https://pubmed.ncbi.nlm.nih.gov/21707604/"
+      },
+      "edge": {
+       "id": "e_2b329f1feb3b",
+       "source": "MONDO:0018868",
+       "target": "ASSET:gmfc-mld",
+       "type": "has_asset",
+       "evidence": [
+        {
+         "db": "PubMed",
+         "origin": "PubMed",
+         "record": "PMID:21707604",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/21707604/",
+         "date": "2011",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: GMFC-MLD scale with 7 levels from 0 (normal) to 6, developed in Tuebingen (Kehrer et al., Dev Med Child Neurol 2011), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "PubMed"
+       ]
+      }
+     }
+    ],
+    "searched": [
+     {
+      "source": "ClinicalTrials.gov",
+      "retrieved": "2026-10-03"
+     }
+    ]
+   },
+   "approved_therapies": {
+    "items": [
+     {
+      "node": {
+       "id": "DRUG:Libmeldy",
+       "label": "Libmeldy (atidarsagene autotemcel), gene therapy",
+       "authority": "EMA",
+       "approved": "2020-12-17",
+       "holder": "Orchard Therapeutics",
+       "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/libmeldy"
+      },
+      "edge": {
+       "id": "e_f3ef159024b6",
+       "source": "MONDO:0018868",
+       "target": "DRUG:Libmeldy",
+       "type": "approved_therapy",
+       "evidence": [
+        {
+         "db": "EMA",
+         "origin": "EMA",
+         "record": "EPAR Libmeldy",
+         "url": "https://www.ema.europa.eu/en/medicines/human/EPAR/libmeldy",
+         "date": "2020-12-17",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: Marketing authorisation 2020-12-17 for early-onset MLD forms, as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "EMA"
+       ]
+      }
+     },
+     {
+      "node": {
+       "id": "DRUG:Lenmeldy",
+       "label": "Lenmeldy (atidarsagene autotemcel), gene therapy",
+       "authority": "FDA",
+       "approved": "2024-03-18",
+       "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapy-children-metachromatic-leukodystrophy"
+      },
+      "edge": {
+       "id": "e_62876fa60e22",
+       "source": "MONDO:0018868",
+       "target": "DRUG:Lenmeldy",
+       "type": "approved_therapy",
+       "evidence": [
+        {
+         "db": "FDA",
+         "origin": "FDA",
+         "record": "press release 2024-03-18",
+         "url": "https://www.fda.gov/news-events/press-announcements/fda-approves-first-gene-therapy-children-metachromatic-leukodystrophy",
+         "date": "2024-03-18",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: FDA approved the first gene therapy for children with MLD on 2024-03-18, as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "FDA"
+       ]
+      }
+     }
+    ]
+   },
+   "newborn_screening": {
+    "items": [
+     {
+      "node": {
+       "id": "COUNTRY:DE",
+       "label": "Germany (Hannover pilot since 2021)",
+       "status": "pilot/research",
+       "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12641716"
+      },
+      "edge": {
+       "id": "e_96416325148d",
+       "source": "MONDO:0018868",
+       "target": "COUNTRY:DE",
+       "type": "screened_in",
+       "evidence": [
+        {
+         "db": "PMC",
+         "origin": "PMC",
+         "record": "PMC12641716",
+         "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12641716",
+         "date": "2025",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: Prospective three-step pilot at the Hannover screening centre since 2021 (systematic review PMC12641716), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "PMC"
+       ]
+      }
+     },
+     {
+      "node": {
+       "id": "COUNTRY:AT",
+       "label": "Austria (research project since December 2024)",
+       "status": "pilot/research",
+       "url": "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/"
+      },
+      "edge": {
+       "id": "e_927b7270aa14",
+       "source": "MONDO:0018868",
+       "target": "COUNTRY:AT",
+       "type": "screened_in",
+       "evidence": [
+        {
+         "db": "MedUni Wien",
+         "origin": "MedUni Wien",
+         "record": "newborn-screening target list",
+         "url": "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/",
+         "date": "2026-10-03",
+         "confidence": 0.9,
+         "snippet": "FIXTURE: MLD screening runs as a research project since December 2024 (page undated, retrieved 2026-10-03), as listed in docs/MEDICAL-BACKGROUND.md",
+         "level": "curated",
+         "retrieved": "2026-10-03"
+        }
+       ],
+       "contradicting": [],
+       "confidence": 0.9,
+       "level": "curated",
+       "independent_sources": [
+        "MedUni Wien"
+       ]
+      }
+     }
+    ]
+   },
+   "kol_overlap": [
+    {
+     "disease": {
+      "id": "MONDO:0009499",
+      "label": "Krabbe disease"
+     },
+     "edge": {
+      "id": "e_047259729d8c",
+      "source": "MONDO:0018868",
+      "target": "MONDO:0009499",
+      "type": "kol_overlap",
+      "evidence": [
+       {
+        "db": "Constellate",
+        "origin": "Constellate",
+        "record": "kol_overlap",
+        "url": null,
+        "date": "2026-10-03",
+        "confidence": 0.6,
+        "snippet": "FIXTURE: 3 people with records in both diseases",
+        "level": "inferred",
+        "retrieved": "2026-10-03"
+       }
+      ],
+      "contradicting": [],
+      "confidence": 0.6,
+      "level": "inferred",
+      "independent_sources": [
+       "Constellate"
+      ],
+      "formula": "inferred: person has at least one record in each disease; matched by ORCID, or by identical full name plus institution (FIXTURE example)"
+     },
+     "people": [
+      {
+       "name": "Maria L. Escolar",
+       "affiliation": "University of Pittsburgh",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:15901860",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:23348427",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+        }
+       ]
+      },
+      {
+       "name": "Joanne Kurtzberg",
+       "affiliation": "Duke University",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:15901860",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/15901860/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:23348427",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/23348427/"
+        }
+       ]
+      },
+      {
+       "name": "Ingeborg Krägeloh-Mann",
+       "affiliation": "University of Tuebingen",
+       "orcid": null,
+       "records": [
+        {
+         "db": "PubMed",
+         "record": "PMID:32912261",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/32912261/"
+        },
+        {
+         "db": "PubMed",
+         "record": "PMID:21707604",
+         "url": "https://pubmed.ncbi.nlm.nih.gov/21707604/"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

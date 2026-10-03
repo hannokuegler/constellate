@@ -62,3 +62,10 @@ Regel: **ab 06:00 ist das Ding end-to-end live**. Alles danach ist Polish. Brenn
 2. **PS-Satz** oben ok?
 3. **Demo-Moment** Krabbe → PSAP → MLD ok? (Alternative: Gaucher → GBA1 → Parkinson, bekannter, aber Gaucher hat 4 Therapien, Maria soll „no approved treatment" haben)
 4. Osman/Recep: wie viel Coding trauen wir ihnen zu? Der Plan geht von **wenig Code, viel Kuration/Story** aus.
+
+## Planänderungen (Orchestrator-Log)
+
+- **Sa 21:30 · Agents bauen den Kern mit, Hanno nimmt ab.** Parallel laufen: App-Gerüst (Next.js, gegen festen Datenvertrag `app/public/data/`), Schritt 7 Export (Roll-up, IC/simGIC/Resnik, Gegenbeispiele über kuratierte MONDO-Mechanismusklassen, Shards, `validate.py`), API-Clients Schritt 4, OpenAI Extract + Reconcile (ohne Key testbar), Entwürfe `hero_path_draft.yaml` (Recep prüft) und `orgs_draft.csv` (Osman prüft). Hanno-Rolle: Entscheidungen + Abnahme im Browser.
+- **Sa 21:30 · Entscheidungen D1–D7 geparkt**, Agents bauen mit umkehrbaren Defaults (Shards + Top-25-Phänotype, Subtyp-Roll-up, Orphanet „nicht ursächlich“ gewinnt, Explain-Post-Check). Hanno gibt die Entscheidungen später durch → `docs/DECISIONS.md`.
+- **Sa 21:20 · Teamboard live** unter https://constellate.flowary.at (temporär bis 11.10.), Repo-Docs dort lesbar (Pull alle 5 min).
+- **Sa 21:20 · Team-Briefing per Mail** (Medizin, Technik, Wirtschaft & Nutzer als PDF, ohne Fragen) an Osman + Recep.

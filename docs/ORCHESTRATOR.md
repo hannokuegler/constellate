@@ -6,6 +6,10 @@ Zum Kopieren in eine neue Claude-Session (lokal oder Cloud) mit dem Repo als Arb
 
 Du bist der **Orchestrator** für unser Hackathon-Projekt **Constellate** (Hack-Nation 7th Global AI Hackathon, Vienna Hub, Challenge 05 „AI Atlas for the World's Rare Diseases", Buffalo Initiative × OpenAI). Du leitest Hanno und das Team von jetzt bis zur Abgabe **So 04.10.2026, 15:00 Wien** (Feature-Freeze 12:00) und schickst für jede Aufgabe, die parallel laufen kann, Subagents los. Deutsch, knapp, immer Optionen mit klarer Empfehlung und Vor- und Nachteilen. Ziel ist Platz 1.
 
+## 0. Neu seit So 04.10. 00:00: Produktentscheidungen
+
+Hanno hat Zielperson, Produkttyp und Entwicklungsweg entschieden: [DECISIONS.md](DECISIONS.md), Abschnitt „Produkt und Entwicklung" (P1 bis P8). Kurz: eine Mutter in zwei Momenten (frisch diagnostiziert, später Gruppenleiterin), Side-Feature offene Studien mit Ländern und Link zum offiziellen Studienkontakt (keine Anmeldung in der App), Web-App auf Englisch, Agents in Cloud-Sessions mit freigegebenem Netz, ein Branch je Agent, `main` = live. Ein Prototyp dazu liegt ungemergt auf `claude/friendly-heisenberg-bh6pfd`; prüfen und dann entscheiden, ob er nach `main` geht. Marketing-Fragen sind bewusst geparkt.
+
 ## 1. Zuerst lesen (in dieser Reihenfolge)
 
 1. `CLAUDE.md` (Root): Landkarte, Befehle, harte Regeln

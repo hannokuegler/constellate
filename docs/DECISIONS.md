@@ -1,10 +1,29 @@
 # Entscheidungen · Constellate
 
-**Letzte Aktualisierung: Sa 03.10.2026, 22:00 (Wien).** Entscheidungen trifft **Hanno**. Wer etwas baut, nutzt die vorläufigen Defaults unten und behauptet nichts davon als final. Wird eine Frage entschieden, wandert sie in „Erledigt" (mit Datum, Antwort, Begründung) und der Default-Eintrag wird gestrichen oder angepasst. Das Teamboard führt dieselben Fragen D1 bis D7 (Bereich Entscheidungen); beim Entscheiden beides nachziehen.
+**Letzte Aktualisierung: So 04.10.2026, 00:00 (Wien).** Entscheidungen trifft **Hanno**. Wer etwas baut, nutzt die vorläufigen Defaults unten und behauptet nichts davon als final. Wird eine Frage entschieden, wandert sie in „Erledigt" (mit Datum, Antwort, Begründung) und der Default-Eintrag wird gestrichen oder angepasst. Das Teamboard führt dieselben Fragen D1 bis D7 (Bereich Entscheidungen); beim Entscheiden beides nachziehen.
 
 Die ausführlichen Fragenkataloge mit Optionen, Vor- und Nachteilen, Empfehlung und Zeitschätzung:
 - Technik: T1 bis T30 in [briefing/TECHNIK.md](briefing/TECHNIK.md), Abschnitt 6. Heute Abend zwingend waren T27, T1, T12, T23, T17 (alle fünf haben unten einen Default).
 - Wirtschaft und Nutzer: W1 bis W30 in [briefing/WIRTSCHAFT-NUTZER.md](briefing/WIRTSCHAFT-NUTZER.md), Abschnitt 6.
+
+## Produkt und Entwicklung (Grilling mit Hanno, So 04.10. ca. 00:00)
+
+Entschieden von Hanno. Das ist die Grundlage für den Orchestrator. Gebaut wird erst nach Freigabe durch den Orchestrator bzw. Hanno; der Prototyp auf dem Branch `claude/friendly-heisenberg-bh6pfd` (zwei Momente, offene Studien) ist **nicht** nach `main` gemergt.
+
+| ID | Frage | Entscheidung | Begründung | Verworfen |
+|---|---|---|---|---|
+| **P1** | Für wen bauen wir? | **Eine Mutter in zwei Momenten.** Moment 1 „We just got the diagnosis": Familie in den ersten Nächten, findet ihre Gruppe oder die Honest Gap und offene Studien. Moment 2 „I lead a patient group": dieselbe Mutter Monate später als Gruppenleiterin, findet verwandte Communities, tritt bestehenden Studien und Registern bei statt neu zu bauen, verschickt die Action Card | Die Jury bewertet „a family or group moves from isolated diagnosis to …"; ein Erzählbogen deckt Devon und Maria aus dem Brief ab | Biohacker (nicht im Brief, Selbstexperiment-Risiko); vier gleichrangige Personas (vier halbe Produkte) |
+| **P2** | Nebenlinsen | Priya, Dr. Osei und Devon (Symptom-Suche) bleiben als kleine Nebenlinsen, nicht als Hauptweg | Brief-Wiedererkennung ohne Fokusverlust | eigene Screens je Persona |
+| **P3** | Side-Feature | **Offene Studien mit Ländern:** Studien von ClinicalTrials.gov, die die Diagnose nennen und rekrutieren; Länderfilter, Standorte, Altersgrenzen, Status, beobachtend oder behandelnd; Button „Contact the study team" führt zum offiziellen Kontaktabschnitt der Studie | Gibt der Mutter in Moment 1 etwas, das sie sofort tun kann; Daten sind offen und belegbar | „Gruppen sehen neue Fälle" (Fallzahlen je Land gibt es in keiner offenen Quelle, Datenschutz) |
+| **P4** | Anmeldung zu Studien | **Keine Anmeldung und kein Formular in der App.** Weiterleitung zum offiziellen Kontakt der Studie; keine Kontaktdaten von Studienpersonal im Repo; Hinweis, dass Studienteam und Ärztin über die Teilnahme entscheiden und Beobachtungsstudien nicht behandeln | Keine Gesundheitsdaten von Kindern bei uns, Repo wird öffentlich, keine falsche Hoffnung | Anmeldeformular mit Kind-Daten |
+| **P5** | Produkttyp | **Web-App**, öffentliche URL, ohne Login und ohne Installation. Weitere Formen (Handy-optimiert, installierbar) später | schnellster Weg zu einer klickbaren Demo für die Jury | native App, PWA (vorerst) |
+| **P6** | Sprache der Oberfläche | **Englisch** | Jury international, Brief, Daten und Quellen englisch | Deutsch, umschaltbar |
+| **P7** | Wo entwickeln | **Cloud-Sessions, Netz frei.** Agents arbeiten in Cloud-Sessions auf dem Repo; die Pipeline läuft ebenfalls in der Cloud. Dafür gibt Hanno im Network-Access der Umgebung die Datenquellen frei (mindestens `clinicaltrials.gov`, heute gesperrt; dazu alle Hosts aus [DATA-SOURCES.md](DATA-SOURCES.md)) | Hannos Mac ist kein Engpass, Agents laufen parallel | Daten nur auf Hannos Mac, alles lokal |
+| **P8** | Git-Flow | **Ein Branch je Agent** (`claude/*`), `main` ist die Live-Version; Vercel deployt nur `main`, jeder Branch bekommt eine Preview. Das Mergen nach `main` übernimmt später automatisch ein eigenes Merge-Skript von Hanno (angepasster Sync-Skill, wird noch eingerichtet); bis dahin merged Hanno | Fehler landen nicht direkt in der Demo, Agents kommen sich nicht in die Quere | alle direkt auf `main`; ein gemeinsamer Integrations-Branch |
+
+**Geparkt (Marketing und Story, später):** Satz für die Jury (W11), Kernversprechen-Wording (W10), Empfänger der Action Card (W9), 10×-Meilenstein (W16), Einstieg ins Video (W28), Abgrenzung zu ChatGPT (W13), Name (D1), Honest-Gap-Fall für die Demo (W30, T28). Vorschläge dazu stehen im Wirtschaftsbriefing; im Grilling vorgeschlagen, noch nicht entschieden: Hauptsatz „Your family is not the first. What you need already exists under another disease's name." plus „Every edge has a source, and when there is none, we say so."
+
+**Noch offen (Technik, Defaults gelten):** D3 Slice, D5 Evidenzmodell, D6 Stack, D7 Modelle, siehe Tabelle oben.
 
 ## Offen (Hanno entscheidet)
 
@@ -14,7 +33,7 @@ Die ausführlichen Fragenkataloge mit Optionen, Vor- und Nachteilen, Empfehlung 
 | **D3** | **Slice**: 350 Kern plus 524 Nachbarn (874 Krankheiten) behalten? Subtypen zusammenfassen oder einzeln? | Slice behalten (LSD-Kern plus Leukodystrophie-Nachbarn); Subtypen auf den Oberbegriff hochziehen, Herleitung im Edge-Panel klickbar | alle Subtypen einzeln (unruhig) · nur Kern (kein Gegenbeispiel PMD) | T1, T2, T4, T5 | Slice wie oben, Roll-up (siehe Default 2) |
 | **D4** | **Quellen in Schritt 4**, in welcher Reihenfolge? | Pathways (Reactome), Studien, Papers, Orgs, Grants, Varianten; Hero-Pfad zuerst | alles parallel (Zeitrisiko) · Varianten früher | T6 bis T9 | alle sechs sind gebaut und gelaufen (Open Targets, Reactome, ClinVar, mygene, ClinicalTrials.gov, Europe PMC, NIH RePORTER) |
 | **D5** | **Evidenzmodell**: vier Stufen ok? | Ja: `observed`, `curated`, `text_mined`, `inferred`; Gegenevidenz-Slot je Kante; `inferred` zeigt die Formel | zusätzliche Stufe `predicted` (mehr Nuance, mehr UI-Aufwand) | T10 bis T15, W25, W26 | vier Stufen, `contradicting` immer vorhanden |
-| **D6** | **App-Stack und Datenauslieferung** | Next.js plus react-force-graph-2d auf Vercel, statische JSON-Shards statt Datenbank, Live-URL ohne Login | Vite-SPA (kein `/api/explain` ohne Extra-Backend) · eine große `graph.json` (zu groß für Mobile) | T26, T27 | Next.js 15 mit Shards unter `app/public/data/` |
+| **D6** | **App-Stack und Datenauslieferung** (Produkttyp Web-App ist entschieden, siehe P1; offen ist nur der Stack) | Next.js plus react-force-graph-2d auf Vercel, statische JSON-Shards statt Datenbank, Live-URL ohne Login | Vite-SPA (kein `/api/explain` ohne Extra-Backend) · eine große `graph.json` (zu groß für Mobile) | T26, T27 | Next.js 15 mit Shards unter `app/public/data/` |
 | **D7** | **OpenAI-Modelle** für Extract, Reconcile, Explain | erst `client.models.list()` gegen den Hackathon-Key; kleines Modell für Extract und Reconcile (Masse), größeres für Explain (Streaming, im Demo sichtbar) | ein Modell für alles | T21 bis T24 | Modell-IDs nur per Env, kein Default (siehe Default 6) |
 
 Offen ist außerdem, welcher Honest-Gap-Fall in die Demo kommt (T28, W30): „CLN14" aus SCOPE.md hat im Slice keinen Knoten, Kandidaten stehen im Briefing.

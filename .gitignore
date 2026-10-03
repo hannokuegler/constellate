@@ -20,3 +20,4 @@ out/
 # os
 .DS_Store
 data/slice.json
+data/graph_base.json

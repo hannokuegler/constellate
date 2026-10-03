@@ -106,8 +106,22 @@ function MissingDisease({ id, entry, core, meta }: { id: string; entry: IndexEnt
   );
 }
 
+/** Graph height follows the window: tall and calm on a desktop, a comfortable square-ish window on a phone. */
+function useGraphHeight(): number {
+  const [height, setHeight] = useState(560);
+  useEffect(() => {
+    const update = () => setHeight(window.innerWidth < 768 ? 400 : Math.round(Math.min(700, Math.max(540, window.innerHeight - 360))));
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+  return height;
+}
+
 function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) {
   const { persona } = usePrefs();
+  const graphHeight = useGraphHeight();
+
   const { openEdge, register } = useEdgePanel();
   const router = useRouter();
   const node = file.node;
@@ -238,35 +252,38 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
       </nav>
       <div className="flex flex-wrap items-start gap-x-4 gap-y-3">
         <div className="min-w-0 flex-1">
-          <h1 className="text-[28px] font-bold leading-tight tracking-tight">{node.label}</h1>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-[12px]">
-            <span className="rounded-full bg-surface-2 px-2.5 py-1 font-medium">{node.id}</span>
+          <h1 className="t-h1 text-[28px] font-semibold leading-tight tracking-tight md:text-[40px]" style={{ fontFamily: "var(--font-display, inherit)" }}>{node.label}</h1>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px] text-ink-2">
+            <span className="tabular rounded-full border border-line px-2.5 py-0.5">{node.id}</span>
             {omim.map((x) => {
               const url = xrefUrl(x.replace("Orphanet:", "ORPHA:"));
               const text = x.replace("Orphanet:", "ORPHA:");
               return url ? (
-                <a key={x} href={url} target="_blank" rel="noreferrer" className="-my-1.5 inline-flex min-h-11 items-center">
-                  <span className="rounded-full border border-line px-2.5 py-1 font-medium underline-offset-2 hover:underline">{text}</span>
+                <a key={x} href={url} target="_blank" rel="noreferrer" className="-my-2 inline-flex min-h-11 items-center">
+                  <span className="tabular rounded-full border border-line px-2.5 py-0.5 underline-offset-2 hover:text-ink hover:underline">{text}</span>
                 </a>
               ) : (
-                <span key={x} className="rounded-full border border-line px-2.5 py-1">{text}</span>
+                <span key={x} className="tabular rounded-full border border-line px-2.5 py-0.5">{text}</span>
               );
             })}
-            {node.in_core && <span className="rounded-full bg-accent-soft px-2.5 py-1 font-semibold text-accent">core cluster</span>}
+            {node.in_core && <span className="rounded-full border border-line px-2.5 py-0.5">core cluster</span>}
             {orgs.length > 0 ? (
-              <a href="#patient-organisations" className="-my-1.5 inline-flex min-h-11 items-center">
-                <span className="rounded-full bg-ok-soft px-2.5 py-1 font-semibold text-ok">
+              <a href="#patient-organisations" className="-my-2 inline-flex min-h-11 items-center">
+                <span className="rounded-full border border-line px-2.5 py-0.5 font-medium text-ink hover:underline">
                   {orgs.length} patient organisation{orgs.length > 1 ? "s" : ""}
                 </span>
               </a>
             ) : file.gap ? (
-              <a href="#patient-organisations" className="-my-1.5 inline-flex min-h-11 items-center">
-                <span className="rounded-full bg-warn-soft px-2.5 py-1 font-semibold text-warn">no patient organisation · honest gap</span>
+              <a href="#patient-organisations" className="-my-2 inline-flex min-h-11 items-center">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-line px-2.5 py-0.5 hover:text-ink">
+                  <svg width="10" height="10" viewBox="0 0 10 10" aria-hidden="true"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 1.6" /></svg>
+                  no patient organisation · honest gap
+                </span>
               </a>
             ) : null}
-            {node.is_group && <span className="rounded-full border border-line px-2.5 py-1" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
+            {node.is_group && <span className="rounded-full border border-line px-2.5 py-0.5" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
             {node.mechanism_classes?.map((m) => (
-              <span key={m.key} className="rounded-full bg-surface-2 px-2.5 py-1" title={m.via_label ? `via ${m.via_label}` : undefined}>
+              <span key={m.key} className="rounded-[14px] border border-line px-2.5 py-0.5" title={m.via_label ? `via ${m.via_label}` : undefined}>
                 mechanism: {m.label}
               </span>
             ))}
@@ -275,7 +292,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         {!noNeighbours && (
           <button
             onClick={() => (cardOpen ? setCardOpen(false) : openCard(via ?? defaultVia!))}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-ink"
+            className="btn-primary inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-ink"
             aria-expanded={cardOpen}
             aria-controls="action-card"
           >
@@ -303,12 +320,12 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         </div>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <div className={`mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1fr)]`}>
         <div className="lg:sticky lg:top-20 lg:self-start">
           <EgoGraph
             nodes={graph.nodes}
             links={graph.links}
-            height={typeof window !== "undefined" && window.innerWidth < 768 ? 380 : 560}
+            height={graphHeight}
             caption={`Neighbourhood of ${node.label}`}
             onLinkClick={openEdge}
             families={graph.families}

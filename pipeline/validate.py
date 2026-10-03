@@ -11,7 +11,7 @@ Krabbe -> GALC, Krabbe family -> PSAP, PSAP -> MLD family, MLD -> ARSA, Krabbe <
 data-v2 fields of disease shards (07 step 11, optional): assets / approved_therapies / newborn_screening as array or
 {items: [{node, edge}], items_total?, searched?}, kol_overlap as {items: [{disease, edge, people}]}, prevalence as array.
 Edge type and level per field (approved_therapy / screened_in curated, has_asset curated or text_mined and never curated
-for a Europe PMC abstract hit, no WITHDRAWN study, kol_overlap inferred with formula), NBS snippet verbatim, <= 12 KB
+for a Europe PMC abstract hit, no WITHDRAWN study, kol_overlap inferred with formula), NBS snippet verbatim, <= 24 KB
 of data-v2 fields per shard, <= 4 prevalence records without XML snippet, no phone numbers in people,
 edge source = the shard's disease, target = node id (ASSET: / DRUG: / COUNTRY:), every evidence with a snippet unless the
 item is UNBELEGT, no "email" / "phone" keys and no e-mail addresses in people, shard-only nodes never in index.json.
@@ -48,7 +48,7 @@ V2_ITEM_FIELDS = {"assets": ("has_asset", "ASSET:"), "approved_therapies": ("app
 V2_SHARD_ONLY_PREFIXES = ("ASSET:", "DRUG:", "COUNTRY:", "PERSON:")
 PERSONAL_KEYS = {"email", "e_mail", "mail", "phone", "telephone"}
 PHONE_RE = re.compile(r"(?:\b(?:tel|phone|fax)\b\.?:?\s*\+?\d)|(?:\+\d[\d\s().-]{7,}\d)|(?:\(\d{2,4}\)\s*\d{3,}[\s.-]?\d{3,})", re.I)
-V2_SHARD_BYTES = 12_000  # all data-v2 fields of one disease shard together (same cap as 07)
+V2_SHARD_BYTES = 24_000  # all data-v2 fields of one disease shard together (same cap as 07)
 V2_PREVALENCE_MAX = 4
 
 errors: list[str] = []

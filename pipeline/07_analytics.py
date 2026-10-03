@@ -92,7 +92,8 @@ V2_KOL_PAIRS_MAX = 5      # kol_overlap partners by n_people, plus every partner
 V2_KOL_PEOPLE_MAX = 6     # people per pair (most records first; people_total keeps the full count)
 V2_KOL_RECORDS_MAX = 2    # records per person (records_total keeps the full count)
 V2_PREVALENCE_MAX = 4     # prevalence records per disease (Worldwide / Europe first), without the XML snippet
-V2_SHARD_BYTES = 12_000   # all data-v2 fields of one disease shard together (07 shrinks kol first, validate checks)
+V2_THERAPIES_MAX = 8      # approved_therapy items per disease, earliest approval first (rest only counted in items_total)
+V2_SHARD_BYTES = 24_000   # all data-v2 fields of one disease shard together (07 shrinks kol first, validate checks); 150 KB shard budget still holds
 V2_HERO = ("MONDO:0009499", "MONDO:0018868", "MONDO:0010714")  # Krabbe, MLD, PMD: all (non-withdrawn) assets kept
 V2_ITEM_FIELDS = {  # shard field -> (edge type, 04b searched section, target id prefix)
     "assets": ("has_asset", "assets", "ASSET:"),
@@ -103,6 +104,7 @@ V2_KOL_SECTION = "kol"
 V2_ASSET_ORDER = ["natural_history_study", "registry", "outcome_scale", "biobank"]
 V2_STATUS_ORDER = ["RECRUITING", "ACTIVE_NOT_RECRUITING", "ENROLLING_BY_INVITATION", "NOT_YET_RECRUITING", "COMPLETED"]
 V2_ASSET_NODE_KEYS = ("id", "label", "asset_type", "country", "status", "source_type", "source_id", "url", "check")  # AssetNode
+V2_THERAPY_NODE_KEYS = ("id", "label", "authority", "approved", "holder", "url")  # TherapyNode (app/lib/types.ts)
 V2_EVIDENCE_DROP = ("person_ids", "matched_term", "matched_in", "record_aliases", "verbatim")
 V2_SOURCES = {  # evidence db -> meta.sources entry (licences as in docs/DATA-SOURCES.md, data-v2 section)
     "ClinicalTrials.gov": ("ClinicalTrials.gov observational studies (assets, data-v2)", "US public domain",
@@ -897,6 +899,8 @@ def v2_node(field: str, node: dict, edge: dict) -> dict:
             out["source_id"] = record.removeprefix("PMID:")
             out["url"] = ev.get("url") or node.get("url")
         return out
+    if field == "approved_therapies":
+        return {k: node[k] for k in V2_THERAPY_NODE_KEYS if k in node}
     out = dict(node)
     if field == "newborn_screening" and ev.get("screening_status"):
         out["status"] = ev["screening_status"]
@@ -1043,6 +1047,8 @@ def build_v2(extra: dict, disease_ids, core_set, neighbours_of: dict | None = No
                 total = len(items)
                 if field == "assets" and d not in V2_HERO:
                     items = items[:V2_ASSETS_MAX]
+                if field == "approved_therapies" and d not in V2_HERO:
+                    items = items[:V2_THERAPIES_MAX]
                 fields[d][field] = {"items": items, "items_total": total, "searched": v2_searched(searched.get((d, section), []))}
                 stats[f"{field}_shards"] += 1
                 stats[f"{field}_items_capped"] += total - len(items)
@@ -1651,7 +1657,7 @@ def attach_v2(shard: dict, fields: dict) -> None:
 
 def v2_parameters() -> dict:
     return {"assets_max": V2_ASSETS_MAX, "kol_pairs_max": V2_KOL_PAIRS_MAX, "kol_people_max": V2_KOL_PEOPLE_MAX,
-            "kol_records_max": V2_KOL_RECORDS_MAX, "prevalence_max": V2_PREVALENCE_MAX, "v2_shard_bytes": V2_SHARD_BYTES,
+            "kol_records_max": V2_KOL_RECORDS_MAX, "therapies_max": V2_THERAPIES_MAX, "prevalence_max": V2_PREVALENCE_MAX, "v2_shard_bytes": V2_SHARD_BYTES,
             "hero_all_assets": list(V2_HERO),
             "rule": "per disease shard: WITHDRAWN studies never exported; assets sorted natural history > registry > outcome scale > "
                     "biobank, then status (recruiting/active > completed > other), then confidence; hero diseases keep all assets; "

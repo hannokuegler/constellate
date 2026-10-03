@@ -22,6 +22,7 @@ Du bist der Orchestrator für **Constellate** (Hack-Nation 7th Global AI Hackath
 - Drei Funde für die Story, alle mit Primärquelle belegt: **Österreich screent Neugeborene nicht auf Krabbe, MLD aber seit 12/2024 als Forschungsprojekt.** Für Saposin-A-Defizienz gibt es keine Patientenorganisation. Krägeloh-Mann (Tübingen) ist Koautorin der deutschen Krabbe-Naturverlaufsstudie (PMID 32912261) und der GMFC-MLD-Skala (PMID 21707604).
 
 ## 3 · Nächste Schritte (Priorität)
+0. **Parallel läuft eine OpenAI-Daten-Session** auf Branch `data-v2`, Prompt in `docs/prompts/OPENAI-DATA-SESSION.md`. Sie liefert Assets (Natural-History-Studien, Register, NBS je Land), zugelassene Therapien (EMA/FDA), Prävalenz, KOL-Overlap, einen Monarch-Cross-Check und ein Coverage-Audit als `pipeline/04b_enrich_extra.py` und `data/curated/assets.csv`. Ihr PR muss geprüft werden (Stichproben öffnen, Tests, Determinismus). Danach die Integration in `07_analytics.py` nach `docs/DATA-REPORT.md` übernehmen. Sie fasst `app/` und `07` nicht an.
 1. **Vercel live** (macht Hanno: Repo importieren, Root Directory `app`). Danach die Live-URL in README, STATUS und Teamboard-Links eintragen.
 2. **OpenAI-Key** kommt als Env der Cloud-Umgebung bzw. in Vercel (nie committen). Dann:
    - `python pipeline/openai_config.py --list` laufen lassen und die Modell-IDs mit Hanno festlegen (D7). Modellnamen nie raten.

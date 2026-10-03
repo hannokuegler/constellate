@@ -1,5 +1,7 @@
 # Übergabe-Prompt · Orchestrator-Session Constellate
 
+**Veraltet: Für jeden Orchestrator-Neustart gilt ab So 04.10.2026 01:05 der Dauer-Prompt [prompts/ORCHESTRATOR-STANDING.md](prompts/ORCHESTRATOR-STANDING.md).**
+
 Zum Kopieren in eine neue Claude-Session (lokal oder Cloud) mit dem Repo als Arbeitsverzeichnis. Ursprünglich Sa 03.10.2026 21:00, angepasst Sa 22:00 für den Betrieb aus dem Repo heraus. **Den aktuellen Stand liefern [STATUS.md](STATUS.md) und [DECISIONS.md](DECISIONS.md), nicht dieser Prompt.** Der Prompt beschreibt Rolle, Arbeitsweise und Regeln.
 
 ---

@@ -1,5 +1,7 @@
 # Übergabe-Prompt · Cloud-Session Constellate
 
+**Veraltet: Für jeden Orchestrator-Neustart gilt ab So 04.10.2026 01:05 der Dauer-Prompt [prompts/ORCHESTRATOR-STANDING.md](prompts/ORCHESTRATOR-STANDING.md).**
+
 In eine neue Claude-Code-Cloud-Session auf dem Repo `hannokuegler/constellate` kopieren. Stand Sa 03.10.2026, 22:30 Wien.
 
 ---

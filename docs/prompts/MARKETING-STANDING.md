@@ -1,6 +1,6 @@
 # Dauer-Prompt · Marketing-Maus (Pitch, Story, Videos, Abgabetexte)
 
-Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien; Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
+Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 01:35; Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
 
 ---
 
@@ -84,7 +84,7 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 | # | Bis | Aufgabe | Status | Ergebnis / Ort |
 |---|---|---|---|---|
 | 0 | 01:30 | Übernahme, Dauer-Prompt | ☑ | diese Datei |
-| 1 | 03:30 | Mentor-Briefing schärfen: 60-s-Vorstellung in `docs/mentoring/MENTOR-LIN.md` auf Pitch-v2-Sprache (weniger Fachwörter), Kernfrage beibehalten. Nach 03:45 Osmans Protokoll lesen, Pitch/Story/Demo-Text anpassen, vorgeschlagene Entscheidungen als Liste an Hanno | ◐ | `pitch/MENTOR-INTRO.md` (Vorschlag, MENTOR-LIN.md gehört dem Orchestrator) |
+| 1 | 03:30 | Mentor-Briefing schärfen: 60-s-Vorstellung in `docs/mentoring/MENTOR-LIN.md` auf Pitch-v2-Sprache (weniger Fachwörter), Kernfrage beibehalten. Nach 03:45 Osmans Protokoll lesen, Pitch/Story/Demo-Text anpassen, vorgeschlagene Entscheidungen als Liste an Hanno | ◐ | Vorstellung fertig: `pitch/MENTOR-INTRO.md` (Vorschlag, MENTOR-LIN.md gehört dem Orchestrator); Nachlauf nach 03:45 offen |
 | 2 | 08:00 | Moonshot-Story mit Recep: `docs/MOONSHOT.md` (Meilenstein, heute vs. mit Constellate, 4–6 Annahmen, Quelle je Zahl; keine 10×-Zahl ohne Annahmen). Daraus eine Folie und ein Satz für Pitch und README | ☐ | |
 | 3 | 09:00 | Voice-over vorbereiten: 2–3 Stimmen-Vorschläge mit Begründung (warm, ruhig, glaubwürdig), finale Skriptblöcke Demo und Tech mit Aussprache-Hilfen (Krabbe, MLD, PSAP, Pelizaeus-Merzbacher), Länge je Block gegen 60 s (ca. 2,3 Wörter/s) | ☐ | `pitch/VOICE-ELEVENLABS.md` |
 | 4 | 11:00 | Abgabetexte in `pitch/SUBMISSION-TEXTS.md` (Englisch): Name, Einzeiler (≤ 15 Wörter), Kurzbeschreibung (≤ 50 Wörter), Langbeschreibung (Problem, Ansatz, Lösung, Evidenzmodell, Built with OpenAI an 3 Stellen, was als Nächstes validiert wird), Tech-Stack, Datenquellen mit Lizenz, Team. Felder an HackOS/Google Form anpassen, sobald Osman sie kennt. README-Einleitung als Diff an Osman | ☐ | |

@@ -1,6 +1,6 @@
 # pitch/ · Story, Pitch, Videos, Stimme
 
-Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Überarbeitung nach dem Team-Feedback: **drei Pflichtvideos, jedes höchstens 60 Sekunden** (Team Introduction, Product Demo, Technical Walkthrough), Dateiformat MP4 oder MOV; Pitch mit weniger Fachbegriffen in der Reihenfolge Problem → Herangehensweise → Lösung. Entscheidungen P9 bis P11 ([docs/DECISIONS.md](../docs/DECISIONS.md)): Nora als Komposit-Mutter in zwei Momenten, Pitch „Herz zuerst", ElevenLabs `eleven_v4` für die Voice-over, Team-Video mit echten Gesichtern, Honest-Gap-Fall `MONDO:0012720`.
+Stand So 04.10.2026, ca. 01:35 (Wien), Branch `marketing` (davor `pitch-v2`). Dauer-Prompt der Marketing-Session: [docs/prompts/MARKETING-STANDING.md](../docs/prompts/MARKETING-STANDING.md). Überarbeitung nach dem Team-Feedback: **drei Pflichtvideos, jedes höchstens 60 Sekunden** (Team Introduction, Product Demo, Technical Walkthrough), Dateiformat MP4 oder MOV; Pitch mit weniger Fachbegriffen in der Reihenfolge Problem → Herangehensweise → Lösung. Entscheidungen P9 bis P11 ([docs/DECISIONS.md](../docs/DECISIONS.md)): Nora als Komposit-Mutter in zwei Momenten, Pitch „Herz zuerst", ElevenLabs `eleven_v4` für die Voice-over, Team-Video mit echten Gesichtern, Honest-Gap-Fall `MONDO:0012720`.
 
 Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärquelle oder aus `app/public/data/meta.json` (Export `2026-10-03+397464a`), ⚠️-Punkte aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) kommen nicht vor. Nora ist eine Komposit-Figur und wird so genannt. Keine Patientenorganisation wird genannt, solange `data/curated/orgs.csv` leer ist. Kein „cure"; Constellate ist Forschungs-Navigation, keine medizinische Beratung.
 
@@ -12,6 +12,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 | [PITCH-60S.md](PITCH-60S.md) | 60-Sekunden-Pitch Wort für Wort (Problem 15 s → Herangehensweise 20 s → Lösung 20 s → Schluss 5 s), Kurzfassung 30 s, **Fachwort-Liste** (was ersetzt wurde und warum), Regie, Fußnoten mit Primärquellen | Hanno, Recep (Pitch 10.10., Discord-Text, HackOS-Beschreibung) |
 | [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) | Die drei 60-s-Videos: je Ziel, Zuschauer, Kernbotschaft, Shotlist mit Zeitcodes (Summe ≤ 0:58), Route, Voice-over Wort für Wort (≤ 135 Wörter), Beleg im Bild, Aufnahme-Checkliste, Schnitt, Export, wer, Deadline; Tech-Video mit exakten Dateien, Zeilen und Befehlen | Recep (Demo), Hanno (Tech), Osman (Team) |
 | [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md) | Voice-over mit `eleven_v4` nur noch für Demo (D1–D7) und Tech (T1): Stimmprofil, Regler, Skript-Blöcke je Request, Aussprache, Streichreihenfolge, Offenlegung | Hanno (Erzeugung), Recep (`.tts.txt`) |
+| [MENTOR-INTRO.md](MENTOR-INTRO.md) | Vorstellung für das Mentor-Gespräch Woan-Yu Lin (03:45) in Pitch-v2-Sprache, Belegstand im Tool, Plan nach dem Gespräch je Antwort A/B/C | Hanno (spricht), Osman (Protokoll) |
 | [MOTION-PROMPTS.md](MOTION-PROMPTS.md) | Sechs Prompts für kurze Motion-Clips, alle **nur für den Pitch am 10.10. und Teaser nach der Abgabe** markiert; in den 60-s-Videos kein Platz (höchstens eine 2-s-Titelkarte in Klartext) | Hanno, nach der Abgabe |
 
 ## Was sich gegenüber dem Stand 03:00 geändert hat
@@ -24,7 +25,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 ## Befunde aus dem Export, die vor dem Dreh gelten
 
 1. `e_e270315fe572` (Krabbe → MLD) ist eine `similar_phenotype`-Kante (`inferred`, Konfidenz 0,216), nicht die „shared gene PSAP"-Kante. Demo sagt „linked by shared symptoms, formula shown"; die PSAP-Brücke zeigt `/g/PSAP`.
-2. `approved_therapies` und `assets` fehlen im aktuellen Export (PR #1 `data-v2` im Review), `orgs.csv` hat nur die Kopfzeile, `docs/MOONSHOT.md` fehlt. Folge: keine Organisation, keine 10×-Zahl; die beiden Therapie-Sätze (Krabbe ohne Medikament, MLD-Gentherapie) nur mit sichtbarem Beleg in der Action Card, sonst Ersatzsätze (in VIDEO-STRATEGY und VOICE-ELEVENLABS markiert).
+2. **Update 01:15 (Export `2026-10-04+f35b3a5`):** `approved_therapies` und `assets` sind live (Libmeldy bei MLD mit EMA-Quelle, Krabbe 0 Treffer in EMA/FDA), die Therapie-Sätze D1 und D5 sind damit im Tool belegt. Vorher: `approved_therapies` und `assets` fehlten im Export (PR #1 `data-v2` im Review), `orgs.csv` hat nur die Kopfzeile, `docs/MOONSHOT.md` fehlt. Folge: keine Organisation, keine 10×-Zahl; die beiden Therapie-Sätze (Krabbe ohne Medikament, MLD-Gentherapie) nur mit sichtbarem Beleg in der Action Card, sonst Ersatzsätze (in VIDEO-STRATEGY und VOICE-ELEVENLABS markiert).
 3. Honest-Gap-Fall `MONDO:0012720` (P11): ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2 im Export vom 2026-10-03; Osman bestätigt die Org-Lage.
 
 ## Offene Punkte für Hanno

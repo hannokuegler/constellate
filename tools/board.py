@@ -47,7 +47,8 @@ def require_credentials():
 
 def request(method, path, body=None, content_type="application/json", raw=False):
     require_credentials()
-    headers = {"Authorization": "Basic " + base64.b64encode(f"{USER}:{PASSWORD}".encode()).decode(), "X-Who": WHO}
+    headers = {"Authorization": "Basic " + base64.b64encode(f"{USER}:{PASSWORD}".encode()).decode(), "X-Who": WHO,
+               "User-Agent": "constellate-board/1.0 (+https://github.com/hannokuegler/constellate)"}
     data = None
     if body is not None:
         data = body if isinstance(body, bytes) else json.dumps(body, ensure_ascii=False).encode()

@@ -2,7 +2,9 @@
 
 Checks: every edge has >= 1 evidence entry with db/record/url/level/date (or is a pure counter-evidence edge),
 `contradicting` always present, edge ids unique and consistent (id <-> source|target|type), all edge endpoints exist,
-inferred edges carry a `formula`, size budgets hold, meta is not a fixture, and the hero path is complete:
+inferred edges carry a `formula`, size budgets hold (core+index < 3 MB, every disease / gene / phenotype shard
+< 150 KB), every index entry has its shard (and no shard lacks an index entry), meta is not a fixture, and the hero
+path is complete:
 Krabbe -> GALC, Krabbe family -> PSAP, PSAP -> MLD family, MLD -> ARSA, Krabbe <-> PMD with mechanism_differs = true
 (and Krabbe <-> MLD not flagged).
 """
@@ -21,6 +23,7 @@ OUT = ROOT / "app" / "public" / "data"
 KRABBE, MLD, PMD = "MONDO:0009499", "MONDO:0018868", "MONDO:0010714"
 CORE_INDEX_BUDGET = 3_000_000
 SHARD_BUDGET = 150_000
+PHENOTYPE_SHARD_CAP = 100
 EVIDENCE_LEVELS = {"observed", "curated", "text_mined", "inferred"}
 EDGE_LEVELS = EVIDENCE_LEVELS | {"contradicted"}  # "contradicted" = edge with counter-evidence only (03)
 REQUIRED_EDGE_KEYS = ("id", "source", "target", "type", "evidence", "contradicting", "confidence", "level", "independent_sources")
@@ -148,14 +151,18 @@ def main() -> int:
     if sizes["core.json"] + sizes["index.json"] >= CORE_INDEX_BUDGET:
         err(f"budget: core.json + index.json = {(sizes['core.json'] + sizes['index.json'])/1e6:.2f} MB (limit 3 MB)")
     shards: dict[str, dict] = {}
+    shard_counts: dict[str, int] = {}
     max_shard = (0, "")
-    for folder, kind in (("disease", "disease"), ("gene", "gene")):
+    for folder, kind in (("disease", "disease"), ("gene", "gene"), ("phenotype", "phenotype")):
         overrides = meta.get("shard_overrides", {})
         expected = {Path(overrides[n["id"]]).stem if n["id"] in overrides else file_safe(n["id"])
                     for n in index if n["type"] == kind}
         present = {f.stem for f in (OUT / folder).glob("*.json")}
         if expected - present:
             err(f"{folder}/: {len(expected - present)} shards missing, e.g. {sorted(expected - present)[:3]}")
+        if present - expected:
+            err(f"{folder}/: {len(present - expected)} shards without index entry, e.g. {sorted(present - expected)[:3]}")
+        shard_counts[folder] = len(present)
         for f in sorted((OUT / folder).glob("*.json")):
             size = f.stat().st_size
             max_shard = max(max_shard, (size, f.name))
@@ -192,11 +199,25 @@ def main() -> int:
                 for paper in shard.get("enrichment", {}).get("papers_mentioning", []):
                     if not all(paper.get(k) for k in ("id", "db", "record", "url")):
                         err(f"{where}: paper mention lacks id/db/record/url")
-            else:
+            elif kind == "gene":
                 for e in shard.get("diseases", []):
                     check_edge(where, e, index_set)
                 for it in shard.get("pathways", []) + shard.get("pathways_more", []):
                     check_edge(where, it.get("edge", {}))
+            else:
+                if not all(k in shard.get("node", {}) for k in ("id", "label", "ic")) or "diseases_total" not in shard:
+                    err(f"{where}: node needs id/label/ic and the shard diseases_total")
+                positive = 0
+                for it in shard.get("diseases", []):
+                    e = it.get("edge", {})
+                    check_edge(where, e, index_set)
+                    if not all(k in it for k in ("id", "label", "edge", "confidence")):
+                        err(f"{where}: disease entry {it.get('id')} incomplete")
+                    if e.get("type") != "has_phenotype" or e.get("target") != node_id or e.get("source") != it.get("id"):
+                        err(f"{where}: entry {it.get('id')} is not a has_phenotype edge of this phenotype")
+                    positive += bool(e.get("evidence"))
+                if positive > PHENOTYPE_SHARD_CAP:
+                    err(f"{where}: {positive} diseases listed (cap {PHENOTYPE_SHARD_CAP})")
 
     # ---- hero path
     def children_closure(root: str) -> set[str]:
@@ -235,7 +256,7 @@ def main() -> int:
     print(f"index: {dict(by_type)} · core: {len(core_nodes)} nodes, {dict(sorted(edge_counter.items()))}")
     print(f"sizes: core.json {sizes['core.json']/1e6:.2f} MB + index.json {sizes['index.json']/1e6:.2f} MB = "
           f"{(sizes['core.json'] + sizes['index.json'])/1e6:.2f} MB · largest shard {max_shard[1]} {max_shard[0]/1e3:.0f} KB · "
-          f"{len(shards)} shards · {len(seen_ids)} distinct edge ids")
+          f"shards {shard_counts} · {len(seen_ids)} distinct edge ids")
     print("hero: " + " · ".join(f"{name} {'ok' if ok else 'FAIL'}" for name, ok in hero.items()))
     return report()
 

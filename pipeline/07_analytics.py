@@ -61,6 +61,7 @@ W_SIMGIC, W_SHARED_GENE = 1.0, 0.3
 SHARD_BUDGET = 150_000
 CORE_INDEX_BUDGET = 3_000_000
 ENRICH_KINDS = ("trials", "grants", "targets", "papers_mentioning")
+PHENOTYPE_SHARD_CAP = 100  # diseases per phenotype shard (counter-evidence edges are always kept on top)
 ENRICH_CAP = 20  # items per enrichment kind and disease shard (totals are kept)
 PATHWAY_HUB_SHARE, PATHWAY_HUB_MIN_GENES = 0.15, 10  # generic Reactome pathway = carried by >= 15 % (min 10) of annotated genes
 GENE_EDGE_TYPES = ("caused_by", "associated_gene")
@@ -141,7 +142,7 @@ def make_edge(source: str, target: str, edge_type: str, evidence: list[dict], co
 # ----------------------------------------------------------------------------------------------- loading
 def load_hpo() -> dict:
     graph = json.loads((RAW / "hp.json").read_text())["graphs"][0]
-    labels, synonyms, xrefs, alt, parents = {}, {}, {}, {}, defaultdict(list)
+    labels, synonyms, xrefs, alt, parents, definitions = {}, {}, {}, {}, defaultdict(list), {}
     for node in graph["nodes"]:
         if "HP_" not in node["id"]:
             continue
@@ -152,6 +153,8 @@ def load_hpo() -> dict:
         lay = sorted({x["val"] for x in syns if "layperson" in x.get("synonymType", "")})
         synonyms[hp] = lay + sorted({x["val"] for x in syns} - set(lay))
         xrefs[hp] = sorted({x["val"] for x in meta.get("xrefs", [])})
+        if meta.get("definition", {}).get("val"):
+            definitions[hp] = meta["definition"]["val"]
         for prop in meta.get("basicPropertyValues", []):
             if prop.get("pred", "").endswith("hasAlternativeId"):
                 alt[prop["val"]] = hp
@@ -159,7 +162,7 @@ def load_hpo() -> dict:
         if edge.get("pred") == "is_a" and "HP_" in edge["sub"] and "HP_" in edge["obj"]:
             parents[iri_to_curie(edge["sub"])].append(iri_to_curie(edge["obj"]))
     version = graph.get("meta", {}).get("version", "")
-    return {"labels": labels, "synonyms": synonyms, "xrefs": xrefs, "alt": alt, "parents": parents,
+    return {"labels": labels, "synonyms": synonyms, "xrefs": xrefs, "alt": alt, "parents": parents, "definitions": definitions,
             "version": (re.search(r"releases/([\d-]+)/", version) or [None, version])[1]}
 
 
@@ -1015,7 +1018,31 @@ def export(**k) -> None:
         path = OUT / "gene" / f"{shard_stem[g]}.json"
         shard_sizes.append(dump(path, shard))
         written.add(path)
-    for folder in ("disease", "gene"):
+    # ---- phenotype shards (every phenotype in index.json): annotated diseases, own has_phenotype edges only
+    diseases_of_pheno: dict[str, list[dict]] = defaultdict(list)
+    for d in diseases:
+        for e in k["pheno_edges_of"][d]:
+            diseases_of_pheno[e["target"]].append(e)
+    for ph in topk_phenos:
+        edges_here = diseases_of_pheno.get(ph, [])
+        ranked_edges = sorted(edges_here, key=lambda e: (-(e["confidence"] * (1.0 if e["source"] in core_set else 0.0)),
+                                                         -e["confidence"], e["source"]))
+        positive = [e for e in ranked_edges if e["evidence"]]
+        chosen = positive[:PHENOTYPE_SHARD_CAP]
+        chosen += [e for e in ranked_edges if not e["evidence"]]  # pure counter-evidence: always listed
+        term = hpo["alt"].get(ph, ph)
+        node = {"id": ph, "label": nodes[ph]["label"] if ph in nodes else hpo["labels"].get(ph, ph), "ic": r(ic_of(term), 3)}
+        if hpo["definitions"].get(term):
+            node["definition"] = hpo["definitions"][term]
+        shard = {"node": node,
+                 "diseases": [{"id": e["source"], "label": nodes[e["source"]]["label"], "in_core": e["source"] in core_set,
+                               "edge": e, "confidence": e["confidence"]} for e in chosen],
+                 "diseases_total": len(positive), "diseases_contradicted": len(edges_here) - len(positive)}
+        fit_shard(shard)
+        path = OUT / "phenotype" / f"{file_safe(ph)}.json"
+        shard_sizes.append(dump(path, shard))
+        written.add(path)
+    for folder in ("disease", "gene", "phenotype"):
         for f in (OUT / folder).glob("*.json"):
             if f not in written:
                 f.unlink()  # stale shard from an earlier build or fixture
@@ -1038,6 +1065,7 @@ def export(**k) -> None:
                        "edges": dict(sorted(edge_counts.items())), "edges_rolled_up": dict(sorted(rolled_counts.items())),
                        "levels": dict(sorted(level_counts.items())),
                        "core_edges": len(core_edges_full), "disease_shards": len(diseases), "gene_shards": len(genes),
+                       "phenotype_shards": len(topk_phenos),
                        **k["stats"]},
             "parameters": {"top_k_phenotypes": TOP_K_PHENOTYPES, "top_similar": TOP_SIMILAR, "top_resnik": TOP_RESNIK,
                            "counterexample": {"max_rank": COUNTEREXAMPLE_MAX_RANK, "min_simgic": COUNTEREXAMPLE_MIN_SIMGIC},
@@ -1048,10 +1076,10 @@ def export(**k) -> None:
             "analytics": {"record": RECORD, "url": CODE_URL, "date": BUILD_DATE},
             "files": {"core.json": sizes["core.json"], "index.json": sizes["index.json"],
                       "shard_max": max(shard_sizes), "shard_median": int(np.median(shard_sizes))},
-            "shard_overrides": shard_overrides,
+            **({"shard_overrides": shard_overrides} if shard_overrides else {}),
             "hero": {"start": HERO_START}}
     dump(OUT / "meta.json", meta)
-    print(f"[export] {len(diseases)} disease + {len(genes)} gene shards · max {max(shard_sizes)/1e3:.0f} KB · "
+    print(f"[export] {len(diseases)} disease + {len(genes)} gene + {len(topk_phenos)} phenotype shards · max {max(shard_sizes)/1e3:.0f} KB · "
           f"median {np.median(shard_sizes)/1e3:.1f} KB → {OUT.relative_to(ROOT)}")
     print("[counts] " + " · ".join(f"{t} {c}" for t, c in sorted(edge_counts.items())))
 
@@ -1118,7 +1146,8 @@ def fit_shard(shard: dict) -> int:
     for snippet_len, max_ev in ((200, None), (120, 6), (80, 3), (60, 2)):
         for key in ("genes", "diseases"):
             if key in shard:
-                shard[key] = [compact_edge(e, snippet_len, max_ev) for e in shard[key]]
+                shard[key] = [dict(it, edge=compact_edge(it["edge"], snippet_len, max_ev)) if "edge" in it
+                              else compact_edge(it, snippet_len, max_ev) for it in shard[key]]
         if "phenotypes" in shard:
             for p in shard["phenotypes"]:
                 p["edge"] = compact_edge(p["edge"], snippet_len, max_ev)
@@ -1136,7 +1165,7 @@ def fit_shard(shard: dict) -> int:
             while size() > SHARD_BUDGET and len(shard[key]) > 10:
                 shard[key] = shard[key][: max(10, int(len(shard[key]) * 0.8))]
             if len(shard[key]) < total:
-                shard[f"{key}_total"] = total
+                shard.setdefault(f"{key}_total", total)
                 shard[f"{key}_truncated"] = True
     return size()
 

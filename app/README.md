@@ -122,6 +122,21 @@ Limits (`app/api/explain/route.ts`, `lib/ratelimit.ts`): body ≤ 600 kB (413), 
 
 Prompt: `lib/prompts/explain.ts` (only facts from the edges, every sentence ends with `[e_id]`, no ids outside the input). Post-check and template text: `lib/explain.ts`. `GET /api/explain` reports whether an LLM is configured.
 
+
+### Precomputed explanations (no key on the live site)
+
+`/api/explain` first looks for `public/data/explain/<key>.json`, where `key` = first 16 hex of sha1 over the sorted, de-duplicated edge ids of the action card (`lib/explaincache.ts`). If it exists, the route streams those sentences (meta `mode: "llm"`, the model id and the generation date), re-running the citation post-check against the edges of the request. Only without a file does it call OpenAI live (needs `OPENAI_API_KEY` + `OPENAI_MODEL_EXPLAIN`) or fall back to the template. `EXPLAIN_PRECOMPUTED=0` disables the lookup.
+
+The files are written offline with the same system prompt, the same edge set as `components/ActionCard.tsx` and the same post-check:
+
+```bash
+cd app
+npm run explain -- --dry-run --core 50          # pairs, edge counts, token estimate; no API call
+OPENAI_API_KEY=… OPENAI_MODEL_EXPLAIN=… npm run explain -- --core 50   # hero pairs + 50 core diseases
+```
+
+Each file stores `edge_ids`, `from`, `via`, `model`, `prompt_sha`, `audience`, `generated_at`, kept `sentences` and `dropped` ones; `pipeline/validate.py` checks that every cited id exists in the export. Re-run after every re-export (edge ids are stable, but a changed edge set changes the key).
+
 ## Fixture
 
 `scripts/make_fixture.py` writes a small contract-conform set (Krabbe, MLD, Gaucher, Pelizaeus-Merzbacher, saposin deficiencies + 1-hop neighbours; GALC, ARSA, PSAP, PLP1) with `meta.fixture = true`. It writes **only** if `public/data/meta.json` is missing or says `fixture: true`, so real pipeline data is never overwritten. Its similarity is a placeholder (IC-weighted Jaccard without ontology propagation).

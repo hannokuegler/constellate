@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "fixture": "cd .. && uv run --project pipeline python app/scripts/make_fixture.py",
     "e2e": "npm run build && playwright test",
-    "e2e:run": "playwright test"
+    "e2e:run": "playwright test",
+    "explain": "tsx scripts/precompute-explain.ts"
   },
   "engines": {
     "node": ">=20"
@@ -32,6 +33,7 @@
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.27",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.15",
     "typescript": "~5.9"
   }
 }

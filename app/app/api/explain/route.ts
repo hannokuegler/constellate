@@ -3,6 +3,7 @@ import { EXPLAIN_SYSTEM_PROMPT, buildExplainUserPrompt } from "@/lib/prompts/exp
 import { checkSentence, splitSentences, templateSentences, type ExplainEvent } from "@/lib/explain";
 import { allDiseaseEdges, nodeLabels } from "@/lib/normalize";
 import { FixedWindowLimiter, clientKey } from "@/lib/ratelimit";
+import { explainKey, type PrecomputedExplain } from "@/lib/explaincache";
 import type { DiseaseFile } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -108,6 +109,16 @@ async function edgesFromIds(request: Request, ids: string[], disease: string): P
   return { edges: allDiseaseEdges(file).filter((e) => wanted.has(e.id)), labels: nodeLabels(file) };
 }
 
+/** Explanation generated ahead of time for exactly this edge set (same origin, static file), or null. */
+async function precomputed(request: Request, ids: Set<string>): Promise<PrecomputedExplain | null> {
+  if (process.env.EXPLAIN_PRECOMPUTED === "0") return null;
+  const key = explainKey(ids);
+  const response = await fetch(new URL(`/data/explain/${key}.json`, request.url)).catch(() => null);
+  if (!response?.ok) return null;
+  const file = (await response.json().catch(() => null)) as PrecomputedExplain | null;
+  return file?.key === key && Array.isArray(file.sentences) ? file : null;
+}
+
 export async function POST(request: Request) {
   const retryAfter = perClient.hit(clientKey(request));
   if (retryAfter) {
@@ -137,6 +148,7 @@ export async function POST(request: Request) {
   const validIds = new Set(edges.map((e) => e.id));
   const audience = str(body.audience, 80)?.trim() || "a patient-group leader without medical training";
 
+  const stored = await precomputed(request, validIds);
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL_EXPLAIN;
   const encoder = new TextEncoder();
@@ -159,7 +171,15 @@ export async function POST(request: Request) {
       };
 
       try {
-        if (!apiKey || !model) {
+        if (stored) {
+          // generated offline with the same prompt; re-checked here so a stale file can never cite an edge outside this card
+          send({ type: "meta", mode: "llm", model: stored.model, note: `${stored.model} · generated ${stored.generated_at.slice(0, 10)} for this exact set of edges · sentences without a valid edge citation are removed` });
+          stored.sentences.forEach((s) => emit(s.text));
+          stored.dropped.forEach((d) => {
+            dropped++;
+            send(d);
+          });
+        } else if (!apiKey || !model) {
           template(`template, no LLM (${!apiKey ? "OPENAI_API_KEY" : "OPENAI_MODEL_EXPLAIN"} not set)`);
         } else if (llmBudget.hit("llm")) {
           template("template, no LLM (hourly LLM budget of this server reached)");

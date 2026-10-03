@@ -69,6 +69,7 @@ Hinweis fürs Produkt: Niemann-Pick C ist mechanistisch ein Transport-, kein Enz
 
 **Register / Natural History.**
 - Prospektive Single-Center-Naturverlaufsstudie Pittsburgh: 35 Patienten mit Beginn 6–36 Monate, Beobachtung 2000–2017 (Bascou 2018, PMID 30089515).
+- Deutschlandweite Naturverlaufsstudie Krabbe mit klinischen und MRT-Daten, Tübingen (Krieg et al., Orphanet J Rare Dis 2020, PMID 32912261) — dieselbe Gruppe (Krägeloh-Mann, Groeschel), die die GMFC-MLD entwickelt hat.
 - „Natural History of Infantile Globoid Cell Leukodystrophy" NCT00983879; Pittsburgh „Longitudinal Study of Neurodegenerative Disorders" NCT03333200 (deckt Krabbe + MLD, geplant 1.500 Patienten, Ende 2035).
 
 ---
@@ -90,7 +91,7 @@ Hinweis fürs Produkt: Niemann-Pick C ist mechanistisch ein Transport-, kein Enz
 
 **GMFC-MLD-Skala.** Gross Motor Function Classification für MLD, 7 Stufen (0 = normal bis 6 = Verlust jeder Bewegung/Kopfkontrolle), entwickelt in Tübingen am LEUKONET-Kollektiv (59 Patienten); Publikation Kehrer et al., Dev Med Child Neurol 2011, PMID 21707604. Wird als Endpunkt in Zulassung und Natural-History-Studien verwendet.
 
-**MLD Natural History Study.** „HOME Study" NCT04628364 (Orchard, prospektiv, 21 Patienten, Endpunkt GMFC-MLD); Tübinger LEUKONET-Kohorte (Kehrer 2011); Pittsburgh NCT03333200.
+**MLD Natural History Study.** „HOME Study" NCT04628364 (Sponsor National Organization for Rare Disorders (NORD), Kooperationspartner FDA; beobachtend, 21 Patienten, 10/2020–03/2025, abgeschlossen; ClinicalTrials.gov, geprüft 03.10.2026); Tübinger LEUKONET-Kohorte (Kehrer 2011); Pittsburgh NCT03333200.
 
 **Newborn Screening (Pilotprojekte, kein Regelscreening in USA/DE).**
 - Deutschland, Screeningzentrum Hannover: seit 2021 prospektiver Pilot, dreistufig (Sulfatide → ARSA-Aktivität → Sequenzierung); 109.259 Screens, 3 positiv, alle 3 bestätigt (ICNA-Poster 2024; systematische Übersicht PMC12641716).

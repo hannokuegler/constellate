@@ -1,6 +1,6 @@
 # Die Verkaufsgeschichte · Constellate
 
-Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Persona seit 04.10. 02:00 Maria statt Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
+Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Persona seit 04.10. 01:20 Maria statt Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
 
 ## 1. Das Problem in einem Satz, den jeder fühlt
 
@@ -14,7 +14,7 @@ Warum das jeder fühlt, auch ohne Medizinwissen: Jeder kennt das Gefühl, bei nu
 
 ### (a) Die Mutter · Maria, Persona aus dem Brief
 
-**Name: Maria** (seit 04.10. 02:00, auf Osmans Feedback; vorher Nora). Abgleich mit dem C5-Brief, Seite für Seite:
+**Name: Maria** (seit 04.10. 01:20, auf Osmans Feedback; vorher Nora). Abgleich mit dem C5-Brief, Seite für Seite:
 
 | Prüfpunkt | Brief | Passt? |
 |---|---|---|

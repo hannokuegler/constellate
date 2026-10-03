@@ -6,7 +6,7 @@ Owner: Recep. Stand So 04.10.2026, 01:30. Dieser Entwurf vom 03.10. (Demo 2:00, 
 
 | Zeit | Screen / Route | Was passiert |
 |---|---|---|
-| 0:00–0:10 | `/` | Maria als Persona aus dem C5-Brief vorgestellt (seit 02:00, vorher Nora), Karte „We just got the diagnosis", „Krabbe" tippen |
+| 0:00–0:10 | `/` | Maria als Persona aus dem C5-Brief vorgestellt (seit 04.10. 01:20, vorher Nora), Karte „We just got the diagnosis", „Krabbe" tippen |
 | 0:10–0:17 | `/d/MONDO_0009499` | Linie Krabbe → GALC, Edge-Panel: Quelle, Konfidenz, Counter-evidence (`e_3dbc42738b5a`) |
 | 0:17–0:24 | `/g/PSAP` | „One gene, 4 disease names", Zeilen Saposin A, B, C (OMIM 611722, 249900, 610539) |
 | 0:24–0:33 | `/d/MONDO_0009499`, „I lead a patient group" | „Related communities" → MLD, „Why linked", Badge `inferred`, Formel (`e_e270315fe572`) |

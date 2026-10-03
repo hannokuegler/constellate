@@ -1,6 +1,6 @@
 # Abgabetexte · Constellate (HackOS und Google Form)
 
-Stand So 04.10.2026, 01:40 (Wien), **v1**. Alle Texte für die Jury auf Englisch, je Feld in einem Code-Block zum Kopieren. Zahlen per Skript aus `app/public/data/meta.json`, Export **`2026-10-04+f35b3a5`** (gebaut 2026-10-03 22:49 UTC); vor dem Einfügen gegen den dann aktuellen Export prüfen (Befehl in §11). Live-App am 04.10. 01:30 gegengeprüft: Action Card Krabbe → MLD zeigt Libmeldy (EMA 2020-12-17) und Lenmeldy (FDA 2024-03-18) mit Quelle, Krabbe zeigt „Honest Gap" bei zugelassenen Therapien, `/d/MONDO_0012720` zeigt 0 Gruppen und 0 offene Studien mit „What was searched".
+Stand So 04.10.2026, 01:15 (Wien), **v1**. Alle Texte für die Jury auf Englisch, je Feld in einem Code-Block zum Kopieren. Zahlen per Skript aus `app/public/data/meta.json`, Export **`2026-10-04+f35b3a5`** (gebaut 2026-10-03 22:49 UTC); vor dem Einfügen gegen den dann aktuellen Export prüfen (Befehl in §11). Live-App am 04.10. 01:30 gegengeprüft: Action Card Krabbe → MLD zeigt Libmeldy (EMA 2020-12-17) und Lenmeldy (FDA 2024-03-18) mit Quelle, Krabbe zeigt „Honest Gap" bei zugelassenen Therapien, `/d/MONDO_0012720` zeigt 0 Gruppen und 0 offene Studien mit „What was searched".
 
 Feldnamen und Zeichenlimits von HackOS und Google Form kennt Osman ab 08:00–09:00; bis dahin sind die Felder generisch (§1–§9). v2 passt sie 1:1 an.
 

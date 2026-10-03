@@ -1,6 +1,6 @@
 # Voice-over-Plan · ElevenLabs Eleven v4
 
-Stand So 04.10.2026, 02:00 (Wien); Persona heißt wieder Maria (C5-Brief), D1–D7 gegen 2,3 Wörter/s nachgerechnet, Stimmen-Kandidaten in §2a. Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
+Stand So 04.10.2026, 01:20 (Wien); Persona heißt wieder Maria (C5-Brief), D1–D7 gegen 2,3 Wörter/s nachgerechnet, Stimmen-Kandidaten in §2a. Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
 
 ## 1. Welche Videos bekommen Voice-over
 
@@ -40,7 +40,7 @@ One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gau
 
 ## 2a. Stimmen-Kandidaten (Auswahl So 09:00, Hanno)
 
-Aus den Default-Voices von ElevenLabs (für alle Accounts freigeschaltet, Beschreibungen laut [ElevenLabs Default Voices](https://elevenlabs.io/docs/voices/default-voices), Suche 04.10. 02:00). Ob jede Stimme mit `eleven_v4` angeboten wird, im Dashboard prüfen; sonst dieselbe Stimme mit `eleven_multilingual_v2`.
+Aus den Default-Voices von ElevenLabs (für alle Accounts freigeschaltet, Beschreibungen laut [ElevenLabs Default Voices](https://elevenlabs.io/docs/voices/default-voices), Suche 04.10. 01:20). Ob jede Stimme mit `eleven_v4` angeboten wird, im Dashboard prüfen; sonst dieselbe Stimme mit `eleven_multilingual_v2`.
 
 | # | Stimme | Profil laut ElevenLabs | Warum | Risiko |
 |---|---|---|---|---|
@@ -150,7 +150,7 @@ Where there is no trail, we say so, and show what we searched.
 Don't rebuild what a neighbouring disease already built.
 ```
 
-Tempo-Check (02:00, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 2,3 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
+Tempo-Check (01:20, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 2,3 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
 
 ### Tech · T1 (0:00–0:58, ein Request)
 
@@ -173,7 +173,7 @@ Falls T1 als sechs Einzel-Requests gebraucht wird (T1a bis T1f): je Absatz ein R
 
 ## 6. Streichreihenfolge, falls ein Block zu lang wird
 
-Demo (die ersten zwei Kürzungen von 01:20 sind seit 02:00 schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „or none" → Absatz 4 „never hard-coded" → Absatz 6 ganz (dann Untertitel statt gesprochen).
+Demo (die ersten zwei Kürzungen der alten Liste sind schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „or none" → Absatz 4 „never hard-coded" → Absatz 6 ganz (dann Untertitel statt gesprochen).
 
 ## 7. Offenlegung
 

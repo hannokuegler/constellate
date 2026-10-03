@@ -1,6 +1,6 @@
 # Dauer-Prompt · Marketing-Maus (Pitch, Story, Videos, Abgabetexte)
 
-Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 02:00 (Osman-Feedback: Team-Video, Maria; Voice-over); Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
+Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 01:20 (Osman-Feedback: Team-Video, Maria; Voice-over); Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
 
 **Schnellstart für eine frische Session** (eine Zeile reicht): `Lies docs/prompts/MARKETING-STANDING.md im Worktree ../constellate-marketing (Branch marketing) und mach bei Abschnitt 5a weiter.`
 
@@ -57,7 +57,7 @@ Dann Hanno 5 Zeilen: was steht, was fehlt, was er entscheiden muss, nächster Sc
 
 Quelle der Wahrheit ist `docs/DECISIONS.md`. Bei Widerspruch gilt DECISIONS, und diese Datei wird nachgezogen.
 
-- **Persona (P1, P9, geändert 04.10. 02:00 auf Osmans Feedback, Hanno: „date das up"):** **Maria**, die Patient-Leader-Persona aus dem C5-Brief, als Mutter in zwei Momenten (frisch diagnostiziert; Monate später Leiterin einer Patientengruppe). Immer als Persona aus dem Brief eingeführt („Meet Maria, from the challenge brief" plus Einblendung „not a real person"), das Kind ohne Namen. DECISIONS P9 sagt noch Nora: Nachtrag durch Orchestrator/Hanno offen.
+- **Persona (P1, P9, geändert 04.10. 01:20 auf Osmans Feedback, Hanno: „date das up"):** **Maria**, die Patient-Leader-Persona aus dem C5-Brief, als Mutter in zwei Momenten (frisch diagnostiziert; Monate später Leiterin einer Patientengruppe). Immer als Persona aus dem Brief eingeführt („Meet Maria, from the challenge brief" plus Einblendung „not a real person"), das Kind ohne Namen. DECISIONS P9 sagt noch Nora: Nachtrag durch Orchestrator/Hanno offen.
 - **Pitch (P9):** Fassung "Herz zuerst". Einstieg "Your family is not the first. What you need may already exist under another disease's name." Schluss "Don't rebuild what a neighbouring disease already built."
 - **Team-Feedback zum Pitch (verbindlich):** wenig Fachbegriffe, die Message muss ankommen; sofort klar: 1. Problem, 2. Herangehensweise, 3. Lösung. Ersetzungsliste in `pitch/PITCH-60S.md`.
 - **Videos (verbindlich):** genau drei, je max. 60 s: Team Introduction (echte Gesichter, kein Voice-over), Product Demo, Technical Walkthrough. MP4 (H.264, 1920×1080, 30 fps) oder MOV, Englisch, Querformat, Live-URL sichtbar. Shotlists und Wort-für-Wort-Texte in `pitch/VIDEO-STRATEGY.md`.
@@ -101,9 +101,9 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 | ✓ | Zeit (So) | Block | Wer | Ergebnis |
 |---|---|---|---|---|
 | ☑ | bis 01:10 | Übernahme, Dauer-Prompt, Mentor-Vorstellung | Marketing | diese Datei, `pitch/MENTOR-INTRO.md` |
-| ☑ | 01:15–01:45 | Abgabetexte Entwurf (Aufgabe 4): Einzeiler, 50 Wörter, Langbeschreibung, Stack, Quellen mit Lizenz aus `meta.json`, Team | Marketing | `pitch/SUBMISSION-TEXTS.md` v1 |
-| ☑ | 01:45–02:00 | Osman-Feedback: Team-Video auf Background umgebaut (VIDEO-STRATEGY §1, Texte H/O/R), Persona Nora → Maria mit Brief-Abgleich (STORY §2a) | Marketing | `pitch/` |
-| ☑ | 02:00 | Voice-over (Aufgabe 3): 2–3 Stimmen mit Begründung, Skriptblöcke D1–D7 und T1 final, Wortzahl je Block gegen Szenenzeit, Aussprache inkl. Pelizaeus-Merzbacher | Marketing | `pitch/VOICE-ELEVENLABS.md` |
+| ☑ | 01:10–01:15 | Abgabetexte Entwurf (Aufgabe 4): Einzeiler, 50 Wörter, Langbeschreibung, Stack, Quellen mit Lizenz aus `meta.json`, Team | Marketing | `pitch/SUBMISSION-TEXTS.md` v1 |
+| ☑ | 01:15–01:20 | Osman-Feedback: Team-Video auf Background umgebaut (VIDEO-STRATEGY §1, Texte H/O/R), Persona Nora → Maria mit Brief-Abgleich (STORY §2a) | Marketing | `pitch/` |
+| ☑ | 01:20 | Voice-over (Aufgabe 3): 2–3 Stimmen mit Begründung, Skriptblöcke D1–D7 und T1 final, Wortzahl je Block gegen Szenenzeit, Aussprache inkl. Pelizaeus-Merzbacher | Marketing | `pitch/VOICE-ELEVENLABS.md` |
 | ☐ | 03:30 | Go für die Mentor-Vorstellung, Pitch-v2-Feedback von Osman und Recep einarbeiten | Hanno, Marketing | MENTOR-LIN.md §2, PITCH-60S.md |
 | ☐ | 03:45–04:00 | Mentor-Gespräch Woan-Yu Lin | Hanno, Recep, Osman (Protokoll) | Protokoll |
 | ☐ | 04:00–04:45 | Nachlauf (Aufgabe 1b): Protokoll lesen, Antwort A/B/C zuordnen (`pitch/MENTOR-INTRO.md`), Entscheidungsliste an Hanno (W9, W16, ggf. P14), Pitch, Story, Demo-Text anpassen | Marketing | Liste an Hanno, Diffs in `pitch/` |

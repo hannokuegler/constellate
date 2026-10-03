@@ -98,7 +98,7 @@ Bewusst behalten: „gene", „gene therapy", „diagnosis", „approved medicin
 - Betonung: „your family is not the first", „That study design exists", „Don't rebuild".
 - „P-S-A-P" und „M-L-D" buchstabieren, „metachromatic leukodystrophy" einmal voll (Aussprache in [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md) §5).
 - Nur Screens der echten App mit sichtbarer URL. Kein Bild von Kindern, kein Klinik-Stock, keine Musik.
-- Maria wird im Pitch nicht genannt (keine Zeit für die Einordnung); in der Demo heißt sie Maria wie im C5-Brief und wird im ersten Satz als Persona aus dem Brief eingeführt (seit 04.10. 02:00, vorher Nora).
+- Maria wird im Pitch nicht genannt (keine Zeit für die Einordnung); in der Demo heißt sie Maria wie im C5-Brief und wird im ersten Satz als Persona aus dem Brief eingeführt (seit 04.10. 01:20, vorher Nora).
 
 ## Fußnoten (Primärquellen)
 

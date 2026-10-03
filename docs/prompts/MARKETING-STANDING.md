@@ -1,6 +1,8 @@
 # Dauer-Prompt · Marketing-Maus (Pitch, Story, Videos, Abgabetexte)
 
-Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 01:35; Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
+Für jede neue Marketing-Session von Constellate: nach Kontext-Reset, für den Pitch am 10.10., für die Zeit danach. Alles unter der Linie in eine neue lokale Claude-Code-Session im Repo `constellate` kopieren. Lokal, weil ElevenLabs, Motion (motion.so) und Higgsfield dort mit Hannos Logins und Credits laufen. Erste Fassung So 04.10.2026, 01:15 Wien, zuletzt 01:10 (Übergabe nach Kontext-Reset); Stand der Aufgaben unten in Abschnitt 5, nach jeder Arbeitseinheit nachziehen.
+
+**Schnellstart für eine frische Session** (eine Zeile reicht): `Lies docs/prompts/MARKETING-STANDING.md im Worktree ../constellate-marketing (Branch marketing) und mach bei Abschnitt 5a weiter.`
 
 ---
 
@@ -91,6 +93,32 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 | 5 | ab 12:00 | Videos produzieren: Aufnahme-Checklisten aus `pitch/VIDEO-STRATEGY.md`, Schnittplan, Intro/Outro-Clip (≤ 3 s, Motion oder Higgsfield), Export prüfen, Untertitel optional, Upload nach HackOS-Vorgabe, Links in `pitch/SUBMISSION-TEXTS.md` | ☐ | |
 | 6 | laufend | Social: 2–3 Discord-Oneliner für Osman (Challenge-Kanal, ohne Interna), Memes nur aus `memes/` (Osman postet) | ☐ | |
 | 7 | nach 15:00 | Preisverleihung 10.10.: Pitch-Deck (5–7 Folien, 3 min) aus `docs/PITCH-OUTLINE_draft.md` und Moonshot; Motion-Opener aus `pitch/MOTION-PROMPTS.md`; Q&A-Liste (10 harte Jury-Fragen mit Antwort und Quelle) | ☐ | |
+
+## 5a · Roadmap bis zur Abgabe (Stand 01:10, nach jedem Block abhaken)
+
+Übergabe-Stand 01:10: Worktree `../constellate-marketing` auf Branch `marketing` (gepusht, 2 Commits über `main`: dieser Dauer-Prompt, `pitch/MENTOR-INTRO.md`). Pitch-v2-Mail an Osman und Recep ist um 00:46 raus (Fragen: Pitch verständlich? Problem/Ansatz/Lösung klar? eigener Satz fürs Team-Video?), Antworten kommen per Mail an Hanno. Offen bei Hanno: Go für `pitch/MENTOR-INTRO.md` als Ersatz von Abschnitt 2 in `docs/mentoring/MENTOR-LIN.md`; dort steht noch der überholte Satz "data-v2 noch nicht in der Live-App".
+
+| ✓ | Zeit (So) | Block | Wer | Ergebnis |
+|---|---|---|---|---|
+| ☑ | bis 01:10 | Übernahme, Dauer-Prompt, Mentor-Vorstellung | Marketing | diese Datei, `pitch/MENTOR-INTRO.md` |
+| ☐ | 01:15–02:30 | Abgabetexte Entwurf (Aufgabe 4): Einzeiler, 50 Wörter, Langbeschreibung, Stack, Quellen mit Lizenz aus `meta.json`, Team | Marketing | `pitch/SUBMISSION-TEXTS.md` v1 |
+| ☐ | 02:30–03:30 | Voice-over (Aufgabe 3): 2–3 Stimmen mit Begründung, Skriptblöcke D1–D7 und T1 final, Wortzahl je Block gegen Szenenzeit, Aussprache inkl. Pelizaeus-Merzbacher | Marketing | `pitch/VOICE-ELEVENLABS.md` |
+| ☐ | 03:30 | Go für die Mentor-Vorstellung, Pitch-v2-Feedback von Osman und Recep einarbeiten | Hanno, Marketing | MENTOR-LIN.md §2, PITCH-60S.md |
+| ☐ | 03:45–04:00 | Mentor-Gespräch Woan-Yu Lin | Hanno, Recep, Osman (Protokoll) | Protokoll |
+| ☐ | 04:00–04:45 | Nachlauf (Aufgabe 1b): Protokoll lesen, Antwort A/B/C zuordnen (`pitch/MENTOR-INTRO.md`), Entscheidungsliste an Hanno (W9, W16, ggf. P14), Pitch, Story, Demo-Text anpassen | Marketing | Liste an Hanno, Diffs in `pitch/` |
+| ☐ | 05:00–07:30 | Moonshot (Aufgabe 2): Gerüst `docs/MOONSHOT.md` mit Meilenstein laut Mentor-Antwort, heute vs. mit Constellate, 4–6 Annahmen, Quelle je Zahl aus MEDICAL-BACKGROUND.md; Recep prüft und zeichnet ab. Daraus eine Folie und ein Satz für Pitch und README | Marketing, Recep | `docs/MOONSHOT.md` (nur mit Recep committen) |
+| ☐ | 06:00 | Gate End-to-End live (Hero-Pfad auf der Production-URL) | Hanno | |
+| ☐ | 08:00–09:00 | Probe-Take Demo gegen die Live-App timen; Osman klärt HackOS-Felder, Upload-Weg und Längenlimit | Recep, Osman | Zeiten je Szene, Feldliste |
+| ☐ | 09:00 | Stimme in ElevenLabs wählen (Testsätze aus VOICE-ELEVENLABS.md §2) | Hanno | Stimmname in RESOURCES §4.4 |
+| ☐ | 09:00–11:00 | Abgabetexte an HackOS/Form-Felder anpassen, README-Einleitung als Diff an Osman, 2–3 Discord-Oneliner (Aufgabe 6), `pitch/ASSETS.md` anlegen, Intro/Outro-Clip (≤ 3 s, Motion oder Higgsfield) erzeugen | Marketing | SUBMISSION-TEXTS v2, ASSETS.md, Clip-Datei auf Drive |
+| ☐ | 11:00 | Repo public, Skripte eingefroren (Repo vorher auf Secrets/Telefonnummern/Mailadressen in `pitch/` prüfen) | alle | |
+| ☐ | 11:15–11:45 | MP3s erzeugen (Demo 7, Tech 1), Hörprobe | Hanno, Recep | Drive `04_Submission/audio/` |
+| ☐ | 12:00 | Feature-Freeze; Sterne-Sätze an der Live-Action-Card final prüfen | Hanno | |
+| ☐ | 12:00–13:30 | Aufnahme und Schnitt (Aufgabe 5): Demo (Recep), Tech (Hanno), Team (Osman); Checkliste "Video fertig" je Video | alle | drei Exporte ≤ 60 s |
+| ☐ | 13:30–14:00 | Upload, Links prüfen, Links in SUBMISSION-TEXTS, Teamboard, STATUS.md | alle | drei Links |
+| ☐ | 14:00–14:30 | HackOS und Google Form ausfüllen (Texte aus SUBMISSION-TEXTS) | Osman | Abgabe |
+| ☐ | 14:45 | kein Push, kein Redeploy | alle | |
+| ☐ | nach 15:00 | Aufgabe 7: Pitch-Deck 10.10., Motion-Opener, Q&A-Liste | Marketing | |
 
 ## 6 · Checklisten
 

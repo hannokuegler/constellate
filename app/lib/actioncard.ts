@@ -186,9 +186,15 @@ const SUBTYPE_NAME = /,\s*\w+(\s\w+)? form$|\sdue to\s|^(infantile|juvenile|adul
 
 /** The neighbour an action card opens with: shared gene first, then a disease name over a subtype name, then similarity. */
 export function pickDefaultVia(neighbours: Neighbour[]): string | null {
+  // A family root whose subtypes also show up as neighbours is a larger related community
+  // (e.g. MLD with its juvenile, late-infantile and adult forms), so it outranks a single close subtype.
+  const familySize = (n: Neighbour) => {
+    const stem = n.label.toLowerCase();
+    return neighbours.filter((m) => m.id !== n.id && m.label.toLowerCase().startsWith(stem)).length;
+  };
   const ranked = [...neighbours].sort((a, b) => {
     const score = (n: Neighbour) =>
-      (n.shared_genes.length ? 2 : 0) + (n.mechanism_differs === false ? 1 : 0) + (SUBTYPE_NAME.test(n.label) ? 0 : 1.5) + n.edge.confidence;
+      (n.shared_genes.length ? 2 : 0) + (n.mechanism_differs === false ? 1 : 0) + (SUBTYPE_NAME.test(n.label) ? 0 : 1.5) + n.edge.confidence + Math.min(familySize(n), 5) * 0.2;
     return score(b) - score(a);
   });
   return ranked[0]?.id ?? null;

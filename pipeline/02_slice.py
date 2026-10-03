@@ -78,9 +78,9 @@ def load_hpoa(index: dict[str, str]) -> tuple[dict[str, set[str]], dict[str, set
         if line.startswith("#") or line.startswith("database_id"):
             continue
         cols = line.split("\t")
-        db_id, qualifier, hpo_id, aspect = cols[0], cols[2], cols[3], cols[10]
-        if qualifier == "NOT" or aspect != "P":
-            continue
+        db_id, qualifier, hpo_id, frequency, aspect = cols[0], cols[2], cols[3], cols[7], cols[10]
+        if qualifier == "NOT" or aspect != "P" or frequency == "HP:0040285" or frequency.startswith("0/") or frequency == "0%":
+            continue  # negated, excluded or seen in 0 of n patients: not a phenotype of the disease
         mondo_id = index.get(db_id.replace("ORPHA:", "Orphanet:"))
         if mondo_id:
             disease_pheno[mondo_id].add(hpo_id)

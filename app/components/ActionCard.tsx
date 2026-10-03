@@ -9,6 +9,8 @@ import { diseaseHref, toFileKey } from "@/lib/ids";
 import { useEdgePanel } from "./Providers";
 import CiteLink from "./CiteLink";
 import ExplainStream from "./ExplainStream";
+import ActionCardV2 from "./ActionCardV2";
+import { buildV2, v2Markdown } from "@/lib/actionv2";
 
 interface Props {
   disease: DiseaseFile;
@@ -48,6 +50,11 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
     if (card) register(card.edges.values(), card.labels);
   }, [card, register]);
 
+  const v2 = useMemo(
+    () => (neighbour && ready ? buildV2(disease, loaded!.file, { id: neighbour.id, label: neighbour.label }, meta) : null),
+    [neighbour, ready, disease, loaded, meta],
+  );
+
   if (!neighbour) {
     return (
       <div className="card px-5 py-5">
@@ -61,7 +68,8 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
   const SectionTitle = standalone ? "h2" : "h3";
   const download = () => {
     if (!card) return;
-    const blob = new Blob([actionCardMarkdown(card, meta?.built_at)], { type: "text/markdown;charset=utf-8" });
+    const md = actionCardMarkdown(card, meta?.built_at) + (v2 ? `\n# Assets and context\n\n${v2Markdown(v2).replace(/^## /gm, "### ")}` : "");
+    const blob = new Blob([md], { type: "text/markdown;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -147,6 +155,8 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
           ))}
         </div>
       )}
+
+      {card && v2 && <ActionCardV2 model={v2} level={standalone ? "h2" : "h3"} />}
 
       {card && (
         <div className="border-t border-line px-5 py-5 md:px-6">

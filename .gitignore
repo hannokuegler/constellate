@@ -1,7 +1,9 @@
-# secrets
+# secrets (any .env variant except the templates)
 .env
-.env.local
-.env*.local
+.env.*
+!.env.example
+*.pem
+*.key
 # data
 data/raw/
 data/cache/
@@ -13,11 +15,14 @@ data/enrich/
 __pycache__/
 *.pyc
 .ruff_cache/
+.pytest_cache/
 # node
 node_modules/
 .next/
 out/
 .vercel
+npm-debug.log*
+*.log
 # os
 .DS_Store
 data/slice.json
@@ -32,3 +37,6 @@ app/next-env.d.ts
 !.claude/skills/
 .claude/launch.json
 .claude/settings.local.json
+app/e2e-shots/
+app/test-results/
+app/playwright-report/

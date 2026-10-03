@@ -25,6 +25,8 @@ export default function StartView() {
     loadMeta().then(setMeta, () => setMeta(null));
   }, []);
   const heroId = meta?.hero.start ?? "MONDO:0009499";
+  const moments = PERSONAS.filter((p) => p.moment);
+  const others = PERSONAS.filter((p) => !p.moment);
 
   return (
     <div className="relative">
@@ -54,10 +56,10 @@ export default function StartView() {
 
       <section className="relative mx-auto mt-14 max-w-[960px]" aria-labelledby="persona-title">
         <h2 id="persona-title" className="text-center text-[13px] font-semibold uppercase tracking-wide text-ink-2">
-          Who is exploring? The lens changes defaults and wording, not the data.
+          Where are you right now?
         </h2>
-        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4" role="radiogroup" aria-labelledby="persona-title">
-          {PERSONAS.map((p) => {
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2" role="radiogroup" aria-labelledby="persona-title">
+          {moments.map((p) => {
             const selected = p.id === persona.id;
             return (
               <button
@@ -65,14 +67,29 @@ export default function StartView() {
                 role="radio"
                 aria-checked={selected}
                 onClick={() => setPersona(p.id)}
-                className={`card min-h-11 px-4 py-4 text-left transition-colors ${selected ? "border-accent ring-2 ring-accent/30" : "hover:border-ink-2/40"}`}
+                className={`card min-h-11 px-5 py-5 text-left transition-colors ${selected ? "border-accent ring-2 ring-accent/30" : "hover:border-ink-2/40"}`}
               >
-                <span className="block text-[15px] font-semibold">{p.name}</span>
-                <span className="block text-[13px] text-ink-2">{p.role}</span>
-                <span className="mt-2 block text-[13px]">{p.goal}</span>
+                <span className="block text-[12px] font-semibold uppercase tracking-wide text-accent">{p.moment!.step}</span>
+                <span className="mt-1 block text-[20px] font-bold tracking-tight">{p.moment!.title}</span>
+                <span className="mt-2 block text-[15px] text-ink-2">{p.moment!.text}</span>
               </button>
             );
           })}
+        </div>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-[13px]" role="radiogroup" aria-label="Other lenses">
+          <span className="text-ink-2">Other lenses, same data:</span>
+          {others.map((p) => (
+            <button
+              key={p.id}
+              role="radio"
+              aria-checked={p.id === persona.id}
+              onClick={() => setPersona(p.id)}
+              className={`min-h-11 rounded-full border px-3 ${p.id === persona.id ? "border-accent font-semibold text-accent" : "border-line text-ink-2 hover:text-ink"}`}
+              title={p.goal}
+            >
+              {p.name} · {p.role}
+            </button>
+          ))}
         </div>
       </section>
 

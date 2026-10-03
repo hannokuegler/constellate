@@ -1,17 +1,33 @@
 # Status · Constellate
 
-**Letzte Aktualisierung: Sa 03.10.2026, 22:30 (Wien)**, Stand `main` siehe `git log -1`. Freeze So 04.10. 12:00 (in 14 h), Abgabe So 04.10. 15:00 (in 17 h). Ziel E2E live: So 06:00.
+**Letzte Aktualisierung: So 04.10.2026, 01:15 (Wien)**. Freeze So 12:00 (in 10:45 h), Abgabe So 15:00 (in 13:45 h). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
 
-Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden werden muss: [DECISIONS.md](DECISIONS.md).
+Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).
 
 ## Auf einen Blick
 
 | Status | Was |
 |---|---|
-| **Fertig** | Pipeline 01 bis 07 plus `validate.py` · App-Daten in `app/public/data` · Enrichment 04 · OpenAI Extract und Reconcile (05, 06, ohne Key getestet) · App v0 · Teamboard live · Team-Briefing per Mail · Abgabe-Checkliste · RESOURCES geprüft · Hero-Entwurf (66 Belege) · MEDICAL-BACKGROUND korrigiert |
-| **Dran** | Recep prüft `hero_path` (Block A) · Osman prüft Orgs (`orgs_CHECK.md`) · alle lesen das Team-Briefing |
-| **Blockiert** | Vercel-Verbindung (Hanno) · OpenAI-Key (Hanno) · Entscheidungen D1–D7 (Hanno, geparkt) |
-| **Nächster Block** | Vercel live, dann Extract mit Key, dann Explain echt, dann E2E-Check des Hero-Pfads (Ziel 06:00) |
+| **Fertig** | App live auf Vercel · Hero-Pfad per Playwright-E2E grün (1280 px, 375 px, Dark) · Ego-Graph mit Familienknoten, Evidenz-Linienstilen und Gegenbeispiel-Kanten · eine Mutter in zwei Momenten (P1) · Karte offene Studien (P3, wartet auf Daten) · Action Card v2 mit Assets, Therapien, NBS, Forschenden, Prävalenz (zeigt "Data pending", bis die Daten da sind) · Seiten `/methods` und `/about` · README für die Jury · Demo-Skript- und Pitch-Entwurf |
+| **Dran** | Data Chief (lokale Session, freies Netz) zieht Assets, Therapien, Prävalenz, Forschende, Studien-Shards nach Branch `data-v2` / `data-trials`, Prompt: [prompts/LOCAL-DATA-SESSION.md](prompts/LOCAL-DATA-SESSION.md) · Security- und Doku-Review (Branch `security`) · Story und Video-Strategie (Branch `pitch-story`, Ordner `pitch/`) · Osman: `orgs.csv` · Recep: `hero_path` Block A, danach `MOONSHOT.md` |
+| **Blockiert** | Cloud-Sessions erreichen nur GitHub und npm (keine Datenquellen) → Pipeline läuft nur lokal · OpenAI-Key fehlt (nur lokal nötig, siehe unten) · `orgs.csv` und `hero_path.yaml` leer |
+| **Nächster Block** | Daten aus `data-v2` in 07 integrieren, `09_metrics.py` (Messwerte nach `meta.json`) · Explain mit Key lokal vorberechnen · E2E gegen die Live-URL · ab 11:00 Gates, Repo public, 12:00 Freeze, Videos |
+
+## Branches (P8: ein Branch je Agent, `main` = live)
+
+| Branch | Inhalt | Stand |
+|---|---|---|
+| `integrate` | Sammel-Branch des Orchestrators: app-graph + app-action + docs-submission + Prompts, tsc/lint/E2E grün | bereit für `main` (Fast-Forward) |
+| `data-v2` | Receps `enrich_extra`-Module + Data-Chief-Arbeit | läuft lokal |
+| `security`, `pitch-story` | Review und Story/Video | Agents laufen |
+
+## OpenAI: wofür und wo
+
+Der Brief (S. 5) sagt: Track-Preise nur, wenn OpenAI-Modelle genutzt werden ("Built with OpenAI": Extract, Reconcile, Explain). Entwickelt wird mit Claude, das ist erlaubt; OpenAI muss **im Produkt** arbeiten. Der Key muss dafür **nicht** auf die Webseite: Extract und Reconcile laufen in der Pipeline (lokal), Explain wird für den Hero-Pfad und die wichtigsten Paare lokal vorberechnet und als statisches JSON ausgeliefert. Sichtbar wird es über das Edge-Panel (Modell und Prompt-Version an text-mined Kanten), die Explain-Texte und das Tech-Video. Ohne Key: App läuft, aber kein Anspruch auf Track-Preis.
+
+## Moonshot: was das ist
+
+Pflichtteil des Briefs ("Think Bigger: The 10× Moonshot", S. 6): einen Meilenstein auf dem Weg zur Therapie wählen (bei uns: eine gemeinsame Natural-History-Studie für Krabbe nach dem Vorbild MLD), die heutige Dauer mit unserer Route vergleichen und die Annahmen hinter "10× schneller" offenlegen. Lieferung: `docs/MOONSHOT.md` (Recep, R2) mit Quelle je Zahl und 4 bis 6 Annahmen; danach als Panel in der App und als Folie im Pitch.
 
 ## Fertig, mit Zahlen
 
@@ -37,6 +53,7 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 |---|---|---|
 | Reconcile mit verifizierten Orgs laufen lassen | nächste Session | sobald `data/curated/orgs.csv` Zeilen mit `verified_date` hat: `make reconcile && make analytics && make validate` |
 | `hero_path.yaml` aus dem Entwurf übernehmen (R1) | Recep | Block A (17 Einträge) geprüft, Block-B-Stichprobe ok, VERIFIED nach `hero_path.yaml` |
+| Länder und Standorte der offenen Studien laden (`make trials && make validate`, ca. 3 Abfragen für 142 Studien) | Hanno lokal (ClinicalTrials.gov ist in der Cloud-Umgebung gesperrt) | `app/public/data/trial/` hat Dateien, Länderfilter erscheint auf der Krabbe-Seite |
 | `orgs.csv` (O2) | Osman | mindestens 25 Zeilen, jede URL selbst geöffnet, `verified_date` gesetzt; heute enthält die Datei nur die Kopfzeile |
 | Moonshot-Zahlen (R2) | Recep | `docs/MOONSHOT.md` mit Quelle je Zahl und 4 bis 6 Annahmen; Datei fehlt noch |
 | README (O3) | Osman | alle Abschnitte laut ROLES-TASKS; Status, Scope-Zahl und Reactome-Lizenz sind nachgezogen |

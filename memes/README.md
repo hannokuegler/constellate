@@ -3,6 +3,54 @@
 Neueste zuerst. **Posten:** Bild runterladen, Oneliner kopieren (Copy-Button rechts am Code-Block), ab in den Discord.
 Erstellt mit `05_Memes/meme.py` (lokal) — dieser Ordner wird automatisch überschrieben, hier nichts von Hand ändern.
 
+### AI agent: writing my entire backend / me: researching (reels)
+
+<img src="1003-2334_01_ai-agent-writing-my-entire-backend-me-researc.jpg" width="420">
+
+```
+Pair programming in 2026: the agent codes, I review reels 📱🤖
+```
+
+### AI agent: writing my entire backend / me: researching (reels)
+
+<img src="1003-2334_02_ai-agent-writing-my-entire-backend-me-researc.jpg" width="420">
+
+```
+Pair programming in 2026: the agent codes, I review reels 📱🤖
+```
+
+### usage limit reached. try again in 3 hours. / deadline is in 15.
+
+<img src="1003-2334_01_usage-limit-reached-try-again-in-3-hours-dead.jpg" width="420">
+
+```
+The scariest popup at 23:34. ⏳
+```
+
+### asking the agent again / staring respectfully at the spinner
+
+<img src="1003-2334_02_asking-the-agent-again-staring-respectfully-a.jpg" width="420">
+
+```
+Productivity now measured in spinner eye contact.
+```
+
+### we still have context / false. we have vibes and six tokens.
+
+<img src="1003-2334_03_we-still-have-context-false-we-have-vibes-and.jpg" width="420">
+
+```
+Context window: full. Confidence: somehow still high.
+```
+
+### TOKENS ARE RATIONED / PIZZA HAS COMPETITION
+
+<img src="1003-2334_04_tokens-are-rationed-pizza-has-competition.jpg" width="420">
+
+```
+Finally, a harder resource allocation problem than dinner.
+```
+
 ### Sleep 02:00-06:00 / Coffee 02:00-06:00
 
 <img src="1003-2104_01_sleep-02-00-06-00-coffee-02-00-06-00.jpg" width="420">
@@ -137,6 +185,7 @@ Hour 3 in Vienna and the table already looks like hour 23 🍕💀
 
 Foto schießen → an Hanno, der macht die Caption drauf.
 
+- **3-HOUR COOLDOWN / 24-HOUR HACKATHON** — Hanno sitzt vor dem Laptop und starrt maximal ernst auf einen Lade-Spinner, Osman hält drei Finger hoch wie ein Timer, Recep rationiert im Vordergrund winzige Pizzastücke auf Servietten. Foto schräg von oben über den Tisch, mit Whiteboard oder Hackathon-Badges im Hintergrund.
 - **02:00 SLEEP BLOCK / ZERO CONFIRMED USERS** — Fotografiert Osman von schräg oben, wie er auf den Zeitplan am Whiteboard zeigt; Hanno und Recep sitzen darunter mit Laptops und Kaffeebechern, komplett wach. Wichtig: Die Uhrzeit 02:00-06:00 darf als Requisite sichtbar sein, aber keine extra Meme-Schrift im Foto.
 - **SUNDAY 15:00 / SLEEP: POST-DEMO** — Stellt drei Kaffeebecher wie eine Countdown-Uhr vor einen Laptop; im Hintergrund zeigt jemand auf Vercel oder HackOS, die anderen schauen übermüdet entschlossen. Nahaufnahme aus Tischhöhe, echte Hub-Unordnung mit Kabeln und Pizzakarton am Rand.
 - **The roadmap changed. / Pizza became P0.** — Osman hält einen Stapel Pizzakartons wie ein offizielles HackOS-Announcement, Hanno und Recep schauen ernst auf Laptops und nicken. Foto frontal aus leicht tiefer Perspektive, Whiteboard-Zeitplan im Hintergrund.

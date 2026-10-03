@@ -23,6 +23,9 @@ export interface Evidence {
   reason?: string;
   free_text_name?: string;
   draft_input?: boolean;
+  /** date the pipeline fetched the source (data-v2 evidence) */
+  retrieved?: string;
+  record_aliases?: string[];
 }
 
 export interface Edge {
@@ -54,6 +57,23 @@ export interface Meta {
   /** flat ({diseases: n}) in the fixture, nested ({nodes: {disease: n}, edges: {type: n}}) from the pipeline */
   counts: Record<string, unknown>;
   hero: { start: string };
+  parameters?: Record<string, unknown>;
+  /** data-v2: measured quality numbers, schema in app/README.md ("meta.metrics"); absent until the pipeline writes it */
+  metrics?: MetaMetrics;
+}
+
+export interface MetricValue {
+  value?: number | null;
+  n?: number | null;
+  source?: string | null;
+}
+
+export interface MetaMetrics {
+  extract_precision?: MetricValue;
+  reconcile_accuracy?: MetricValue;
+  monarch_spearman?: MetricValue;
+  coverage?: { trial?: number; paper?: number; asset?: number; org?: number; denominator?: number };
+  hero_regression?: { pass?: boolean | null; checked_at?: string | null };
 }
 
 export interface IndexEntry {
@@ -210,6 +230,79 @@ export interface DiseaseFile {
   gap?: Gap;
   /** AI-extracted literature edges of other types (associated_with, biomarker_of, …) */
   text_mined?: Edge[];
+  /** data-v2 (app/README.md "Upcoming fields"): each optional. Absent = pipeline has not delivered it yet; empty = searched, nothing found. */
+  assets?: V2Field<V2Item<AssetNode>>;
+  approved_therapies?: V2Field<V2Item<TherapyNode>>;
+  newborn_screening?: V2Field<V2Item<ScreeningNode>>;
+  kol_overlap?: V2Field<KolEntry>;
+  prevalence?: PrevalenceRecord[];
+  /** true only on fixture overlays (NEXT_PUBLIC_USE_FIXTURES=1) */
+  fixture_v2?: boolean;
+}
+
+/** What was searched for a data-v2 field, so an empty result can say "Not found in X as of D". */
+export interface SearchLog {
+  source: string;
+  retrieved?: string | null;
+  hits?: number | null;
+}
+
+export interface V2Item<N> {
+  node: N;
+  edge: Edge;
+}
+
+/** A data-v2 field is either a bare array or {items, searched}. */
+export type V2Field<T> = T[] | { items: T[]; searched?: SearchLog[] };
+
+/** has_asset target: ASSET:<id>. Columns follow data/curated/assets.csv. */
+export interface AssetNode {
+  id: string;
+  label: string;
+  asset_type: "natural_history_study" | "registry" | "outcome_scale" | "biobank" | string;
+  country?: string | null;
+  status?: string | null;
+  source_type?: "NCT" | "PMID" | "EMA" | "FDA" | "URL" | "ORPHA" | string | null;
+  source_id?: string | null;
+  url?: string | null;
+  check?: string | null;
+}
+
+/** approved_therapy target: DRUG:<name>. The approval date lives in the edge evidence (date) or node.approved. */
+export interface TherapyNode {
+  id: string;
+  label: string;
+  authority?: "EMA" | "FDA" | string | null;
+  approved?: string | null;
+  holder?: string | null;
+  url?: string | null;
+}
+
+/** screened_in target: COUNTRY:<iso>. status: screened | pilot/research | not screened | UNBELEGT. */
+export interface ScreeningNode {
+  id: string;
+  label: string;
+  status?: string | null;
+  url?: string | null;
+}
+
+/** kol_overlap: disease <-> disease edge (inferred) plus the people behind it. No e-mail addresses. */
+export interface KolEntry {
+  disease: Ref;
+  edge: Edge;
+  people: { name: string; orcid?: string | null; affiliation?: string | null; records: { db: string; record: string; url?: string | null }[] }[];
+}
+
+/** Orphanet prevalence: node attribute (no edge). */
+export interface PrevalenceRecord {
+  type?: string | null;
+  class?: string | null;
+  value?: string | null;
+  region?: string | null;
+  validation?: string | null;
+  source?: { db: string; record?: string | null; url?: string | null } | null;
+  retrieved?: string | null;
+  level?: EdgeLevel;
 }
 
 export interface GeneFile {
@@ -228,4 +321,21 @@ export interface PhenotypeFile {
   /** fixture: plain edges; pipeline: {id, label, edge, confidence} */
   diseases: (Edge | { id: string; label: string; edge: Edge; confidence?: number })[];
   diseases_total?: number;
+}
+
+/** trial/<NCT>.json (pipeline step 08): where an open study runs and whom it takes. No personal contact data. */
+export interface TrialDetail {
+  id: string;
+  status: string | null;
+  last_update?: string | null;
+  retrieved: string;
+  url: string;
+  /** the study's official contact section on ClinicalTrials.gov */
+  contact_url: string;
+  source: { db: string; record: string; url: string };
+  eligibility: { min_age?: string | null; max_age?: string | null; sex?: string | null; std_ages?: string[]; healthy_volunteers?: boolean | null };
+  countries: { country: string; sites: number; open_sites: number }[];
+  sites: { facility?: string | null; city?: string | null; country: string; status?: string | null }[];
+  sites_total: number;
+  officials?: { affiliation?: string | null; role?: string | null }[];
 }

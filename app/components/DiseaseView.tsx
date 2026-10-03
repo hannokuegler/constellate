@@ -15,10 +15,12 @@ import { LevelBadge } from "./Badges";
 import HonestGap, { gapProps } from "./HonestGap";
 import { OrgList } from "./Orgs";
 import TextMined from "./TextMined";
+import OpenStudies from "./OpenStudies";
+import MomentBar from "./MomentBar";
 import ActionCard from "./ActionCard";
 import { pickDefaultVia } from "@/lib/actioncard";
 import { Skeleton } from "./Skeleton";
-import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, orgItems, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
+import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, openTrials, orgItems, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
 
 type State =
   | { status: "loading" }
@@ -114,6 +116,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const [via, setVia] = useState<string | null>(defaultVia);
   const [cardOpen, setCardOpen] = useState(false);
   const [showAllPhenotypes, setShowAllPhenotypes] = useState(false);
+  const [expandFamilies, setExpandFamilies] = useState(false);
 
   const [indexLabels, setIndexLabels] = useState<Record<string, string>>({});
   const labels = useMemo(() => ({ ...indexLabels, ...nodeLabels(file) }), [file, indexLabels]);
@@ -135,7 +138,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
     register(allDiseaseEdges(file), labels);
   }, [file, labels, register]);
 
-  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes, labels), [file, persona.graphPhenotypes, labels]);
+  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes, labels, expandFamilies), [file, persona.graphPhenotypes, labels, expandFamilies]);
   const orgs = orgItems(file);
 
   const openCard = useCallback((neighbourId: string) => {
@@ -149,9 +152,16 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const coverage = coverageRows(file.coverage);
   const gapSearched: CoverageRow[] = coverage.length ? coverage : (meta?.sources ?? []).map((s) => ({ source: s.db }));
 
+  const ownCommunity = persona.panelOrder.includes("community");
   const sections: Record<PanelSection, React.ReactNode> = {
+    community: (
+      <Section key="community" title="Patient organisations" hint="Groups for this diagnosis, from a hand-checked list" count={orgs.length}>
+        <CommunityBlock file={file} onEdge={openEdge} />
+      </Section>
+    ),
+    studies: <OpenStudies key="studies" file={file} onEdge={openEdge} family={persona.id === "family"} />,
     neighbours: (
-      <Section key="neighbours" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
+      <Section key="neighbours" id="related" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
         {noNeighbours ? (
           <p className="text-[15px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
         ) : (
@@ -209,7 +219,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         )}
       </Section>
     ),
-    research: <ResearchSection key="research" file={file} onEdge={openEdge} gapSearched={gapSearched} />,
+    research: <ResearchSection key="research" file={file} onEdge={openEdge} gapSearched={gapSearched} withCommunity={!ownCommunity} />,
   };
 
   return (
@@ -274,6 +284,8 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         )}
       </div>
 
+      <MomentBar onOpenCard={noNeighbours ? null : () => openCard(via ?? defaultVia!)} diseaseLabel={node.label} orgs={orgs.length} hasGap={Boolean(file.gap)} openStudies={openTrials(file).length} neighbours={file.neighbours.length} />
+
       {noNeighbours && (
         <div className="mt-6">
           <HonestGap
@@ -299,7 +311,13 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
             height={typeof window !== "undefined" && window.innerWidth < 768 ? 380 : 560}
             caption={`Neighbourhood of ${node.label}`}
             onLinkClick={openEdge}
-            onNodeClick={(n) => n.kind !== "center" && router.push(hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id))}
+            families={graph.families}
+            expanded={expandFamilies}
+            onToggleFamilies={() => setExpandFamilies((v) => !v)}
+            onNodeClick={(n) => {
+              if (n.kind === "family") return setExpandFamilies(true);
+              if (n.kind !== "center") router.push(hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id));
+            }}
           />
         </div>
         <div className="space-y-4">
@@ -336,7 +354,16 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   );
 }
 
-function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<string, string>): { nodes: GraphNode[]; links: GraphLink[] } {
+/** Family key of a disease label: "X, juvenile form" and "X due to Y deficiency" belong to X; "X 2A" and "X 4" belong to X. */
+export function familyKey(label: string): string {
+  return label
+    .toLowerCase()
+    .split(/ due to |, | type /)[0]
+    .replace(/\s+\d+[a-z]?$/, "")
+    .trim();
+}
+
+function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<string, string>, expand: boolean): { nodes: GraphNode[]; links: GraphLink[]; families: number } {
   const nodes = new Map<string, GraphNode>();
   const links: GraphLink[] = [];
   const center = file.node.id;
@@ -352,12 +379,48 @@ function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<st
     nodes.set(phenotype.id, { id: phenotype.id, label: phenotype.label, kind: "phenotype" });
     links.push({ source: center, target: phenotype.id, edge });
   }
+
+  // neighbours of one disease family (e.g. the many MLD subtypes) collapse into one family node; mechanism counter-examples stay single
+  const byFamily = new Map<string, Neighbour[]>();
   for (const n of file.neighbours) {
+    const key = familyKey(n.label);
+    byFamily.set(key, [...(byFamily.get(key) ?? []), n]);
+  }
+  const groupable = new Map([...byFamily].filter(([, m]) => m.length >= 2 && !m.some((x) => x.mechanism_differs)));
+  const bundled = expand ? new Map<string, Neighbour[]>() : groupable;
+
+  const addSecondHop = (id: string, members: Neighbour[], edge: Edge) => {
+    const seen = new Set<string>();
+    for (const n of members) {
+      for (const g of n.shared_genes.map((x) => refOf(x).id)) {
+        if (nodes.has(g) && !seen.has(g)) {
+          seen.add(g);
+          links.push({ source: id, target: g, edge, secondHop: true });
+        }
+      }
+      for (const p of n.shared_phenotypes) {
+        if (nodes.has(p.id) && !seen.has(p.id)) {
+          seen.add(p.id);
+          links.push({ source: id, target: p.id, edge, secondHop: true });
+        }
+      }
+    }
+  };
+
+  for (const [key, members] of bundled) {
+    const strongest = [...members].sort((a, b) => b.edge.confidence - a.edge.confidence)[0];
+    const id = `family:${key}`;
+    const name = members.find((m) => m.label.toLowerCase() === key)?.label ?? key;
+    nodes.set(id, { id, label: name, kind: "family", members: members.length });
+    links.push({ source: center, target: id, edge: strongest.edge });
+    addSecondHop(id, members, strongest.edge);
+  }
+  for (const n of file.neighbours) {
+    if (bundled.has(familyKey(n.label))) continue;
     nodes.set(n.id, { id: n.id, label: n.label, kind: n.mechanism_differs ? "counter" : "neighbour" });
-    links.push({ source: center, target: n.id, edge: n.edge });
+    links.push({ source: center, target: n.id, edge: n.edge, counter: n.mechanism_differs === true });
     // second hop: the neighbour's shared genes and phenotypes that are on screen
-    for (const g of n.shared_genes.map((x) => refOf(x).id)) if (nodes.has(g)) links.push({ source: n.id, target: g, edge: n.edge, secondHop: true });
-    for (const p of n.shared_phenotypes) if (nodes.has(p.id)) links.push({ source: n.id, target: p.id, edge: n.edge, secondHop: true });
+    addSecondHop(n.id, [n], n.edge);
   }
   // AI-extracted literature links: drawn dashed (level text_mined), at most 8 so they do not crowd the curated picture
   for (const e of (file.text_mined ?? []).slice(0, 8)) {
@@ -369,12 +432,12 @@ function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<st
     }
     links.push({ source: e.source, target: e.target, edge: e });
   }
-  return { nodes: [...nodes.values()], links };
+  return { nodes: [...nodes.values()], links, families: groupable.size };
 }
 
-function Section({ title, hint, count, children }: { title: string; hint: string; count: number; children: React.ReactNode }) {
+function Section({ id, title, hint, count, children }: { id?: string; title: string; hint: string; count: number; children: React.ReactNode }) {
   return (
-    <section className="card px-4 py-4">
+    <section id={id} className="card scroll-mt-20 px-4 py-4">
       <div className="mb-1 flex items-baseline gap-2">
         <h2 className="text-[17px] font-semibold">{title}</h2>
         <span className="tabular text-[13px] text-ink-2">{count}</span>
@@ -446,7 +509,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
   );
 }
 
-function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onEdge: (e: Edge) => void; gapSearched: CoverageRow[] }) {
+function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: DiseaseFile; onEdge: (e: Edge) => void; gapSearched: CoverageRow[]; withCommunity: boolean }) {
   const groups = [
     { key: "trials" as const, title: "Trials", items: enrichmentItems(file, "trials") },
     { key: "grants" as const, title: "Grants", items: enrichmentItems(file, "grants") },
@@ -454,9 +517,9 @@ function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onE
   ];
   const papers = paperRecords(file);
   const total = groups.reduce((n, g) => n + g.items.length, 0) + papers.length;
-  const orgCount = orgItems(file).length;
+  const orgCount = withCommunity ? orgItems(file).length : 0;
   return (
-    <Section title="Research and community" hint="Trials, grants, papers and patient organisations" count={total + orgCount}>
+    <Section title={withCommunity ? "Research and community" : "Research"} hint={withCommunity ? "Trials, grants, papers and patient organisations" : "Trials, grants and papers"} count={total + orgCount}>
       {total === 0 ? (
         <HonestGap
           variant="section"
@@ -513,31 +576,42 @@ function ResearchSection({ file, onEdge, gapSearched }: { file: DiseaseFile; onE
           )}
         </div>
       )}
-      <div className="mt-4" id="patient-organisations">
-        <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Patient organisations</h3>
-        {orgItems(file).length ? (
-          <OrgList orgs={orgItems(file)} onEdge={onEdge} />
-        ) : file.gap ? (
-          <div className="mt-2">
-            <HonestGap
-              variant="section"
-              title={`No patient organisation for ${file.node.label} in the curated list`}
-              reason="Nearest communities are ranked by mechanism before symptoms: same disease family, shared causal gene, shared pathway, then phenotype similarity."
-              {...gapProps(file.gap)}
-            />
-          </div>
-        ) : (
-          <div className="mt-2">
-            <HonestGap
-              variant="section"
-              title="No patient organisation linked"
-              reason="The curated organisation list has no entry for this diagnosis in the current data."
-              searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
-              close={["A hand-verified organisation entry with URL and verification date"]}
-            />
-          </div>
-        )}
-      </div>
+      {withCommunity && (
+        <div className="mt-4">
+          <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Patient organisations</h3>
+          <CommunityBlock file={file} onEdge={onEdge} />
+        </div>
+      )}
     </Section>
+  );
+}
+
+/** Patient organisations for this diagnosis, or the honest gap with the nearest communities. */
+function CommunityBlock({ file, onEdge }: { file: DiseaseFile; onEdge: (e: Edge) => void }) {
+  return (
+    <div id="patient-organisations">
+      {orgItems(file).length ? (
+        <OrgList orgs={orgItems(file)} onEdge={onEdge} />
+      ) : file.gap ? (
+        <div className="mt-2">
+          <HonestGap
+            variant="section"
+            title={`No patient organisation for ${file.node.label} in the curated list`}
+            reason="Nearest communities are ranked by mechanism before symptoms: same disease family, shared causal gene, shared pathway, then phenotype similarity."
+            {...gapProps(file.gap)}
+          />
+        </div>
+      ) : (
+        <div className="mt-2">
+          <HonestGap
+            variant="section"
+            title="No patient organisation linked"
+            reason="The curated organisation list has no entry for this diagnosis in the current data."
+            searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
+            close={["A hand-verified organisation entry with URL and verification date"]}
+          />
+        </div>
+      )}
+    </div>
   );
 }

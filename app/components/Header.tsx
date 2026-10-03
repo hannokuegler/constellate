@@ -29,6 +29,10 @@ export default function Header() {
             </svg>
           </Link>
         )}
+        <nav aria-label="About" className="hidden shrink-0 items-center gap-1 lg:flex">
+          <Link href="/about" className="inline-flex min-h-11 items-center rounded-full px-3 text-[13px] font-medium text-ink-2 hover:text-ink">About</Link>
+          <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full px-3 text-[13px] font-medium text-ink-2 hover:text-ink">How we know</Link>
+        </nav>
         <label className="relative flex shrink-0 items-center">
           <span className="sr-only">Persona lens</span>
           <select

@@ -8,7 +8,9 @@ Output: data/graph_base.json
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import re
 from collections import defaultdict
 from pathlib import Path
 
@@ -25,6 +27,9 @@ for mondo_id, node in SLICE["mondo"].items():
     for x in node["xrefs"]:
         if x.startswith(("OMIM:", "Orphanet:")):
             XREF_TO_MONDO.setdefault(x, mondo_id)
+
+HPO_VERSION = next(l.split(": ", 1)[1].strip() for l in (RAW / "phenotype.hpoa").open() if l.startswith("#version"))
+ORPHA_VERSION = re.search(r'date="(\d{4}-\d{2}-\d{2})', (RAW / "en_product6.xml").open().read(500)).group(1)
 
 HPO_FREQ_TO_CONF = {  # HPO frequency terms -> confidence that a given patient shows it
     "HP:0040280": 1.0,   # Obligate
@@ -48,7 +53,8 @@ def add_node(node_id: str, node_type: str, label: str, **extra) -> None:
 
 def add_evidence(source: str, target: str, edge_type: str, evidence: dict) -> None:
     key = (source, target, edge_type)
-    edge = edges.setdefault(key, {"id": f"e_{len(edges):06d}", "source": source, "target": target,
+    stable_id = "e_" + hashlib.sha1(f"{source}|{target}|{edge_type}".encode()).hexdigest()[:8]  # stable across runs, cited by Explain
+    edge = edges.setdefault(key, {"id": stable_id, "source": source, "target": target,
                                   "type": edge_type, "evidence": [], "contradicting": []})
     bucket = edge["contradicting"] if evidence.pop("negated", False) else edge["evidence"]
     bucket.append(evidence)
@@ -60,7 +66,7 @@ def hpo_labels() -> dict[str, str]:
 
 
 def build_disease_nodes() -> None:
-    for mondo_id in KEEP:
+    for mondo_id in sorted(KEEP):
         m = SLICE["mondo"][mondo_id]
         add_node(mondo_id, "disease", m["label"], synonyms=m["synonyms"], xrefs=m["xrefs"],
                  definition=m["definition"], in_core=mondo_id in set(SLICE["core"]))
@@ -85,8 +91,8 @@ def build_from_hpoa(hp_label: dict[str, str]) -> None:
         url = f"https://pubmed.ncbi.nlm.nih.gov/{reference[5:]}/" if reference.startswith("PMID:") else (
               f"https://omim.org/entry/{db_id[5:]}" if db_id.startswith("OMIM:") else f"https://www.orpha.net/en/disease/detail/{db_id.split(':')[1]}")
         add_evidence(mondo_id, hpo_id, "has_phenotype", {
-            "db": "HPO", "record": f"{db_id} · {reference}", "url": url, "level": level,
-            "date": biocuration.split("[")[-1].rstrip("]") if "[" in biocuration else None,
+            "db": "HPO", "origin": db_id.split(":")[0].replace("ORPHA", "Orphanet"), "record": f"{db_id} · {reference}", "url": url, "level": level,
+            "date": biocuration.split("[")[-1].rstrip("]") if "[" in biocuration else HPO_VERSION,
             "confidence": conf if conf is not None else 0.5,
             "snippet": f"{name}: {hp_label.get(hpo_id, hpo_id)}" + (f" (frequency {frequency})" if frequency else "") + f" [{evidence_code}]",
             "negated": qualifier == "NOT",
@@ -106,9 +112,9 @@ def build_from_genes_to_phenotype() -> None:
         seen.add((mondo_id, symbol))
         add_node(symbol, "gene", symbol, ncbi_gene_id=ncbi_gene_id)
         add_evidence(mondo_id, symbol, "caused_by", {
-            "db": "HPO/OMIM", "record": disease_id, "level": "curated", "date": None, "confidence": 0.9,
+            "db": "HPO", "origin": disease_id.split(":")[0].replace("ORPHA", "Orphanet"), "record": disease_id, "level": "curated", "date": HPO_VERSION, "confidence": 0.9,
             "url": f"https://omim.org/entry/{disease_id[5:]}" if disease_id.startswith("OMIM:") else f"https://hpo.jax.org/browse/disease/{disease_id}",
-            "snippet": f"{symbol} is annotated as disease gene of {disease_id} (HPO genes_to_phenotype, OMIM-derived)",
+            "snippet": f"{symbol} is annotated as disease gene of {disease_id} (HPO genes_to_phenotype, {disease_id.split(':')[0].replace('ORPHA', 'Orphanet')}-derived)",
         })
 
 
@@ -129,7 +135,7 @@ def build_from_orphanet_genes() -> None:
             add_node(symbol, "gene", symbol, full_name=gene_name)
             causal = "disease-causing" in assoc_type.lower()
             add_evidence(mondo_id, symbol, "caused_by" if causal else "associated_gene", {
-                "db": "Orphanet", "record": f"ORPHA:{orpha}", "level": "curated", "date": "2026-06-23",
+                "db": "Orphanet", "origin": "Orphanet", "record": f"ORPHA:{orpha}", "level": "curated", "date": ORPHA_VERSION,
                 "url": f"https://www.orpha.net/en/disease/detail/{orpha}",
                 "confidence": 0.95 if status == "Assessed" and causal else 0.6,
                 "snippet": f"{assoc_type} ({status}) — {gene_name}",
@@ -150,7 +156,7 @@ def build_from_orphanet_phenotypes(hp_label: dict[str, str]) -> None:
                 continue
             add_node(hpo_id, "phenotype", hp_label.get(hpo_id, assoc.findtext(".//HPO/HPOTerm") or hpo_id))
             add_evidence(mondo_id, hpo_id, "has_phenotype", {
-                "db": "Orphanet", "record": f"ORPHA:{orpha}", "level": "curated", "date": "2026-06-23",
+                "db": "Orphanet", "origin": "Orphanet", "record": f"ORPHA:{orpha}", "level": "curated", "date": ORPHA_VERSION,
                 "url": f"https://www.orpha.net/en/disease/detail/{orpha}",
                 "confidence": ORPHA_FREQ_TO_CONF.get(freq, 0.5),
                 "snippet": f"{hp_label.get(hpo_id, hpo_id)} — {freq}",
@@ -168,6 +174,7 @@ def main() -> int:
     edge_list = list(edges.values())
     for edge in edge_list:  # aggregate confidence: max over evidence, drop edges that only have contradicting evidence
         edge["confidence"] = max((ev["confidence"] for ev in edge["evidence"]), default=0.0)
+        edge["independent_sources"] = sorted({ev["origin"] for ev in edge["evidence"]})
         edge["level"] = min((ev["level"] for ev in edge["evidence"]), key=["observed", "curated", "text_mined", "inferred"].index) if edge["evidence"] else "contradicted"
     OUT.write_text(json.dumps({"nodes": list(nodes.values()), "edges": edge_list}, indent=0))
     by_type = defaultdict(int)

@@ -141,7 +141,7 @@ def main() -> int:
             for other in pheno_disease[pheno] - core:
                 scores[other] += ic[pheno]
                 shared[other].add(pheno)
-        for other, _ in sorted(scores.items(), key=lambda kv: -kv[1])[:TOP_PHENOTYPE_NEIGHBOURS]:
+        for other, _ in sorted(scores.items(), key=lambda kv: (-kv[1], kv[0]))[:TOP_PHENOTYPE_NEIGHBOURS]:  # id tie-break: deterministic
             if len(shared[other]) < 3:
                 continue
             neighbours.setdefault(other, {"via_genes": set(), "via_phenotypes": set(), "linked_core": set()})

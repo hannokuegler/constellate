@@ -1,0 +1,11 @@
+# Hero path: Krabbe -> GALC -> lysosomal sphingolipid catabolism -> PSAP -> MLD -> gene therapy precedent -> NHS as external control -> action
+# One entry per claim. source_type: OMIM | PMID | PMC | EMA | FDA | NCT | ORPHA | URL. confidence: high | medium | low. Unverified claims: status: UNBELEGT
+# Owner: Recep (Task R1). Every claim here may appear in the product and the videos; nothing else may.
+- step: 1
+  claim: "Krabbe disease has no approved pharmacological therapy; HSCT only helps when done pre-symptomatically."
+  source_type: ""
+  id: ""
+  url: ""
+  snippet: ""
+  confidence: ""
+  note: ""

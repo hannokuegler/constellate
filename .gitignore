@@ -1,0 +1,21 @@
+# secrets
+.env
+.env.local
+.env*.local
+# data
+data/raw/
+data/cache/
+*.xml
+*.hpoa
+# python
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+# node
+node_modules/
+.next/
+out/
+.vercel
+# os
+.DS_Store

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Meta } from "@/lib/types";
 import { formatDate } from "@/lib/evidence";
 import { metaCount } from "@/lib/normalize";
@@ -38,7 +39,11 @@ export default function DataFooter({ meta }: { meta: Meta | null }) {
           ))}
         </p>
       )}
-      <p className="mt-2">A research-navigation tool, not medical advice.</p>
+      <p className="mt-2">
+        A research-navigation tool, not medical advice. ·{" "}
+        <Link href="/about" className="inline-flex min-h-11 items-center underline underline-offset-2">About</Link> ·{" "}
+        <Link href="/methods" className="inline-flex min-h-11 items-center underline underline-offset-2">How we know</Link>
+      </p>
     </footer>
   );
 }

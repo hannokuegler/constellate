@@ -5,6 +5,7 @@
 # data
 data/raw/
 data/cache/
+data/enrich/
 *.xml
 *.hpoa
 # python
@@ -21,3 +22,8 @@ out/
 .DS_Store
 data/slice.json
 data/graph_base.json
+# app
+app/_screens/
+app/.env.local
+*.tsbuildinfo
+app/next-env.d.ts

@@ -36,9 +36,13 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
   useEffect(() => setCountry(readCountry()), []);
   useEffect(() => {
     let alive = true;
-    Promise.all(trials.map((t) => loadTrial(t.node.id).catch(() => null))).then((rows) => {
+    // trial shards are optional (`make trials`): probe one first, and if it is missing do not request the rest (no wall of 404s)
+    (async () => {
+      const first = trials.length ? await loadTrial(trials[0].node.id).catch(() => null) : null;
+      const rest = first ? await Promise.all(trials.slice(1).map((t) => loadTrial(t.node.id).catch(() => null))) : trials.slice(1).map(() => null);
+      const rows = [first, ...rest];
       if (alive) setDetails(Object.fromEntries(trials.map((t, i) => [t.node.id, rows[i]])));
-    });
+    })();
     return () => {
       alive = false;
     };

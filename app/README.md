@@ -15,6 +15,7 @@ open http://localhost:3000
 | `npm run build` / `npm start` | production build / serve (Vercel runs `next build`) |
 | `npm run lint` | ESLint (next/core-web-vitals + next/typescript) |
 | `npm run typecheck` | `tsc --noEmit` |
+| `npm run e2e` | build, then Playwright hero-path smoke (`e2e/hero.spec.ts`, 1280 px and 375 px, dark mode, console errors); uses the preinstalled Chromium (`CHROMIUM_PATH` or `PLAYWRIGHT_BROWSERS_PATH`), screenshots to `E2E_SHOTS` (default `app/e2e-shots`); `npm run e2e:run` skips the build |
 | `npm run fixture` | dev fixture from `data/graph_base.json` + `data/slice.json` (see below) |
 
 Node ≥ 20 (tested with 26.5). Node `^20`/`^22` on Vercel is fine.

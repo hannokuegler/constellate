@@ -116,6 +116,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const [via, setVia] = useState<string | null>(defaultVia);
   const [cardOpen, setCardOpen] = useState(false);
   const [showAllPhenotypes, setShowAllPhenotypes] = useState(false);
+  const [expandFamilies, setExpandFamilies] = useState(false);
 
   const [indexLabels, setIndexLabels] = useState<Record<string, string>>({});
   const labels = useMemo(() => ({ ...indexLabels, ...nodeLabels(file) }), [file, indexLabels]);
@@ -137,7 +138,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
     register(allDiseaseEdges(file), labels);
   }, [file, labels, register]);
 
-  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes, labels), [file, persona.graphPhenotypes, labels]);
+  const graph = useMemo(() => buildGraph(file, persona.graphPhenotypes, labels, expandFamilies), [file, persona.graphPhenotypes, labels, expandFamilies]);
   const orgs = orgItems(file);
 
   const openCard = useCallback((neighbourId: string) => {
@@ -310,7 +311,13 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
             height={typeof window !== "undefined" && window.innerWidth < 768 ? 380 : 560}
             caption={`Neighbourhood of ${node.label}`}
             onLinkClick={openEdge}
-            onNodeClick={(n) => n.kind !== "center" && router.push(hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id))}
+            families={graph.families}
+            expanded={expandFamilies}
+            onToggleFamilies={() => setExpandFamilies((v) => !v)}
+            onNodeClick={(n) => {
+              if (n.kind === "family") return setExpandFamilies(true);
+              if (n.kind !== "center") router.push(hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id));
+            }}
           />
         </div>
         <div className="space-y-4">
@@ -347,7 +354,16 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   );
 }
 
-function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<string, string>): { nodes: GraphNode[]; links: GraphLink[] } {
+/** Family key of a disease label: "X, juvenile form" and "X due to Y deficiency" belong to X; "X 2A" and "X 4" belong to X. */
+export function familyKey(label: string): string {
+  return label
+    .toLowerCase()
+    .split(/ due to |, | type /)[0]
+    .replace(/\s+\d+[a-z]?$/, "")
+    .trim();
+}
+
+function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<string, string>, expand: boolean): { nodes: GraphNode[]; links: GraphLink[]; families: number } {
   const nodes = new Map<string, GraphNode>();
   const links: GraphLink[] = [];
   const center = file.node.id;
@@ -363,12 +379,48 @@ function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<st
     nodes.set(phenotype.id, { id: phenotype.id, label: phenotype.label, kind: "phenotype" });
     links.push({ source: center, target: phenotype.id, edge });
   }
+
+  // neighbours of one disease family (e.g. the many MLD subtypes) collapse into one family node; mechanism counter-examples stay single
+  const byFamily = new Map<string, Neighbour[]>();
   for (const n of file.neighbours) {
+    const key = familyKey(n.label);
+    byFamily.set(key, [...(byFamily.get(key) ?? []), n]);
+  }
+  const groupable = new Map([...byFamily].filter(([, m]) => m.length >= 2 && !m.some((x) => x.mechanism_differs)));
+  const bundled = expand ? new Map<string, Neighbour[]>() : groupable;
+
+  const addSecondHop = (id: string, members: Neighbour[], edge: Edge) => {
+    const seen = new Set<string>();
+    for (const n of members) {
+      for (const g of n.shared_genes.map((x) => refOf(x).id)) {
+        if (nodes.has(g) && !seen.has(g)) {
+          seen.add(g);
+          links.push({ source: id, target: g, edge, secondHop: true });
+        }
+      }
+      for (const p of n.shared_phenotypes) {
+        if (nodes.has(p.id) && !seen.has(p.id)) {
+          seen.add(p.id);
+          links.push({ source: id, target: p.id, edge, secondHop: true });
+        }
+      }
+    }
+  };
+
+  for (const [key, members] of bundled) {
+    const strongest = [...members].sort((a, b) => b.edge.confidence - a.edge.confidence)[0];
+    const id = `family:${key}`;
+    const name = members.find((m) => m.label.toLowerCase() === key)?.label ?? key;
+    nodes.set(id, { id, label: name, kind: "family", members: members.length });
+    links.push({ source: center, target: id, edge: strongest.edge });
+    addSecondHop(id, members, strongest.edge);
+  }
+  for (const n of file.neighbours) {
+    if (bundled.has(familyKey(n.label))) continue;
     nodes.set(n.id, { id: n.id, label: n.label, kind: n.mechanism_differs ? "counter" : "neighbour" });
-    links.push({ source: center, target: n.id, edge: n.edge });
+    links.push({ source: center, target: n.id, edge: n.edge, counter: n.mechanism_differs === true });
     // second hop: the neighbour's shared genes and phenotypes that are on screen
-    for (const g of n.shared_genes.map((x) => refOf(x).id)) if (nodes.has(g)) links.push({ source: n.id, target: g, edge: n.edge, secondHop: true });
-    for (const p of n.shared_phenotypes) if (nodes.has(p.id)) links.push({ source: n.id, target: p.id, edge: n.edge, secondHop: true });
+    addSecondHop(n.id, [n], n.edge);
   }
   // AI-extracted literature links: drawn dashed (level text_mined), at most 8 so they do not crowd the curated picture
   for (const e of (file.text_mined ?? []).slice(0, 8)) {
@@ -380,7 +432,7 @@ function buildGraph(file: DiseaseFile, phenotypeCount: number, labels: Record<st
     }
     links.push({ source: e.source, target: e.target, edge: e });
   }
-  return { nodes: [...nodes.values()], links };
+  return { nodes: [...nodes.values()], links, families: groupable.size };
 }
 
 function Section({ id, title, hint, count, children }: { id?: string; title: string; hint: string; count: number; children: React.ReactNode }) {

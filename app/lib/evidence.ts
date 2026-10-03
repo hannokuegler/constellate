@@ -4,7 +4,7 @@ export const LEVEL_INFO: Record<EdgeLevel, { label: string; meaning: string; das
   observed: { label: "observed", meaning: "Clinically or experimentally observed, with a primary source", dash: null },
   curated: { label: "curated", meaning: "Statement from an expert-curated database", dash: null },
   text_mined: { label: "text-mined", meaning: "Extracted from literature by a model, not yet verified", dash: [6, 4] },
-  inferred: { label: "inferred", meaning: "Computed by Constellate; formula and inputs shown", dash: [1.5, 3] },
+  inferred: { label: "inferred", meaning: "Computed by Constellate; formula and inputs shown", dash: [1, 3.5] },
   search_hit: { label: "search hit", meaning: "Literature search match, not a verified claim", dash: [6, 4] },
   contradicted: { label: "contradicted", meaning: "Only counter-evidence recorded", dash: [6, 4] },
 };

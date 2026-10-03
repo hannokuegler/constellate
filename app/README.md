@@ -38,6 +38,8 @@ Copy `app/.env.example` to `app/.env.local`. Nothing is required; without keys e
 | `/d/[id]/action?via=MONDO_…` | action card as a page (print, Markdown export) |
 | `/g/[symbol]` | all disease names of a gene; "One gene, N disease names" when ≥ 2 names (PSAP: MLD, Krabbe, Gaucher, combined PSAP deficiency) |
 | `/p/[id]` (`HP_0002500`) | diseases with a phenotype |
+| `/methods` | "How we know": evidence levels, counter-evidence, OpenAI uses, metrics from `meta.metrics` (pending when absent), sources and licences from `meta.json` |
+| `/about` | project page for the jury: problem, one mother in two moments (composite), what the app does, Honest Gap, team, repo |
 | `POST /api/explain` | edges → plain language, streamed, citation post-check |
 
 The edge panel (drawer) opens from any graph line, any "Evidence" button and every `[e_…]` citation. Its counter-evidence slot is always shown.
@@ -66,6 +68,38 @@ edge                       {id: "e_<12 hex>", source, target, type, evidence: [{
 
 The app reads all of this through `lib/normalize.ts`, which also accepts the variants the pipeline publishes:
 `parents`/`children` as ids plus `parents_labels`/`children_labels`, `is_group`, `mechanism_classes`, neighbour `mechanism_note` (used verbatim in the action card, each sentence citing the neighbour edge), `enrichment.papers_mentioning` (flat records without edge, shown as "mention", no evidence level), `enrichment.targets`, `enrichment.totals`, coverage `hits_raw`/`retrieved`, gene `pathways`/`pathways_more` as `{node, edge}`, trial `phase_label`/`phases`, phenotype shards with `{id, label, edge, confidence}` rows and `diseases_total`, nested `meta.counts`, and `core.json` edges with `evidence_omitted: true` (the edge panel then loads the full edge from the disease shard).
+
+## Upcoming fields (data-v2)
+
+Not in the pipeline output yet. The app reads them tolerantly (`lib/normalize.ts`, `v2*` readers) and renders them in the action card (`components/ActionCardV2.tsx`). Edge types and columns follow `docs/prompts/LOCAL-DATA-SESSION.md` (branch `data-v2`); everything marked **ASSUMED** is the app's guess for what that prompt leaves open, to be confirmed by the integration into step 07.
+
+Rule for each field: **absent** from the shard = "Data pending"; **present but empty** = Honest Gap "Not found in <sources> as of <date>"; items = rows with source link, evidence level and `[e_id]` citation. Never an empty box, never invented content.
+
+| Shard field | Edge type (curated unless noted) | Item shape |
+|---|---|---|
+| `assets` | `has_asset`: disease → `ASSET:<id>` | `{node: {id, label, asset_type: natural_history_study\|registry\|outcome_scale\|biobank, country, status, source_type: NCT\|PMID\|EMA\|FDA\|URL\|ORPHA, source_id, url, check}, edge}`. Columns = `data/curated/assets.csv`; `label` = `name` |
+| `approved_therapies` | `approved_therapy`: disease → `DRUG:<name>` | `{node: {id, label, authority: EMA\|FDA, approved: YYYY-MM-DD, holder?, url?}, edge}`; **ASSUMED**: approval date also in `edge.evidence[].date`, authority in `evidence[].db` |
+| `newborn_screening` | `screened_in`: disease → `COUNTRY:<iso>` | `{node: {id, label, status: screened\|pilot/research\|not screened\|UNBELEGT, url?}, edge}`; status also in the evidence snippet |
+| `kol_overlap` | `kol_overlap`: disease ↔ disease, `inferred`, formula in `edge.formula` or snippet | **ASSUMED** entry `{disease: {id, label}, edge, people: [{name, orcid?, affiliation?, records: [{db, record, url?}]}]}` (records = PMID/NCT behind `authored_by` / `investigator_of`). No e-mail addresses. Shown for the pair (disease, via) from either shard |
+| `prevalence` | none, node attribute | **ASSUMED** `[{type, class, value, region, validation, source: {db, record, url}, retrieved}]` (from `en_product9_prev.xml`); `node.prevalence` is accepted too |
+
+Each of `assets`, `approved_therapies`, `newborn_screening` and `kol_overlap` may be a plain array or `{items: [...], searched: [{source, retrieved, hits?}]}`. **ASSUMED**: `searched` feeds the Honest Gap sentence; without it the app names the default sources of that section (`lib/actionv2.ts`, `DEFAULT_SOURCES`) and the build date from `meta.json`. The card shows the fields of both diseases (the one opened and the one it is compared with), so "no approved therapy for Krabbe" appears next to "Libmeldy for MLD".
+
+### meta.metrics (expected schema, written by a pipeline step; `/methods` shows "pending" until it exists)
+
+```
+meta.metrics = {
+  extract_precision:  {value: 0..1, n, source},       // hand-labelled sample of extracted claims
+  reconcile_accuracy: {value: 0..1, n, source},       // org -> MONDO matches vs hand check
+  monarch_spearman:   {value: -1..1, n, source},      // simGIC vs Monarch semsim, top pairs
+  coverage:           {trial, paper, asset, org, denominator},  // counts of core diseases with >= 1 of each; denominator = 350
+  hero_regression:    {pass: boolean, checked_at: "YYYY-MM-DD"}
+}
+```
+
+### Fixtures (dev only)
+
+`app/fixtures/disease-v2.json` holds hand-made data-v2 fields for Krabbe (MONDO:0009499, no approved therapy, no `prevalence` gap on purpose absent for MLD) and MLD (MONDO:0018868). Content only restates `docs/MEDICAL-BACKGROUND.md`; every snippet starts with "FIXTURE". It lives outside `public/data/` and is overlaid onto the real shards only when the app is built or started with `NEXT_PUBLIC_USE_FIXTURES=1` (`lib/data.ts`); a normal build never bundles it. Try it: `NEXT_PUBLIC_USE_FIXTURES=1 npm run dev`, then open `/d/MONDO_0009499/action?via=MONDO_0018868`.
 
 ## /api/explain
 

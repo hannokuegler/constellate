@@ -29,6 +29,9 @@ Copy `app/.env.example` to `app/.env.local`. Nothing is required; without keys e
 | `OPENAI_API_KEY` | `/api/explain` | template text, labelled "template, no LLM" |
 | `OPENAI_MODEL_EXPLAIN` | `/api/explain`, model id (no default on purpose; pick from `client.models.list()`) | template text |
 | `OPENAI_BASE_URL` | optional, default `https://api.openai.com/v1` (proxy or local mock) | default |
+| `OPENAI_MAX_OUTPUT_EXPLAIN` | optional, `max_output_tokens` per Explain call (reasoning tokens count too) | 4000 |
+| `EXPLAIN_RATE_PER_MIN` | optional, requests per client IP and minute on `/api/explain` (429 above) | 10 |
+| `EXPLAIN_LLM_PER_HOUR` | optional, LLM calls per server instance and hour; above it Explain answers with template text | 200 |
 
 ## Screens
 
@@ -115,6 +118,8 @@ Response: `application/x-ndjson`, one event per line:
 {type: "done", kept, dropped}
 ```
 
+Limits (`app/api/explain/route.ts`, `lib/ratelimit.ts`): body ≤ 600 kB (413), at most 60 edges, edge ids must match `e_<hex>`, `disease` must be a MONDO id, every client-sent field is length-capped and only the fields the prompt uses are kept, labels only for ids in the edges, audience ≤ 80 characters. Rate limit per client IP and an hourly LLM budget, both in memory per server instance (best effort, not a global quota). Upstream errors are scrubbed of anything key-shaped.
+
 Prompt: `lib/prompts/explain.ts` (only facts from the edges, every sentence ends with `[e_id]`, no ids outside the input). Post-check and template text: `lib/explain.ts`. `GET /api/explain` reports whether an LLM is configured.
 
 ## Fixture
@@ -125,9 +130,12 @@ Prompt: `lib/prompts/explain.ts` (only facts from the edges, every sentence ends
 
 ```
 app/                 routes (page.tsx per screen, api/explain/route.ts)
+e2e/                 Playwright hero-path smoke (hero.spec.ts)
+fixtures/            dev-only data-v2 overlay (NEXT_PUBLIC_USE_FIXTURES=1), never bundled otherwise
 components/          views (StartView, DiseaseView, GeneView, PhenotypeView, ActionCard, HonestGap, EdgePanel, EgoGraph/ForceGraphClient, SearchBox …)
 lib/                 types, data loading, normalize, search, persona, evidence styles, action-card template, explain post-check, prompts/
 scripts/             make_fixture.py
+next.config.ts       security headers (CSP, frame-ancestors, nosniff, referrer policy) and /data cache headers
 public/data/         pipeline output (not edited by the app)
 _screens/            local screenshots + design check (gitignored)
 ```

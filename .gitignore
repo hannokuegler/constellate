@@ -27,3 +27,8 @@ app/_screens/
 app/.env.local
 *.tsbuildinfo
 app/next-env.d.ts
+# claude code: project skills are versioned, local config is not
+.claude/*
+!.claude/skills/
+.claude/launch.json
+.claude/settings.local.json

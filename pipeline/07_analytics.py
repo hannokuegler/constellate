@@ -839,7 +839,7 @@ def enrichment_versions() -> list[dict]:
                                ("europepmc", "Europe PMC", "abstracts: publisher terms; metadata CC0", "https://europepmc.org"),
                                ("reporter", "NIH RePORTER", "US public domain", "https://reporter.nih.gov"),
                                ("opentargets", "Open Targets", "CC0 1.0", "https://platform.opentargets.org"),
-                               ("reactome", "Reactome", "CC-BY 4.0", "https://reactome.org"),
+                               ("reactome", "Reactome", "CC0 1.0", "https://reactome.org/license"),
                                ("clinvar", "ClinVar", "US public domain", "https://www.ncbi.nlm.nih.gov/clinvar/"),
                                ("mygene", "MyGene.info", "free (see mygene.info terms)", "https://mygene.info")):
         f = ENRICH / f"{name}.jsonl"

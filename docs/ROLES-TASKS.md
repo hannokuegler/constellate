@@ -97,3 +97,14 @@ Screen-Recording der Live-URL (QuickTime / OBS), Voice-over auf Englisch, ruhig.
 | 13:30–14:30 | Submission HackOS + Google Form + Backup | Bestätigung gespeichert |
 
 Fallback-Reihenfolge, wenn die Zeit knapp wird: (1) Extract raus, (2) Reconcile → Fuzzy-Match, (3) Persona-Linse raus, (4) Louvain → nur Top-k-Nachbarn. **Niemals raus:** Evidenz-Panel, Action Card, Honest Gap, Explain.
+
+---
+
+## Update Sa 22:00
+
+Seit dem Kickoff hat sich die Arbeitsteilung bei O2 und R1 geändert: Entwürfe kommen von einem Agent, Osman und Recep **prüfen und übertragen**, statt bei null anzufangen. Die Done-Kriterien bleiben, geprüft wird weiter nur, was selbst geöffnet wurde.
+
+- **O2 (Osman):** `data/curated/orgs_draft.csv` (Entwurf, 40 Zeilen) und `data/curated/orgs_CHECK.md` (Prüfliste) kommen von einem Agent. Osman öffnet jede Org-Seite selbst, korrigiert die Zeile, wenn sie nicht stimmt, und überträgt nur **geprüfte** Zeilen nach `data/curated/orgs.csv` mit `verified_date`. Ins Produkt kommt ausschließlich `orgs.csv`; der Entwurf bleibt Entwurf. Done unverändert: mindestens 25 Zeilen, jede URL klickt.
+- **R1 (Recep):** `data/curated/hero_path_draft.yaml` (66 Einträge, alle `status: DRAFT`) und `data/curated/hero_path_CHECK.md` liegen bereit. Recep prüft **Block A** (17 Pflicht-Einträge, ca. 15 Minuten: Seiten, die ein Bot nicht lesen konnte, und Negativ-Belege) und die Stichprobe aus Block B (E13, E26, E29, E30, E36, E47). Was passt, bekommt `status: VERIFIED` und wird nach `data/curated/hero_path.yaml` übernommen; was nicht passt, bleibt DRAFT und geht als Notiz an Hanno.
+- **Übergabe ohne Git:** Solange der GitHub-Zugang offen ist, geben Osman und Recep ihre Ergebnisse über das Teamboard ab (Notizen und Datei-Ablage, siehe [TEAMBOARD.md](TEAMBOARD.md)). Hanno bzw. der Orchestrator prüft das Format und committet. Sobald der Zugang steht, gilt wieder der Git-Workflow aus [WORKFLOW.md](WORKFLOW.md).
+- Stand und Blocker: [STATUS.md](STATUS.md).

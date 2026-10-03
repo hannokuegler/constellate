@@ -6,7 +6,7 @@ An evidence-graded knowledge graph for rare diseases, built in 24 h for the Hack
 
 Constellate organizes rare diseases by **mechanism and phenotype instead of name**, and walks a patient-group leader from her diagnosis to a mechanistically related community, a reusable asset (registry, natural-history study design) and a sourced proposal she can send this week. Every edge carries its source, date, evidence level and counter-evidence. When there is no supported lead, Constellate says so and shows what was searched.
 
-> Status: concept + skeleton (Sat 03.10.2026 evening). Build log in [docs/PLAN.md](docs/PLAN.md). Live demo URL follows.
+> Status (Sat 03.10.2026, 22:00): pipeline steps 1–7 and the validator are done, the dataset is exported (874 diseases, 1,066 genes, 4,717 phenotypes, hero path complete), the app v0 runs locally, live demo URL follows. Current state: [docs/STATUS.md](docs/STATUS.md) · map for every Claude session: [CLAUDE.md](CLAUDE.md) · build log: [docs/PLAN.md](docs/PLAN.md).
 
 ## Why
 
@@ -44,11 +44,11 @@ Raw downloads are cached in `data/raw/` (gitignored) and logged with URL, date a
 
 ## Scope
 
-One cluster deep: lysosomal storage diseases (MONDO:0002561 subtree, ~70 diseases) plus their 2-hop neighbours by shared gene, phenotype or pathway. Hero path and counter-example: [docs/SCOPE.md](docs/SCOPE.md). Medical background for the team: [docs/MEDICAL-BACKGROUND.md](docs/MEDICAL-BACKGROUND.md).
+One cluster deep: 350 core diseases (MONDO subtrees lysosomal storage disease, MONDO:0002561, and leukodystrophy, MONDO:0019046) plus 524 neighbours picked by shared gene or phenotype similarity. Hero path and counter-example: [docs/SCOPE.md](docs/SCOPE.md). Medical background for the team: [docs/MEDICAL-BACKGROUND.md](docs/MEDICAL-BACKGROUND.md).
 
 ## Data sources and licenses
 
-See [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md). HPO (free with attribution) · MONDO CC-BY 4.0 · Orphanet/Orphadata CC-BY 4.0 · ClinVar, ClinicalTrials.gov, PubMed, NIH RePORTER: US public domain · Open Targets CC0 · Reactome CC-BY 4.0 · Monarch CC-BY 4.0. OMIM content enters only indirectly via HPO annotations and Orphanet cross-references. Patient organisations are hand-verified from their public websites (`data/curated/orgs.csv`, with verification date).
+See [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md). HPO (free with attribution) · MONDO CC-BY 4.0 · Orphanet/Orphadata CC-BY 4.0 · ClinVar, ClinicalTrials.gov, PubMed, NIH RePORTER: US public domain · Open Targets CC0 · Reactome CC0 (reactome.org/license) · Monarch CC-BY 4.0. OMIM content enters only indirectly via HPO annotations and Orphanet cross-references. Patient organisations are hand-verified from their public websites (`data/curated/orgs.csv`, with verification date).
 
 ## Evidence model
 
@@ -63,7 +63,7 @@ Every edge has a `contradicting` field, which may be empty but never missing.
 
 ## Team workflow
 
-[docs/WORKFLOW.md](docs/WORKFLOW.md) · [docs/ROLES-TASKS.md](docs/ROLES-TASKS.md) · [docs/RESOURCES.md](docs/RESOURCES.md) · bugs go to [BUGS.md](BUGS.md).
+[CLAUDE.md](CLAUDE.md) · [docs/STATUS.md](docs/STATUS.md) · [docs/DECISIONS.md](docs/DECISIONS.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md) · [docs/ROLES-TASKS.md](docs/ROLES-TASKS.md) · [docs/RESOURCES.md](docs/RESOURCES.md) · bugs go to [BUGS.md](BUGS.md).
 
 ## Limitations
 

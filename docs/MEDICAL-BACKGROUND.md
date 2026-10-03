@@ -69,7 +69,7 @@ Hinweis fürs Produkt: Niemann-Pick C ist mechanistisch ein Transport-, kein Enz
 
 **Register / Natural History.**
 - Prospektive Single-Center-Naturverlaufsstudie Pittsburgh: 35 Patienten mit Beginn 6–36 Monate, Beobachtung 2000–2017 (Bascou 2018, PMID 30089515).
-- Deutschlandweite Naturverlaufsstudie Krabbe mit klinischen und MRT-Daten, Tübingen (Krieg et al., Orphanet J Rare Dis 2020, PMID 32912261) — dieselbe Gruppe (Krägeloh-Mann, Groeschel), die die GMFC-MLD entwickelt hat.
+- Deutschlandweite Naturverlaufsstudie Krabbe mit klinischen und MRT-Daten, Tübingen (Krieg et al., Orphanet J Rare Dis 2020, PMID 32912261) — Koautorin I. Krägeloh-Mann steht auch auf der GMFC-MLD-Publikation (Kehrer 2011, PMID 21707604), also eine belegte Krabbe-MLD-Brücke.
 - „Natural History of Infantile Globoid Cell Leukodystrophy" NCT00983879; Pittsburgh „Longitudinal Study of Neurodegenerative Disorders" NCT03333200 (deckt Krabbe + MLD, geplant 1.500 Patienten, Ende 2035).
 
 ---

@@ -2,10 +2,12 @@
 
 Input : data/graph_base.json (03), data/slice.json (02), data/raw/{hp.json, phenotype.hpoa, mondo.json, en_product6.xml},
         optional data/enrich/edges_draft.json + coverage.jsonl (04), data/extract/edges_text_mined.json (05),
-        data/reconcile/org_disease_edges.json (06) — each skipped cleanly when missing
+        data/reconcile/org_disease_edges.json (06), data/enrich/extra_{edges.json, searched.jsonl, prevalence.jsonl,
+        kol_overlap.json, metrics.json, run_log.jsonl} (04b, data-v2) — each skipped cleanly when missing
 Output: app/public/data/meta.json · index.json · core.json · disease/<MONDO_x>.json · gene/<SYMBOL>.json ·
         phenotype/<HP_x>.json · org/<slug>.json (only with 06 output)
-Override input / output folders (tests): CONSTELLATE_EXTRACT_DIR, CONSTELLATE_RECONCILE_DIR, CONSTELLATE_OUT_DIR
+Override input / output folders (tests): CONSTELLATE_EXTRACT_DIR, CONSTELLATE_RECONCILE_DIR, CONSTELLATE_EXTRA_DIR,
+CONSTELLATE_OUT_DIR
 
 What it derives (every derived claim is an edge with level "inferred", a `formula` and a Constellate evidence entry):
  1. subtype roll-up      parent disease inherits the gene edges of its MONDO subtypes (own edge, `rolled_up_from`),
@@ -21,6 +23,11 @@ What it derives (every derived claim is an edge with level "inferred", a `formul
                          new edge with level text_mined (drawn dashed); text-mined claims never feed the analytics above
 10. patient orgs         06 advocated_by edges -> disease shard `orgs`, org shards, index type "org"; a disease without
                          an org gets `gap` (nearest communities: same family > shared gene > shared pathway > phenotype)
+11. data-v2 action card  04b edges/records -> disease shard `assets`, `approved_therapies`, `newborn_screening`
+                         ({items: [{node, edge}], items_total, searched}), `kol_overlap` ({items: [{disease, edge, people}],
+                         ...}) and `prevalence` (array); attached after the analytics like 9 and 10, never in index.json,
+                         core.json, degree or similarity. A field is written only when 04b searched that disease for it
+                         (or found something); absent = "Data pending" in the app. Caps in V2_* below / meta.parameters.v2
 Deterministic: sorted iteration, fixed seed, single-threaded BLAS, rounded floats; built_at lives only in meta.json.
 """
 from __future__ import annotations
@@ -50,6 +57,7 @@ ENRICH = DATA / "enrich"
 OUT = Path(os.environ.get("CONSTELLATE_OUT_DIR") or ROOT / "app" / "public" / "data")
 EXTRACT_DIR = Path(os.environ.get("CONSTELLATE_EXTRACT_DIR") or DATA / "extract")
 RECONCILE_DIR = Path(os.environ.get("CONSTELLATE_RECONCILE_DIR") or DATA / "reconcile")
+EXTRA_DIR = Path(os.environ.get("CONSTELLATE_EXTRA_DIR") or ENRICH)  # 04b_enrich_extra output (data-v2)
 
 HERO_START = "MONDO:0009499"  # Krabbe disease
 TOP_K_PHENOTYPES = 25
@@ -77,6 +85,40 @@ GAP_MIN_SIMGIC = 0.10  # a phenotype-only community must at least be this simila
 PATHWAY_HUB_SHARE, PATHWAY_HUB_MIN_GENES = 0.15, 10  # generic Reactome pathway = carried by >= 15 % (min 10) of annotated genes
 GENE_EDGE_TYPES = ("caused_by", "associated_gene")
 LEVEL_ORDER = ["observed", "curated", "text_mined", "inferred"]
+
+# data-v2 (11.): size caps per disease shard. The hero diseases are never capped below what their action card shows.
+V2_ASSETS_MAX = 25        # has_asset items per disease (the rest only counted in items_total)
+V2_KOL_PAIRS_MAX = 10     # kol_overlap partner diseases per disease, strongest overlap (n_people) first
+V2_KOL_PEOPLE_MAX = 5     # people per pair (most records first; people_total keeps the full count)
+V2_KOL_RECORDS_MAX = 6    # records per person (records_total keeps the full count)
+V2_HERO = ("MONDO:0009499", "MONDO:0018868", "MONDO:0010714")  # Krabbe, MLD, PMD: assets and hero-pair people uncapped
+V2_ITEM_FIELDS = {  # shard field -> (edge type, 04b searched section, target id prefix)
+    "assets": ("has_asset", "assets", "ASSET:"),
+    "approved_therapies": ("approved_therapy", "therapies", "DRUG:"),
+    "newborn_screening": ("screened_in", "screening", "COUNTRY:"),
+}
+V2_KOL_SECTION = "kol"
+V2_ASSET_ORDER = ["natural_history_study", "registry", "outcome_scale", "biobank"]
+V2_ASSET_NODE_KEYS = ("id", "type", "label", "asset_type", "country", "status", "source_type", "source_id", "url", "check",
+                      "sponsor", "start_date", "completion_date", "enrollment", "nct_aliases")  # outcome_measures stay in 04b
+V2_EVIDENCE_DROP = ("person_ids",)  # internal identity keys of 04b; the people are listed in kol_overlap[].people
+V2_SOURCES = {  # evidence db -> meta.sources entry (licences as in docs/DATA-SOURCES.md, data-v2 section)
+    "ClinicalTrials.gov": ("ClinicalTrials.gov observational studies (assets, data-v2)", "US public domain",
+                           "https://clinicaltrials.gov"),
+    "Europe PMC": ("Europe PMC abstracts (outcome scales, data-v2)", "metadata CC0; abstracts publisher terms (short snippets only)",
+                   "https://europepmc.org"),
+    "EMA": ("EMA medicine data (approved therapies)", "(c) EMA, reproduction with source acknowledgement",
+            "https://www.ema.europa.eu/en/medicines/download-medicine-data"),
+    "FDA": ("FDA: openFDA drug labels, Drugs@FDA, CBER product pages (approved therapies)", "US public domain / CC0",
+            "https://open.fda.gov"),
+    "Official newborn screening programme": ("Official newborn screening programme pages (AT, NO, IT-52, US-MN, US-NY)",
+                                             "official public pages; short verbatim quote with link",
+                                             "https://github.com/hannokuegler/constellate/blob/main/pipeline/enrich_extra/nbs.py"),
+    "Constellate": ("Researcher overlap (Europe PMC authors, NIH RePORTER PIs, ClinicalTrials.gov officials)",
+                    "derived by Constellate from US public domain / CC0 metadata; no e-mail addresses",
+                    "https://github.com/hannokuegler/constellate/blob/main/pipeline/enrich_extra/kol.py"),
+}
+EMAIL_RE = re.compile(r"\S+@\S+")
 
 # Curated mechanism classes. A disease belongs to a class when an anchor is the disease itself or one of its MONDO
 # is_a ancestors, or (where label_pattern is set) when its own MONDO label says so. Tissue / phenotype groupings such as
@@ -589,6 +631,7 @@ def main() -> int:
     enrich = load_enrichment()
     text_mined = load_text_mined()
     orgs = load_orgs()
+    extra = load_extra()
 
     # ================================================================ 9. export
     export(base=base, sl=sl, hpo=hpo, mondo=mondo, nodes=nodes, diseases=diseases, genes=genes, core_set=core_set,
@@ -596,7 +639,7 @@ def main() -> int:
            pheno_edges_of=pheno_edges_of, rolled_pheno_of=rolled_pheno_of, all_gene_edges_of=all_gene_edges_of,
            own_pos_phenos=own_pos_phenos, rollup_edges=rollup_edges, sim_edges=sim_edges, gene_share_edges=gene_share_edges,
            shared_genes_pairs=shared_genes_pairs, describe_pair=describe_pair, mechanism_verdict=mechanism_verdict,
-           cluster_of=cluster_of, class_of=class_of, enrich=enrich, is_group=is_group, text_mined=text_mined, orgs=orgs,
+           cluster_of=cluster_of, class_of=class_of, enrich=enrich, is_group=is_group, text_mined=text_mined, orgs=orgs, extra=extra,
            related_by_hierarchy=related_by_hierarchy, mondo_ancestors=mondo_ancestors, shared_causal_genes=shared_causal_genes,
            simgic_of=lambda a, b: float(simgic[dindex[a], dindex[b]]), stats={
                "ic_terms": len(ic), "ic_corpus_diseases": n_ic_corpus, "clusters": n_clusters,
@@ -780,6 +823,215 @@ def load_orgs() -> dict | None:
     print(f"[orgs] {len(data.get('nodes', []))} orgs · {len(data.get('edges', []))} advocated_by edges from 06"
           + (" (DRAFT input)" if data.get("meta", {}).get("input_is_draft") else ""))
     return data
+
+
+def _jsonl(path: Path) -> list[dict]:
+    return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def load_extra(extra_dir: Path | None = None) -> dict | None:
+    """data-v2 output of 04b_enrich_extra. Each file is optional; None when none of the content files exists."""
+    d = extra_dir or EXTRA_DIR
+    f = {name: d / name for name in ("extra_edges.json", "extra_searched.jsonl", "extra_prevalence.jsonl",
+                                     "extra_kol_overlap.json", "extra_metrics.json", "extra_run_log.jsonl")}
+    if not any(f[n].exists() for n in ("extra_edges.json", "extra_prevalence.jsonl", "extra_kol_overlap.json")):
+        print(f"[v2] {d.name}/extra_edges.json, extra_prevalence.jsonl, extra_kol_overlap.json missing — skipped "
+              "(app shows 'Data pending')")
+        return None
+    prevalence_scope = None  # "core": the last 04b run with prevalence covered every core disease (empty list = searched)
+    if f["extra_run_log.jsonl"].exists():
+        runs = [row for row in _jsonl(f["extra_run_log.jsonl"]) if "prevalence" in (row.get("sources") or {})]
+        if runs and runs[-1].get("scope") == "core" and runs[-1].get("limit") is None:
+            prevalence_scope = "core"
+    extra = {
+        "graph": json.loads(f["extra_edges.json"].read_text(encoding="utf-8")) if f["extra_edges.json"].exists() else None,
+        "searched": _jsonl(f["extra_searched.jsonl"]) if f["extra_searched.jsonl"].exists() else None,
+        "prevalence": _jsonl(f["extra_prevalence.jsonl"]) if f["extra_prevalence.jsonl"].exists() else None,
+        "kol": json.loads(f["extra_kol_overlap.json"].read_text(encoding="utf-8")) if f["extra_kol_overlap.json"].exists() else None,
+        "metrics": json.loads(f["extra_metrics.json"].read_text(encoding="utf-8")) if f["extra_metrics.json"].exists() else None,
+        "prevalence_scope": prevalence_scope,
+    }
+    g = extra["graph"] or {}
+    print(f"[v2] extra_edges: {dict(sorted(Counter(e['type'] for e in g.get('edges', [])).items()))} · "
+          f"searched rows {len(extra['searched'] or [])} · prevalence {len(extra['prevalence'] or [])} "
+          f"(scope {prevalence_scope or 'records only'}) · kol pairs {len(extra['kol'] or [])}")
+    return extra
+
+
+def v2_edge(edge: dict) -> dict:
+    """04b edge as exported: unchanged level/confidence/formula, contradicting always present, internal keys dropped."""
+    out = {k: v for k, v in edge.items() if k not in ("evidence", "contradicting")}
+    out["evidence"] = [{k: v for k, v in ev.items() if k not in V2_EVIDENCE_DROP} for ev in edge.get("evidence", [])]
+    out["contradicting"] = list(edge.get("contradicting") or [])
+    return out
+
+
+def v2_node(field: str, node: dict) -> dict:
+    if field == "assets":
+        return {k: node[k] for k in V2_ASSET_NODE_KEYS if k in node}
+    return dict(node)
+
+
+def v2_searched(rows: list[dict]) -> list[dict]:
+    """{source, retrieved, hits} for the Honest Gap sentence; a failed fetch says so in the source name."""
+    out = {}
+    for s in rows:
+        row = {"source": s["source"] + (" (fetch failed)" if s.get("error") else ""),
+               "retrieved": str(s["retrieved"])[:10] if s.get("retrieved") else None, "hits": s.get("hits")}
+        if s.get("error"):
+            row["error"] = str(s["error"])[:160]
+        out[json.dumps(row, sort_keys=True)] = row
+    return [out[k] for k in sorted(out)]
+
+
+def v2_item_key(field: str):
+    if field == "assets":
+        return lambda it: (V2_ASSET_ORDER.index(it["node"].get("asset_type")) if it["node"].get("asset_type") in V2_ASSET_ORDER
+                           else len(V2_ASSET_ORDER), -(it["edge"].get("confidence") or 0), it["node"]["id"])
+    if field == "approved_therapies":
+        return lambda it: (str(it["node"].get("approved") or "9999"), it["node"]["id"])
+    return lambda it: (str(it["node"].get("status") or ""), it["node"]["id"])
+
+
+def v2_person(p: dict, records_max: int | None) -> dict:
+    out = {"name": EMAIL_RE.sub("", p.get("name") or "").strip()}
+    if p.get("orcid"):
+        out["orcid"] = p["orcid"]
+    affiliation = EMAIL_RE.sub("", p.get("affiliation") or "").strip(" ;,")
+    if affiliation:
+        out["affiliation"] = affiliation
+    records = [{k: rec[k] for k in ("db", "record", "url") if rec.get(k)} for rec in p.get("records", [])]
+    if records_max is not None and len(records) > records_max:
+        out["records_total"] = len(records)
+        records = records[:records_max]
+    out["records"] = records
+    return out
+
+
+def v2_prevalence(p: dict) -> dict:
+    """App shape {type, class, value, region, validation, source, retrieved}. `value` is a display string: Orphanet ValMoy
+    is a mean per 100 000. A value 04b filled in from the class midpoint (no <ValMoy> in the record) is not an Orphanet
+    number and is dropped; the class stays."""
+    raw = p.get("value")
+    m = re.search(r"<ValMoy>\s*([0-9.]+)\s*</ValMoy>", p.get("snippet") or "")
+    measured = raw is not None and m is not None and float(m.group(1)) > 0 and abs(float(m.group(1)) - float(raw)) < 1e-9
+    out = {"type": p.get("type"), "class": p.get("class"),
+           "value": f"{float(raw):g} per 100 000" if measured else None,
+           "value_per_100000": float(raw) if measured else None,
+           "region": p.get("region"), "validation": p.get("validation"), "references": p.get("references"),
+           "source": p.get("source"), "retrieved": p.get("retrieved"), "snippet": p.get("snippet")}
+    if not measured and raw is not None:
+        out["value_note"] = "no Orphanet mean value (ValMoy) in this record; class only"
+    for k in ("qualification", "ambiguous_xref"):
+        if p.get(k):
+            out[k] = p[k]
+    return out
+
+
+def build_v2(extra: dict, disease_ids, core_set) -> dict:
+    """Disease shard fields from 04b. Returns {fields: {disease: {field: value}}, stats, sources}."""
+    shard_ids = set(disease_ids)
+    fields: dict[str, dict] = defaultdict(dict)
+    stats: Counter = Counter()
+    used: dict[str, set] = defaultdict(set)  # evidence db -> retrieved dates of the edges that made it into a shard
+
+    def note_sources(edge: dict) -> None:
+        for ev in edge["evidence"]:
+            used[ev.get("db") or "?"].add(str(ev.get("retrieved") or ev.get("date") or "")[:10])
+
+    graph = extra.get("graph")
+    searched: dict[tuple[str, str], list[dict]] = defaultdict(list)
+    for s in extra.get("searched") or []:
+        if s.get("mondo_id") in shard_ids:
+            searched[(s["mondo_id"], s["section"])].append(s)
+    if graph is not None:
+        nodes = {n["id"]: n for n in graph.get("nodes", [])}
+        edges = sorted(graph.get("edges", []), key=lambda e: e["id"])
+        edges_by_id = {e["id"]: e for e in edges}
+        for field, (etype, section, prefix) in V2_ITEM_FIELDS.items():
+            items_of: dict[str, list[dict]] = defaultdict(list)
+            for e in edges:
+                if e["type"] != etype:
+                    continue
+                if e["source"] not in shard_ids:
+                    stats[f"{etype}_skipped_no_disease_shard"] += 1
+                    continue
+                if e["target"] not in nodes or not e["target"].startswith(prefix):
+                    stats[f"{etype}_skipped_no_target_node"] += 1
+                    continue
+                items_of[e["source"]].append({"node": v2_node(field, nodes[e["target"]]), "edge": v2_edge(e)})
+            for d in sorted(set(items_of) | {m for (m, sec) in searched if sec == section}):
+                items = sorted(items_of.get(d, []), key=v2_item_key(field))
+                total = len(items)
+                if field == "assets" and d not in V2_HERO:
+                    items = items[:V2_ASSETS_MAX]
+                for it in items:
+                    note_sources(it["edge"])
+                fields[d][field] = {"items": items, "items_total": total, "searched": v2_searched(searched.get((d, section), []))}
+                stats[f"{field}_shards"] += 1
+                stats[f"{field}_items"] += len(items)
+                stats[f"{field}_items_capped"] += total - len(items)
+        if extra.get("kol") is not None:
+            entries_of: dict[str, list[tuple]] = defaultdict(list)
+            for o in sorted(extra["kol"], key=lambda o: (o["disease_a"], o["disease_b"])):
+                e = edges_by_id.get(o.get("edge_id"))
+                if e is None or e["type"] != "kol_overlap" or {e["source"], e["target"]} != {o["disease_a"], o["disease_b"]}:
+                    stats["kol_overlap_skipped_no_edge"] += 1
+                    continue
+                for me, other, label in ((o["disease_a"], o["disease_b"], o.get("label_b")),
+                                         (o["disease_b"], o["disease_a"], o.get("label_a"))):
+                    if me in shard_ids:
+                        entries_of[me].append((o, other, label or other, e))
+            for d in sorted(set(entries_of) | {m for (m, sec) in searched if sec == V2_KOL_SECTION}):
+                ranked = sorted(entries_of.get(d, []), key=lambda t: (-t[0]["n_people"], t[1]))
+                is_hero_pair = {t[1]: d in V2_HERO and t[1] in V2_HERO for t in ranked}
+                keep = sorted(ranked[:V2_KOL_PAIRS_MAX] + [t for t in ranked[V2_KOL_PAIRS_MAX:] if is_hero_pair[t[1]]],
+                              key=lambda t: (-t[0]["n_people"], t[1]))
+                items = []
+                for o, other, label, e in keep:
+                    uncapped = is_hero_pair[other]
+                    people = o.get("people", [])
+                    shown = people if uncapped else people[:V2_KOL_PEOPLE_MAX]
+                    edge = v2_edge(e)
+                    note_sources(edge)
+                    items.append({"disease": {"id": other, "label": label}, "edge": edge, "people_total": len(people),
+                                  "people": [v2_person(p, None if uncapped else V2_KOL_RECORDS_MAX) for p in shown]})
+                fields[d]["kol_overlap"] = {"items": items, "items_total": len(ranked),
+                                            "searched": v2_searched(searched.get((d, V2_KOL_SECTION), []))}
+                stats["kol_overlap_shards"] += 1
+                stats["kol_overlap_items"] += len(items)
+    if extra.get("prevalence") is not None:
+        prev_of: dict[str, list[dict]] = defaultdict(list)
+        for p in extra["prevalence"]:
+            if p.get("mondo_id") in shard_ids:
+                prev_of[p["mondo_id"]].append(v2_prevalence(p))
+                used["Orphanet epidemiology"].add(str(p.get("retrieved") or "")[:10])
+        targets = set(prev_of) | (set(core_set) & shard_ids if extra.get("prevalence_scope") == "core" else set())
+        for d in sorted(targets):
+            fields[d]["prevalence"] = sorted(prev_of.get(d, []), key=lambda p: (
+                str((p.get("source") or {}).get("record")), str(p.get("type")), str(p.get("region")), str(p.get("snippet"))))
+            stats["prevalence_shards"] += 1
+            stats["prevalence_records"] += len(prev_of.get(d, []))
+            stats["prevalence_values_dropped_class_midpoint"] += sum("value_note" in p for p in prev_of.get(d, []))
+    sources = []
+    for db in sorted(used):
+        dates = sorted(x for x in used[db] if x)
+        if db == "Orphanet epidemiology":
+            sources.append({"db": "Orphanet epidemiology (en_product9_prev.xml, prevalence)",
+                            "version": f"data-v2 (04b), JDBOR {dates[-1]}" if dates else "data-v2 (04b)",
+                            "license": "CC-BY 4.0", "url": "https://www.orphadata.com"})
+            continue
+        name, lic, url = V2_SOURCES.get(db, (f"{db} (data-v2)", "see docs/DATA-SOURCES.md",
+                                             "https://github.com/hannokuegler/constellate/blob/main/docs/DATA-SOURCES.md"))
+        sources.append({"db": name, "version": f"data-v2 (04b), retrieved {dates[-1]}" if dates else "data-v2 (04b)",
+                        "license": lic, "url": url})
+    monarch = (extra.get("metrics") or {}).get("monarch_spearman")
+    if monarch and monarch.get("value") is not None:
+        day = re.search(r"\d{4}-\d{2}-\d{2}", str(monarch.get("source") or ""))
+        sources.append({"db": "Monarch Initiative API v3 semsim (validation metric only, no edges)",
+                        "version": f"retrieved {day.group(0)}" if day else "data-v2 (04b)", "license": "CC-BY 4.0",
+                        "url": "https://monarchinitiative.org"})
+    return {"fields": {d: fields[d] for d in sorted(fields)}, "stats": dict(sorted(stats.items())), "sources": sources}
 
 
 def reaggregate(edge: dict) -> None:
@@ -1089,6 +1341,18 @@ def export(**k) -> None:
     sizes["index.json"] = dump(OUT / "index.json", index)
     print(f"[export] core.json {sizes['core.json']/1e6:.2f} MB (max {max_ev} evidence/edge) · index.json {sizes['index.json']/1e6:.2f} MB")
 
+    # ---- 11. data-v2 (04b): action-card fields, after the analytics; not in index.json, core.json, degree or counts.edges
+    v2 = build_v2(k["extra"], diseases, core_set) if k.get("extra") is not None else None
+    if v2 is not None:
+        known = {e["id"]: (e["source"], e["target"], e["type"]) for e in all_edges}
+        for fv in v2["fields"].values():
+            for field in (*V2_ITEM_FIELDS, "kol_overlap"):
+                for it in (fv.get(field) or {}).get("items", []):
+                    e = it["edge"]
+                    if known.setdefault(e["id"], (e["source"], e["target"], e["type"])) != (e["source"], e["target"], e["type"]):
+                        raise SystemExit(f"data-v2 edge id {e['id']} collides with a different edge")
+        print(f"[v2] shard fields: {v2['stats']}")
+
     # ---- disease shards
     neighbours_of: dict[str, list[tuple[str, dict]]] = defaultdict(list)
     for e in analytic_edges:
@@ -1154,6 +1418,8 @@ def export(**k) -> None:
             if shard["coverage"] is None:
                 shard["coverage"] = []
                 shard["coverage_note"] = "not queried by 04_enrich_apis (outside the enrichment scope of this build)"
+        if v2 is not None:
+            attach_v2(shard, v2["fields"].get(d, {}))
         size = fit_shard(shard)
         path = OUT / "disease" / f"{shard_stem[d]}.json"
         shard_sizes.append(dump(path, shard))
@@ -1237,7 +1503,8 @@ def export(**k) -> None:
         {"db": "MONDO", "version": k["mondo"]["version"], "license": "CC-BY 4.0", "url": "https://mondo.monarchinitiative.org"},
         {"db": "Orphanet", "version": orphanet_version(), "license": "CC-BY 4.0", "url": "https://www.orphadata.com"},
         {"db": "OMIM (via HPO annotations)", "version": hpo_annotation_version(), "license": "attribution OMIM; only indirectly via HPO", "url": "https://omim.org"},
-    ] + ((enrich or {}).get("versions") or []) + ([org_source(k["orgs"], org_nodes)] if k["orgs"] is not None else [])
+    ] + ((enrich or {}).get("versions") or []) + ([org_source(k["orgs"], org_nodes)] if k["orgs"] is not None else []) \
+      + (v2["sources"] if v2 is not None else [])
     meta = {"version": f"{BUILD_DATE}+{GIT_SHA}", "built_at": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
             "fixture": False, "sources": sources,
             "counts": {"nodes": {"disease": len(diseases), "core_disease": len(core_set), "gene": len(genes),
@@ -1260,13 +1527,15 @@ def export(**k) -> None:
                                     "input_is_draft": bool((k["orgs"].get("meta") or {}).get("input_is_draft")),
                                     "method": (k["orgs"].get("meta") or {}).get("method")}}
                           if k["orgs"] is not None else {}),
+                       **({"v2": v2["stats"]} if v2 is not None else {}),
                        **k["stats"]},
             "parameters": {"top_k_phenotypes": TOP_K_PHENOTYPES, "top_similar": TOP_SIMILAR, "top_resnik": TOP_RESNIK,
                            "counterexample": {"max_rank": COUNTEREXAMPLE_MAX_RANK, "min_simgic": COUNTEREXAMPLE_MIN_SIMGIC},
                            "rollup_confidence_factor": ROLLUP_CONFIDENCE_FACTOR, "max_rollup_genes": MAX_ROLLUP_GENES,
                            "phenotype_rollup_min_share": PHENOTYPE_ROLLUP_MIN_SHARE,
                            "louvain": {"seed": LOUVAIN_SEED, "resolution": LOUVAIN_RESOLUTION, "w_simgic": W_SIMGIC, "w_shared_gene": W_SHARED_GENE},
-                           "mechanism_classes": MECHANISM_CLASSES},
+                           "mechanism_classes": MECHANISM_CLASSES,
+                           **({"v2": v2_parameters()} if v2 is not None else {})},
             "analytics": {"record": RECORD, "url": CODE_URL, "date": BUILD_DATE},
             "files": {"core.json": sizes["core.json"], "index.json": sizes["index.json"],
                       "shard_max": max(shard_sizes), "shard_median": int(np.median(shard_sizes))},
@@ -1276,6 +1545,21 @@ def export(**k) -> None:
     print(f"[export] {len(diseases)} disease + {len(genes)} gene + {len(topk_phenos)} phenotype shards · max {max(shard_sizes)/1e3:.0f} KB · "
           f"median {np.median(shard_sizes)/1e3:.1f} KB → {OUT.relative_to(ROOT) if OUT.is_relative_to(ROOT) else OUT}")
     print("[counts] " + " · ".join(f"{t} {c}" for t, c in sorted(edge_counts.items())))
+
+
+def attach_v2(shard: dict, fields: dict) -> None:
+    """Own deep copy per shard: kol_overlap edges are shared by both diseases, and fit_shard may shorten them per shard."""
+    shard.update(json.loads(json.dumps(fields)))
+
+
+def v2_parameters() -> dict:
+    return {"assets_max": V2_ASSETS_MAX, "kol_pairs_max": V2_KOL_PAIRS_MAX, "kol_people_max": V2_KOL_PEOPLE_MAX,
+            "kol_records_max": V2_KOL_RECORDS_MAX, "hero_uncapped": list(V2_HERO),
+            "rule": "per disease shard: assets sorted natural history > registry > outcome scale > biobank, then confidence; "
+                    "kol_overlap partners by n_people; hero diseases keep all assets and every hero-hero pair with all "
+                    "people and records; items_total / people_total / records_total keep the full counts",
+            "field_written_when": "04b searched the disease for that section (extra_searched.jsonl) or found an item; "
+                                  "prevalence: every core disease when the last 04b prevalence run had scope core"}
 
 
 def sorted_enrichment(kind: str, items: list[dict]) -> list[dict]:
@@ -1418,6 +1702,18 @@ def fit_shard(shard: dict) -> int:
         for kind in ("trials", "grants", "targets"):
             for it in shard.get("enrichment", {}).get(kind, []):
                 it["edge"] = compact_edge(it["edge"], snippet_len, max_ev)
+        for field in (*V2_ITEM_FIELDS, "kol_overlap"):
+            for it in (shard.get(field) or {}).get("items", []):
+                it["edge"] = compact_edge(it["edge"], snippet_len, max_ev)
+        if size() <= SHARD_BUDGET:
+            return size()
+    # data-v2: fewer records per person (people and pairs stay, so the action card keeps every name)
+    for records_max in (3, 1):
+        for it in (shard.get("kol_overlap") or {}).get("items", []):
+            for p in it["people"]:
+                if len(p["records"]) > records_max:
+                    p.setdefault("records_total", len(p["records"]))
+                    p["records"] = p["records"][:records_max]
         if size() <= SHARD_BUDGET:
             return size()
     for key in ("genes", "diseases", "neighbours"):

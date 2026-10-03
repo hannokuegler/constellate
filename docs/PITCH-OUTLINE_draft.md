@@ -56,6 +56,6 @@ Acht Folien, je 2 bis 3 Stichpunkte plus Quelle. Jede Zahl stammt aus einer Date
 ## Folie 8 · Team und Ask
 
 - Hanno Kügler (tech lead: pipeline and app), Osman (ops and curation), Recep (story, evidence, videos)
-- Built on open data with licenses listed (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, Europe PMC, NIH RePORTER, Open Targets, Reactome CC0); repo and live demo `<VERCEL_URL>`
+- Built on open data with licenses listed (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, Europe PMC, NIH RePORTER, Open Targets, Reactome CC0); repo and live demo `https://constellate-vert.vercel.app`
 - Ask: Platzhalter, nicht entschieden (z. B. Zugang zu verifizierten Patientenregistern, Expertenprüfung der Action Cards durch Fachärzte)
 - Quelle: [../README.md](../README.md), [DATA-SOURCES.md](DATA-SOURCES.md)

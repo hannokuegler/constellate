@@ -23,7 +23,7 @@ Figur: eine Mutter in zwei Momenten, im Video als Komposit benannt (Satz in Szen
 | 5 | 1:10 bis 1:25 | gleiche Seite, Nachbar "Pelizaeus-Merzbacher spectrum disorder" | Kante anklicken, Markierung "mechanism differs" zeigen | "And here is the counter-example: Pelizaeus-Merzbacher disease looks similar, but it is a hypomyelinating disease caused by PLP1, not a lysosomal one. Similar symptoms, different cause, so the assets do not transfer." | Kante `e_00a92bfb7837`, Flag `mechanism_differs`; Quelle OMIM 312080, Orphanet 702, PMC9313024 |
 | 6 | 1:25 bis 1:45 | `/d/MONDO_0009499/action?via=MONDO_0018868` Action Card | Karte öffnen, einen Satz mit `[e_…]` anklicken | "The Action Card says what transfers, what differs and what needs expert review. Every sentence ends in the edge behind it, and a sentence without an edge is removed. MLD already has an approved gene therapy, approved against a natural-history control cohort, so that study design is something she can join or adapt instead of building from zero." | Kante aus der Karte (Satz-Zitat `[e_…]`, Wert nach dem Dreh eintragen); Quellen für den MLD-Satz: EMA EPAR Libmeldy (Zulassung 17.12.2020), FDA 18.03.2024, Fumagalli 2022, PMID 35065785, nur zeigen, wenn als Kante oder Studie im Tool sichtbar |
 | 7 | 1:45 bis 1:55 | Honest-Gap-Screen (Fall offen, siehe Option D) | Diagnose ohne belegte Spur suchen | "And when there is no supported lead, Constellate says so: what we searched and when, which communities are closest, and the next question to test." | Abschnitte "What was searched, as of …", "Nearest related communities", "What would close this gap" |
-| 8 | 1:55 bis 2:00 | Logo und URL `<VERCEL_URL>` | keiner | "Five thousand points of light. One map. Constellate." | URL in der Browserleiste |
+| 8 | 1:55 bis 2:00 | Logo und URL `https://constellate-vert.vercel.app` | keiner | "Five thousand points of light. One map. Constellate." | URL in der Browserleiste |
 
 Offene Studien (DECISIONS P3): Wenn nach `make trials` die Länderfilter auf der Krabbe-Seite erscheinen, passt ein 5-Sekunden-Schnitt in Szene 2 ("Studies looking for participants with Krabbe disease", Länderfilter, Button "Contact the study team"). Nur zeigen, wenn die Daten geladen sind; die App meldet sich nirgends für die Familie an.
 
@@ -53,4 +53,4 @@ E. Kernversprechen (W10). "Join an existing study instead of starting from zero"
 - Alle Kanten-IDs in der Tabelle im Live-Tool öffnen und den Evidenz-Eintrag lesen.
 - Szene 6: die tatsächlichen Sätze der Action Card ansehen und das Voice-over daran anpassen, nicht umgekehrt.
 - Jede genannte Zahl oder Jahreszahl im Voice-over steht in [MEDICAL-BACKGROUND.md](MEDICAL-BACKGROUND.md) mit Quelle, oder sie fliegt raus.
-- Live-URL ersetzen: `<VERCEL_URL>`.
+- Live-URL ersetzen: `https://constellate-vert.vercel.app`.

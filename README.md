@@ -8,7 +8,7 @@ Constellate organizes rare diseases by **mechanism and phenotype instead of name
 
 > Status (Sat 03.10.2026, 22:00): pipeline steps 1–7 and the validator are done, the dataset is exported (874 diseases, 1,066 genes, 4,717 phenotypes, hero path complete), the app v0 runs locally, live demo URL follows. Current state: [docs/STATUS.md](docs/STATUS.md) · map for every Claude session: [CLAUDE.md](CLAUDE.md) · build log: [docs/PLAN.md](docs/PLAN.md).
 
-**Live demo:** <VERCEL_URL> (no login) · **Repository:** https://github.com/hannokuegler/constellate
+**Live demo:** https://constellate-vert.vercel.app (no login) · **Repository:** https://github.com/hannokuegler/constellate
 
 ## Why
 

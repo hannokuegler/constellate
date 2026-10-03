@@ -1,16 +1,31 @@
 # Motion-Prompts · kurze Clips (5 bis 15 s)
 
-Stand So 04.10.2026. Für das Werkzeug „Motion" (Claude-Connector), das aus einem Brief ein Video erzeugt. Nichts hiervon ist bisher ausgeführt oder gekauft; Credit-Preise sind nicht geprüft ([docs/RESOURCES.md](../docs/RESOURCES.md) §9). Ausführung: Hanno, **nach der Abgabe** (So nach 15:00) oder in der Woche vor dem 10.10.
+Stand So 04.10.2026, 01:30. Für das Werkzeug „Motion" (Claude-Connector), das aus einem Brief ein Video erzeugt. Nichts hiervon ist bisher ausgeführt oder gekauft; Credit-Preise sind nicht geprüft ([docs/RESOURCES.md](../docs/RESOURCES.md) §9). Ausführung: Hanno, **nach der Abgabe** (So nach 15:00) oder in der Woche vor dem 10.10.
+
+## Einordnung seit der 60-s-Vorgabe
+
+Die drei Pflichtvideos (Team Introduction, Product Demo, Technical Walkthrough) dürfen je höchstens 60 Sekunden lang sein ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)); ihre Shotlists sind auf 0:58 ausgereizt. Für einen Motion-Clip bleibt dort kein Platz: Ein 8-s-Bumper würde ein Siebtel der Demo kosten. Deshalb gilt:
+
+| Prompt | Länge | In den 60-s-Videos | Einsatz |
+|---|---|---|---|
+| 1 Intro-Bumper | 8 s | **nein** | nur Pitch 10.10., Teaser, README-GIF |
+| 2 Übergang „Name → Mechanismus" | 10 s | **nein** | nur Pitch 10.10., Teaser |
+| 3 „Jede Kante hat eine Quelle" | 8 s | **nein** | nur Pitch 10.10., Teaser |
+| 4 „Honest Gap" | 8 s | **nein** | nur Pitch 10.10., Teaser |
+| 5 Outro mit URL | 6 s | **nein** | nur Pitch 10.10., Teaser, README |
+| 6 Pitch-Opener komplett | 15 s | **nein** | nur Live-Pitch 10.10. |
+
+Einzige Ausnahme, die in 60 s passt: eine **Titelkarte von höchstens 2 s** (Klartext „Constellate · Vienna Hub · Hack-Nation C5") am Anfang des Team-Videos. Sie wird im Schnittprogramm als Standbild gesetzt, nicht mit Motion erzeugt; Anfang und Ende der Demo und des Tech-Videos sind die echte App (`/`, `/about`, `/methods`) mit Browserleiste. Ein 2-s-Motion-Standbild wäre nur dann eine Option, wenn Hanno es ausdrücklich will und die Gesamtlänge unter 60 s bleibt.
 
 ## Harte Regel (RESOURCES Regel 9 und Video-Pipeline)
 
-Motion-Clips **ersetzen keines der vier Pflichtvideos** (Demo, Walkthrough, Tech, Team). Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
+Motion-Clips **ersetzen keines der drei Pflichtvideos** (Team, Demo, Tech) und kommen in keinem von ihnen vor. Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
 
 - Keine medizinischen Aussagen, keine Krankheitsnamen, keine Gennamen, keine Zahlen, keine Jahreszahlen, keine Organisations-Logos.
 - Erlaubter Text steht **wörtlich** im Prompt. Alles andere ist verboten („no other text, no voice-over, no numbers").
 - Keine Kinder, keine Krankenhäuser, kein Stock-Leid, keine Gesichter.
 - Jeder Clip wird vor Verwendung gegen diese Liste geprüft. Fällt eine Zahl oder ein Fachbegriff auf, der nicht im Prompt stand: verwerfen.
-- Für die Pflichtvideos gilt außerdem VIDEOS.md: keine Musik, keine Effekte. Also auch keine Motion-Bumper vor oder hinter Demo, Walkthrough, Tech oder Team.
+- Für die Pflichtvideos gilt außerdem VIDEOS.md: keine Musik, keine Effekte, höchstens 60 s. Also auch keine Motion-Bumper vor oder hinter Team, Demo oder Tech.
 
 **Wo Motion-Clips erlaubt sind:** Pitch-Opener und Pitch-Übergänge am 10.10. (falls Top 2), Discord- und LinkedIn-Teaser nach der Abgabe, README-Kopf (als GIF oder Standbild). Jeder Prompt unten trägt sein Feld „Einsatz erlaubt".
 
@@ -100,7 +115,7 @@ Duration: 8 seconds. Aspect ratio: 16:9.
 
 ## Prompt 5 · Outro mit URL (6 s)
 
-Einsatz erlaubt: Pitch-Ende 10.10. · Teaser-Ende · README. **Nicht** in den Pflichtvideos (dort ist das Schlussbild die echte `/about`-Seite mit Browserleiste).
+Einsatz erlaubt: Pitch-Ende 10.10. · Teaser-Ende · README. **Nicht** in den Pflichtvideos (dort ist das Schlussbild die echte `/about`- oder `/methods`-Seite mit Browserleiste, und die 60 s sind voll).
 
 ```
 Goal: a 6-second silent closing card for a pitch about Constellate.

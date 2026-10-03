@@ -1,6 +1,6 @@
 # Status · Constellate
 
-**Letzte Aktualisierung: So 04.10.2026, 01:15 (Wien)**. Freeze So 12:00 (in 10:45 h), Abgabe So 15:00 (in 13:45 h). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
+**Letzte Aktualisierung: So 04.10.2026, 00:30 (Wien)**. Freeze So 12:00 (in 11:30 h), Abgabe So 15:00 (in 14:30 h). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
 
 Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).
 
@@ -8,18 +8,21 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 
 | Status | Was |
 |---|---|
-| **Fertig** | App live auf Vercel · Hero-Pfad per Playwright-E2E grün (1280 px, 375 px, Dark) · Ego-Graph mit Familienknoten, Evidenz-Linienstilen und Gegenbeispiel-Kanten · eine Mutter in zwei Momenten (P1) · Karte offene Studien (P3, wartet auf Daten) · Action Card v2 mit Assets, Therapien, NBS, Forschenden, Prävalenz (zeigt "Data pending", bis die Daten da sind) · Seiten `/methods` und `/about` · README für die Jury · Demo-Skript- und Pitch-Entwurf |
-| **Dran** | Data Chief (lokale Session, freies Netz) zieht Assets, Therapien, Prävalenz, Forschende, Studien-Shards nach Branch `data-v2` / `data-trials`, Prompt: [prompts/LOCAL-DATA-SESSION.md](prompts/LOCAL-DATA-SESSION.md) · Security- und Doku-Review (Branch `security`) · Story und Video-Strategie (Branch `pitch-story`, Ordner `pitch/`) · Osman: `orgs.csv` · Recep: `hero_path` Block A, danach `MOONSHOT.md` |
-| **Blockiert** | Cloud-Sessions erreichen nur GitHub und npm (keine Datenquellen) → Pipeline läuft nur lokal · OpenAI-Key fehlt (nur lokal nötig, siehe unten) · `orgs.csv` und `hero_path.yaml` leer |
-| **Nächster Block** | Daten aus `data-v2` in 07 integrieren, `09_metrics.py` (Messwerte nach `meta.json`) · Explain mit Key lokal vorberechnen · E2E gegen die Live-URL · ab 11:00 Gates, Repo public, 12:00 Freeze, Videos |
+| **Fertig** | App live (Suche, Ego-Graph mit Familienknoten, Edge-Panel, Action Card v2, Honest Gap, offene Studien mit 142 Trial-Shards, `/methods`, `/about`) · Hero-Pfad-E2E grün · Security-Review (keine Secrets in der History, `/api/explain` mit Limits, Security-Header) · Explain wird vorberechnet (`make explain`), die Webseite braucht keinen Key · Data Chief fertig: PR hannokuegler/constellate#1 (`data-v2`: 135 Beobachtungsstudien + 9 Outcome-Skalen, 39 Medikamente inkl. Libmeldy/Lenmeldy, keine Krabbe-Zulassung, NBS 11 belegt/11 UNBELEGT, Prävalenz 638 Einträge, Monarch ρ = 0,661) · `pitch/` (Story, 60-s-Pitch, Video-Strategie, ElevenLabs, Motion) · Entscheidungen P9–P13 |
+| **Dran** | Review von PR #1 und Datenmanagement/Performance (Branch `data-quality`) · Code für 07-Integration und `09_metrics.py` (Branch `integrate-v2`, läuft danach lokal mit den echten Daten) · Design-Session lokal (Branch `design`) · Mentor-Vorbereitung Woan-Yu Lin (RTW Foundation) · Osman: `orgs.csv` · Recep: `hero_path` Block A, `MOONSHOT.md` |
+| **Blockiert** | `OPENAI_API_KEY` fehlt lokal (Extract, Reconcile, Explain; HackOS hat keine OpenAI-Credits) · `BRIGHTDATA_ZONE` fehlt (B8) · `orgs.csv` und `hero_path.yaml` leer · `MOONSHOT.md` fehlt |
+| **Nächster Block** | PR #1 nach Review mergen · 07+09 lokal laufen lassen, Daten committen · Key holen, Extract/Reconcile/Explain lokal · E2E gegen die Live-URL bis 06:00 · ab 11:00 Gates, Repo public, 12:00 Freeze, Videos |
 
 ## Branches (P8: ein Branch je Agent, `main` = live)
 
 | Branch | Inhalt | Stand |
 |---|---|---|
-| `integrate` | Sammel-Branch des Orchestrators: app-graph + app-action + docs-submission + Prompts, tsc/lint/E2E grün | bereit für `main` (Fast-Forward) |
-| `data-v2` | Receps `enrich_extra`-Module + Data-Chief-Arbeit | läuft lokal |
-| `security`, `pitch-story` | Review und Story/Video | Agents laufen |
+| `integrate` | Sammel-Branch des Orchestrators, tsc/lint/E2E/Validator grün | 2 Commits vor `main` (precomputed Explain, Design-Prompt) |
+| `data-v2` | PR #1, Data Chief | im Review |
+| `data-trials` | 142 Studien-Shards | in `main` |
+| `data-quality`, `integrate-v2` | Review/Performance, 07+09 | Agents laufen |
+| `design` | lokale Design-Session | läuft |
+| `app-graph`, `app-action`, `docs-submission`, `pitch-story`, `security`, `explain-precompute` | abgeschlossene Agent-Branches | in `integrate` |
 
 ## OpenAI: wofür und wo
 

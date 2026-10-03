@@ -12,13 +12,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import sys
 from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "app" / "public" / "data"
+OUT = Path(os.environ.get("CONSTELLATE_OUT_DIR") or ROOT / "app" / "public" / "data")
 
 KRABBE, MLD, PMD = "MONDO:0009499", "MONDO:0018868", "MONDO:0010714"
 CORE_INDEX_BUDGET = 3_000_000
@@ -29,6 +30,7 @@ EDGE_LEVELS = EVIDENCE_LEVELS | {"contradicted"}  # "contradicted" = edge with c
 REQUIRED_EDGE_KEYS = ("id", "source", "target", "type", "evidence", "contradicting", "confidence", "level", "independent_sources")
 REQUIRED_EVIDENCE_KEYS = ("db", "record", "url", "level", "date")
 ID_RE = re.compile(r"^e_[0-9a-f]{12}$")
+PMID_RE = re.compile(r"^PMID:\d+$")
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -65,6 +67,22 @@ def check_evidence_list(where: str, items, bucket: str) -> int:
         if ev["level"] not in EVIDENCE_LEVELS:
             err(f"{where}: {bucket}[{i}] has unknown level {ev['level']!r}")
             continue
+        if ev.get("origin") == "fuzzy" and ev["level"] != "inferred":
+            err(f"{where}: {bucket}[{i}] fuzzy match must stay inferred, is {ev['level']}")
+            continue
+        if ev["level"] == "text_mined" and (ev.get("db") == "PubMed" or ev.get("origin") == "OpenAI extract"):
+            problems = [name for name, ok in (("record is no PMID", PMID_RE.match(str(ev.get("record", "")))),
+                                              ("empty snippet", (ev.get("snippet") or "").strip()),
+                                              ("no model", ev.get("model")), ("no prompt_version", ev.get("prompt_version"))) if not ok]
+            if problems:
+                err(f"{where}: {bucket}[{i}] text_mined claim: {', '.join(problems)}")
+                continue
+        if ev["level"] == "text_mined" and ev.get("origin") == "OpenAI judge":
+            problems = [name for name, ok in (("empty snippet", (ev.get("snippet") or "").strip()), ("no model", ev.get("model")),
+                                              ("no prompt_version", ev.get("prompt_version"))) if not ok]
+            if problems:
+                err(f"{where}: {bucket}[{i}] OpenAI judge evidence: {', '.join(problems)}")
+                continue
         good += 1
     return good
 
@@ -92,8 +110,11 @@ def check_edge(where: str, edge: dict, endpoints: set | None = None) -> None:
         err(f"{loc}: unknown edge level {edge.get('level')!r}")
     if edge.get("level") == "inferred" and not edge.get("formula"):
         err(f"{loc}: inferred edge without formula")
-    if edge.get("rolled_up_from") is not None and edge.get("level") != "inferred":
-        err(f"{loc}: rolled-up edge must be level inferred")
+    if edge.get("rolled_up_from") is not None:
+        if edge.get("level") not in ("inferred", "text_mined"):  # text_mined only when a paper supports it directly
+            err(f"{loc}: rolled-up edge must be inferred (or text_mined with direct paper support), is {edge.get('level')}")
+        if any(ev.get("via_subtype") and ev.get("level") != "inferred" for ev in edge.get("evidence", [])):
+            err(f"{loc}: subtype evidence on a rolled-up edge must stay inferred")
     if endpoints is not None:
         for end in ("source", "target"):
             if edge.get(end) not in endpoints:
@@ -153,10 +174,11 @@ def main() -> int:
     shards: dict[str, dict] = {}
     shard_counts: dict[str, int] = {}
     max_shard = (0, "")
-    for folder, kind in (("disease", "disease"), ("gene", "gene"), ("phenotype", "phenotype")):
+    has_orgs = "org_shards" in meta.get("counts", {})
+    for folder, kind in (("disease", "disease"), ("gene", "gene"), ("phenotype", "phenotype"), ("org", "org")):
         overrides = meta.get("shard_overrides", {})
-        expected = {Path(overrides[n["id"]]).stem if n["id"] in overrides else file_safe(n["id"])
-                    for n in index if n["type"] == kind}
+        expected = {Path(overrides[n["id"]]).stem if n["id"] in overrides else
+                    file_safe(n["id"].split(":", 1)[1] if kind == "org" else n["id"]) for n in index if n["type"] == kind}
         present = {f.stem for f in (OUT / folder).glob("*.json")}
         if expected - present:
             err(f"{folder}/: {len(expected - present)} shards missing, e.g. {sorted(expected - present)[:3]}")
@@ -199,7 +221,34 @@ def main() -> int:
                 for paper in shard.get("enrichment", {}).get("papers_mentioning", []):
                     if not all(paper.get(k) for k in ("id", "db", "record", "url")):
                         err(f"{where}: paper mention lacks id/db/record/url")
+                for e in shard.get("text_mined", []):
+                    check_edge(where, e, index_set)
+                for it in shard.get("orgs", []):
+                    check_edge(where, it.get("edge", {}), index_set)
+                    if it.get("edge", {}).get("type") != "advocated_by" or it["edge"].get("target") != it.get("org", {}).get("id"):
+                        err(f"{where}: org entry does not match its advocated_by edge")
+                if has_orgs:
+                    if "orgs" not in shard:
+                        err(f"{where}: `orgs` missing although the build has orgs")
+                    elif not shard["orgs"]:
+                        gap = shard.get("gap") or {}
+                        if gap.get("orgs") != "none_in_curated_list" or "searched" not in gap or "nearest_communities" not in gap:
+                            err(f"{where}: disease without org needs gap {{orgs, nearest_communities, searched}}")
+                        elif len(gap["nearest_communities"]) > 3 or any(not c.get("orgs") for c in gap["nearest_communities"]):
+                            err(f"{where}: gap.nearest_communities must be <= 3 diseases that have orgs")
+                        elif not any(s_.get("source") == "curated org list" for s_ in gap["searched"]):
+                            err(f"{where}: gap.searched must name the curated org list")
+            elif kind == "org":
+                if not all(shard.get("node", {}).get(k) for k in ("id", "label")):
+                    err(f"{where}: org node needs id + label")
+                for it in shard.get("diseases", []):
+                    e = it.get("edge", {})
+                    check_edge(where, e, index_set)
+                    if e.get("type") != "advocated_by" or e.get("target") != node_id or e.get("source") != it.get("id"):
+                        err(f"{where}: entry {it.get('id')} is not an advocated_by edge of this org")
             elif kind == "gene":
+                for e in shard.get("text_mined", []):
+                    check_edge(where, e, index_set)
                 for e in shard.get("diseases", []):
                     check_edge(where, e, index_set)
                 for it in shard.get("pathways", []) + shard.get("pathways_more", []):

@@ -1,8 +1,11 @@
 """07_analytics — derived edges + browser export (the data contract the app loads from app/public/data/).
 
 Input : data/graph_base.json (03), data/slice.json (02), data/raw/{hp.json, phenotype.hpoa, mondo.json, en_product6.xml},
-        optional data/enrich/edges_draft.json + coverage.jsonl (04; skipped cleanly when missing)
-Output: app/public/data/meta.json · index.json · core.json · disease/<MONDO_x>.json · gene/<SYMBOL>.json
+        optional data/enrich/edges_draft.json + coverage.jsonl (04), data/extract/edges_text_mined.json (05),
+        data/reconcile/org_disease_edges.json (06) — each skipped cleanly when missing
+Output: app/public/data/meta.json · index.json · core.json · disease/<MONDO_x>.json · gene/<SYMBOL>.json ·
+        phenotype/<HP_x>.json · org/<slug>.json (only with 06 output)
+Override input / output folders (tests): CONSTELLATE_EXTRACT_DIR, CONSTELLATE_RECONCILE_DIR, CONSTELLATE_OUT_DIR
 
 What it derives (every derived claim is an edge with level "inferred", a `formula` and a Constellate evidence entry):
  1. subtype roll-up      parent disease inherits the gene edges of its MONDO subtypes (own edge, `rolled_up_from`),
@@ -14,6 +17,10 @@ What it derives (every derived claim is an edge with level "inferred", a `formul
  6. Louvain clusters     fixed seed, weight = simGIC + 0.3 * shared causal genes
  7. top-k phenotypes     k = 25 by IC x confidence, counter-evidence always kept
  8. enrichment hook      trials / papers / grants / targets / coverage per disease, pathways per gene
+ 9. text-mined merge     05 evidence joins an existing edge with the same id (counter-claims -> contradicting), else a
+                         new edge with level text_mined (drawn dashed); text-mined claims never feed the analytics above
+10. patient orgs         06 advocated_by edges -> disease shard `orgs`, org shards, index type "org"; a disease without
+                         an org gets `gap` (nearest communities: same family > shared gene > shared pathway > phenotype)
 Deterministic: sorted iteration, fixed seed, single-threaded BLAS, rounded floats; built_at lives only in meta.json.
 """
 from __future__ import annotations
@@ -40,7 +47,9 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
 RAW = DATA / "raw"
 ENRICH = DATA / "enrich"
-OUT = ROOT / "app" / "public" / "data"
+OUT = Path(os.environ.get("CONSTELLATE_OUT_DIR") or ROOT / "app" / "public" / "data")
+EXTRACT_DIR = Path(os.environ.get("CONSTELLATE_EXTRACT_DIR") or DATA / "extract")
+RECONCILE_DIR = Path(os.environ.get("CONSTELLATE_RECONCILE_DIR") or DATA / "reconcile")
 
 HERO_START = "MONDO:0009499"  # Krabbe disease
 TOP_K_PHENOTYPES = 25
@@ -63,6 +72,8 @@ CORE_INDEX_BUDGET = 3_000_000
 ENRICH_KINDS = ("trials", "grants", "targets", "papers_mentioning")
 PHENOTYPE_SHARD_CAP = 100  # diseases per phenotype shard (counter-evidence edges are always kept on top)
 ENRICH_CAP = 20  # items per enrichment kind and disease shard (totals are kept)
+GAP_MAX_COMMUNITIES = 3
+GAP_MIN_SIMGIC = 0.10  # a phenotype-only community must at least be this similar
 PATHWAY_HUB_SHARE, PATHWAY_HUB_MIN_GENES = 0.15, 10  # generic Reactome pathway = carried by >= 15 % (min 10) of annotated genes
 GENE_EDGE_TYPES = ("caused_by", "associated_gene")
 LEVEL_ORDER = ["observed", "curated", "text_mined", "inferred"]
@@ -576,6 +587,8 @@ def main() -> int:
 
     # ================================================================ 8. enrichment (optional)
     enrich = load_enrichment()
+    text_mined = load_text_mined()
+    orgs = load_orgs()
 
     # ================================================================ 9. export
     export(base=base, sl=sl, hpo=hpo, mondo=mondo, nodes=nodes, diseases=diseases, genes=genes, core_set=core_set,
@@ -583,7 +596,9 @@ def main() -> int:
            pheno_edges_of=pheno_edges_of, rolled_pheno_of=rolled_pheno_of, all_gene_edges_of=all_gene_edges_of,
            own_pos_phenos=own_pos_phenos, rollup_edges=rollup_edges, sim_edges=sim_edges, gene_share_edges=gene_share_edges,
            shared_genes_pairs=shared_genes_pairs, describe_pair=describe_pair, mechanism_verdict=mechanism_verdict,
-           cluster_of=cluster_of, class_of=class_of, enrich=enrich, is_group=is_group, stats={
+           cluster_of=cluster_of, class_of=class_of, enrich=enrich, is_group=is_group, text_mined=text_mined, orgs=orgs,
+           related_by_hierarchy=related_by_hierarchy, mondo_ancestors=mondo_ancestors, shared_causal_genes=shared_causal_genes,
+           simgic_of=lambda a, b: float(simgic[dindex[a], dindex[b]]), stats={
                "ic_terms": len(ic), "ic_corpus_diseases": n_ic_corpus, "clusters": n_clusters,
                "modularity": r(modularity, 4), "counterexample_pairs": len(counterexample_pairs),
                "rollup_categories_skipped": len(rollup_skipped_categories)})
@@ -746,6 +761,78 @@ def load_enrichment() -> dict | None:
             "meta": d.get("meta", {}), "versions": enrichment_versions()}
 
 
+def load_text_mined() -> dict | None:
+    path = EXTRACT_DIR / "edges_text_mined.json"
+    if not path.exists():
+        print(f"[text_mined] {path.name} missing — skipped")
+        return None
+    data = json.loads(path.read_text())
+    print(f"[text_mined] {len(data.get('edges', []))} edges from 05 ({data.get('meta', {}).get('model', '?')})")
+    return data
+
+
+def load_orgs() -> dict | None:
+    path = RECONCILE_DIR / "org_disease_edges.json"
+    if not path.exists():
+        print(f"[orgs] {path.name} missing — skipped")
+        return None
+    data = json.loads(path.read_text())
+    print(f"[orgs] {len(data.get('nodes', []))} orgs · {len(data.get('edges', []))} advocated_by edges from 06"
+          + (" (DRAFT input)" if data.get("meta", {}).get("input_is_draft") else ""))
+    return data
+
+
+def reaggregate(edge: dict) -> None:
+    """Same aggregates as 03_build_graph: confidence = max over evidence, origins, best evidence level."""
+    edge["confidence"] = r(max((ev.get("confidence") or 0.0 for ev in edge["evidence"]), default=0.0), 3)
+    edge["independent_sources"] = sorted({ev["origin"] for ev in edge["evidence"]})
+    edge["level"] = (min((ev["level"] for ev in edge["evidence"]), key=lambda lv: LEVEL_ORDER.index(lv) if lv in LEVEL_ORDER else 99)
+                     if edge["evidence"] else "contradicted")
+
+
+def merge_text_mined(tm: dict | None, existing: list[dict], nodes: dict, paper_year: dict) -> dict:
+    """05 edges: same id -> evidence appended to the existing edge, else a new text_mined edge."""
+    out = {"merged": [], "new": [], "skipped": 0}
+    if not tm:
+        return out
+    by_id = {e["id"]: e for e in existing}
+    for raw in sorted(tm.get("edges", []), key=lambda e: e["id"]):
+        evid = [with_date(ev, paper_year) for ev in raw.get("evidence", [])]
+        contra = [with_date(ev, paper_year) for ev in raw.get("contradicting", [])]
+        target = by_id.get(raw["id"])
+        if target is not None:
+            if (target["source"], target["target"], target["type"]) != (raw["source"], raw["target"], raw["type"]):
+                raise SystemExit(f"text-mined edge {raw['id']} collides with a different edge")
+            target["evidence"] = target["evidence"] + evid
+            target["contradicting"] = target["contradicting"] + contra
+            reaggregate(target)
+            out["merged"].append(target)
+            continue
+        if raw["source"] not in nodes or raw["target"] not in nodes:
+            out["skipped"] += 1
+            continue
+        edge = {"id": raw["id"], "source": raw["source"], "target": raw["target"], "type": raw["type"],
+                "evidence": evid, "contradicting": contra}
+        reaggregate(edge)
+        by_id[edge["id"]] = edge
+        out["new"].append(edge)
+    return out
+
+
+def with_date(ev: dict, paper_year: dict) -> dict:
+    """05 takes the date from the publication record; when that is missing the paper year from 04 is used (marked)."""
+    if ev.get("date"):
+        return ev
+    known = paper_year.get(ev.get("record"))
+    return dict(ev, date=known, date_source="04 Europe PMC record") if known else ev
+
+
+def org_card(node: dict) -> dict:
+    keep = ("id", "label", "url", "country", "has_registry", "registry_url", "has_natural_history_study", "nhs_url",
+            "has_biobank", "contact_url", "verified_date", "draft_input")
+    return {k: node.get(k) for k in keep if k in node}
+
+
 def enrichment_versions() -> list[dict]:
     sources = {}
     for name, db, lic, url in (("ctgov", "ClinicalTrials.gov", "US public domain", "https://clinicaltrials.gov"),
@@ -800,6 +887,16 @@ def shard_names(ids: list[str]) -> dict[str, str]:
 
 
 CORE_EVIDENCE_KEYS = ("db", "record", "url", "level", "date")
+LLM_EVIDENCE_KEYS = ("origin", "model", "prompt_version")  # LLM output stays attributable even in the overview
+
+
+def core_evidence(ev: dict) -> dict:
+    out = {k2: ev[k2] for k2 in CORE_EVIDENCE_KEYS if k2 in ev}
+    if ev.get("level") == "text_mined":
+        out.update({k2: ev[k2] for k2 in LLM_EVIDENCE_KEYS if k2 in ev})
+        snippet = ev.get("snippet") or ""
+        out["snippet"] = snippet if len(snippet) <= 160 else snippet[:159].rstrip() + "…"
+    return out
 
 
 def core_edge(edge: dict, max_evidence: int) -> dict:
@@ -807,7 +904,7 @@ def core_edge(edge: dict, max_evidence: int) -> dict:
     `max_evidence` entries (+ evidence_omitted). The full edge with snippets lives in the disease / gene shard."""
     out = dict(edge)
     for bucket in ("evidence", "contradicting"):
-        items = [{k2: ev[k2] for k2 in CORE_EVIDENCE_KEYS if k2 in ev} for ev in edge.get(bucket, [])]
+        items = [core_evidence(ev) for ev in edge.get(bucket, [])]
         if len(items) > max_evidence:
             out[f"{bucket}_omitted"] = len(items) - max_evidence
             items = items[:max_evidence]
@@ -845,6 +942,60 @@ def export(**k) -> None:
     pheno_rollups = [e for e in rollup_edges if e["type"] == "has_phenotype"]
     analytic_edges = sorted(sim_edges.values(), key=lambda e: e["id"]) + sorted(gene_share_edges.values(), key=lambda e: e["id"])
     all_edges = k["base"]["edges"] + rollup_edges + analytic_edges
+
+    # ---- 9. text-mined (05): after the analytics, so LLM claims never feed similarity, roll-up or clusters
+    paper_year: dict[str, str] = {}  # PMID -> publication date (else year) from 04, fallback when 05 has none
+    if k["text_mined"] is not None and (ENRICH / "europepmc.jsonl").exists():
+        for line in (ENRICH / "europepmc.jsonl").read_text().splitlines():
+            if line.strip():
+                row = json.loads(line)
+                if row.get("pmid") and (row.get("pub_date") or row.get("year")):
+                    paper_year[f"PMID:{row['pmid']}"] = str(row.get("pub_date") or row["year"])[:10]
+    tm = merge_text_mined(k["text_mined"], all_edges, nodes, paper_year)
+    tm_gene, tm_pheno, tm_other = [], [], []
+    for e in tm["new"]:
+        st, tt = nodes[e["source"]]["type"], nodes[e["target"]]["type"]
+        if e["type"] in GENE_EDGE_TYPES and st == "disease" and tt == "gene":
+            tm_gene.append(e)
+            k["all_gene_edges_of"][e["source"]].append(e)
+        elif e["type"] == "has_phenotype" and st == "disease" and tt == "phenotype":
+            tm_pheno.append(e)
+            k["pheno_edges_of"][e["source"]].append(e)
+        else:
+            tm_other.append(e)
+    gene_edges_all = sorted(gene_edges_all + tm_gene, key=lambda e: (e["source"], e["target"], e["type"]))
+    tm_pheno_ids = {e["id"] for e in tm_pheno}
+    tm_other_of: dict[str, list[dict]] = defaultdict(list)
+    for e in tm_other:
+        tm_other_of[e["source"]].append(e)
+        if e["target"] != e["source"]:
+            tm_other_of[e["target"]].append(e)
+    all_edges = all_edges + tm["new"]
+    if k["text_mined"] is not None:
+        print(f"[text_mined] merged into {len(tm['merged'])} existing edges · new: {len(tm_gene)} gene, {len(tm_pheno)} phenotype, "
+              f"{len(tm_other)} other · {tm['skipped']} skipped (unknown node)")
+
+    # ---- 10. patient organisations (06)
+    org_nodes: dict[str, dict] = {}
+    orgs_of: dict[str, list[dict]] = defaultdict(list)
+    org_edges: list[dict] = []
+    if k["orgs"] is not None:
+        org_nodes = {n["id"]: n for n in k["orgs"].get("nodes", [])}
+        for e in sorted(k["orgs"].get("edges", []), key=lambda e: e["id"]):
+            if e["source"] not in nodes or e["target"] not in org_nodes:
+                continue
+            e = dict(e, evidence=[dict(ev, level="inferred") if ev.get("origin") == "fuzzy" else ev for ev in e["evidence"]])
+            reaggregate(e)  # a fuzzy name match stays inferred, never upgraded
+            fuzzy = [ev for ev in e["evidence"] if ev.get("origin") == "fuzzy"]
+            if e["level"] == "inferred" and fuzzy:
+                e["formula"] = "fuzzy name match (no LLM): " + "; ".join(
+                    f"'{ev.get('free_text_name', '?')}' on the org website -> {e['source']} {nodes[e['source']]['label']} "
+                    f"({ev.get('reason', '')})" for ev in fuzzy)
+            org_edges.append(e)
+            orgs_of[e["source"]].append(e)
+        all_edges = all_edges + org_edges
+    org_diseases = sorted(orgs_of)
+
     degree: Counter = Counter()
     for e in all_edges:
         degree[e["source"]] += 1
@@ -865,9 +1016,12 @@ def export(**k) -> None:
         chosen = pos_sorted[:TOP_K_PHENOTYPES]
         chosen_ids = {e["id"] for e in chosen}
         chosen += sorted((e for e in contra if e["id"] not in chosen_ids), key=lambda e: e["target"])
+        chosen_ids = {e["id"] for e in chosen}
+        chosen += sorted((e for e in own if e["id"] in tm_pheno_ids and e["id"] not in chosen_ids), key=lambda e: e["target"])
         topk[d] = chosen
         pheno_total[d] = len(pos)
-    topk_phenos = sorted({e["target"] for es in topk.values() for e in es})
+    topk_phenos = sorted({e["target"] for es in topk.values() for e in es}
+                         | {x for e in tm_other for x in (e["source"], e["target"]) if nodes[x]["type"] == "phenotype"})
 
     gene_edges_of_gene: dict[str, list[dict]] = defaultdict(list)
     for e in gene_edges_all:
@@ -900,6 +1054,12 @@ def export(**k) -> None:
                       "synonyms": hpo["synonyms"].get(p, [])[:MAX_PHENOTYPE_SYNONYMS], "xrefs": [],
                       "in_core": p in phenos_in_core, "degree": degree[p]})
 
+    for oid in sorted(org_nodes):
+        on = org_nodes[oid]
+        index.append({"id": oid, "type": "org", "label": on["label"], "synonyms": [],
+                      "xrefs": list(on.get("orpha_ids") or [])[:MAX_SYNONYMS],
+                      "in_core": any(e["source"] in core_set for e in org_edges if e["target"] == oid), "degree": degree[oid]})
+
     # ---- core.json
     n_genes_of = {d: len({e["target"] for e in k["all_gene_edges_of"][d] if e["evidence"]}) for d in diseases}
     core_nodes = []
@@ -915,6 +1075,8 @@ def export(**k) -> None:
     core_edges_full = core_gene_edges + analytic_edges
     core_gene_ids = {e["target"] for e in core_gene_edges}
     core_nodes = [n for n in core_nodes if n["type"] != "gene" or n["id"] in core_gene_ids]
+    core_node_ids = {n["id"] for n in core_nodes}
+    core_edges_full += [e for e in sorted(tm_other, key=lambda e: e["id"]) if e["source"] in core_node_ids and e["target"] in core_node_ids]
     sizes = {}
     for max_ev in (3, 2, 1):
         core_edges = [core_edge(e, max_ev) for e in core_edges_full]
@@ -977,6 +1139,13 @@ def export(**k) -> None:
                           "mechanism_classes": [{"key": c["key"], "label": next(m["label"] for m in MECHANISM_CLASSES if m["key"] == c["key"]),
                                                  "via": c["via"], "via_label": c["via_label"]} for c in k["class_of"][d]]},
                  "genes": gene_list, "phenotypes": phenos, "phenotypes_total": pheno_total[d], "neighbours": neigh}
+        if tm_other_of.get(d):
+            shard["text_mined"] = sorted(tm_other_of[d], key=lambda e: (-e["confidence"], e["id"]))
+        if k["orgs"] is not None:
+            shard["orgs"] = [{"org": org_card(org_nodes[e["target"]]), "edge": e}
+                             for e in sorted(orgs_of.get(d, []), key=lambda e: (-e["confidence"], e["target"]))]
+            if not shard["orgs"]:
+                shard["gap"] = org_gap(d, k, nodes, org_diseases, orgs_of, org_nodes, coverage.get(d, []), enrich)
         if enrich is not None:
             ed = enrich_by.get(d, {})
             shard["enrichment"] = {kind: sorted_enrichment(kind, ed.get(kind, []))[:ENRICH_CAP] for kind in ENRICH_KINDS}
@@ -1001,6 +1170,8 @@ def export(**k) -> None:
         if g in gene_attrs:
             n.update(gene_attrs[g])
         shard = {"node": n, "diseases": sorted(gene_edges_of_gene[g], key=lambda e: (e["type"] != "caused_by", bool(e.get("rolled_up_from")), -e["confidence"], e["source"]))}
+        if tm_other_of.get(g):
+            shard["text_mined"] = sorted(tm_other_of[g], key=lambda e: (-e["confidence"], e["id"]))
         if enrich is not None:
             pw_genes, generic = enrich["pathway_genes"], enrich["generic_pathways"]
             items = [dict(it, slice_genes=len(pw_genes[it["node"]["id"]]),
@@ -1042,7 +1213,17 @@ def export(**k) -> None:
         path = OUT / "phenotype" / f"{file_safe(ph)}.json"
         shard_sizes.append(dump(path, shard))
         written.add(path)
-    for folder in ("disease", "gene", "phenotype"):
+    # ---- org shards
+    for oid in sorted(org_nodes):
+        linked = sorted((e for e in org_edges if e["target"] == oid),
+                        key=lambda e: (e["source"] not in core_set, -e["confidence"], e["source"]))
+        shard = {"node": org_nodes[oid], "diseases": [{"id": e["source"], "label": nodes[e["source"]]["label"],
+                                                         "in_core": e["source"] in core_set, "edge": e} for e in linked]}
+        fit_shard(shard)
+        path = OUT / "org" / f"{file_safe(oid.split(':', 1)[1])}.json"
+        shard_sizes.append(dump(path, shard))
+        written.add(path)
+    for folder in ("disease", "gene", "phenotype", "org"):
         for f in (OUT / folder).glob("*.json"):
             if f not in written:
                 f.unlink()  # stale shard from an earlier build or fixture
@@ -1056,7 +1237,7 @@ def export(**k) -> None:
         {"db": "MONDO", "version": k["mondo"]["version"], "license": "CC-BY 4.0", "url": "https://mondo.monarchinitiative.org"},
         {"db": "Orphanet", "version": orphanet_version(), "license": "CC-BY 4.0", "url": "https://www.orphadata.com"},
         {"db": "OMIM (via HPO annotations)", "version": hpo_annotation_version(), "license": "attribution OMIM; only indirectly via HPO", "url": "https://omim.org"},
-    ] + ((enrich or {}).get("versions") or [])
+    ] + ((enrich or {}).get("versions") or []) + ([org_source(k["orgs"], org_nodes)] if k["orgs"] is not None else [])
     meta = {"version": f"{BUILD_DATE}+{GIT_SHA}", "built_at": dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat(),
             "fixture": False, "sources": sources,
             "counts": {"nodes": {"disease": len(diseases), "core_disease": len(core_set), "gene": len(genes),
@@ -1066,6 +1247,19 @@ def export(**k) -> None:
                        "levels": dict(sorted(level_counts.items())),
                        "core_edges": len(core_edges_full), "disease_shards": len(diseases), "gene_shards": len(genes),
                        "phenotype_shards": len(topk_phenos),
+                       **({"org_shards": len(org_nodes)} if k["orgs"] is not None else {}),
+                       **({"text_mined": {"merged_into_existing": len(tm["merged"]), "new_edges": len(tm["new"]),
+                                          "skipped": tm["skipped"], "model": (k["text_mined"].get("meta") or {}).get("model"),
+                                          "prompt_version": (k["text_mined"].get("meta") or {}).get("prompt_version")}}
+                          if k["text_mined"] is not None else {}),
+                       **({"orgs": {"orgs": len(org_nodes), "advocated_by": len(org_edges),
+                                    "diseases_with_org": len(org_diseases),
+                                    "core_diseases_without_org": sum(1 for d in core_set if d not in orgs_of),
+                                    "core_diseases_without_org_excl_groups": sum(1 for d in core_set if d not in orgs_of and not is_group[d]),
+                                    "input_file": (k["orgs"].get("meta") or {}).get("input_file"),
+                                    "input_is_draft": bool((k["orgs"].get("meta") or {}).get("input_is_draft")),
+                                    "method": (k["orgs"].get("meta") or {}).get("method")}}
+                          if k["orgs"] is not None else {}),
                        **k["stats"]},
             "parameters": {"top_k_phenotypes": TOP_K_PHENOTYPES, "top_similar": TOP_SIMILAR, "top_resnik": TOP_RESNIK,
                            "counterexample": {"max_rank": COUNTEREXAMPLE_MAX_RANK, "min_simgic": COUNTEREXAMPLE_MIN_SIMGIC},
@@ -1080,7 +1274,7 @@ def export(**k) -> None:
             "hero": {"start": HERO_START}}
     dump(OUT / "meta.json", meta)
     print(f"[export] {len(diseases)} disease + {len(genes)} gene + {len(topk_phenos)} phenotype shards · max {max(shard_sizes)/1e3:.0f} KB · "
-          f"median {np.median(shard_sizes)/1e3:.1f} KB → {OUT.relative_to(ROOT)}")
+          f"median {np.median(shard_sizes)/1e3:.1f} KB → {OUT.relative_to(ROOT) if OUT.is_relative_to(ROOT) else OUT}")
     print("[counts] " + " · ".join(f"{t} {c}" for t, c in sorted(edge_counts.items())))
 
 
@@ -1095,6 +1289,73 @@ def sorted_enrichment(kind: str, items: list[dict]) -> list[dict]:
             return (-(n.get("latest_fiscal_year") or 0), n["id"])
         return (-e.get("confidence", 0), n["id"])
     return sorted(items, key=key)
+
+
+def org_source(orgs: dict, org_nodes: dict) -> dict:
+    meta = orgs.get("meta") or {}
+    dates = sorted(n["verified_date"] for n in org_nodes.values() if n.get("verified_date"))
+    version = (f"{len(org_nodes)} orgs, verified {dates[0]}..{dates[-1]}" if dates else f"{len(org_nodes)} orgs, unverified")
+    if meta.get("input_is_draft"):
+        version += " · DRAFT input (not hand-verified)"
+    return {"db": "Patient organisations (curated list, reconciled by 06)", "version": version,
+            "license": "public organisation websites, hand-curated", "url": f"{REPO_URL}/blob/main/data/curated/orgs.csv"}
+
+
+def specific_shared_pathways(a: str, b: str, gene_edges_of: dict, enrich: dict | None) -> list[dict]:
+    if not enrich:
+        return []
+    ga = {e["target"] for e in gene_edges_of[a] if e["type"] == "caused_by" and e["evidence"]}
+    gb = {e["target"] for e in gene_edges_of[b] if e["type"] == "caused_by" and e["evidence"]}
+    pa = {it["node"]["id"]: it["node"].get("label", it["node"]["id"]) for g in ga for it in enrich["pathways"].get(g, [])}
+    pb = {it["node"]["id"] for g in gb for it in enrich["pathways"].get(g, [])}
+    shared = sorted((p for p in set(pa) & pb if p not in enrich["generic_pathways"]),
+                    key=lambda p: (-len(enrich["pathway_genes"][p]), p))
+    return [{"id": p, "label": pa[p]} for p in shared[:3]]
+
+
+def org_gap(d: str, k: dict, nodes: dict, org_diseases: list[str], orgs_of: dict, org_nodes: dict,
+            coverage_rows: list[dict], enrich: dict | None) -> dict:
+    """Honest gap: no org in the curated list. Nearest communities rank mechanism before symptoms:
+    same MONDO family > shared causal gene > shared specific Reactome pathway > phenotype similarity only."""
+    cands = []
+    for o in org_diseases:
+        if o == d:
+            continue
+        sim = k["simgic_of"](d, o)
+        genes = k["shared_causal_genes"](d, o)
+        pws = specific_shared_pathways(d, o, k["all_gene_edges_of"], enrich)
+        if k["related_by_hierarchy"](d, o):
+            tier = 0
+            relation = ("MONDO parent class of this disease" if o in k["mondo_ancestors"](d) else "MONDO subtype of this disease")
+        elif genes:
+            tier, relation = 1, f"shared causal gene {', '.join(genes)}"
+        elif pws:
+            tier, relation = 2, f"shared Reactome pathway {pws[0]['label']} ({pws[0]['id']})"
+        elif sim >= GAP_MIN_SIMGIC:
+            tier, relation = 3, "phenotype similarity only — check the mechanism before transferring anything"
+        else:
+            continue
+        cands.append((tier, -sim, o, relation, genes, pws, sim))
+    cands.sort(key=lambda c: c[:3])
+    nearest = []
+    for tier, _, o, relation, genes, pws, sim in cands[:GAP_MAX_COMMUNITIES]:
+        verdict, _ = k["mechanism_verdict"](d, o)
+        nearest.append({"id": o, "label": nodes[o]["label"], "relation": relation, "tier": tier, "simgic": r(sim, 3),
+                        "shared_genes": genes, "shared_pathways": pws, "mechanism_differs": verdict,
+                        "orgs": [{"id": e["target"], "label": org_nodes[e["target"]]["label"], "url": org_nodes[e["target"]].get("url"),
+                                  "edge_id": e["id"]} for e in sorted(orgs_of[o], key=lambda e: e["target"])]})
+    meta = k["orgs"].get("meta") or {}
+    dates = sorted(n["verified_date"] for n in org_nodes.values() if n.get("verified_date"))
+    searched = [{"source": c["source"], "retrieved": c.get("retrieved"), "hits_raw": c.get("hits_raw"), "hits_kept": c.get("hits_kept")}
+                for c in sorted(coverage_rows, key=lambda c: c["source"])]
+    if not coverage_rows:
+        searched.append({"source": "04_enrich_apis", "note": "not queried in this build (outside the enrichment scope)"})
+    searched.append({"source": "curated org list", "n_orgs": len(org_nodes), "verified": dates[-1] if dates else None,
+                     "input_file": meta.get("input_file"), "draft": bool(meta.get("input_is_draft")),
+                     "note": f"curated org list, {len(org_nodes)} orgs, as of {dates[-1] if dates else 'unverified'}"
+                             + (" (DRAFT, not hand-verified)" if meta.get("input_is_draft") else "")})
+    return {"orgs": "none_in_curated_list", "nearest_communities": nearest, "searched": searched,
+            "closing_the_gap": "an organisation for this disease in data/curated/orgs.csv (with url and verified_date)"}
 
 
 def pathway_note(a: str, b: str, gene_edges_of: dict, enrich: dict | None) -> str:

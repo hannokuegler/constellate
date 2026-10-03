@@ -69,7 +69,7 @@ Hi, I'm Recep. I graduated from TGM in Vienna, in industrial engineering with a 
 
 Woher die Begriffe kommen:
 
-- Hanno (geprüft 01:50 gegen `Landa/20_Beruf/Profil-Beruflich.md`, Ableitung des CV): B.Sc. Wirtschafts- und Sozialwissenschaften an der WU mit SBWL Data Science (also **nicht** Wirtschaftsinformatik, Osmans Angabe war falsch), ab 10/2026 Doppelmaster MSc Digital Economy (WU) und Dipl.-Ing. Business Informatics (TU Wien); Rettungssanitäter beim ÖRK (ca. 20 Monate hauptberuflich, seit 10/2024 ehrenamtlich) und zertifizierter Erste-Hilfe-Lehrbeauftragter. „EMT" ist die übliche englische Entsprechung für Rettungssanitäter. Offen: Ist die TU-Zulassung durch (Steckbrief Stand 09/2026: „Zulassungsverfahren läuft")? Wenn nicht: „now a master's at WU".
+- Hanno (geprüft 01:50 gegen `Landa/20_Beruf/Profil-Beruflich.md`, Ableitung des CV): B.Sc. Wirtschafts- und Sozialwissenschaften an der WU mit SBWL Data Science (also **nicht** Wirtschaftsinformatik, Osmans Angabe war falsch), ab 10/2026 Doppelmaster MSc Digital Economy (WU) und Dipl.-Ing. Business Informatics (TU Wien); Rettungssanitäter beim ÖRK (ca. 20 Monate hauptberuflich, seit 10/2024 ehrenamtlich) und zertifizierter Erste-Hilfe-Lehrbeauftragter. „EMT" ist die übliche englische Entsprechung für Rettungssanitäter. TU-Zulassung ist durch, „EMT" passt (Hanno, 04.10. 01:55).
 - Osman: „geospatial data" ist der Oberbegriff für Hochwasser-, HORA-, Satelliten- und Klimadaten (alles Daten mit Ortsbezug). Alternativen: „environmental risk data" (betont Risiko statt Ort), „geodata". Empfehlung „geospatial", weil es Hochwasser, HORA und Satelliten gleichermaßen abdeckt und international verstanden wird.
 - Recep: Der Gesundheitsbezug („medical knowledge easier to understand") ist ein Vorschlag nach Osmans Wunsch; **Recep bestätigt, dass das wirklich sein Interesse ist**, sonst streichen.
 - Keine erfundene persönliche Krankheitsgeschichte (Regel 2).
@@ -78,8 +78,7 @@ Woher die Begriffe kommen:
 
 1. Osman: Darf der Arbeitgeber (Raiffeisen Bank International) in einem öffentlichen Video genannt werden? Viele Banken haben Social-Media-Regeln. Ausweichsatz ohne Namen: „… and work in retail risk and methodology at a bank."
 2. Recep: Was machst du seit dem TGM (Studium, Job)? Ein Halbsatz macht den Background vollständiger; nicht raten, bitte selbst ergänzen. Englische Bezeichnung des Zweigs prüfen (Vorschlag: „industrial engineering, business informatics").
-3. Hanno: TU-Zulassung durch? „EMT" als Übersetzung für Rettungssanitäter ok?
-4. Nachnamen von Osman und Recep für die Einblendung.
+3. Nachnamen von Osman und Recep für die Einblendung.
 
 Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisationsnamen aus der Patientenwelt, keine Geschichte einer fremden Familie.
 

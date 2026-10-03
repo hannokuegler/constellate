@@ -3,6 +3,46 @@
 Neueste zuerst. **Posten:** Bild runterladen, Oneliner kopieren (Copy-Button rechts am Code-Block), ab in den Discord.
 Erstellt mit `05_Memes/meme.py` (lokal) — dieser Ordner wird automatisch überschrieben, hier nichts von Hand ändern.
 
+### Sleep 02:00-06:00 / Coffee 02:00-06:00
+
+<img src="1003-2104_01_sleep-02-00-06-00-coffee-02-00-06-00.jpg" width="420">
+
+```
+The schedule was aspirational. ☕
+```
+
+### one does not simply / sleep before end-to-end
+
+<img src="1003-2104_02_one-does-not-simply-sleep-before-end-to-end.jpg" width="420">
+
+```
+06:00 live or 06:00 lie.
+```
+
+### This is the worst sleep schedule of my life. / This is the worst sleep schedule so far.
+
+<img src="1003-2104_03_this-is-the-worst-sleep-schedule-of-my-life-t.jpg" width="420">
+
+```
+Deadline is still tomorrow. That is the threat.
+```
+
+### SCHEDULE: SLEEP / TEAM: CITATION NEEDED
+
+<img src="1003-2104_04_schedule-sleep-team-citation-needed.jpg" width="420">
+
+```
+Peer-reviewed insomnia, Vienna edition.
+```
+
+### COFFEE DEPLOYED / SLEEP ROLLED BACK
+
+<img src="1003-2104_05_coffee-deployed-sleep-rolled-back.jpg" width="420">
+
+```
+Production incident: circadian rhythm unavailable.
+```
+
 ### Hub organizer: the budget? / let's just increase it. more pizza.
 
 <img src="1003-2056_01_hub-organizer-the-budget-let-s-just-increase.jpg" width="420">
@@ -97,6 +137,8 @@ Hour 3 in Vienna and the table already looks like hour 23 🍕💀
 
 Foto schießen → an Hanno, der macht die Caption drauf.
 
+- **02:00 SLEEP BLOCK / ZERO CONFIRMED USERS** — Fotografiert Osman von schräg oben, wie er auf den Zeitplan am Whiteboard zeigt; Hanno und Recep sitzen darunter mit Laptops und Kaffeebechern, komplett wach. Wichtig: Die Uhrzeit 02:00-06:00 darf als Requisite sichtbar sein, aber keine extra Meme-Schrift im Foto.
+- **SUNDAY 15:00 / SLEEP: POST-DEMO** — Stellt drei Kaffeebecher wie eine Countdown-Uhr vor einen Laptop; im Hintergrund zeigt jemand auf Vercel oder HackOS, die anderen schauen übermüdet entschlossen. Nahaufnahme aus Tischhöhe, echte Hub-Unordnung mit Kabeln und Pizzakarton am Rand.
 - **The roadmap changed. / Pizza became P0.** — Osman hält einen Stapel Pizzakartons wie ein offizielles HackOS-Announcement, Hanno und Recep schauen ernst auf Laptops und nicken. Foto frontal aus leicht tiefer Perspektive, Whiteboard-Zeitplan im Hintergrund.
 - **170 judges. / One unanimous decision.** — Alle am Tisch zeigen gleichzeitig auf einen geöffneten Pizzakarton, als wäre er die Gewinner-Demo. Perspektive von oben über Laptops, Kaffeebecher und Kabel hinweg.
 - **Vercel can wait. / Pizza is live.** — Hanno sitzt mit Deploy-Screen offen am Laptop, daneben wird ein Pizzakarton dramatisch aufgeklappt. Nahaufnahme seitlich, Bildschirm unscharf, Pizza scharf im Vordergrund.

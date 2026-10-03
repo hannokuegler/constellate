@@ -8,9 +8,19 @@ Constellate organizes rare diseases by **mechanism and phenotype instead of name
 
 > Status (Sat 03.10.2026, 22:00): pipeline steps 1–7 and the validator are done, the dataset is exported (874 diseases, 1,066 genes, 4,717 phenotypes, hero path complete), the app v0 runs locally, live demo URL follows. Current state: [docs/STATUS.md](docs/STATUS.md) · map for every Claude session: [CLAUDE.md](CLAUDE.md) · build log: [docs/PLAN.md](docs/PLAN.md).
 
+**Live demo:** <VERCEL_URL> (no login) · **Repository:** https://github.com/hannokuegler/constellate
+
 ## Why
 
-10,000 rare diseases, 80 % genetic, fewer than 5 % with an approved therapy. The knowledge to connect them exists in OMIM, HPO, PubMed, ClinicalTrials.gov, NIH RePORTER and hundreds of patient-group sites, but it is not linked. Patient groups rebuild registries and studies that a neighbouring community already has, because names hide mechanisms: one gene (PSAP) sits behind three disease names (Krabbe, metachromatic leukodystrophy, Gaucher).
+10,000 rare diseases, 80 % genetic, fewer than 5 % with an approved therapy (challenge brief, [docs/C5-Challenge-Brief.pdf](docs/C5-Challenge-Brief.pdf)). The knowledge to connect them exists in OMIM, HPO, PubMed, ClinicalTrials.gov, NIH RePORTER and hundreds of patient-group sites, but it is not linked. Patient groups rebuild registries and studies that a neighbouring community already has, because names hide mechanisms: one gene (PSAP) sits behind three disease names (Krabbe, metachromatic leukodystrophy, Gaucher): saposin A deficiency looks like Krabbe (OMIM 611722), saposin B deficiency like MLD (OMIM 249900), saposin C deficiency like Gaucher (OMIM 610539).
+
+## The problem, the solution, the user
+
+Problem: a family gets a rare diagnosis with no approved treatment and becomes, within months, the organizer of a research effort it never planned to lead. The knowledge it needs is scattered, groups rebuild registries that already exist next door, and disease names hide shared mechanisms (challenge brief).
+
+Solution: a graph organized by mechanism and phenotype, where every edge carries its source, date, evidence level and counter-evidence, and where a missing link is shown as a finding (the Honest Gap), not papered over.
+
+User: one composite mother in two moments (a composite persona, not a real person). Moment 1, "We just got the diagnosis": find a community for the exact diagnosis or an honest answer, plus open studies. Moment 2, "I lead a patient group": find a mechanistically related community, join an existing study or registry instead of building one, and send a sourced Action Card. The four personas of the brief (Maria, Devon, Priya, Dr. Osei) remain as secondary lenses.
 
 ## What you can do in the demo
 
@@ -20,15 +30,49 @@ Constellate organizes rare diseases by **mechanism and phenotype instead of name
 4. Open the **Action Card**: what transfers, what differs, what needs expert review, each sentence citing an edge.
 5. Hit a real gap: the **Honest Gap** screen lists the sources searched, the date and the next question to test.
 
+## Demo path (hero path and counter-example)
+
+Hero path: Krabbe disease (MONDO:0009499) → GALC / PSAP → metachromatic leukodystrophy (MLD) → ARSA → gene therapy and natural-history precedent → Action Card. Each step carries its primary source; nothing here is from model memory.
+
+| Step | What the app shows | Primary source |
+|---|---|---|
+| 1 | Krabbe disease has no approved drug; stem-cell transplant helps only before symptoms | GeneReviews NBK1238; Escolar et al., NEJM 2005, PMID 15901860 |
+| 2 | Krabbe → GALC (curated edge from OMIM 245200) | OMIM 245200; edge `e_3dbc42738b5a` in the current export |
+| 3 | One gene, three names: PSAP behind Krabbe-like, MLD-like and Gaucher-like disease | OMIM 611722, 249900, 610539 |
+| 4 | MLD and ARSA as the mechanistic neighbour | OMIM 250100; Orphanet 512 |
+| 5 | MLD has an approved gene therapy (EU 17.12.2020, FDA 18.03.2024), shown effective against a natural-history control cohort (29 treated vs. 31 untreated children) | EMA EPAR Libmeldy; FDA press release 18.03.2024; Fumagalli et al., Lancet 2022, PMID 35065785 |
+| 6 | Reusable assets: the MLD natural-history study and the GMFC-MLD motor scale | NCT04628364 (HOME study, sponsor NORD); Kehrer et al. 2011, PMID 21707604 |
+| 7 | Action Card: what transfers, what differs, what needs expert review, each sentence ending in its edge id | generated from the edges above (Explain) |
+
+Counter-example: Pelizaeus-Merzbacher disease (PLP1) looks similar (white matter involvement, spasticity, nystagmus) but is hypomyelinating and not lysosomal, so lysosomal assets do not transfer (OMIM 312080; Orphanet 702; PMC9313024). Constellate flags such pairs automatically as `mechanism_differs`.
+
+Honest Gap: when a diagnosis has no supported lead, the screen lists the sources searched with the date, the nearest related communities (with the reason) and the next question to test. Which diagnosis the demo shows is still open (see [docs/DECISIONS.md](docs/DECISIONS.md)).
+
 ## Architecture
 
-Offline Python pipeline → `data/graph.json` → Next.js app on Vercel. OpenAI at exactly three points: **Extract** (abstracts → claims, Structured Outputs), **Reconcile** (names → stable IDs), **Explain** (graph path → plain language with a citation per sentence). Details and the data model: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Offline Python pipeline → static JSON shards in `app/public/data/` (the data contract, see [app/README.md](app/README.md)) → Next.js app on Vercel. OpenAI at exactly three points: **Extract** (abstracts → claims, Structured Outputs), **Reconcile** (names → stable IDs), **Explain** (graph path → plain language with a citation per sentence). Details and the data model: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). There is no graph database: the dataset is static JSON, so no server can fail during a demo.
 
-```
-sources (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, PubMed/Europe PMC, NIH RePORTER, Open Targets, Reactome, curated patient-org list)
-   └─ pipeline/01_fetch → 02_slice → 03_build_graph → 04_enrich_apis → 05_openai_extract → 06_openai_reconcile → 07_analytics
-         └─ data/graph.json · clusters.json · search_index.json
-               └─ app/ (Next.js): search → ego graph → edge panel → action card · honest gap · /api/explain · /api/resolve
+```mermaid
+flowchart LR
+  SRC["Open sources<br/>HPO, MONDO, Orphanet, ClinVar,<br/>ClinicalTrials.gov, Europe PMC,<br/>NIH RePORTER, Open Targets, Reactome,<br/>curated patient-org list"]
+  subgraph PIPE["pipeline/ (Python, uv)"]
+    P1["01 fetch"] --> P2["02 slice"] --> P3["03 build graph"] --> P4["04 enrich APIs"]
+    P4 --> P5["05 EXTRACT<br/>OpenAI: abstracts to claims"]
+    P5 --> P6["06 RECONCILE<br/>OpenAI: names to MONDO ids"]
+    P6 --> P7["07 analytics<br/>IC, simGIC, Resnik, Louvain, counter-examples"]
+    P7 --> P8["08 trial details<br/>countries, sites, ages"]
+    P7 --> V["validate.py"]
+  end
+  DATA[("app/public/data/<br/>meta, index, core,<br/>shards per disease, gene,<br/>phenotype, trial")]
+  subgraph APP["app/ (Next.js 15, Vercel)"]
+    UI["search - ego graph - edge panel<br/>Action Card - Honest Gap - open studies"]
+    EX["/api/explain<br/>EXPLAIN: OpenAI, one citation per sentence"]
+  end
+  SRC --> P1
+  P8 --> DATA
+  V -.checks.-> DATA
+  DATA --> UI
+  UI --> EX
 ```
 
 ## Reproduce the dataset
@@ -36,9 +80,12 @@ sources (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, PubMed/Europe PMC, N
 ```bash
 cp .env.example .env.local   # add OPENAI_API_KEY
 make setup
-make reproduce               # fetch → slice → build → enrich → extract → reconcile → analytics
+make reproduce               # fetch → slice → build → enrich → extract → reconcile → analytics → trials
+make validate                # checks app/public/data/ against the data contract (must be green)
 make dev                     # http://localhost:3000
 ```
+
+`make reproduce` needs network access to the public sources listed below (HPO, MONDO and Orphanet bulk files plus the ClinicalTrials.gov, Europe PMC, NIH RePORTER, Open Targets, Reactome, ClinVar and mygene APIs). Single steps: `make fetch`, `make slice`, `make build`, `make enrich`, `make extract`, `make reconcile`, `make analytics`, `make trials`.
 
 Raw downloads are cached in `data/raw/` (gitignored) and logged with URL, date and sha256 in [data/MANIFEST.md](data/MANIFEST.md). Without an OpenAI key, `extract` and `reconcile` fall back to curated edges and fuzzy matching; the graph still builds.
 
@@ -59,7 +106,31 @@ See [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md). HPO (free with attribution) ·
 | `text_mined` | extracted by OpenAI from an abstract, with PMID and snippet | PubMed / Europe PMC |
 | `inferred` | computed by us, formula and inputs shown | phenotype similarity, pathway overlap, KOL overlap, clustering |
 
-Every edge has a `contradicting` field, which may be empty but never missing.
+Every edge has a `contradicting` field, which may be empty but never missing. Edges have ids `e_<12 hex>` and carry `evidence[]` (database, record, URL, level, date, confidence, snippet), `confidence` and `independent_sources`. Inferred edges show their formula and inputs. Orphanet "not causal" and OMIM "susceptibility" statements make a gene edge `associated_gene` instead of `caused_by`, so causality is never overclaimed.
+
+Current export (`app/public/data/meta.json`, version 2026-10-03+397464a): 874 diseases (350 core), 1,066 genes, 4,717 phenotypes in the index; edges by level: 14,512 observed, 27,066 curated, 4,181 inferred, 488 contradicted; 17 mechanism clusters (Louvain, modularity 0.678); 251 counter-example pairs (similar symptoms, different mechanism class).
+
+## Built with OpenAI
+
+OpenAI is used at exactly three points, each visible in the product and in the tech video. Model ids are never hard-coded; they come from environment variables (`OPENAI_MODEL_*`) after a `client.models.list()` check.
+
+| Point | Where | What it does |
+|---|---|---|
+| Extract | `pipeline/05_openai_extract.py` | Abstracts → claims with Structured Outputs; a claim is kept only with a verbatim snippet, a PMID and the entity present in the abstract. Result: `text_mined` edges (dashed in the graph). |
+| Reconcile | `pipeline/06_openai_reconcile.py` | Patient-organisation names and free text → stable MONDO ids (embeddings plus a judge step, fuzzy-match fallback). Only organisations verified by hand enter the product. |
+| Explain | `app/app/api/explain/route.ts`, `app/lib/explain.ts` | Graph path → plain language. Every sentence must end in a valid `[e_id]`; a sentence without one is dropped and shown struck through. Without a key the app shows template text, labelled as such. |
+
+## Metrics
+
+Not yet measured. Values are filled in after the evaluation runs; nothing below is an estimate.
+
+| Metric | How it is measured | Result |
+|---|---|---|
+| Extract precision | share of sampled `text_mined` claims whose snippet and PMID support the claim, hand-checked | pending |
+| Reconcile accuracy | share of organisation names mapped to the correct MONDO id against a hand-made reference | pending |
+| Similarity vs. Monarch (Spearman) | rank correlation of our phenotype similarity with Monarch `semsim/compare` on disease pairs | pending |
+| Coverage | share of core diseases with at least one gene edge, one trial or paper, and one verified patient group | pending |
+| Hero regression | automated check that the hero path (Krabbe → GALC / PSAP → MLD → ARSA → Action Card, PMD counter-example) is present and cited | pending (`make validate` already checks that the hero path exists in the data) |
 
 ## Team workflow
 
@@ -67,8 +138,8 @@ Every edge has a `contradicting` field, which may be empty but never missing.
 
 ## Limitations
 
-One cluster, not 10,000 diseases. OMIM only indirectly. Patient-organisation coverage is a curated list, not a census. Text-mined claims are hypotheses until a human checks the PMID. This is a research-navigation tool, not medical advice.
+One cluster, not 10,000 diseases. OMIM only indirectly. Patient-organisation coverage is a curated list, not a census. Text-mined claims are hypotheses until a human checks the PMID. Extract and Explain with a live OpenAI key are not yet evaluated (see Metrics); without a key, Explain shows template text. Open studies come from ClinicalTrials.gov only; the app has no sign-up form and links to the study's official contact. Our similarity scores are computed by us and are cross-checked against Monarch only once the Spearman run is done. This is a research-navigation tool, not medical advice.
 
 ## Team
 
-Hanno Kügler (tech lead, pipeline + app) · Osman (ops, data curation) · Recep (story, evidence, videos). Vienna, October 2026.
+Hanno Kügler (tech lead, pipeline + app) · Osman (ops, data curation) · Recep (story, evidence, videos). Vienna, October 2026. Contact details are deliberately not part of the repository.

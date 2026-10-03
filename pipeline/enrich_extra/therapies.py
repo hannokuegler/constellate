@@ -36,7 +36,8 @@ def _matches(text: str, disease_list) -> list[tuple[object, str]]:
     """(disease, matched term) for every disease named in text, most specific term only."""
     hits = []
     for disease in disease_list:
-        match = diseases.match_text({"text": text}, disease.match_terms)
+        # short abbreviations ("ml 3") collide with dosing text in indications: need >= 6 letters/digits
+        match = diseases.match_text({"text": text}, [t for t in disease.match_terms if len(t.replace(" ", "")) >= 6])
         if match:
             hits.append((disease, match[0]))
     return [(d, t) for d, t in hits if not any(t != other and f" {t} " in f" {other} " for _, other in hits)]

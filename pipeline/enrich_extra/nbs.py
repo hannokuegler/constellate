@@ -8,12 +8,15 @@ they never read as nation-wide screening.
 """
 from __future__ import annotations
 
+import json
 import re
 
 from enrich import http
 from enrich.edges import Draft
 
-from .common import OfflineMiss, evidence, fetch_document
+from .common import EXTRA_CACHE, OfflineMiss, evidence, fetch_document
+
+FAILURES = EXTRA_CACHE / "screening" / "_failures.json"  # fetch errors are cached too, so an offline run reports the same gap
 
 HRSA_RUSP = "https://www.hrsa.gov/advisory-committees/heritable-disorders/rusp"
 MEDUNI = ("https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/"
@@ -82,8 +85,15 @@ def run(disease_list, offline: bool = False) -> dict:
                 text = _norm(data.get("text", "")) if response.status == 200 else None
                 pages[url] = (text, response.fetched_at, None if text else f"HTTP {response.status} or no text (PDF)")
             except (http.FetchError, OfflineMiss) as exc:
+                failures = json.loads(FAILURES.read_text()) if FAILURES.exists() else {}
                 message = str(exc)
-                pages[url] = (None, None, "HTTP 403, host blocks automated access" if "403" in message[:40] else message[:120])
+                if isinstance(exc, OfflineMiss) and url in failures:
+                    pages[url] = (None, None, failures[url])
+                else:
+                    pages[url] = (None, None, "HTTP 403, host blocks automated access" if "403" in message[:40] else message[:120])
+                    if not isinstance(exc, OfflineMiss):
+                        FAILURES.parent.mkdir(parents=True, exist_ok=True)
+                        FAILURES.write_text(json.dumps({**failures, url: pages[url][2]}, indent=1, sort_keys=True))
         return pages[url]
 
     covered = set()

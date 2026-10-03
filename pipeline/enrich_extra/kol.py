@@ -160,6 +160,7 @@ def run(disease_list, offline: bool = False) -> dict:
     officials = _officials(sorted(trials), offline)
     for nct, linked in sorted(trials.items()):
         for index, official in enumerate(officials.get(nct, [])):
+            official = {**official, "affiliation": EMAIL.sub("", official.get("affiliation") or "").strip(" ;,") or None}
             raw = " ".join((official.get("name") or "").split())
             raw = DEGREES.sub("", re.sub(r"^(?:Prof\.?|Dr\.?|Professor)\s+", "", raw, flags=re.I)).strip(" ,")
             if not raw or PLACEHOLDER.search(raw):

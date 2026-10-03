@@ -97,6 +97,8 @@ One cluster deep: 350 core diseases (MONDO subtrees lysosomal storage disease, M
 
 See [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md). HPO (free with attribution) · MONDO CC-BY 4.0 · Orphanet/Orphadata CC-BY 4.0 · ClinVar, ClinicalTrials.gov, PubMed, NIH RePORTER: US public domain · Open Targets CC0 · Reactome CC0 (reactome.org/license) · Monarch CC-BY 4.0. OMIM content enters only indirectly via HPO annotations and Orphanet cross-references. Patient organisations are hand-verified from their public websites (`data/curated/orgs.csv`, with verification date).
 
+The code is MIT-licensed (see [LICENSE](LICENSE)). The MIT license covers the code only; the data in `app/public/data` keeps the licenses of its sources listed above.
+
 ## Evidence model
 
 | Level | Meaning | Typical source |

@@ -19,3 +19,4 @@ out/
 .vercel
 # os
 .DS_Store
+data/slice.json

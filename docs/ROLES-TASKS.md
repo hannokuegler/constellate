@@ -68,7 +68,7 @@ Format je Eintrag: `step: 4`, `claim: "…"`, `source_type: OMIM|PMID|EMA|FDA|NC
 **Done:** alle 10 Schritte belegt oder als `UNBELEGT` markiert (das ist auch ein Ergebnis, dann ändern wir den Pfad).
 
 ### R2 · Moonshot-Zahlen (23:30–02:00)
-Datei: `03_Build/docs/moonshot.md`. Meilenstein: gemeinsame Natural-History-Studie. Brauche mit Quelle: typische Dauer von Patientengruppen-Gründung bis NHS-Start bei seltenen Erkrankungen · typische NHS-Rekrutierungsdauer · Beispiel, wo ein NHS als externer Kontrollarm eine Zulassung getragen hat (MLD, evtl. weitere) · Kosten/Dauer eines NHS-Designs · wie viele LSD-Gruppen es grob gibt. Dann eine Tabelle „heute vs. mit Constellate" und **4–6 explizite Annahmen**. Kein Marketing, lieber „3–5×, wenn Annahme X hält".
+Datei: `docs/MOONSHOT.md`. Meilenstein: gemeinsame Natural-History-Studie. Brauche mit Quelle: typische Dauer von Patientengruppen-Gründung bis NHS-Start bei seltenen Erkrankungen · typische NHS-Rekrutierungsdauer · Beispiel, wo ein NHS als externer Kontrollarm eine Zulassung getragen hat (MLD, evtl. weitere) · Kosten/Dauer eines NHS-Designs · wie viele LSD-Gruppen es grob gibt. Dann eine Tabelle „heute vs. mit Constellate" und **4–6 explizite Annahmen**. Kein Marketing, lieber „3–5×, wenn Annahme X hält".
 
 ### R3 · Demo-Skript v1 (02:00 oder morgens, 06:00–08:00)
 Datei: `04_Submission/Demo-Skript.md`, Struktur in [VIDEOS.md](VIDEOS.md). Nach dem QA-Durchlauf als „Maria" an die echte UI anpassen (echte Button-Namen, echte Klickreihenfolge). Beim QA Bugs in `03_Build/BUGS.md` wie Osman.

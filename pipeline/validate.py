@@ -10,7 +10,9 @@ Krabbe -> GALC, Krabbe family -> PSAP, PSAP -> MLD family, MLD -> ARSA, Krabbe <
 
 data-v2 fields of disease shards (07 step 11, optional): assets / approved_therapies / newborn_screening as array or
 {items: [{node, edge}], items_total?, searched?}, kol_overlap as {items: [{disease, edge, people}]}, prevalence as array.
-Edge type and level per field (has_asset / approved_therapy / screened_in curated, kol_overlap inferred with formula),
+Edge type and level per field (approved_therapy / screened_in curated, has_asset curated or text_mined and never curated
+for a Europe PMC abstract hit, no WITHDRAWN study, kol_overlap inferred with formula), NBS snippet verbatim, <= 12 KB
+of data-v2 fields per shard, <= 4 prevalence records without XML snippet, no phone numbers in people,
 edge source = the shard's disease, target = node id (ASSET: / DRUG: / COUNTRY:), every evidence with a snippet unless the
 item is UNBELEGT, no "email" / "phone" keys and no e-mail addresses in people, shard-only nodes never in index.json.
 Hero checks (only when the field is in the export, otherwise a note): MLD has approved_therapy Libmeldy and Lenmeldy,
@@ -45,6 +47,9 @@ V2_ITEM_FIELDS = {"assets": ("has_asset", "ASSET:"), "approved_therapies": ("app
                   "newborn_screening": ("screened_in", "COUNTRY:")}
 V2_SHARD_ONLY_PREFIXES = ("ASSET:", "DRUG:", "COUNTRY:", "PERSON:")
 PERSONAL_KEYS = {"email", "e_mail", "mail", "phone", "telephone"}
+PHONE_RE = re.compile(r"(?:\b(?:tel|phone|fax)\b\.?:?\s*\+?\d)|(?:\+\d[\d\s().-]{7,}\d)|(?:\(\d{2,4}\)\s*\d{3,}[\s.-]?\d{3,})", re.I)
+V2_SHARD_BYTES = 12_000  # all data-v2 fields of one disease shard together (same cap as 07)
+V2_PREVALENCE_MAX = 4
 
 errors: list[str] = []
 warnings: list[str] = []
@@ -179,8 +184,17 @@ def check_v2(where: str, shard: dict) -> None:
             check_edge(loc, edge)
             if edge.get("type") != etype or edge.get("source") != node_id or edge.get("target") != node.get("id"):
                 err(f"{loc}: edge must be {etype} from {node_id} to the item node")
-            if edge.get("level") != "curated":
-                err(f"{loc}: {etype} must be curated, is {edge.get('level')!r}")
+            allowed = ("curated", "text_mined") if etype == "has_asset" else ("curated",)
+            if edge.get("level") not in allowed:
+                err(f"{loc}: {etype} must be {' or '.join(allowed)}, is {edge.get('level')!r}")
+            if etype == "has_asset":
+                if str(node.get("status") or "").upper() == "WITHDRAWN":
+                    err(f"{loc}: withdrawn study exported as asset")
+                if any(ev.get("level") == "curated" and (ev.get("db") == "Europe PMC" or str(ev.get("record", "")).startswith("PMID:"))
+                       for ev in edge.get("evidence", [])):
+                    err(f"{loc}: scale from a Europe PMC abstract hit must not be curated (text_mined at most)")
+            if etype == "screened_in" and any(str(ev.get("snippet") or "").startswith("[") for ev in edge.get("evidence", [])):
+                err(f"{loc}: screening snippet must be the verbatim quote, not '[status] ...'")
             unbelegt = "UNBELEGT" in (str(node.get("status")), str(node.get("check")))
             if not unbelegt and any(not (ev.get("snippet") or "").strip() for ev in edge.get("evidence", [])):
                 err(f"{loc}: evidence without snippet (only UNBELEGT items may lack one)")
@@ -202,8 +216,11 @@ def check_v2(where: str, shard: dict) -> None:
             if not isinstance(p, dict) or not isinstance(p.get("name"), str) or not isinstance(p.get("records"), list):
                 err(f"{loc}: person needs name and records")
                 continue
-            if EMAIL_RE.search(" ".join(str(p.get(k) or "") for k in ("name", "affiliation"))):
+            text = " ".join(str(p.get(k) or "") for k in ("name", "affiliation"))
+            if EMAIL_RE.search(text):
                 err(f"{loc}: e-mail address in a person entry")
+            if PHONE_RE.search(text):
+                err(f"{loc}: phone number in a person entry")
             if any(not (isinstance(r_, dict) and r_.get("db") and r_.get("record")) for r_ in p["records"]):
                 err(f"{loc}: person record needs db and record")
     if "prevalence" in shard:
@@ -211,7 +228,11 @@ def check_v2(where: str, shard: dict) -> None:
         if not isinstance(prev, list) or any(not isinstance(p, dict) for p in prev):
             err(f"{where}: `prevalence` must be an array of records")
         else:
+            if len(prev) > V2_PREVALENCE_MAX:
+                err(f"{where}: {len(prev)} prevalence records (cap {V2_PREVALENCE_MAX})")
             for i, p in enumerate(prev):
+                if "snippet" in p:
+                    err(f"{where} prevalence[{i}]: XML snippet must not be exported")
                 src = p.get("source") or {}
                 if not (src.get("db") and src.get("record")):
                     err(f"{where} prevalence[{i}]: needs source {{db, record}}")
@@ -220,6 +241,8 @@ def check_v2(where: str, shard: dict) -> None:
     v2_part = {k: shard[k] for k in (*V2_ITEM_FIELDS, "kol_overlap", "prevalence") if k in shard}
     if bad := personal_keys(v2_part):
         err(f"{where}: personal contact keys in data-v2 fields: {bad[:3]}")
+    if (size := len(json.dumps(v2_part, ensure_ascii=False, separators=(",", ":")).encode())) > V2_SHARD_BYTES:
+        err(f"budget: {where} data-v2 fields are {size} bytes (limit {V2_SHARD_BYTES})")
 
 
 def v2_hero(shards: dict) -> dict[str, bool]:

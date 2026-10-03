@@ -44,10 +44,10 @@ def write_extra(d: Path, *, kol=True, prevalence=True) -> Path:
     d.mkdir(parents=True, exist_ok=True)
     nodes, edges = [], []
 
-    def asset(disease, n, asset_type="natural_history_study", conf=0.9):
+    def asset(disease, n, asset_type="natural_history_study", conf=0.9, status="RECRUITING"):
         node_id = f"ASSET:NCT{n:08d}"
         nodes.append({"id": node_id, "type": "asset", "label": f"Study {n}", "asset_type": asset_type, "country": "",
-                      "status": "RECRUITING", "source_type": "NCT", "source_id": f"NCT{n:08d}", "url": f"https://clinicaltrials.gov/study/NCT{n:08d}",
+                      "status": status, "sponsor": "Sponsor", "enrollment": 40, "source_type": "NCT", "source_id": f"NCT{n:08d}", "url": f"https://clinicaltrials.gov/study/NCT{n:08d}",
                       "check": "machine", "outcome_measures": ["long outcome text"] * 12})
         e = edge(disease, node_id, "has_asset", evs=[evidence(record=f"NCT{n:08d}", confidence=conf)])
         edges.append(e)
@@ -56,8 +56,18 @@ def write_extra(d: Path, *, kol=True, prevalence=True) -> Path:
     nodes.append({"id": "ASSET:scale_loes_score", "type": "asset", "label": "Loes score", "asset_type": "outcome_scale", "country": "",
                   "status": "documented", "source_type": "PMID", "source_id": "123", "url": "https://pubmed.ncbi.nlm.nih.gov/123/", "check": "machine"})
     edges.append(edge(KRABBE, "ASSET:scale_loes_score", "has_asset", evs=[evidence("Europe PMC", "PMID:123", snippet="Loes score")]))
+    asset(KRABBE, 1093105, status="WITHDRAWN")  # withdrawn: never an asset
+    asset(MLD, 639132, status="WITHDRAWN")
+    # one scale node shared by two diseases: 04b keeps the first hit's source on the node
+    nodes.append({"id": "ASSET:scale_gmfm", "type": "asset", "label": "GMFM", "asset_type": "outcome_scale", "country": "",
+                  "status": "documented", "source_type": "NCT", "source_id": "NCT04628364",
+                  "url": "https://clinicaltrials.gov/study/NCT04628364", "check": "machine"})
+    edges.append(edge(MLD, "ASSET:scale_gmfm", "has_asset", evs=[evidence("ClinicalTrials.gov", "NCT04628364", snippet="GMFM-88")]))
+    edges.append(edge(PMD, "ASSET:scale_gmfm", "has_asset",
+                      evs=[{**evidence("Europe PMC", "PMID:42060827", snippet="GMFM"), "url": "https://pubmed.ncbi.nlm.nih.gov/42060827/"}]))
+    for i in range(10):
+        asset(MLD, 100 + i, status="COMPLETED" if i % 2 else "RECRUITING")
     for i in range(30):
-        asset(MLD, 100 + i)
         asset(X, 200 + i, "registry" if i % 2 else "natural_history_study", conf=0.5 + i / 100)
     for drug, authority, date in (("Libmeldy", "EMA", "2020-12-17"), ("Lenmeldy", "FDA", "2024-03-18")):
         nodes.append({"id": f"DRUG:{drug}", "type": "drug", "label": drug, "authority": authority, "approved": date,
@@ -66,8 +76,10 @@ def write_extra(d: Path, *, kol=True, prevalence=True) -> Path:
                           evs=[evidence(authority, drug, snippet="metachromatic leukodystrophy", date=date)]))
     nodes.append({"id": "COUNTRY:AT", "type": "country", "label": "Austria", "status": "pilot/research", "url": "https://example.org/at",
                   "jurisdiction": "AT"})
-    edges.append(edge(MLD, "COUNTRY:AT", "screened_in",
-                      evs=[evidence("Official newborn screening programme", "https://example.org/at", snippet="[pilot/research] MLD")]))
+    for disease, status, quote in ((MLD, "pilot/research", "MLD research project"), (Y, "screened", "Disease Y is screened")):
+        edges.append(edge(disease, "COUNTRY:AT", "screened_in", evs=[evidence(
+            "Official newborn screening programme", "https://example.org/at", snippet=f"[{status}] {quote}", verbatim=quote,
+            screening_status=status)]))
 
     overlap = []
 
@@ -109,6 +121,13 @@ def write_extra(d: Path, *, kol=True, prevalence=True) -> Path:
              "region": "Worldwide", "validation": "Not yet validated", "references": "", "source": {"db": "Orphanet", "record": "ORPHA:487",
              "url": "https://www.orpha.net"}, "retrieved": "2026-10-01", "snippet": "<Prevalence><ValMoy>0.0</ValMoy></Prevalence>"},
         ]
+        for i, (ptype, region, val) in enumerate((("Point prevalence", "Germany", 1.1), ("Point prevalence", "Europe", 1.6),
+                                                  ("Birth prevalence", "Worldwide", 0.6), ("Annual incidence", "Italy", 0.3),
+                                                  ("Cases/families", "Worldwide", 12.0), ("Point prevalence", "Europe", 2.0))):
+            prev.append({"mondo_id": MLD, "type": ptype, "class": "1-9 / 100 000", "value": val, "region": region,
+                         "validation": "Validated", "references": "x[PMID]", "ambiguous_xref": i == 5,
+                         "source": {"db": "Orphanet", "record": "ORPHA:512", "url": "https://www.orpha.net"}, "retrieved": "2026-10-01",
+                         "snippet": f"<Prevalence><Source>x</Source><ValMoy>{val}</ValMoy></Prevalence>"})
         (d / "extra_prevalence.jsonl").write_text("".join(json.dumps(p) + "\n" for p in prev))
         (d / "extra_run_log.jsonl").write_text(json.dumps({"scope": "core", "limit": None, "sources": {"prevalence": {}}}) + "\n")
     if kol:
@@ -162,7 +181,8 @@ def write_export(out: Path, v2_fields: dict | None = None, v2_sources=()) -> Pat
 
 def build(tmp_path: Path, name="out", **kw):
     extra = mod.load_extra(write_extra(tmp_path / f"extra_{name}", **kw))
-    v2 = mod.build_v2(extra, [KRABBE, MLD, PMD, X, Y], {KRABBE, MLD, PMD, X, Y})
+    neighbours = {KRABBE: {MLD, PMD}, MLD: {KRABBE}, PMD: {KRABBE}, X: {PARTNERS[9]}}
+    v2 = mod.build_v2(extra, [KRABBE, MLD, PMD, X, Y], {KRABBE, MLD, PMD, X, Y}, neighbours)
     out = write_export(tmp_path / name, v2["fields"], v2["sources"])
     return v2, out
 
@@ -182,29 +202,32 @@ def test_fields_land_in_app_format(tmp_path):
     therapy = {it["node"]["label"]: it for it in mld["approved_therapies"]["items"]}
     assert set(therapy) == {"Libmeldy", "Lenmeldy"} and therapy["Libmeldy"]["edge"]["evidence"][0]["date"] == "2020-12-17"
     assert therapy["Libmeldy"]["edge"]["level"] == "curated" and therapy["Libmeldy"]["edge"]["target"] == "DRUG:Libmeldy"
-    assert mld["newborn_screening"]["items"][0]["node"]["status"] == "pilot/research"
+    nbs_mld = mld["newborn_screening"]["items"][0]
+    assert nbs_mld["node"]["status"] == "pilot/research" and nbs_mld["edge"]["evidence"][0]["snippet"] == "MLD research project"
+    assert "verbatim" not in nbs_mld["edge"]["evidence"][0]
     asset = mld["assets"]["items"][0]["node"]
-    assert "outcome_measures" not in asset and {"id", "label", "asset_type", "source_type", "source_id", "url", "check"} <= set(asset)
+    assert set(asset) == {"id", "label", "asset_type", "country", "status", "source_type", "source_id", "url", "check"}
     krabbe = shard(out, KRABBE)
     assert krabbe["approved_therapies"] == {"items": [], "items_total": 0, "searched": [
         {"source": "EMA medicine data", "retrieved": "2026-10-03", "hits": 0},
         {"source": "openFDA drug label", "retrieved": "2026-10-03", "hits": 0}]}
     assert [it["node"]["asset_type"] for it in krabbe["assets"]["items"]] == ["registry", "outcome_scale"]
+    assert krabbe["assets"]["items"][0]["edge"]["level"] == "curated" and "matched_in" not in krabbe["assets"]["items"][0]["edge"]["evidence"][0]
     nbs = krabbe["newborn_screening"]
     assert nbs["items"] == [] and nbs["searched"][0]["source"].endswith("(fetch failed)") and nbs["searched"][0]["error"] == "HTTP 403"
     entry = next(k for k in krabbe["kol_overlap"]["items"] if k["disease"]["id"] == MLD)
     assert entry["disease"] == {"id": MLD, "label": LABELS[MLD]} and entry["edge"]["level"] == "inferred" and entry["edge"]["formula"]
-    assert "person_ids" not in entry["edge"]["evidence"][0]
+    assert "person_ids" not in entry["edge"]["evidence"][0] and entry["edge"]["evidence"][0]["snippet"] == entry["edge"]["formula"]
     person = entry["people"][1]
     assert set(person) <= {"name", "orcid", "affiliation", "records", "records_total"} and "@" not in json.dumps(entry["people"])
     assert person["affiliation"] == "Duke University" and set(person["records"][0]) == {"db", "record", "url"}
     assert "orcid" not in person and entry["people"][0]["orcid"] == "0000-0002-1825-0097"
     # the pair is in both shards, seen from each side
     assert next(k for k in mld["kol_overlap"]["items"] if k["disease"]["id"] == KRABBE)["edge"]["id"] == entry["edge"]["id"]
-    # prevalence: array, Orphanet ValMoy as per-100 000 string; a class-midpoint value without ValMoy is dropped
+    # prevalence: only records with an Orphanet ValMoy (the 0.0 one is 04b's class midpoint: dropped), no XML snippet
     prev = krabbe["prevalence"]
-    assert [p["value"] for p in prev] == [None, "0.327 per 100 000"] and prev[0]["value_note"] and prev[0]["class"] == "1-9 / 100 000"
-    assert all(set(p["source"]) == {"db", "record", "url"} for p in prev)
+    assert [p["value"] for p in prev] == ["0.327 per 100 000"] and prev[0]["class"] == "1-9 / 1 000 000"
+    assert "snippet" not in prev[0] and "references" not in prev[0] and set(prev[0]["source"]) == {"db", "record", "url"}
     # prevalence scope core: every core disease gets the field, empty = searched, nothing found
     assert shard(out, PMD)["prevalence"] == []
     # Y was searched for assets and kol only; PMD for nothing but its kol pair with Krabbe
@@ -220,33 +243,90 @@ def test_fields_land_in_app_format(tmp_path):
     assert validate.run(out)["errors"] == []
 
 
-def test_caps_and_hero_minimum(tmp_path):
+def test_caps_and_hero_minimum(tmp_path, monkeypatch):
+    monkeypatch.setattr(mod, "V2_SHARD_BYTES", 100_000)  # caps alone; the 12 KB shrink has its own test
     v2, out = build(tmp_path)
     x = shard(out, X)
-    assert len(x["assets"]["items"]) == mod.V2_ASSETS_MAX and x["assets"]["items_total"] == 30
+    assert len(x["assets"]["items"]) == mod.V2_ASSETS_MAX == 8 and x["assets"]["items_total"] == 30
     types = [it["node"]["asset_type"] for it in x["assets"]["items"]]
     assert types == sorted(types, key=mod.V2_ASSET_ORDER.index)  # natural history first
     kol = x["kol_overlap"]
-    assert len(kol["items"]) == mod.V2_KOL_PAIRS_MAX and kol["items_total"] == len(PARTNERS)
-    assert [k["disease"]["id"] for k in kol["items"]] == PARTNERS[:mod.V2_KOL_PAIRS_MAX]  # strongest overlap first
+    # 5 strongest partners plus the graph neighbour PARTNERS[9] (rank 10), nothing else
+    assert [k["disease"]["id"] for k in kol["items"]] == PARTNERS[:5] + [PARTNERS[9]] and kol["items_total"] == len(PARTNERS)
     top = kol["items"][0]
-    assert len(top["people"]) == mod.V2_KOL_PEOPLE_MAX and top["people_total"] == 20
-    assert all(len(p["records"]) == mod.V2_KOL_RECORDS_MAX and p["records_total"] == 8 for p in top["people"])
-    # hero: MLD keeps all 30 assets, the Krabbe <-> MLD pair keeps all 12 people with all records
+    assert len(top["people"]) == 6 and top["people_total"] == 20
+    assert all(len(p["records"]) == 2 and p["records_total"] == 8 for p in top["people"])
+    # hero: MLD keeps all 11 non-withdrawn assets (10 studies + scale), recruiting before completed
     mld = shard(out, MLD)
-    assert len(mld["assets"]["items"]) == 30 and mld["assets"]["items_total"] == 30
-    for d, other in ((KRABBE, MLD), (MLD, KRABBE)):
-        entry = next(k for k in shard(out, d)["kol_overlap"]["items"] if k["disease"]["id"] == other)
-        assert len(entry["people"]) == 12 and all(len(p["records"]) == 8 and "records_total" not in p for p in entry["people"])
-    assert v2["stats"]["assets_items_capped"] == 5
+    assert len(mld["assets"]["items"]) == 11 and mld["assets"]["items_total"] == 11
+    statuses = [it["node"]["status"] for it in mld["assets"]["items"] if it["node"]["asset_type"] == "natural_history_study"]
+    assert statuses == ["RECRUITING"] * 5 + ["COMPLETED"] * 5
+    entry = next(k for k in mld["kol_overlap"]["items"] if k["disease"]["id"] == KRABBE)
+    assert len(entry["people"]) == 6 and entry["people_total"] == 12
+    assert v2["stats"]["assets_items_capped"] == 22
+
+
+def test_v2_fields_fit_the_default_shard_bytes(tmp_path):
+    v2, out = build(tmp_path)
+    for d in (KRABBE, MLD, PMD, X, Y):
+        assert mod.v2_size({k: v for k, v in shard(out, d).items() if k in SHARD_APP_FIELDS}) <= mod.V2_SHARD_BYTES
+    assert "over_v2_budget" not in v2["stats"]
+    assert PARTNERS[9] in [k["disease"]["id"] for k in shard(out, X)["kol_overlap"]["items"]]
+
+
+def test_withdrawn_studies_never_exported(tmp_path):
+    v2, out = build(tmp_path)
+    for d in (KRABBE, MLD):
+        ids = {it["node"]["id"] for it in shard(out, d)["assets"]["items"]}
+        assert not ids & {"ASSET:NCT01093105", "ASSET:NCT00639132"}
+    assert v2["stats"]["assets_withdrawn_skipped"] == 2
+
+
+def test_scale_from_abstract_is_text_mined_with_own_source(tmp_path):
+    _, out = build(tmp_path)
+    loes = next(it for it in shard(out, KRABBE)["assets"]["items"] if it["node"]["id"] == "ASSET:scale_loes_score")
+    assert loes["edge"]["level"] == "text_mined" and loes["edge"]["evidence"][0]["level"] == "text_mined"
+    gmfm_pmd = shard(out, PMD)["assets"]["items"][0]
+    assert gmfm_pmd["node"]["source_type"] == "PMID" and gmfm_pmd["node"]["source_id"] == "42060827"
+    assert gmfm_pmd["node"]["url"] == "https://pubmed.ncbi.nlm.nih.gov/42060827/" and gmfm_pmd["edge"]["level"] == "text_mined"
+    gmfm_mld = next(it for it in shard(out, MLD)["assets"]["items"] if it["node"]["id"] == "ASSET:scale_gmfm")
+    assert gmfm_mld["node"]["source_id"] == "NCT04628364" and gmfm_mld["edge"]["level"] == "curated"  # registry stays curated
+
+
+def test_screening_status_per_edge_not_shared_node(tmp_path):
+    _, out = build(tmp_path)
+    y = shard(out, Y)["newborn_screening"]["items"][0]
+    m = shard(out, MLD)["newborn_screening"]["items"][0]
+    assert y["node"]["id"] == m["node"]["id"] == "COUNTRY:AT"
+    assert (y["node"]["status"], m["node"]["status"]) == ("screened", "pilot/research")
+    assert y["edge"]["evidence"][0]["snippet"] == "Disease Y is screened"
+
+
+def test_prevalence_cap_order_and_cases(tmp_path):
+    _, out = build(tmp_path)
+    prev = shard(out, MLD)["prevalence"]
+    assert len(prev) == mod.V2_PREVALENCE_MAX == 4
+    assert [p["region"] for p in prev] == ["Worldwide", "Worldwide", "Europe", "Italy"]  # ambiguous xref dropped
+    cases = next(p for p in prev if p["type"] == "Cases/families")
+    assert cases["value"] == "12 cases/families" and cases["unit"] == "cases/families"
+    assert next(p for p in prev if p["type"] == "Birth prevalence")["value"] == "0.6 per 100 000"
+
+
+def test_v2_shrinks_kol_first(tmp_path, monkeypatch):
+    monkeypatch.setattr(mod, "V2_SHARD_BYTES", 9_000)
+    v2, out = build(tmp_path)
+    x = shard(out, X)
+    assert mod.v2_size({k: v for k, v in x.items() if k in SHARD_APP_FIELDS}) <= 9_000
+    assert len(x["assets"]["items"]) == 8  # assets untouched, kol gave way
+    assert PARTNERS[9] in [k["disease"]["id"] for k in x["kol_overlap"]["items"]]  # the graph neighbour pair stays longest
 
 
 def test_hero_pair_kept_even_outside_top_pairs(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "V2_KOL_PAIRS_MAX", 1)
     v2, out = build(tmp_path)
     krabbe = shard(out, KRABBE)["kol_overlap"]
-    assert [k["disease"]["id"] for k in krabbe["items"]] == [MLD, PMD]  # PMD (2 people) kept: hero-hero pair
-    assert len(shard(out, X)["kol_overlap"]["items"]) == 1
+    assert [k["disease"]["id"] for k in krabbe["items"]] == [MLD, PMD]  # PMD (2 people) kept: hero pair and neighbour
+    assert [k["disease"]["id"] for k in shard(out, X)["kol_overlap"]["items"]] == [PARTNERS[0], PARTNERS[9]]
 
 
 def test_missing_extra_files_mean_no_fields(tmp_path):
@@ -292,7 +372,7 @@ def test_fit_shard_trims_records_not_people(tmp_path, monkeypatch):
     monkeypatch.setattr(mod, "SHARD_BUDGET", full - 200)
     mod.fit_shard(s)
     entry = next(k for k in s["kol_overlap"]["items"] if k["disease"]["id"] == MLD)
-    assert len(entry["people"]) == 12 and entry["people"][0]["records_total"] == 8 and len(entry["people"][0]["records"]) <= 3
+    assert len(entry["people"]) == 6 and entry["people"][0]["records_total"] == 8 and len(entry["people"][0]["records"]) == 1
 
 
 # --------------------------------------------------------------------------------------------- validate
@@ -305,7 +385,12 @@ def broken(out: Path, d: str, change) -> list[str]:
 
 @pytest.mark.parametrize("change, message", [
     (lambda s: s.__setitem__("assets", "nope"), "must be an array"),
-    (lambda s: s["assets"]["items"][0]["edge"].__setitem__("level", "inferred"), "must be curated"),
+    (lambda s: s["assets"]["items"][0]["edge"].__setitem__("level", "inferred"), "must be curated or text_mined"),
+    (lambda s: s["assets"]["items"][0]["node"].__setitem__("status", "WITHDRAWN"), "withdrawn study"),
+    (lambda s: s["assets"]["items"][1]["edge"]["evidence"][0].__setitem__("level", "curated"), "must not be curated"),
+    (lambda s: s["kol_overlap"]["items"][0]["people"][0].__setitem__("affiliation", "Duke, Tel. +1 919 555 0100"), "phone number"),
+    (lambda s: s["kol_overlap"]["items"][0]["people"][0].__setitem__("phone", "x"), "personal contact keys"),
+    (lambda s: s["prevalence"][0].__setitem__("snippet", "<Prevalence/>"), "XML snippet"),
     (lambda s: s["assets"]["items"][0]["edge"]["evidence"][0].__setitem__("snippet", ""), "without snippet"),
     (lambda s: s["assets"]["items"][0]["node"].__setitem__("email", "a@b.org"), "personal contact keys"),
     (lambda s: s["assets"]["items"][0]["edge"].__setitem__("source", MLD), "edge must be has_asset"),
@@ -407,7 +492,7 @@ def test_metrics_with_inputs_and_deterministic(tmp_path, monkeypatch):
     assert m["reconcile_accuracy"] == {"value": 0.5, "n": 2, "source": m["reconcile_accuracy"]["source"]}
     ms = m["monarch_spearman"]
     assert ms["value"] == 0.661 and ms["n"] == 49 and ms["secondary"]["value"] == 0.326 and "rho 0.33, n = 50" in ms["source"]
-    assert m["coverage"]["asset"] == 3 and m["coverage"]["denominator"] == 5  # Krabbe, MLD, X have assets
+    assert m["coverage"]["asset"] == 4 and m["coverage"]["denominator"] == 5  # Krabbe, MLD, PMD, X have assets
     assert m["hero_regression"]["pass"] is True and m["hero_regression"]["checks"] == 12
     run_metrics(tmp_path, out, extra, curated, reconcile)
     assert (out / "meta.json").read_bytes() == first

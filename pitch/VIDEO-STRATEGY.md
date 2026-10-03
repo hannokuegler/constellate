@@ -114,6 +114,21 @@ Das Gegenbeispiel Pelizaeus-Merzbacher passt nicht in 60 s und bleibt im Tool (`
 
 **Aufnahme-Checkliste:** Live-URL (Production-Domain, nicht Deployment-URL) sichtbar; Browser-Zoom 110 %; Dark Mode; Cursor langsam, nach jedem Klick eine Sekunde stehen; keine Fixture-Badges, keine Dev-Hinweise, keine Konsole; Kanten-IDs aus Abschnitt 0 vorher im Live-Tool geöffnet. **Schnitt:** ein Take, Geschwindigkeit nicht verändern (höchstens Wartezeiten kürzen), Voice-over-Blöcke D1 bis D7 je Szene unterlegen, Untertitel aus dem Skript, Export MP4 H.264 1920×1080 30 fps, Länge unter 60 s prüfen. **Wer:** Recep nimmt auf und schneidet, Hanno liefert die MP3s, Osman Untertitel und Upload. **Deadline:** Probe-Take 08:00–09:00 gegen die Live-App, Aufnahme 12:00–12:30, Schnitt bis 13:30, Upload bis 14:00.
 
+### 2a. Motion-Hybrid (Hannos Wunsch 01:25: „brutale Motion-Animation, super Video-Geschichte") · Vorschlag, Go offen
+
+**Problem vorab:** Eine Demo komplett als Motion-Animation geht nicht. Der Brief verlangt „Follow a family or patient group **through the graph**" (S. 6) und einen live erkundbaren Prototyp; die Jury muss die echte App mit Live-URL sehen. Motion zeichnet nicht unsere Oberfläche nach, sondern erfindet Bilder und recherchiert selbst (Risiko: unbelegte Aussagen im Bild). Deshalb Hybrid: Motion erzählt Anfang und Ende, die Mitte ist die echte App, filmisch geschnitten.
+
+| Zeit | Was | Voice-over |
+|---|---|---|
+| 0:00–0:10 | **Motion-Opener** (Prompt 7 in [MOTION-PROMPTS.md](MOTION-PROMPTS.md)): dunkles Feld, Tausende isolierte Lichtpunkte, einer leuchtet auf und ist allein; Einblendung „Meet Maria · persona from the challenge brief, not a real person". Kein Kind, kein Gesicht, kein Krankenhaus | D1 |
+| 0:10–0:48 | **Echte App**, Bildschirmaufnahme der Live-URL, im Schnitt mit Zooms auf Edge-Panel, `/g/PSAP`, Action Card und weichen Highlight-Rahmen (Screen Studio, CapCut oder iMovie; nichts übermalen, keine erfundenen UI-Elemente) | D2–D5 |
+| 0:48–0:54 | Echte App: Honest Gap `/d/MONDO_0012720` | D6 |
+| 0:54–0:58 | **Motion-Outro** (Prompt 8): Punkte verbinden sich zu Sternbildern, Schlusssatz und URL als Text | D7 |
+
+Regeln bleiben: jeder gesprochene Fakt steht im selben Moment im Bild, im Motion-Teil werden keine Fakten gesprochen außer „Her son has Krabbe disease … no approved medicine" (D1, belegt ab 0:33 in der Action Card); keine Zahlen, Krankheits- oder Gennamen im Motion-Bild; Musik höchstens ganz leise unter Opener und Outro, nie unter dem Voice-over (Entscheidung Hanno). Die Live-URL ist in der Mitte durchgehend in der Browserleiste lesbar.
+
+Ablauf: Opener und Outro hängen nicht an der App, also **vor dem Freeze** erzeugen (Hanno, 09:00–11:00, Motion-Connector, Credits laut Dashboard). Clip gegen die Verbotsliste in MOTION-PROMPTS prüfen; fällt etwas auf, verwerfen. Ab 12:00 nimmt Recep die Mitte auf und schneidet alles zusammen. **Fallback**, wenn Motion bis 11:00 nichts Brauchbares liefert: Opener und Outro als ruhige Titelkarte (Standbild mit Text), die Mitte bleibt gleich. Die Demo hängt so nie an Motion.
+
 ## 3. Technical Walkthrough · ≤ 60 s · Hanno, Terminal und Editor, Voice-over ElevenLabs
 
 **Ziel:** Glaubwürdigkeit durch echten Code und echte Terminals in einer Minute: Architektur in einem Satz, Validator grün, drei OpenAI-Stellen mit Datei, E2E grün. Kriterien: Graph quality, Evidence integrity, Built with OpenAI.

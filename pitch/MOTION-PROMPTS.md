@@ -14,12 +14,14 @@ Die drei Pflichtvideos (Team Introduction, Product Demo, Technical Walkthrough) 
 | 4 „Honest Gap" | 8 s | **nein** | nur Pitch 10.10., Teaser |
 | 5 Outro mit URL | 6 s | **nein** | nur Pitch 10.10., Teaser, README |
 | 6 Pitch-Opener komplett | 15 s | **nein** | nur Live-Pitch 10.10. |
+| **7 Demo-Opener „Maria allein"** | 10 s | **ja, nur Product Demo** (Hannos Wunsch 01:25, Go offen) | Demo 0:00–0:10, siehe VIDEO-STRATEGY §2a |
+| **8 Demo-Outro „Sternbilder"** | 4 s | **ja, nur Product Demo** (Go offen) | Demo 0:54–0:58 |
 
 Einzige Ausnahme, die in 60 s passt: eine **Titelkarte von höchstens 2 s** (Klartext „Constellate · Vienna Hub · Hack-Nation C5") am Anfang des Team-Videos. Sie wird im Schnittprogramm als Standbild gesetzt, nicht mit Motion erzeugt; Anfang und Ende der Demo und des Tech-Videos sind die echte App (`/`, `/about`, `/methods`) mit Browserleiste. Ein 2-s-Motion-Standbild wäre nur dann eine Option, wenn Hanno es ausdrücklich will und die Gesamtlänge unter 60 s bleibt.
 
 ## Harte Regel (RESOURCES Regel 9 und Video-Pipeline)
 
-Motion-Clips **ersetzen keines der drei Pflichtvideos** (Team, Demo, Tech) und kommen in keinem von ihnen vor. Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
+Motion-Clips **ersetzen keines der drei Pflichtvideos** (Team, Demo, Tech). **Ausnahme seit 01:25 (Hannos Wunsch, Go offen):** Prompt 7 und 8 als Opener und Outro der Product Demo (Motion-Hybrid, VIDEO-STRATEGY §2a); die Mitte der Demo bleibt die echte App. Team und Tech bleiben ohne Motion. Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
 
 - Keine medizinischen Aussagen, keine Krankheitsnamen, keine Gennamen, keine Zahlen, keine Jahreszahlen, keine Organisations-Logos.
 - Erlaubter Text steht **wörtlich** im Prompt. Alles andere ist verboten („no other text, no voice-over, no numbers").
@@ -164,3 +166,34 @@ Duration: 15 seconds. Aspect ratio: 16:9.
 - Kein „Erklärclip" zur Krankheit oder zum Mechanismus: jede inhaltliche Aussage gehört in die App und die Pflichtvideos, wo sie mit Kante und Quelle steht.
 - Keine Maria-Figur als Animation: Die Persona aus dem Brief lebt in zwei Sätzen und Klicks, nicht als gezeichnete Person.
 - Kein Clip mit dem Brief-Slogan „Five thousand points of light": Jedes Team hat ihn.
+
+## Prompt 7 · Demo-Opener „Maria allein" (10 s)
+
+Einsatz erlaubt: Product Demo 0:00–0:10 (Motion-Hybrid, VIDEO-STRATEGY §2a), danach Teaser. Voice-over kommt von ElevenLabs im Schnitt, nicht von Motion.
+
+```
+Goal: a 10-second silent opening shot for a product demo about a rare-disease map called Constellate.
+Source material: the idea only. A dark field with thousands of tiny, isolated points of light, each far from the others.
+The camera drifts slowly towards one single point that glows a little warmer (amber) than the rest. It is alone;
+nothing connects to it. Around second 6, two short text lines fade in, lower left, and stay until the end.
+Audience: a hackathon jury.
+Tone: quiet, intimate, serious, not sad, no drama, no sentimentality.
+Key points (the only text allowed, verbatim, two lines): "Meet Maria" / "persona from the challenge brief, not a real person".
+[Shared style block]
+Duration: 10 seconds. Aspect ratio: 16:9. No voice-over, no music.
+```
+
+## Prompt 8 · Demo-Outro „Sternbilder" (4 s)
+
+Einsatz erlaubt: Product Demo 0:54–0:58, danach Teaser und README.
+
+```
+Goal: a 4-second silent closing shot for a product demo about a rare-disease map called Constellate.
+Source material: the idea only. The same dark field of isolated points of light. Thin hairlines quickly connect
+small groups of points into constellations; the single amber point from the opening is now part of one of them.
+In the last 2 seconds two lines of text appear, centred.
+Tone: calm, hopeful, precise.
+Key points (the only text allowed, verbatim, two lines): "Don't rebuild what a neighbouring disease already built." / "constellate-vert.vercel.app".
+[Shared style block]
+Duration: 4 seconds. Aspect ratio: 16:9. No voice-over, no music.
+```

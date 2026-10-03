@@ -39,6 +39,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 | 4 | Motion | nur nach der Abgabe, nur Pitch-Opener 10.10. und Teaser |
 | 6 | Persona Maria statt Nora (Osmans Wunsch, umgesetzt in allen `pitch/`-Dateien) | DECISIONS P9 nachtragen (sagt noch Nora und „Maria verworfen"); Abgleich mit dem Brief in [STORY.md](STORY.md) §2a: passt, eine Reibung (Moment 1 ist im Brief Devon) |
 | 7 | Team-Video: Background statt Projektbeitrag | Texte H/O/R in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) §1; vor dem Dreh: Osman klärt, ob RBI genannt werden darf, Recep ergänzt, was er seit dem TGM macht, beide Nachnamen |
+| 8 | Demo als Motion-Hybrid (Opener 10 s + Outro 4 s mit Motion, Mitte echte App) | Go und Musik-Frage; komplett animiert geht nicht (Brief verlangt den Weg durch den Graphen), Plan in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) §2a |
 | 5 | Abgabetexte: Einzeiler A oder B, OpenAI-Absatz A oder B, Satz zu KI-Coding-Assistenten | A; OpenAI-Absatz um 11:00 nach echtem Stand (heute wäre B wahr); KI-Satz ja ([SUBMISSION-TEXTS.md](SUBMISSION-TEXTS.md) §12) |
 
 ## Zeitplan bis 15:00 (Aufnahme ab Freeze 12:00, Upload bis 14:00)

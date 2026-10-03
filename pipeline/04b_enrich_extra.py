@@ -79,12 +79,12 @@ def write_assets_csv(rows: list[dict], sections: set[str]) -> None:
 
 
 def prevalence_records(disease_list) -> list[dict]:
-    """App shape: {mondo_id, type, class, value, unit, region, validation, references, source: {db, record, url}, retrieved}.
-    Orphanet ValMoy is a mean per 100 000 (Orphanet convention), not per million."""
+    """App shape: {mondo_id, type, class, value, unit, qualification, region, validation, references, source: {db, record, url},
+    retrieved}. value = Orphanet ValMoy (> 0) or None: a rate per 100 000, for type Cases/families a count (unit cases/families)."""
     out = []
     for r in prevalence.run(disease_list):
-        out.append({"mondo_id": r["mondo_id"], "type": r["type"], "class": r["class"], "value": r["value_per_million"],
-                    "unit": "per 100 000 (Orphanet ValMoy)" if r["value_per_million"] is not None else None,
+        out.append({"mondo_id": r["mondo_id"], "type": r["type"], "class": r["class"], "value": r["valmoy"],
+                    "unit": r["unit"],
                     "region": r["region"], "validation": r["validation"], "references": r["source"],
                     "qualification": r.get("qualification"), "ambiguous_xref": r.get("ambiguous_xref", False),
                     "source": {"db": "Orphanet", "record": r["record"], "url": r["url"]}, "retrieved": r["retrieved"],

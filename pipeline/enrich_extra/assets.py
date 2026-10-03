@@ -35,7 +35,7 @@ SCALES = {  # canonical name -> literal pattern
     "PedsQL": r"PedsQL",
     "6-minute walk test": r"6[- ]?(?:minute|min) walk(?:ing)? (?:test|distance)|6MWT",
     "Expanded Disability Status Scale (EDSS)": r"\bEDSS\b|Expanded Disability Status Scale",
-    "Scale for the Assessment and Rating of Ataxia (SARA)": r"\bSARA\b|Scale for the Assessment and Rating of Ataxia",
+    "Scale for the Assessment and Rating of Ataxia (SARA)": r"(?-i:\bSARA\b)|Scale for the Assessment and Rating of Ataxia",  # "Sara" is a name
 }
 SCALE_RE = {name: re.compile(pattern, re.I) for name, pattern in SCALES.items()}
 GMFC_PMID = "21707604"
@@ -189,6 +189,10 @@ def run(disease_list, offline: bool = False) -> dict:
             if not disease:
                 continue
             for sentence in SENTENCE.findall(abstract):
+                # the paper is only a keyword hit for the disease: the scale counts only if the title or the same
+                # sentence names the disease (e.g. a review "in the population with leukodystrophy" is not PMD-specific)
+                if not diseases.match_text({"title": paper.get("title") or "", "sentence": sentence}, disease.match_terms):
+                    continue
                 for name, pattern in SCALE_RE.items():
                     if name == "GMFC-MLD" and disease.mondo_id != "MONDO:0018868" and not disease.label.startswith("metachromatic"):
                         continue  # an MLD-specific scale is attached only to MLD
@@ -201,6 +205,7 @@ def run(disease_list, offline: bool = False) -> dict:
 
 
 def _add_scale(draft, rows, disease, name, snippet, source_text, source_type, source_id, url, retrieved, date) -> None:
+    """CT.gov outcome measure = structured record (curated); a regex find in an abstract = text_mined (origin regex, no LLM)."""
     asset_id = _scale_id(name)
     target = f"ASSET:{asset_id}"
     record = f"PMID:{source_id}" if source_type == "PMID" else source_id
@@ -208,8 +213,10 @@ def _add_scale(draft, rows, disease, name, snippet, source_text, source_type, so
                source_id=source_id, url=url, check="machine")
     draft.evidence(disease.mondo_id, target, "has_asset", evidence(
         "Europe PMC" if source_type == "PMID" else "ClinicalTrials.gov", record, url, snippet[:400], source_text, retrieved,
-        level="curated", date=date, confidence=0.6,
+        level="curated" if source_type == "NCT" else "text_mined", date=date, confidence=0.6 if source_type == "NCT" else 0.4,
+        **({} if source_type == "NCT" else {"origin": "regex"}),
         note="Named instrument used in this record; no claim of validation for this disease."))
     rows.append(_row(disease, asset_id=asset_id, asset_type="outcome_scale", name=name, status="documented", source_type=source_type,
                      source_id=source_id, url=url, snippet=snippet[:400], retrieved=retrieved[:10], check="machine",
-                     notes="Literal named measure; no claim of validation or transferability."))
+                     notes="Literal named measure; no claim of validation or transferability."
+                     + ("" if source_type == "NCT" else " Regex find in an abstract (text_mined).")))

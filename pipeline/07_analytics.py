@@ -955,7 +955,7 @@ def v2_prevalence(p: dict) -> dict | None:
     (> 0) are kept: 04b fills missing ones with its own class midpoint per million, labelled per 100 000 (factor 10 off,
     and not an Orphanet number). ValMoy is a mean per 100 000; for type Cases/families it is a count."""
     raw = p.get("value")
-    m = re.search(r"<ValMoy>\s*([0-9.]+)\s*</ValMoy>", p.get("snippet") or "")
+    m = re.search(r"<ValMoy>\s*([0-9.Ee+-]+)\s*</ValMoy>", p.get("snippet") or "")
     if raw is None or m is None or float(m.group(1)) <= 0 or abs(float(m.group(1)) - float(raw)) > 1e-9 or p.get("ambiguous_xref"):
         return None
     value = float(raw)

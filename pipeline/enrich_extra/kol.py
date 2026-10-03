@@ -33,6 +33,13 @@ from .people import HERO_PMIDS, _clean_affiliation, validate_orcid
 INSTITUTION = re.compile(r"univ|hospital|institut|center|centre|college|klinik|clinic|school|foundation|ospedale|hôpital|"
                          r"children's|research|laborator|inserm|cnrs|nih|national|academ", re.I)
 EMAIL = re.compile(r"\S+@\S+")
+PHONE = re.compile(r"\b(?:tel|phone|fax)\b\.?:?\s*[+(]?\d[\d\s()./-]{5,}\d|(?!\d{4}-\d{4}-\d{4}-\d{3}[\dX])"
+                   r"(?<![\d-])(?:\+|\b00)\d{1,3}[\s()./-]*(?:\d[\s()./-]*){6,}\d", re.I)  # never an ORCID
+
+
+def scrub(text: str | None) -> str:
+    """Free text from a record (affiliation, official) without e-mail addresses and phone numbers."""
+    return " ".join(PHONE.sub("", EMAIL.sub("", text or "")).split()).strip(" ;,")
 INITIAL = re.compile(r"^[A-Za-z]\.?$")
 PLACEHOLDER = re.compile(r"director|study|medical|clinical|trial|sponsor|call cent|monitor|manager|contact|information|"
                          r"department|office|team|investigator|chair|lead|transparency|disclosure|inc\b|ltd\b|gmbh", re.I)
@@ -41,7 +48,7 @@ DEGREES = re.compile(r",?\s+(?:M\.?D\.?|Ph\.?D\.?|D\.?O\.?|MBBS|MBChB|FRC\w*|M\.
 
 
 def institution(affiliation: str | None) -> str | None:
-    text = _clean_affiliation(EMAIL.sub("", affiliation or ""))
+    text = _clean_affiliation(scrub(affiliation))
     if not text:
         return None
     for part in (p.strip(" .;") for p in text.split(",")):
@@ -129,7 +136,7 @@ def run(disease_list, offline: bool = False) -> dict:
             p = person(key, name or author.get("name") or "", author.get("orcid"), inst)
             p["records"][record] = {"db": "Europe PMC", "record": record, "url": paper["pubmed_url"], "retrieved": paper["retrieved"][:10],
                                     "date": (paper.get("pub_date") or "")[:10] or None,
-                                    "verbatim": "; ".join(x for x in [author.get("name"), EMAIL.sub("", affiliation or "").strip()] if x),
+                                    "verbatim": "; ".join(x for x in [author.get("name"), scrub(affiliation)] if x),
                                     "type": "authored_by"}
             for mondo in linked:
                 p["diseases"][mondo].add(record)
@@ -146,7 +153,7 @@ def run(disease_list, offline: bool = False) -> dict:
             p = person(key, pi["name"].title() if pi["name"].isupper() else pi["name"], None, grant.get("organization"))
             p["records"][grant["core_project_num"]] = {"db": "NIH RePORTER", "record": grant["core_project_num"], "url": grant["url"],
                                                        "retrieved": grant["retrieved"][:10], "date": grant.get("start_date"),
-                                                       "verbatim": f"{pi['name']}; {grant.get('organization') or ''}".strip("; "),
+                                                       "verbatim": scrub(f"{pi['name']}; {grant.get('organization') or ''}"),
                                                        "type": "investigator_of"}
             for mondo in linked:
                 p["diseases"][mondo].add(grant["core_project_num"])
@@ -160,7 +167,7 @@ def run(disease_list, offline: bool = False) -> dict:
     officials = _officials(sorted(trials), offline)
     for nct, linked in sorted(trials.items()):
         for index, official in enumerate(officials.get(nct, [])):
-            official = {**official, "affiliation": EMAIL.sub("", official.get("affiliation") or "").strip(" ;,") or None}
+            official = {**official, "affiliation": scrub(official.get("affiliation")) or None, "name": scrub(official.get("name"))}
             raw = " ".join((official.get("name") or "").split())
             raw = DEGREES.sub("", re.sub(r"^(?:Prof\.?|Dr\.?|Professor)\s+", "", raw, flags=re.I)).strip(" ,")
             if not raw or PLACEHOLDER.search(raw):
@@ -192,11 +199,14 @@ def run(disease_list, offline: bool = False) -> dict:
     overlap = []
     kols = set()
     for (a, b), keys in sorted(pairs.items()):
-        keys = sorted(keys, key=lambda k: (-len(people[k]["records"]), k))
+        def rank(k):  # independent records on both sides first, then the weaker side, then the total
+            ra, rb = people[k]["diseases"][a], people[k]["diseases"][b]
+            return (ra == rb, -min(len(ra), len(rb)), -(len(ra) + len(rb)), people[k]["name"], k)
+        keys = sorted(keys, key=rank)
         kols.update(keys)
         names = [people[k]["name"] for k in keys]
-        formula = (f"shared_researchers({a}, {b}) = |P({a}) ∩ P({b})| = {len(keys)}; P(X) = people with >= 1 paper, grant or trial "
-                   f"matched to X, identity by ORCID, NIH profile or exact name + institution")
+        formula = (f"shared_researchers({a}, {b}) = |P({a}) ∩ P({b})| = {len(keys)}; P(X) = people with >= 1 keyword-matched paper, "
+                   f"grant or trial for X; identity by ORCID, NIH profile or exact name + institution")
         snippet = f"{formula}; people: {', '.join(names[:8])}{' …' if len(names) > 8 else ''}"
         ev = evidence("Constellate", "04b_enrich_extra/kol", "https://github.com/hannokuegler/constellate/blob/main/pipeline/enrich_extra/kol.py",
                       snippet, snippet, max(r["retrieved"] for k in keys for r in people[k]["records"].values()), level="inferred",
@@ -207,6 +217,8 @@ def run(disease_list, offline: bool = False) -> dict:
         overlap.append({"disease_a": a, "label_a": in_scope[a].label, "disease_b": b, "label_b": in_scope[b].label, "n_people": len(keys),
                         "formula": formula, "edge_id": draft.edges[(a, b, "kol_overlap")]["id"],
                         "people": [{"name": people[k]["name"], "orcid": people[k]["orcid"], "person_key": k,
+                                    "n_records_a": len(people[k]["diseases"][a]), "n_records_b": len(people[k]["diseases"][b]),
+                                    "independent": people[k]["diseases"][a] != people[k]["diseases"][b],
                                     "affiliation": sorted(people[k]["institutions"])[0] if people[k]["institutions"] else None,
                                     "records": [{"db": r["db"], "record": r["record"], "url": r["url"]}
                                                 for rid, r in sorted(people[k]["records"].items())

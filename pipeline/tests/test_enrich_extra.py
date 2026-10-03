@@ -21,7 +21,7 @@ from enrich_extra.common import evidence
 REPO = Path(__file__).resolve().parents[2]
 ENRICH = REPO / "data" / "enrich"
 EDGES = ENRICH / "extra_edges.json"
-CURATED_TYPES = {"has_asset", "approved_therapy", "screened_in", "authored_by", "investigator_of"}
+CURATED_TYPES = {"approved_therapy", "screened_in", "authored_by", "investigator_of"}
 EVIDENCE_FIELDS = {"db", "origin", "record", "url", "level", "date", "confidence", "snippet", "retrieved"}
 needs_output = pytest.mark.skipif(not EDGES.exists(), reason="run 04b_enrich_extra.py first")
 
@@ -63,6 +63,53 @@ def test_orcid_wins_and_initials_never_merge():
     assert kol.identity(None, None, "Duke", "PMID:1:0") != kol.identity(None, None, "Duke", "PMID:2:0")
 
 
+def test_phone_numbers_are_scrubbed_but_orcids_kept():
+    assert kol.scrub("Dept of Pediatrics, Tel: +49 7071 29-83732, Germany") == "Dept of Pediatrics, , Germany"
+    assert kol.scrub("Hospital, +1 (412) 692-5000") == "Hospital"
+    assert kol.scrub("ORCID 0000-0002-1825-0097, Tel Aviv University") == "ORCID 0000-0002-1825-0097, Tel Aviv University"
+
+
+def test_prevalence_value_only_from_valmoy():
+    from lxml import etree
+    from enrich_extra import prevalence
+
+    def parse(type_, qualification, valmoy):
+        xml = (f"<Prevalence id='1'><Source>x</Source><PrevalenceType><Name lang='en'>{type_}</Name></PrevalenceType>"
+               f"<PrevalenceQualification><Name lang='en'>{qualification}</Name></PrevalenceQualification>"
+               f"<PrevalenceClass><Name lang='en'>1-9 / 1 000 000</Name></PrevalenceClass>"
+               + (f"<ValMoy>{valmoy}</ValMoy>" if valmoy is not None else "") + "</Prevalence>")
+        return prevalence.parse_prevalence_element(etree.fromstring(xml))
+
+    point = parse("Point prevalence", "Value and class", 0.3)
+    assert (point["valmoy"], point["unit"]) == (0.3, "per 100 000") and point["snippet"] in etree.tostring(
+        etree.fromstring(point["snippet"]), encoding="unicode")
+    assert parse("Prevalence at birth", "Class only", None)["valmoy"] is None  # no midpoint from the class
+    assert parse("Prevalence at birth", "Class only", 0)["valmoy"] is None
+    assert parse("Cases/families", "Case(s)", 12)["unit"] == "cases"
+    assert parse("Cases/families", "Family(ies)", 3)["unit"] == "families"
+    assert parse("Annual incidence", "Value and class", 1.2)["unit"] == "per 100 000"
+
+
+@needs_output
+def test_prevalence_output_units():
+    for row in jsonl("extra_prevalence.jsonl"):
+        has_valmoy = re.search(r"<ValMoy>\s*([0-9.Ee+-]+)\s*</ValMoy>", row["snippet"])  # also 4.0E-4
+        if row["value"] is not None:
+            assert has_valmoy and float(has_valmoy.group(1)) == row["value"]
+            assert row["unit"] == ("per 100 000" if not row["type"].lower().startswith("cases") else row["unit"])
+            assert not row["type"].lower().startswith("cases") or row["unit"] in ("cases", "families")
+
+
+@needs_output
+def test_kol_people_sorted_and_counted():
+    for pair in json.loads((ENRICH / "extra_kol_overlap.json").read_text())[:300]:
+        people = pair["people"]
+        assert all(p["n_records_a"] >= 1 and p["n_records_b"] >= 1 for p in people)
+        keys = [(not p["independent"], -min(p["n_records_a"], p["n_records_b"])) for p in people]
+        assert keys == sorted(keys), pair["edge_id"]
+        assert "keyword-matched" in pair["formula"]
+
+
 def test_institution_segment_and_no_email():
     aff = "Department of Pediatrics, University of Pittsburgh, Pittsburgh, PA, USA. someone@example.org"
     assert kol.institution(aff) == "University of Pittsburgh"
@@ -102,6 +149,11 @@ def test_level_rules():
             assert levels == {"inferred"} and edge.get("formula") and edge["formula"] in edge["evidence"][0]["snippet"]
         elif edge["type"] in CURATED_TYPES:
             assert levels == {"curated"}, edge["id"]
+        elif edge["type"] == "has_asset":  # CT.gov record = curated, regex find in an abstract = text_mined
+            for ev in edge["evidence"]:
+                assert (ev["level"], ev["db"]) in {("curated", "ClinicalTrials.gov"), ("curated", "Official newborn screening programme"),
+                                                   ("text_mined", "Europe PMC")}, edge["id"]
+                assert ev["level"] != "text_mined" or ev["origin"] == "regex"
         if edge["type"] == "screened_in":
             assert edge["evidence"][0]["screening_status"] in edge["evidence"][0]["snippet"]
 
@@ -121,7 +173,10 @@ def test_no_email_addresses_stored():
     for name in ("extra_kol_overlap.json", "extra_people.jsonl", "extra_edges.json"):
         path = ENRICH / name
         if path.exists():
-            assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", path.read_text()), name
+            text = path.read_text()
+            assert not re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", text), name
+            free_text = re.sub(r"\b(?:NAME|REC|NIH|ORCID|PERSON):[\w:-]+", " ", text)  # ids and hashes are not free text
+            assert not kol.PHONE.search(free_text), name
 
 
 # --- output: snippets are verbatim (re-derived from the cache only) -------------------------------------------------------

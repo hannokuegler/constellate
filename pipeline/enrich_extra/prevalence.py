@@ -7,7 +7,9 @@ Output schema (one dict per <Prevalence> element that maps to a known MONDO id):
     "orpha_name": str,                   # disorder label from XML
     "type":       str,                   # PrevalenceType/Name text, e.g. "Point prevalence"
     "class":      str | None,            # PrevalenceClass/Name text, e.g. "1-9 / 1 000 000"
-    "value_per_million": float | None,   # mean(range) of the class, None when class is absent or text-only
+    "valmoy":     float | None,          # Orphanet ValMoy if > 0 (rate per 100 000, or a count for Cases/families), else None
+    "unit":       str | None,            # "per 100 000" | "cases" | "families", None without ValMoy
+    "qualification": str | None,         # PrevalenceQualification/Name ("Value and class", "Class only", "Case(s)", "Family(ies)")
     "region":     str | None,            # PrevalenceGeographic/Name, e.g. "Europe"
     "validation": str | None,            # PrevalenceValidationStatus/Name, e.g. "Validated"
     "source":     str,                   # source description from XML (Prevalence/Source)
@@ -87,6 +89,21 @@ _CLASS_TO_VALUE: dict[str, float | None] = {
 }
 
 
+def unit_for(prev_type: str | None, qualification: str | None) -> str:
+    """Unit of Orphanet's ValMoy: cases or families for "Cases/families", otherwise a rate per 100 000.
+
+    >>> unit_for("Point prevalence", "Value and class")
+    'per 100 000'
+    >>> unit_for("Cases/families", "Case(s)")
+    'cases'
+    >>> unit_for("Cases/families", "Family(ies)")
+    'families'
+    """
+    if (prev_type or "").lower().startswith("cases"):
+        return "families" if (qualification or "").lower().startswith("famil") else "cases"
+    return "per 100 000"
+
+
 def class_to_value(class_text: str | None) -> float | None:
     """Return approximate midpoint prevalence per million for an Orphanet class string.
 
@@ -160,7 +177,7 @@ def parse_prevalence_element(prev_el: etree._Element) -> dict[str, Any]:
     prevalence-specific fields; caller adds mondo_id, orpha_code, etc.
 
     Fields returned:
-      type, class_, value_per_million, region, validation, source, snippet
+      type, class_, valmoy, unit, qualification, region, validation, source, snippet
 
     >>> from lxml import etree
     >>> xml = b'''<Prevalence id="123">
@@ -177,8 +194,8 @@ def parse_prevalence_element(prev_el: etree._Element) -> dict[str, Any]:
     'Point prevalence'
     >>> result['class_']
     '1-9 / 1 000 000'
-    >>> result['value_per_million']
-    5.0
+    >>> result['valmoy'], result['unit'], result['qualification']
+    (4.0, 'per 100 000', 'Value and class')
     >>> result['region']
     'Europe'
     >>> result['validation']
@@ -194,31 +211,30 @@ def parse_prevalence_element(prev_el: etree._Element) -> dict[str, Any]:
     validation = _text(prev_el, "PrevalenceValidationStatus", "Name")
     source_raw = _text(prev_el, "Source")
 
-    # ValMoy is the mean value per million from Orphanet; use it if present and
-    # numeric, otherwise fall back to our class midpoint mapping.
+    qualification = _text(prev_el, "PrevalenceQualification", "Name")
+
+    # ValMoy is Orphanet's own mean value: a rate per 100 000 for prevalence/incidence types, a count for
+    # "Cases/families". Only a real ValMoy > 0 becomes a value; no midpoint is computed from the class.
     val_moy_text = _text(prev_el, "ValMoy")
-    value_per_million: float | None = None
+    valmoy: float | None = None
     if val_moy_text is not None:
         try:
             parsed = float(val_moy_text)
-            # Orphanet uses -99 or 0 as sentinels for "not available"
-            if parsed > 0:
-                value_per_million = parsed
+            if parsed > 0:  # Orphanet uses 0 / -99 as "not available"
+                valmoy = parsed
         except ValueError:
             pass
-    if value_per_million is None:
-        value_per_million = class_to_value(class_text)
+    unit = unit_for(prev_type, qualification) if valmoy is not None else None
 
-    # Build snippet as a literal substring of the serialised element
-    snippet = etree.tostring(prev_el, encoding="unicode").strip()
-    # Truncate for storage (keep enough to be meaningful; full record is the XML)
-    if len(snippet) > 1000:
-        snippet = snippet[:997] + "..."
+    # Snippet = literal substring of the serialised element (cut, never padded, so it stays a substring)
+    snippet = etree.tostring(prev_el, encoding="unicode").strip()[:1000]
 
     return {
         "type":              prev_type,
         "class_":            class_text,
-        "value_per_million": value_per_million,
+        "valmoy":            valmoy,
+        "unit":              unit,
+        "qualification":     qualification,
         "region":            region,
         "validation":        validation,
         "source":            source_raw,
@@ -304,7 +320,9 @@ def parse_disorder_block(
                 # prevalence-specific fields
                 "type":              fields["type"],
                 "class":             fields["class_"],
-                "value_per_million": fields["value_per_million"],
+                "valmoy":            fields["valmoy"],
+                "unit":              fields["unit"],
+                "qualification":     fields["qualification"],
                 "region":            fields["region"],
                 "validation":        fields["validation"],
                 "source":            fields["source"],
@@ -435,7 +453,9 @@ SCHEMA = {
     "orpha_name":        "str  — Orphanet disorder label",
     "type":              "str | None  — PrevalenceType/Name (e.g. 'Point prevalence', 'Annual incidence')",
     "class":             "str | None  — PrevalenceClass/Name (e.g. '1-9 / 1 000 000')",
-    "value_per_million": "float | None  — ValMoy if > 0, else class midpoint, else None",
+    "valmoy":            "float | None  — Orphanet ValMoy if > 0, else None (no midpoint is computed)",
+    "unit":              "str | None  — 'per 100 000', or 'cases'/'families' for type Cases/families",
+    "qualification":     "str | None  — PrevalenceQualification/Name",
     "region":            "str | None  — PrevalenceGeographic/Name (e.g. 'Europe')",
     "validation":        "str | None  — PrevalenceValidationStatus/Name",
     "source":            "str | None  — raw source text from XML (PMID_xxx, registry name, etc.)",
@@ -456,10 +476,8 @@ Limitations
    emitted once per candidate with ambiguous_xref=True. The caller must decide which
    MONDO id to use; we do NOT arbitrarily pick the first.
 
-2. Value approximation: value_per_million is either the XML ValMoy (Orphanet's own mean)
-   or the midpoint of the class range from _CLASS_TO_VALUE. Neither is a direct
-   measurement; both are Orphanet's own derived values. For ">1 / 1 000" the midpoint
-   5 000 / million is a rough upper-bound estimate.
+2. Values: valmoy is only Orphanet's own ValMoy (> 0). Without it there is no number, only
+   the class string; class_to_value() is kept for reference but never used for a value.
 
 3. No region standardisation: region is the raw Orphanet string. "Europe", "Worldwide",
    "United States", country names, etc. are not normalised to ISO codes here.

@@ -30,7 +30,7 @@ KRABBE, MLD, POMPE, MPS1, MPS2, XALD, FABRY, GAUCHER, ASMD = (
     "MONDO:0009499", "MONDO:0018868", "MONDO:0009290", "MONDO:0001586", "MONDO:0010674", "MONDO:0018544", "MONDO:0010526",
     "MONDO:0018150", "MONDO:0100464")
 
-RUSP_NOTE = "RUSP is a federal recommendation (table as of January 2023); each state decides implementation."
+RUSP_NOTE = "RUSP is a federal recommendation; each state decides implementation."
 TOSCANA_NOTE = "Regional programme (Regione Toscana), not the national Italian panel."
 SEEDS = [
     # (jurisdiction, label, disease, status, url, literal snippet, note)
@@ -61,6 +61,8 @@ GAP_SOURCES = {
     "US": HRSA_RUSP, "AT": MEDUNI, "NO": OUS, "DE": GBA_PDF, "IT": TOSCANA,
 }
 GAP_DISEASES = [KRABBE, MLD]
+# source date of a page when the page itself states it (evidence.date); otherwise the retrieval date is used
+SOURCE_DATES = {"https://www.health.state.mn.us/news/pressrel/2024/newborn022624.html": "2024-02-26"}
 
 
 def _norm(text: str) -> str:
@@ -87,13 +89,18 @@ def run(disease_list, offline: bool = False) -> dict:
             except (http.FetchError, OfflineMiss) as exc:
                 failures = json.loads(FAILURES.read_text()) if FAILURES.exists() else {}
                 message = str(exc)
-                if isinstance(exc, OfflineMiss) and url in failures:
-                    pages[url] = (None, None, failures[url])
+                cached = failures.get(url)
+                if isinstance(cached, str):  # older cache format: message only
+                    cached = {"error": cached, "attempted": None}
+                if isinstance(exc, OfflineMiss) and cached:
+                    pages[url] = (None, cached["attempted"], cached["error"])
                 else:
-                    pages[url] = (None, None, "HTTP 403, host blocks automated access" if "403" in message[:40] else message[:120])
-                    if not isinstance(exc, OfflineMiss):
+                    error = "HTTP 403, host blocks automated access" if "403" in message[:40] else message[:120]
+                    attempted = None if isinstance(exc, OfflineMiss) else http.now_iso()
+                    pages[url] = (None, attempted, error)  # the attempt date feeds "not found ... as of <date>"
+                    if attempted:
                         FAILURES.parent.mkdir(parents=True, exist_ok=True)
-                        FAILURES.write_text(json.dumps({**failures, url: pages[url][2]}, indent=1, sort_keys=True))
+                        FAILURES.write_text(json.dumps({**failures, url: {"error": error, "attempted": attempted}}, indent=1, sort_keys=True))
         return pages[url]
 
     covered = set()
@@ -119,6 +126,7 @@ def run(disease_list, offline: bool = False) -> dict:
         target = f"COUNTRY:{jurisdiction}"
         draft.node(target, "country", label, status=status, url=url, jurisdiction=jurisdiction)
         ev = evidence("Official newborn screening programme", url, url, _norm(snippet), _norm(snippet), fetched_at, level="curated",
+                      date=SOURCE_DATES.get(url),
                       confidence=0.9 if "-" not in jurisdiction else 0.8, screening_status=status, status_basis=note)
         ev["snippet"] = f"[{status}] {ev['snippet']}"  # status visible in the snippet; the verbatim part follows the tag
         ev["verbatim"] = _norm(snippet)

@@ -205,6 +205,11 @@ def _check_robots(url: str, offline: bool) -> None:
         time.sleep(effective)
 
 
+def check_robots(url: str, offline: bool = False) -> None:
+    """Public alias used by reproduce.py: raise PolicyBlocked if robots.txt disallows *url*."""
+    _check_robots(url, offline)
+
+
 # ---------------------------------------------------------------------------
 # Cache key helpers
 # ---------------------------------------------------------------------------

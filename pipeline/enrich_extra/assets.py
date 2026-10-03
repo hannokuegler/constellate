@@ -1,215 +1,215 @@
-"""Verifiable registry assets and deliberately explicit screening evidence gaps."""
+"""B1 · Reusable assets: natural-history / registry / longitudinal studies (ClinicalTrials.gov) and named outcome scales.
+
+Studies: ClinicalTrials.gov API v2, query.cond=<term> restricted to observational studies. A study is an asset only if
+"natural history", "registry" or "longitudinal" stands in its brief/official title or the design flags it as a patient
+registry, and its conditions/keywords/titles name the disease (same whole-word noise filter as 04/ctgov). Merged NCT ids
+are kept as nct_aliases (CT.gov answers the old id with the new record, e.g. NCT04693598 -> NCT05739643).
+Snippet = the literal title (or the literal design flag) from the CT.gov record.
+
+Scales: named outcome instruments (GMFC-MLD, GMFM, ...) found verbatim in the outcome measures of those studies or in
+the abstracts of data/enrich/europepmc.jsonl (only papers matched to the disease) plus PMID 21707604 (GMFC-MLD).
+Snippet = the outcome measure text or the abstract sentence containing the scale name.
+"""
 from __future__ import annotations
 
-import hashlib
 import json
 import re
-from pathlib import Path
 
 from enrich import ctgov, diseases, europepmc, http
-from enrich.edges import Draft
-from .common import evidence, fetch_document, fetch_json, finalize
+from enrich.edges import Draft, load_jsonl
 
-ROOT = Path(__file__).resolve().parents[2]
-CSV_FIELDS = ["asset_id", "asset_type", "name", "disease_mondo", "disease_label", "country", "status",
-              "source_type", "source_id", "url", "snippet", "retrieved", "check", "notes"]
-NATURAL = re.compile(r"natural history|registr(?:y|ies)|longitudinal", re.I)
-SCALE = re.compile(r"GMFC[- ]MLD|gross motor function classification[^.;\n]*|GMFM(?:[- ]\d+)?", re.I)
-SCREENING = [
-    {"country": "AT", "url": "https://kinder-jugendheilkunde.meduniwien.ac.at/unsere-abteilungen/klinische-abteilung-fuer-paediatrische-pulmologie-allergologie-und-endokrinologie/neugeborenen-screening/erkrankungen/",
-     "pattern": r"Seit Dezember 2024[^.]*Forschungsprojekts[^.]*Metachromatische Leukodystrophie[^.]*\.",
-     "disease": "MONDO:0018868", "status": "pilot/research", "notes": "Research project, not routine national screening."},
-    {"country": "NO", "url": "https://oslo-universitetssykehus.no/avdelinger/barne-og-ungdomsklinikken/nyfodtscreeningen/nyfodtscreening/",
-     "pattern": r"Metakromatisk leukodystrofi\s*\(MLD\)", "disease": "MONDO:0018868", "status": "screened",
-     "context": "Alle nyfødte", "notes": "Listed in the national newborn screening offer; no implementation date inferred."},
-    {"country": "US", "url": "https://www.health.state.mn.us/news/pressrel/2024/newborn022624.html",
-     "pattern": r"[^.]*[Kk]rabbe[^.]*\.", "disease": "MONDO:0009499", "status": "screened",
-     "context": "screen", "notes": "Minnesota only. Subnational programme, NOT all US states or nationwide implementation.",
-     "jurisdiction": "US-MN"},
-]
-GAP_URLS = {
-    "US": "https://www.hrsa.gov/sites/default/files/hrsa/advisory-committees/heritable-disorders/reports-recommendations/infantile-krabbe-final-response.pdf",
-    "DE": "https://www.g-ba.de/richtlinien/15/",
-    "IT": "https://www.fondazionetelethon.it/en/what-we-do/treatment-diagnosis/newborn-screening",
+from .common import OfflineMiss, evidence, fetch_json
+
+NATURAL = re.compile(r"natural[ -]history|registr(?:y|ies)|longitudinal", re.I)
+FIELDS = ",".join(["protocolSection.identificationModule", "protocolSection.statusModule",
+                   "protocolSection.sponsorCollaboratorsModule.leadSponsor", "protocolSection.conditionsModule",
+                   "protocolSection.designModule", "protocolSection.outcomesModule",
+                   "protocolSection.contactsLocationsModule.overallOfficials"])
+SCALES = {  # canonical name -> literal pattern
+    "GMFC-MLD": r"GMFC[- ]?MLD|Gross Motor Function Classification (?:System )?(?:for|in|-) ?(?:MLD|Metachromatic Leukodystrophy)",
+    "Gross Motor Function Measure (GMFM)": r"GMFM(?:[- ]?(?:88|66))?|Gross Motor Function Measure",
+    "Vineland Adaptive Behavior Scales": r"Vineland",
+    "Bayley Scales of Infant Development": r"Bayley",
+    "Mullen Scales of Early Learning": r"Mullen Scales",
+    "Loes score (MRI)": r"Loes (?:MRI )?score",
+    "PedsQL": r"PedsQL",
+    "6-minute walk test": r"6[- ]?(?:minute|min) walk(?:ing)? (?:test|distance)|6MWT",
+    "Expanded Disability Status Scale (EDSS)": r"\bEDSS\b|Expanded Disability Status Scale",
+    "Scale for the Assessment and Rating of Ataxia (SARA)": r"\bSARA\b|Scale for the Assessment and Rating of Ataxia",
 }
+SCALE_RE = {name: re.compile(pattern, re.I) for name, pattern in SCALES.items()}
+GMFC_PMID = "21707604"
+SENTENCE = re.compile(r"[^.!?]*[.!?]")
 
 
-def row(disease, **fields):
-    result = dict.fromkeys(CSV_FIELDS, "")
-    result.update(disease_mondo=disease.mondo_id, disease_label=disease.label, **fields)
-    return result
+def _day(value: str | None) -> str | None:
+    value = (value or "")[:10]
+    return value if len(value) == 10 else (f"{value}-01" if len(value) == 7 else None)
 
 
-def add_asset(draft, record, ev):
-    target = "ASSET:" + record["asset_id"]
-    draft.node(target, "asset", record["name"], asset_type=record["asset_type"], status=record["status"],
-               country=record["country"], source_id=record["source_id"], url=record["url"], notes=record["notes"])
-    draft.evidence(record["disease_mondo"], target, "has_asset", ev)
-
-
-def classify_study(study):
-    protocol = study.get("protocolSection", {})
-    if protocol.get("designModule", {}).get("studyType") != "OBSERVATIONAL":
+def classify(study: dict) -> tuple[str, str] | None:
+    p = study.get("protocolSection", {})
+    design = p.get("designModule", {})
+    if design.get("studyType") != "OBSERVATIONAL":
         return None
-    ident = protocol.get("identificationModule", {})
-    texts = [ident.get("briefTitle", ""), ident.get("officialTitle", "")]
-    design = protocol.get("designModule", {})
-    texts.extend(str(design.get(k, "")) for k in ["observationalModel", "timePerspective"])
-    # The detailed description can describe interventions unrelated to natural history.
-    # Classification is deliberately restricted to title/design, as requested.
-    for text in texts:
-        if NATURAL.search(text):
-            kind = "registry" if re.search(r"registr(?:y|ies)", text, re.I) else "natural_history_study"
+    ident = p.get("identificationModule", {})
+    for text in (ident.get("briefTitle") or "", ident.get("officialTitle") or ""):
+        match = NATURAL.search(text)
+        if match:
+            kind = "registry" if match.group(0).lower().startswith("registr") else "natural_history_study"
             return kind, text
+    if design.get("patientRegistry"):
+        return "registry", "patientRegistry: true"
     return None
 
 
-def run(disease_list, offline=False):
-    draft = Draft()
-    records, coverage, studies = [], [], {}
-    selected = {d.mondo_id: d for d in disease_list}
-    for disease in disease_list:
-        count, queries, failure, retrieved = 0, [], None, None
-        seen = set()
-        for term in disease.query_terms[:4]:
-            token = None
-            while True:
-                params = {"query.cond": term, "pageSize": 100, "countTotal": "true", "format": "json"}
-                if token:
-                    params["pageToken"] = token
-                try:
-                    response = fetch_json("ctgov", ctgov.URL, params=params, offline=offline)
-                except http.FetchError as exc:
-                    failure = str(exc)
-                    break
-                retrieved = response.fetched_at
-                payload = response.data or {}
-                queries.append({"query": term, "url": response.url, "retrieved": retrieved,
-                                "total": payload.get("totalCount"), "page_token": token})
-                for study in payload.get("studies", []):
-                    classification = classify_study(study)
-                    if not classification:
-                        continue
-                    p = study["protocolSection"]
-                    ident = p["identificationModule"]
-                    nct = ident["nctId"]
-                    if nct in seen:
-                        continue
-                    match_fields = {"title": ident.get("briefTitle", ""),
-                                    "conditions": diseases.expand_list_field(p.get("conditionsModule", {}).get("conditions", []))}
-                    if not diseases.match_text(match_fields, disease.match_terms):
-                        continue
-                    seen.add(nct)
-                    kind, snippet = classification
-                    normalized = ctgov.normalize_study(study, retrieved)
-                    normalized.update(outcomes=p.get("outcomesModule", {}),
-                                      officials=p.get("contactsLocationsModule", {}).get("overallOfficials", []),
-                                      raw_study=study, source_url=response.url)
-                    normalized["diseases"] = [{"mondo_id": disease.mondo_id}]
-                    if nct in studies:
-                        studies[nct]["diseases"].extend(normalized["diseases"])
-                    else:
-                        studies[nct] = normalized
-                    record = row(disease, asset_id=nct, asset_type=kind, name=normalized["title"],
-                                 status=normalized["status"], source_type="NCT", source_id=nct,
-                                 url=normalized["url"], snippet=snippet, retrieved=retrieved, check="machine",
-                                 notes=json.dumps({k: normalized[k] for k in ["sponsor", "start_date", "completion_date", "enrollment", "outcomes", "nct_aliases"]}, ensure_ascii=False))
-                    records.append(record)
-                    ev = evidence("ClinicalTrials.gov", nct, response.url, snippet, snippet, retrieved,
-                                  date=normalized["last_update"], record_aliases=normalized["nct_aliases"],
-                                  matched_in=match_fields)
-                    add_asset(draft, record, ev)
-                    count += 1
-                    for outcomes in normalized["outcomes"].values():
-                        for outcome in outcomes:
-                            measure = outcome.get("measure", "")
-                            if SCALE.search(measure):
-                                add_scale(records, draft, disease, measure, measure, nct, "NCT", response.url, retrieved)
-                token = payload.get("nextPageToken")
-                if not token:
-                    break
-            if failure:
-                break
-        coverage.append({"mondo_id": disease.mondo_id, "source": "ClinicalTrials.gov", "record": disease.mondo_id,
-                         "url": ctgov.URL, "retrieved": retrieved, "queries": queries, "hits_kept": count,
-                         "status": "UNBELEGT" if failure else "searched", "error": failure,
-                         "note": "At most four unambiguous disease terms, all result pages; blocked is not zero evidence."})
+def search(term: str, offline: bool) -> tuple[list[dict], dict]:
+    studies, token, total, first = [], None, 0, None
+    while True:
+        params = {"query.cond": term, "filter.advanced": "AREA[StudyType]OBSERVATIONAL", "pageSize": 100,
+                  "countTotal": "true", "format": "json", "fields": FIELDS}
+        if token:
+            params["pageToken"] = token
+        response = fetch_json("ctgov_obs", ctgov.URL, params=params, offline=offline)
+        first = first or response
+        data = response.data or {}
+        total = data.get("totalCount", total)
+        studies.extend(data.get("studies", []))
+        token = data.get("nextPageToken")
+        if not token or len(studies) >= 300:
+            break
+    return studies, {"query": term, "url": first.url, "retrieved": first.fetched_at, "total": total}
 
-    papers_path = ROOT / "data/enrich/europepmc.jsonl"
-    papers = [json.loads(line) for line in papers_path.read_text(encoding="utf-8").splitlines()] if papers_path.exists() else []
+
+def collect(disease, offline: bool) -> tuple[dict[str, dict], dict]:
+    found: dict[str, dict] = {}
+    queries, error = [], None
+    terms = disease.query_terms[:4]
+    for index, term in enumerate(terms):
+        if index and found and not disease.is_hero:
+            break  # like 04/ctgov: further synonyms only while nothing was found (hero diseases: all four)
+        try:
+            studies, query = search(term, offline)
+        except (http.FetchError, OfflineMiss) as exc:
+            error = str(exc)[:200]
+            break
+        queries.append(query)
+        for study in studies:
+            kind = classify(study)
+            if not kind:
+                continue
+            p = study["protocolSection"]
+            record = ctgov.normalize_study(study, query["retrieved"])
+            match = diseases.match_text({"conditions": diseases.expand_list_field(record["conditions"]),
+                                         "keywords": diseases.expand_list_field(record["keywords"]),
+                                         "brief_title": record["title"] or "", "official_title": record["official_title"] or ""},
+                                        disease.match_terms)
+            if not match:
+                continue
+            record.update(asset_type=kind[0], classified_by=kind[1], query=term, query_url=query["url"],
+                          observational_model=p.get("designModule", {}).get("observationalModel"),
+                          time_perspective=p.get("designModule", {}).get("timePerspective"),
+                          outcomes=[{"kind": k.replace("Outcomes", ""), "measure": o.get("measure", ""), "time_frame": o.get("timeFrame")}
+                                    for k in ("primaryOutcomes", "secondaryOutcomes") for o in p.get("outcomesModule", {}).get(k, [])],
+                          officials=[{"name": o.get("name"), "affiliation": o.get("affiliation"), "role": o.get("role")}
+                                     for o in p.get("contactsLocationsModule", {}).get("overallOfficials", [])])
+            record["diseases"] = [{"mondo_id": disease.mondo_id, "matched_term": match[0], "matched_in": match[1], "query": term}]
+            found.setdefault(record["nct_id"], record)
+    searched = {"mondo_id": disease.mondo_id, "section": "assets", "source": "ClinicalTrials.gov (observational: natural history, registry, longitudinal)",
+                "retrieved": (queries[0]["retrieved"][:10] if queries else None), "hits": len(found), "queries": queries, "error": error}
+    return found, searched
+
+
+CSV_FIELDS = ["asset_id", "asset_type", "name", "disease_mondo", "disease_label", "country", "status", "source_type",
+              "source_id", "url", "snippet", "retrieved", "check", "notes"]
+
+
+def _row(disease, **fields) -> dict:
+    row = dict.fromkeys(CSV_FIELDS, "")
+    row.update(disease_mondo=disease.mondo_id, disease_label=disease.label, **fields)
+    return row
+
+
+def _scale_id(name: str) -> str:
+    return "scale_" + re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")[:40]
+
+
+def run(disease_list, offline: bool = False) -> dict:
+    by_id = {d.mondo_id: d for d in disease_list}
+    draft = Draft()
+    rows, searched = [], []
+    studies: dict[str, dict] = {}
+    results = http.parallel_map("extra/ctgov_obs", lambda d: collect(d, offline), disease_list, workers=2)
+    for disease, (found, protocol) in zip(disease_list, results):
+        searched.append(protocol)
+        for nct, record in sorted(found.items()):
+            studies.setdefault(nct, {**record, "diseases": []})["diseases"].extend(record["diseases"])
+            match = record["diseases"][0]
+            target = f"ASSET:{nct}"
+            draft.node(target, "asset", record["title"] or nct, asset_type=record["asset_type"], country="",
+                       status=record["status"], source_type="NCT", source_id=nct, url=record["url"], check="machine",
+                       sponsor=record["sponsor"], start_date=record["start_date"], completion_date=record["completion_date"],
+                       enrollment=record["enrollment"], nct_aliases=record["nct_aliases"],
+                       outcome_measures=[o["measure"] for o in record["outcomes"]][:12])
+            snippet = record["classified_by"]
+            draft.evidence(disease.mondo_id, target, "has_asset", evidence(
+                "ClinicalTrials.gov", nct, record["url"], snippet, snippet, record["retrieved"], level="curated",
+                date=_day(record["last_update"]), confidence=0.9 if "conditions" in match["matched_in"] else 0.7,
+                record_aliases=record["nct_aliases"], matched_term=match["matched_term"], matched_in=match["matched_in"]))
+            rows.append(_row(disease, asset_id=nct, asset_type=record["asset_type"], name=record["title"] or nct, country="",
+                             status=record["status"] or "", source_type="NCT", source_id=nct, url=record["url"], snippet=snippet,
+                             retrieved=record["retrieved"][:10], check="machine",
+                             notes=json.dumps({"sponsor": record["sponsor"], "start": record["start_date"], "end": record["completion_date"],
+                                               "enrollment": record["enrollment"], "aliases": record["nct_aliases"]}, ensure_ascii=False)))
+            for outcome in record["outcomes"]:
+                for name, pattern in SCALE_RE.items():
+                    if pattern.search(outcome["measure"]):
+                        _add_scale(draft, rows, disease, name, outcome["measure"], outcome["measure"], "NCT", nct, record["url"],
+                                   record["retrieved"], _day(record["last_update"]))
+
+    # scales from abstracts: only papers that 04 matched to the disease, plus the GMFC-MLD validation paper
+    papers = load_jsonl("europepmc")
     try:
-        response = fetch_json("scales", europepmc.URL,
-                              params={"query": "EXT_ID:21707604 AND SRC:MED", "format": "json", "resultType": "core"}, offline=offline)
-        papers.extend(europepmc.normalize_paper(p, response.fetched_at) for p in (response.data or {}).get("resultList", {}).get("result", []))
-    except http.FetchError as exc:
-        coverage.append({"source": "Europe PMC", "record": "PMID:21707604", "url": europepmc.URL,
-                         "status": "UNBELEGT", "error": str(exc), "retrieved": None})
+        response = fetch_json("scales", europepmc.URL, params={"query": f"EXT_ID:{GMFC_PMID} AND SRC:MED", "format": "json",
+                                                               "resultType": "core"}, offline=offline)
+        for result in (response.data or {}).get("resultList", {}).get("result", []):
+            paper = europepmc.normalize_paper(result, response.fetched_at)
+            for disease in disease_list:
+                match = diseases.match_text({"title": paper["title"], "abstract": paper["abstract"]}, disease.match_terms)
+                if match:
+                    paper["diseases"].append({"mondo_id": disease.mondo_id})
+            papers.append(paper)
+    except (http.FetchError, OfflineMiss) as exc:
+        searched.append({"mondo_id": None, "section": "assets", "source": f"Europe PMC PMID:{GMFC_PMID}", "retrieved": None, "hits": 0,
+                         "error": str(exc)[:200]})
     for paper in papers:
         abstract = paper.get("abstract") or ""
-        for disease in disease_list:
-            if not diseases.match_text({"abstract": abstract}, disease.match_terms):
+        for link in paper.get("diseases", []):
+            disease = by_id.get(link["mondo_id"])
+            if not disease:
                 continue
-            for match in SCALE.finditer(abstract):
-                name = match.group(0)
-                # A scale mentioned for another disease must not be attached to this one.
-                if "mld" in name.lower() and disease.mondo_id != "MONDO:0018868":
-                    continue
-                add_scale(records, draft, disease, name, abstract, paper["pmid"], "PMID", paper["url"], paper["retrieved"])
-
-    # Country-wide negative claims cannot be proved by a disease name missing from a list.
-    screening_rows = {}
-    for seed in SCREENING:
-        if seed["disease"] not in selected:
-            continue
-        disease = selected[seed["disease"]]
-        record = row(disease, asset_id=f"nbs_{seed['country']}_{disease.mondo_id.replace(':', '_')}",
-                     asset_type="newborn_screening", name=f"Newborn screening: {disease.label} ({seed['country']})",
-                     country=seed["country"], status="UNBELEGT", source_type="URL", source_id=seed["url"], url=seed["url"],
-                     check="UNBELEGT", notes=seed["notes"])
-        try:
-            response = fetch_document("screening", seed["url"], offline=offline)
-            text = response.data["text"]
-            match = re.search(seed["pattern"], text)
-            context_ok = seed.get("context", "").lower() in text.lower()
-            if not match or not context_ok:
-                raise ValueError("Expected explicit programme evidence not found; no status inferred from omission")
-            snippet = match.group(0)
-            record.update(status=seed["status"], check="machine", snippet=snippet, retrieved=response.fetched_at,
-                          url=response.data["final_url"])
-            ev = evidence("Official screening programme", seed["url"], record["url"], snippet, text, response.fetched_at,
-                          screening_status=seed["status"], jurisdiction=seed.get("jurisdiction", seed["country"]),
-                          status_basis=seed["notes"])
-            add_asset(draft, record, ev)
-            # Subnational observations must not masquerade as country-wide screening.
-            if not seed.get("jurisdiction"):
-                target = "COUNTRY:" + seed["country"]
-                draft.node(target, "country", seed["country"])
-                draft.evidence(disease.mondo_id, target, "screened_in", ev)
-        except (http.FetchError, ValueError, KeyError) as exc:
-            record["notes"] += " " + str(exc)
-        screening_rows[(disease.mondo_id, seed["country"])] = record
-    for mondo in ["MONDO:0009499", "MONDO:0018868"]:
-        if mondo not in selected:
-            continue
-        for country in ["US", "AT", "DE", "IT", "NO"]:
-            key = (mondo, country)
-            if key not in screening_rows:
-                url = GAP_URLS.get(country, next(s["url"] for s in SCREENING if s["country"] == country)) if country not in GAP_URLS else GAP_URLS[country]
-                screening_rows[key] = row(selected[mondo], asset_id=f"nbs_{country}_{mondo.replace(':', '_')}",
-                                          asset_type="newborn_screening", name=f"Screening evidence gap ({country})", country=country,
-                                          status="UNBELEGT", source_type="URL", source_id=url, url=url, check="UNBELEGT",
-                                          notes="Candidate source only; no verified explicit programme statement. No negative claim from omission; no retrieval date invented.")
-    records.extend(screening_rows.values())
-    unique = {(r["asset_id"], r["disease_mondo"], r["source_id"]): r for r in records}
-    return {"records": [unique[k] for k in sorted(unique)], "coverage": coverage,
-            "ctgov": [studies[k] for k in sorted(studies)], **finalize(draft)}
+            for sentence in SENTENCE.findall(abstract):
+                for name, pattern in SCALE_RE.items():
+                    if name == "GMFC-MLD" and disease.mondo_id != "MONDO:0018868" and not disease.label.startswith("metachromatic"):
+                        continue  # an MLD-specific scale is attached only to MLD
+                    if pattern.search(sentence):
+                        _add_scale(draft, rows, disease, name, sentence.strip(), abstract, "PMID", paper["pmid"], paper["pubmed_url"],
+                                   paper["retrieved"], _day(paper.get("pub_date")))
+    unique = {(r["asset_id"], r["disease_mondo"], r["source_id"]): r for r in rows}
+    return {"rows": [unique[k] for k in sorted(unique)], "searched": searched, "draft": draft,
+            "studies": [studies[k] for k in sorted(studies)]}
 
 
-def add_scale(records, draft, disease, name, source_text, source_id, source_type, url, retrieved):
-    asset_id = "scale_" + hashlib.sha1(name.casefold().encode()).hexdigest()[:12]
-    record = row(disease, asset_id=asset_id, asset_type="outcome_scale", name=name, status="documented",
-                 source_type=source_type, source_id=source_id, url=url, snippet=name, retrieved=retrieved, check="machine",
-                 notes="Literal named measure; no claim of validation or transferability to another disease.")
-    records.append(record)
-    add_asset(draft, record, evidence("Europe PMC" if source_type == "PMID" else "ClinicalTrials.gov",
-                                      f"PMID:{source_id}" if source_type == "PMID" else source_id, url, name, source_text, retrieved))
+def _add_scale(draft, rows, disease, name, snippet, source_text, source_type, source_id, url, retrieved, date) -> None:
+    asset_id = _scale_id(name)
+    target = f"ASSET:{asset_id}"
+    record = f"PMID:{source_id}" if source_type == "PMID" else source_id
+    draft.node(target, "asset", name, asset_type="outcome_scale", country="", status="documented", source_type=source_type,
+               source_id=source_id, url=url, check="machine")
+    draft.evidence(disease.mondo_id, target, "has_asset", evidence(
+        "Europe PMC" if source_type == "PMID" else "ClinicalTrials.gov", record, url, snippet[:400], source_text, retrieved,
+        level="curated", date=date, confidence=0.6,
+        note="Named instrument used in this record; no claim of validation for this disease."))
+    rows.append(_row(disease, asset_id=asset_id, asset_type="outcome_scale", name=name, status="documented", source_type=source_type,
+                     source_id=source_id, url=url, snippet=snippet[:400], retrieved=retrieved[:10], check="machine",
+                     notes="Literal named measure; no claim of validation or transferability."))

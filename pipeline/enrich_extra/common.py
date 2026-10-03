@@ -522,6 +522,8 @@ def finalize(draft: Draft) -> dict:
             "level": best_level,
             "independent_sources": independent_sources,
         }
+        if "formula" in edge:  # inferred edges carry their formula on the edge too
+            edge_out["formula"] = edge["formula"]
         edges_out.append(edge_out)
 
     return {"nodes": nodes, "edges": edges_out}

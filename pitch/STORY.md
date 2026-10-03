@@ -1,6 +1,6 @@
 # Die Verkaufsgeschichte · Constellate
 
-Stand So 04.10.2026, ca. 02:00 (Wien). Entwurf des Story-Agents, Entscheidungen bei Hanno. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
+Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
 
 ## 1. Das Problem in einem Satz, den jeder fühlt
 
@@ -35,7 +35,7 @@ Was der Zuschauer verstehen muss, in dieser Reihenfolge, und nicht mehr:
 3. Deshalb kann die Nachbarkrankheit schon gebaut haben, was du brauchst. MLD hat ein Studiendesign, das eine Zulassung getragen hat (PMID 35065785). Krabbe kann beitreten oder adaptieren, statt bei null zu beginnen.
 4. Und jede Linie auf der Karte sagt, woher sie kommt, wie sicher sie ist, und was dagegen spricht. Wo nichts ist, steht „nichts gefunden, das haben wir durchsucht".
 
-Was der Zuschauer **nicht** braucht: Lysosom, Sulfatid, Psychosin, simGIC, Louvain. Diese Wörter gehören ins Tech-Video und auf `/methods`, nicht in die Demo. Ausnahme: „metachromatic leukodystrophy" wird einmal ausgesprochen und dann „MLD" genannt.
+Was der Zuschauer **nicht** braucht: Lysosom, Sulfatid, Psychosin, simGIC, Louvain, „knowledge graph", „edge", „phenotype", „natural-history cohort", „mechanism", „inferred". Diese Wörter gehören auf `/methods` oder in den Technical Walkthrough (dort mit Datei im Bild), nicht in den gesprochenen Text von Pitch und Demo. Übersetzungen, die wir sprechen: „a map of rare diseases", „a line on the map", „shared symptoms", „a study that followed untreated children for years", „what goes wrong in the body", „computed by us, formula shown". Ausnahmen: „metachromatic leukodystrophy" wird einmal ausgesprochen und dann „MLD" genannt; „one gene, P-S-A-P" ist erlaubt, weil „gene" davor steht und `/g/PSAP` im Bild ist. Die vollständige Liste mit Begründung steht in [PITCH-60S.md](PITCH-60S.md), Abschnitt „Fachwort-Liste".
 
 Der Satz, den der Zuschauer mitnimmt: **Don't rebuild what a neighbouring disease already built.**
 
@@ -57,7 +57,9 @@ Nicht die Diagnose. Nicht die Zahl. Sondern der Moment, in dem Nora sieht, dass 
 
 Konkret, in der App: Sie hat „Krabbe" getippt und sieht eine Karte mit Nachbarn. Sie klickt „metachromatic leukodystrophy" und liest im Edge-Panel, warum die Krankheiten verbunden sind. Dann öffnet sie die Action Card, und dort steht in Klartext, mit Quelle, dass die Nachbar-Community ein Studiendesign hat, das eine Zulassung getragen hat. Der emotionale Kern ist **Erleichterung, nicht Hoffnung auf Heilung**: „Ich muss das nicht alleine erfinden."
 
-Regie-Hinweis: Dieser Moment braucht im Video zwei Sekunden Stille nach dem Satz „That study design exists." Keine Musik. Der Cursor steht.
+Gesprochen wird das ohne Fachwort: „MLD has an approved gene therapy, proven with a study that followed untreated children for years. That study design exists." Der Satz ist bedingt: Er wird nur gesprochen, wenn die Action Card den Beleg (EMA/FDA) aus Pipeline-Daten zeigt; sonst gilt der Ersatzsatz in VIDEO-STRATEGY §2.
+
+Regie-Hinweis: Dieser Moment braucht im Pitch zwei Sekunden Stille vor dem Satz „That study design exists."; in der 60-s-Demo eine Sekunde. Keine Musik. Der Cursor steht.
 
 ## 4. Wie aus Ohnmacht Handlung wird
 
@@ -79,7 +81,7 @@ Die Intuition sagt: Lücken zeigen ist Schwäche. Das Gegenteil stimmt, aus drei
 
 Emotionaler Ton für die Gap-Szene: ruhig, respektvoll, kein Bedauern in der Stimme. Der Satz „That is a finding, not a failure" steht wörtlich in der App (`app/components/HonestGap.tsx`).
 
-**Vorschlag für den Demo-Fall (W30, T28, Entscheidung Hanno + Osman):** `MONDO:0012720` „Krabbe disease due to saposin A deficiency". Im aktuellen Export: Gen PSAP, ClinicalTrials.gov 0 Treffer, NIH RePORTER 0 Treffer, Europe PMC 2 Erwähnungen (Coverage-Block im Shard, Stand 2026-10-03). Der Fall hängt direkt am Hero-Pfad und schließt den Kreis: Diese Kinder fallen durch jeden GALC-Enzymtest, nur die Mechanismus-Sicht findet sie (OMIM 611722). Alternative: `MONDO:0009590` „MLD due to saposin B deficiency" (ClinicalTrials.gov 0, Europe PMC 0, RePORTER 0, Open Targets 0). Voraussetzung für die Org-Aussage „keine eigene Gruppe": Osman bestätigt; bis dahin zeigt die Szene nur die Studien- und Literatur-Lücke.
+**Demo-Fall (entschieden, P11, vorbehaltlich Osmans Org-Bestätigung):** `MONDO:0012720` „Krabbe disease due to saposin A deficiency". Im aktuellen Export: Gen PSAP (OMIM 611722), ClinicalTrials.gov 0 Treffer, NIH RePORTER 0 Treffer, Europe PMC 2 Erwähnungen (Coverage-Block im Shard, abgefragt 2026-10-03). Der Fall hängt direkt am Hero-Pfad und schließt den Kreis: Diese Kinder fallen durch jeden GALC-Enzymtest, nur die Mechanismus-Sicht findet sie. In der 60-s-Demo hat die Szene sechs Sekunden und einen Satz: „Where there is no trail, we say so: what we searched, what to test next." Die Zahlen stehen im Bild, nicht im Ton. Bis Osman die Org-Lage bestätigt, zeigt die Szene nur die Studien- und Literatur-Lücke.
 
 ## 6. Grenzen, damit emotional nicht kitschig wird
 
@@ -97,7 +99,7 @@ Emotionaler Ton für die Gap-Szene: ruhig, respektvoll, kein Bedauern in der Sti
 | E2 | „Imagine the first night after the diagnosis." | setzt sofort die Szene, spiegelt den Brief („Imagine learning that your child …") | Brief-Sprache, andere Teams eröffnen ähnlich |
 | E3 | „Ten thousand rare diseases, ten thousand names. The names are the problem." | Jury-Logik von Sekunde eins, Pointe am Ende | kalt, keine Figur, Zahl aus dem Brief, die alle nennen |
 
-**Empfehlung: E1.** Er ist der einzige der drei, der die Zuschauerin direkt anspricht, und er trägt die ganze These (Nachbarn, Namen, Wiederverwendung) in zwei Sätzen. Im Demo-Video steht er in Szene 1 nach dem Komposit-Hinweis, im Pitch ist er der erste Satz.
+**Entschieden (P9): E1.** Er ist der einzige der drei, der die Zuschauerin direkt anspricht, und er trägt die ganze These (Nachbarn, Namen, Wiederverwendung) in zwei Sätzen. Im Pitch ist er der erste Satz. In der 60-s-Demo fehlt dafür die Zeit; dort steht er am Ende im Bild (`/about`), gesprochen wird er im Team-Video als gemeinsamer Schluss (Hanno und Recep, dann Osman „We're Constellate, Vienna Hub").
 
 ## 8. Schlusssatz · drei Varianten
 
@@ -107,7 +109,7 @@ Emotionaler Ton für die Gap-Szene: ruhig, respektvoll, kein Bedauern in der Sti
 | S2 | „Every edge has a source, and when there is none, we say so." | Vertrauen, Honest Gap, Evidence Integrity | eher Methoden- als Schlusssatz |
 | S3 | „Your family is not the first. Now the map shows you who else is on it." | schließt den Bogen zu E1 | „on it" ist schwach, klingt nach Liste |
 
-**Empfehlung: S1 als Schlusssatz, S2 als Satz in der Honest-Gap-Szene.** Die Jury soll nach vierzig Teams einen Satz wiederholen können, und „Don't rebuild what a neighbouring disease already built" ist der, der unseren Unterschied benennt. S2 gehört an die Stelle, an der die Lücke gezeigt wird; dort wirkt er, am Ende würde er die Handlung relativieren. Die Brief-Tagline („Five thousand points of light …") erscheint höchstens als Bildschirmtext, nicht gesprochen: Jedes Team hat sie.
+**Entschieden (P9): S1 als Schlusssatz, S2 in der Honest-Gap-Szene** (in der Kurzform „Where there is no trail, we say so"). Die Jury soll nach vierzig Teams einen Satz wiederholen können, und „Don't rebuild what a neighbouring disease already built" ist der, der unseren Unterschied benennt. S2 gehört an die Stelle, an der die Lücke gezeigt wird; dort wirkt er, am Ende würde er die Handlung relativieren. Die Brief-Tagline („Five thousand points of light …") erscheint höchstens als Bildschirmtext, nicht gesprochen: Jedes Team hat sie.
 
 ## 9. Was in keinem Video und keinem Pitch vorkommt (Quellenlage)
 

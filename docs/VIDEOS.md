@@ -1,39 +1,33 @@
-# 🎬 Videos · von Anfang an mitgedacht
+# 🎬 Videos · drei Pflichtvideos, je maximal 60 Sekunden
 
-Vier Videos: Demo (2 min) · Tech (3 min) · Team (60–90 s) · **1-min-Walkthrough** (C5-Pflicht). Alle auf Englisch, Querformat, ruhige Stimme, keine Musik, keine Effekte. Upload-Format vorher in HackOS prüfen (YouTube unlisted vs. Drive).
+Stand So 04.10.2026, 01:30. Verbindliche Vorgabe des Teams: **genau drei Videos, jedes höchstens 60 s, Dateiformat MP4 oder MOV.** (1) Team Introduction, (2) Product Demo, (3) Technical Walkthrough. Die früheren Formate (Demo 2 min, Tech 3 min, Team 60–90 s, separater 1-min-Walkthrough) gelten nicht mehr; die Brief-Vorgabe „1-minute walkthrough" (C5-Brief S. 6) erfüllt die Product Demo.
 
-## 1 · Demo Video (2:00) · Recep spricht, Screen-Recording der Live-URL
+Alle Shotlists, Voice-over-Texte Wort für Wort, Belege im Bild, Aufnahme-Checklisten, Schnitt- und Export-Hinweise stehen in [pitch/VIDEO-STRATEGY.md](../pitch/VIDEO-STRATEGY.md). Voice-over-Blöcke für ElevenLabs: [pitch/VOICE-ELEVENLABS.md](../pitch/VOICE-ELEVENLABS.md). Pitch-Text und Fachwort-Liste: [pitch/PITCH-60S.md](../pitch/PITCH-60S.md).
 
-| Zeit | Bild | Text (Kern) |
-|---|---|---|
-| 0:00–0:15 | Schwarz, dann eine Suchbox | „Maria leads a patient group for Krabbe disease. No approved drug. She is building a registry from scratch, and she does not know that three universities away someone already solved half her problem." |
-| 0:15–0:45 | tippt „Krabbe", Ego-Graph erscheint, klickt GALC → Mechanismus → PSAP | „Constellate organizes rare diseases by mechanism, not by name. One gene, PSAP, hides under three disease names: Krabbe, metachromatic leukodystrophy, Gaucher. Every edge shows its source, its evidence level, and its counter-evidence." (Edge-Panel aufklappen, PMID zeigen) |
-| 0:45–1:15 | klickt MLD → Assets: Gentherapie, Natural-History-Studie, MLD Foundation | „MLD already has an approved gene therapy, and its approval leaned on a natural-history study as external control. That study design exists. Maria can adapt it instead of rebuilding it." |
-| 1:15–1:40 | Action Card | „The Action Card tells her what transfers, what differs, and what needs expert review, with every sentence citing the edge behind it. She leaves with a sourced proposal for the MLD Foundation." |
-| 1:40–1:55 | Devon-Suche: ultra-seltene Krankheit → Honest-Gap-Screen | „And when there is no evidence, Constellate says so: what we searched, what is missing, and the next question to test." |
-| 1:55–2:00 | Logo + URL | „Five thousand points of light. One map. Constellate." |
+## Übersicht
 
-## 2 · 1-min-Walkthrough (C5-Pflicht) · Recep
-Exakt die Maria-Journey ohne Intro-Pathos: Suche → PSAP-Kante mit Quelle → MLD → Asset → Action Card → letzter Satz „here is what must be checked before we join forces". Ein Take, Cursor langsam, nichts erklären, was man sieht.
+| # | Video | Länge | Wer | Ton | Kernbotschaft |
+|---|---|---|---|---|---|
+| 1 | Team Introduction | ≤ 60 s (Shotlist 0:58) | Osman filmt und schneidet; Hanno, Osman, Recep vor der Kamera | echte Stimmen, kein Voice-over | Drei Leute, drei Rollen, ein Grund: Niemand soll bei null anfangen, wenn die Nachbarkrankheit schon weiter ist |
+| 2 | Product Demo | ≤ 60 s (0:58) | Recep nimmt auf und schneidet | ElevenLabs `eleven_v4`, 135 Wörter | Dein Problem hat einen Nachbarn, der es schon halb gelöst hat, und die Karte zeigt mit Quelle, wo |
+| 3 | Technical Walkthrough | ≤ 60 s (0:58) | Hanno | ElevenLabs `eleven_v4`, 132 Wörter | Der Graph ist die Leitplanke: kein Satz ohne Quelle, kein Modell ohne Prüfung durch Code |
 
-## 3 · Tech Video (3:00) · Hanno
+**Export:** MP4 (H.264, 1920×1080, 30 fps, AAC) oder MOV. Länge nach dem Export prüfen, unter 60,0 s. Dateinamen `constellate_team.mp4`, `constellate_demo.mp4`, `constellate_tech.mp4`.
 
-| Zeit | Bild | Inhalt |
-|---|---|---|
-| 0:00–0:30 | Architektur-Diagramm | Pipeline → Graph-JSON → Next.js, warum kein Graph-DB |
-| 0:30–1:15 | Terminal `make reproduce` läuft, dann `graph.json` im Editor | Quellen (HPO, Orphanet, MONDO, ClinVar, Trials, RePORTER, Open Targets, Reactome), Slice = MONDO-Subtree, Datenmodell mit **Evidenzstufen** zeigen |
-| 1:15–2:15 | Code: `05_openai_extract.py` (Structured Outputs), `06_openai_reconcile.py` (Embeddings + Judge), `/api/explain` (Prompt mit Zitierpflicht) | **Built with OpenAI**: Extract, Reconcile, Explain, jeweils 20 s, Output live zeigen |
-| 2:15–2:45 | `07_analytics.py` | IC-gewichtete Phänotyp-Ähnlichkeit, Pathway-Jaccard, Louvain, automatische Gegenbeispiele (PMD), Coverage |
-| 2:45–3:00 | Limitations-Slide | OMIM nur indirekt, Orgs kuratiert, ein Cluster, was als Nächstes validiert wird |
+## Product Demo in einem Satz
 
-## 4 · Team Video (60–90 s) · Osman filmt
-Je 20–25 s pro Person, Handy, derselbe Hintergrund:
-- Name, Rolle im Team, Studium/Background in einem Satz
-- „Why this challenge" in einem Satz, persönlich, kein Pitch
-- Abschluss alle drei im Bild: „We're Constellate, Vienna Hub."
+Problem → Herangehensweise → Lösung im Bild, Noras Weg in einem Take: Startseite, Suche „Krabbe" → Graph mit Edge-Panel (Quelle sichtbar) → `/g/PSAP` „One gene, 4 disease names" → „Related communities" MLD, „Why linked" → Action Card `?via=MONDO_0018868` → Honest Gap `/d/MONDO_0012720` → `/about` mit URL. Nora ist eine Komposit-Figur und wird im ersten Satz so genannt (DECISIONS P9).
+
+## Technical Walkthrough in einem Satz
+
+Ein Satz Architektur (offene Datenbanken → Pipeline → evidenzgestufter Graph → statische App), `make validate` grün mit Hero-Zeile, drei OpenAI-Stellen mit Datei im Bild (`pipeline/05_openai_extract.py`, `pipeline/06_openai_reconcile.py`, `app/lib/explain.ts`), `npm run e2e:run` grün, Offenlegung als Untertitel.
 
 ## Regeln
-- Erst aufnehmen, wenn Feature-Freeze (12:00) gilt. Vorher nur Skript und Probe-Takes.
-- Live-URL im Video sichtbar lassen (Browserleiste), keine localhost-Demos.
-- Jeder Claim im Demo-Video muss im Tool als Kante mit Quelle existieren. Was Recep in R1 nicht belegen konnte, kommt nicht ins Video.
-- Pitch 10.10. (falls Top 2): Slides aus R4, 3 min, dieselbe Maria-Story + Moonshot-Timeline.
+
+- Erst aufnehmen, wenn Feature-Freeze (12:00) gilt. Vorher nur Skript und Probe-Takes. Upload bis 14:00, Links im Teamboard und in [STATUS.md](STATUS.md).
+- Englisch, Querformat, ruhige Stimme, keine Musik, keine Effekte, keine Motion-Clips in den Pflichtvideos.
+- Live-URL im Video sichtbar lassen (Browserleiste, Production-Domain), keine localhost-Demos, keine Fixture-Badges.
+- Jeder Claim im Voice-over existiert im Tool als Kante mit Quelle oder steht mit Primärquelle in [MEDICAL-BACKGROUND.md](MEDICAL-BACKGROUND.md) (ohne ⚠️). Was nicht belegt sichtbar ist, bekommt den markierten Ersatzsatz.
+- Fachwörter nur, wenn sie im selben Moment im Bild erklärt sind (Liste in [pitch/PITCH-60S.md](../pitch/PITCH-60S.md)). Kein „cure", keine Organisationsnamen, solange `data/curated/orgs.csv` leer ist, keine 10×-Zahl ohne `docs/MOONSHOT.md`.
+- Offenlegung in Video-Beschreibung und README: Voice-over mit ElevenLabs (Eleven v4), Team-Video echte Stimmen, Code mit Claude Code.
+- Pitch 10.10. (falls Top 2): 3 min, Hauptfassung aus pitch/PITCH-60S.md als erste Minute, dann Demo-Pfad live, dann Moonshot.

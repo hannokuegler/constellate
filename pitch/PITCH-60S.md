@@ -1,78 +1,109 @@
 # 60-Sekunden-Pitch · Constellate
 
-Zwei Fassungen, Wort für Wort, Englisch, je ca. 145 Wörter (bei ruhigem Tempo 140 bis 150 Wörter pro Minute). Regieanweisungen in eckigen Klammern sind nicht zu sprechen. Jede medizinische Aussage trägt in der Fußnote ihre Primärquelle; jede Zahl stammt aus dem Brief oder aus `app/public/data/meta.json` (Export `2026-10-03+397464a`).
+Stand So 04.10.2026, 01:00 (Wien). Fassung nach dem Team-Feedback: weniger Fachbegriffe, Reihenfolge **Problem → Herangehensweise → Lösung → Schluss**, verständlich ohne Medizinwissen. Englisch, Wort für Wort, Regie in eckigen Klammern (nicht sprechen). Jede medizinische Aussage trägt ihre Primärquelle in der Fußnote, nicht im gesprochenen Text. Zahlen stammen aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) (ohne ⚠️) oder `app/public/data/meta.json` (Export `2026-10-03+397464a`). Nora ist eine Komposit-Figur (DECISIONS P9).
 
-Einsatz: Live-Pitch am 10.10. (falls Top 2, dort als erste Minute der drei), Discord-Post als Text, Elevator-Version für Gespräche. Für die Videos gelten die Skripte in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md).
+Einsatz: Live-Pitch 10.10. (falls Top 2, als erste Minute), Discord-Post als Text, HackOS-Feld „Description". Für die drei 60-s-Videos gelten die Skripte in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md); die Demo folgt derselben Dramaturgie.
 
-## Fassung A · „Herz zuerst" (empfohlen)
+## Hauptfassung · „Herz zuerst" · 60 s
 
-[Bild: Startseite von Constellate, dunkel, die zwei Karten „We just got the diagnosis" und „I lead a patient group". Sprecher ruhig, kein Trailer-Ton.]
+Tempo ruhig, ca. 2,3 Wörter pro Sekunde. Fett = Betonung. Pausen sind Teil der Minute.
 
-Imagine the first night after the diagnosis. Your child has Krabbe disease. You learn there is no approved drug, anywhere in the world.¹
+**Problem (0:00–0:15)**
 
-[Pause, zwei Sekunden.]
+[Bild: Startseite von Constellate, die zwei Karten „We just got the diagnosis" und „I lead a patient group". Sprecher ruhig, kein Trailer-Ton. Blick ins Publikum.]
 
-What nobody tells you: **your family is not the first.** What you need may already exist under another disease's name.
+**Your family is not the first.** What you need may already exist under another disease's name.
+
+[Pause, eine Sekunde.]
+
+Imagine the night after the diagnosis. Your child has Krabbe disease. There is no approved medicine, anywhere in the world.¹
+
+[Pause, zwei Sekunden. Nichts klicken.]
+
+**Herangehensweise (0:15–0:35)**
 
 [Bild: Gen-Seite `/g/PSAP`, Überschrift „One gene, 4 disease names".]
 
-Constellate is a map of rare diseases organised by mechanism, not by name. One gene, P-S-A-P, sits behind three disease names: a Krabbe-like, an MLD-like and a Gaucher-like disorder.²
+Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, P-S-A-P, sits behind three disease names, three separate communities.²
 
-[Bild: Action Card, Abschnitt „What transfers".]
+[Bild: Edge-Panel mit Quelle, Datum, Stufe, „Counter-evidence".]
 
-Metachromatic leukodystrophy, the neighbour, already has an approved gene therapy, proven against a natural-history cohort of untreated children.³ **That study design exists.** A Krabbe group could ask to join or adapt it, instead of starting from zero.
+Every line shows its source, how sure we are, what speaks against it.
 
-[Pause. Bild: Edge-Panel mit „Counter-evidence" und Honest-Gap-Screen.]
+**Lösung und Wirkung (0:35–0:55)**
 
-Every link shows its source, its date, its evidence level, and its counter-evidence. Where there is no trail, we say so, and show what we searched.
+[Bild: Krabbe-Seite, „Related communities", Zeile „metachromatic leukodystrophy".]
 
-[Bild: `/about`, URL sichtbar.]
+A Krabbe family sees its neighbour on the map: metachromatic leukodystrophy, M-L-D. MLD has an approved gene therapy, proven with a study that followed untreated children for years.³
 
-Eight hundred seventy-four diseases, one map. Constellate.⁴
+[Pause, zwei Sekunden. Cursor steht.]
+
+**That study design exists.**
+
+[Bild: Action Card, Spalten „What transfers / What differs / Needs expert review".]
+
+The family leaves with a one-page proposal: what carries over, what differs, what an expert must check.
+
+**Schluss (0:55–1:00)**
+
+[Bild: Honest-Gap-Screen `/d/MONDO_0012720`, dann `/about` mit URL in der Browserleiste.]
+
+Where there is no trail, we say so.
 **Don't rebuild what a neighbouring disease already built.**
 
-Wortzahl: 147.
+[Stehen bleiben. Kein „thank you".]
 
-## Fassung B · „Jury zuerst"
+Wortzahl: 143 (ohne Regie, gezählt mit `wc -w`). Bei 2,3 bis 2,4 Wörtern pro Sekunde 60 Sekunden einschließlich der drei Pausen.
 
-[Bild: `/methods`, „How we know", die vier Evidenzstufen.]
+### Gesprochener Text am Stück (zum Kopieren, Discord und HackOS)
 
-Ten thousand rare diseases. Fewer than five percent have an approved treatment.⁵ The knowledge to connect them exists, in OMIM, HPO, PubMed and ClinicalTrials.gov, but it sits under ten thousand different names.
+Your family is not the first. What you need may already exist under another disease's name. Imagine the night after the diagnosis. Your child has Krabbe disease. There is no approved medicine, anywhere in the world. Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, PSAP, sits behind three disease names, three separate communities. Every line shows its source, how sure we are, what speaks against it. A Krabbe family sees its neighbour on the map: metachromatic leukodystrophy, MLD. MLD has an approved gene therapy, proven with a study that followed untreated children for years. That study design exists. The family leaves with a one-page proposal: what carries over, what differs, what an expert must check. Where there is no trail, we say so. Don't rebuild what a neighbouring disease already built.
 
-Constellate is an evidence-graded knowledge graph: eight hundred seventy-four diseases, one thousand sixty-six genes, four levels of evidence, and a counter-evidence slot on every edge that is never missing.⁴ Two hundred fifty-one counter-example pairs, similar symptoms, different mechanism, flagged automatically.⁴
+## Kurzfassung · 30 s
 
-[Bild: Tech-Folie „Built with OpenAI".]
+[Bild: Startseite, dann Action Card.]
 
-OpenAI at three controlled points: Extract, with a verbatim snippet check; Reconcile, names to stable IDs; Explain, where a sentence without an edge is dropped. The graph is the guardrail.
+**Your family is not the first.** Your child has Krabbe disease, and there is no approved medicine anywhere in the world.¹ Constellate maps rare diseases by what goes wrong in the body, not by name. A Krabbe family sees its neighbour, M-L-D, which already has an approved gene therapy and the study behind it.³ Every line shows its source; where there is none, we say so. **Don't rebuild what a neighbouring disease already built.**
 
-[Bild: Action Card.]
+Wortzahl: 73. Einsatz: Flur-Gespräch, Mentor-Session, Discord-Kurztext.
 
-And the journey: a mother types Krabbe. The graph leads her, through one shared gene, to MLD, whose gene therapy was approved against a natural-history cohort,³ and to an Action Card she can send this week. Where there is no trail, we say so.
+## Fachwort-Liste · was ersetzt wurde und warum
 
-**Don't rebuild what a neighbouring disease already built.**
+Regel aus dem Team-Feedback: Ein Fachwort darf nur bleiben, wenn es im selben Moment im Bild erklärt wird. Alles andere wird übersetzt. Gilt für Pitch und für die gesprochenen Teile der drei Videos.
 
-Wortzahl: 146.
+| Vorher (Fassung vom 03.10.) | Jetzt | Warum |
+|---|---|---|
+| knowledge graph, evidence-graded | a map of rare diseases | „Graph" ist für Nicht-Informatiker ein Diagramm; „map" ist das Bild, das die App zeigt |
+| organised by mechanism | sorted by what goes wrong in the body, not by name | „Mechanismus" braucht Biologie; die Übersetzung sagt dasselbe in Alltagswörtern |
+| edge | line (Pitch), link (Video) | „Edge" ist Graphentheorie; auf dem Bildschirm sieht man Linien |
+| source, date, evidence level, confidence, counter-evidence | its source, how sure we are, what speaks against it | drei Dinge statt fünf; „Datum" und „Stufe" stehen im Edge-Panel im Bild |
+| natural-history cohort of untreated children | a study that followed untreated children for years | Vorgabe aus dem Feedback; Fachbegriff bleibt in der Fußnote |
+| metachromatic leukodystrophy | einmal voll, danach M-L-D | Vorgabe; der volle Name steht beim ersten Nennen im Bild (Zeile „Related communities") |
+| PSAP | One gene, P-S-A-P | erlaubt, weil „a gene" davor steht und `/g/PSAP` im Bild ist |
+| phenotype similarity, simGIC 0.22 | linked by shared symptoms, formula shown (nur Demo) | „Phänotyp" wird zu „Symptome"; die Formel ist im Edge-Panel sichtbar, der Wert wird nicht vorgelesen |
+| inferred | computed by Constellate (Demo) bzw. weggelassen (Pitch) | die Stufe steht als Badge im Bild |
+| Action Card: what transfers, what differs, needs expert review | a one-page proposal: what carries over, what differs, what an expert must check | „transfers" ohne Objekt ist unklar; „Action Card" bleibt nur, wenn die Karte im Bild ist |
+| Honest Gap | where there is no trail, we say so | der Screen-Titel steht im Bild; der Satz erklärt ihn |
+| stem-cell transplant, helps only before symptoms start | weggelassen | Therapiedetail ohne Nutzen für die Botschaft; bleibt in Fußnote 1 |
+| hypomyelinating, lysosomal, PLP1 (Gegenbeispiel) | weggelassen im Pitch; in der Demo „the tool says no, with the reason shown" | nur mit Bild erklärbar; das Gegenbeispiel bleibt in der App und im Tech-Video |
+| 874 diseases, 1,066 genes, 251 counter-example pairs, 17 clusters | weggelassen | Jury-Zahlen ohne Gefühl; stehen auf `/methods` und im Tech-Video |
+| Louvain, Resnik, simGIC, Structured Outputs | nur Tech-Video, dort mit Datei im Bild | gehören zur technischen Glaubwürdigkeit, nicht zur Botschaft |
+| cure | nie | Heilsversprechen; Constellate ist Forschungs-Navigation |
 
-## Empfehlung
+Bewusst behalten: „gene", „gene therapy", „diagnosis", „approved medicine", „study". Diese Wörter kennt jeder aus Nachrichten.
 
-**Fassung A für Pitch und Discord, Fassung B als Antwort-Reservoir für die Q&A und als Text im HackOS-Feld „Problem Statement / Description".**
+## Regie
 
-Begründung: Die Jury bewertet „Patient progress" und „Ambition" neben „Graph quality" und „Evidence integrity" (Brief S. 6). Nach vierzig Teams bleibt eine Figur hängen, nicht eine Architektur; Fassung A liefert die Figur in sieben Sekunden und die Architektur in einem Satz („source, date, evidence level, counter-evidence"). Fassung B gewinnt, wenn das Publikum ausschließlich aus Datenleuten besteht oder wenn der Pitch nach einer Demo kommt, die die Figur schon eingeführt hat.
-
-Beide Fassungen vermeiden: Heilsversprechen, 10×-Zahlen (fehlt `docs/MOONSHOT.md`), Namen von Organisationen (orgs.csv leer), Namen von Forschenden, US-Screening-Staaten, Österreich-Screening (alle ⚠️ oder unbelegt, siehe [STORY.md](STORY.md) §9).
-
-## Regie, für beide Fassungen
-
-- Tempo: 140 bis 150 Wörter pro Minute, Pausen sind Teil der Minute. Fassung A hat zwei Pausen (nach „anywhere in the world" und nach „starting from zero"), zusammen vier Sekunden.
-- Betonung (fett oben): „your family is not the first", „That study design exists", „Don't rebuild".
-- „P-S-A-P" buchstabieren, „MLD" buchstabieren, „metachromatic leukodystrophy" einmal voll aussprechen (Aussprache in [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md)).
-- Kein Bild von Kindern, kein Klinik-Stock. Nur Screens der echten App mit sichtbarer URL.
-- Letzter Satz: Blick ins Publikum, dann stehen bleiben. Nicht „thank you" anhängen, der Satz ist der Schluss.
+- Tempo 130 bis 145 Wörter pro Minute; drei Pausen (nach „anywhere in the world", vor „That study design exists", vor dem Schlusssatz), zusammen fünf Sekunden.
+- Betonung: „your family is not the first", „That study design exists", „Don't rebuild".
+- „P-S-A-P" und „M-L-D" buchstabieren, „metachromatic leukodystrophy" einmal voll (Aussprache in [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md) §5).
+- Nur Screens der echten App mit sichtbarer URL. Kein Bild von Kindern, kein Klinik-Stock, keine Musik.
+- Nora wird im Pitch nicht genannt (keine Zeit für den Komposit-Hinweis); in der Demo heißt sie Nora und wird im ersten Satz als Komposit gekennzeichnet.
 
 ## Fußnoten (Primärquellen)
 
 1. Krabbe: kein zugelassenes Medikament weltweit; HSCT ist die einzige etablierte Option und wirkt nur präsymptomatisch. GeneReviews NBK1238; Escolar et al., NEJM 2005, PMID 15901860. ([docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) §3)
-2. PSAP: Saposin-A-Defizienz Krabbe-ähnlich (OMIM 611722), Saposin-B-Defizienz MLD-ähnlich (OMIM 249900), Saposin-C-Defizienz Gaucher-ähnlich (OMIM 610539). In der App zeigt `/g/PSAP` vier Namen (die vierte ist die kombinierte PSAP-Defizienz, OMIM 611721); der Pitch sagt „three disease names", weil die drei Verwandtschaften die Pointe sind, und die Gen-Seite steht als Beleg daneben. (§5)
-3. MLD-Gentherapie (atidarsagene autotemcel, Libmeldy/Lenmeldy): EU-Zulassung 17.12.2020 (EMA EPAR Libmeldy), FDA 18.03.2024 (FDA-Pressemitteilung). Wirksamkeit gegen Natural-History-Kohorte: 29 behandelte vs. 31 unbehandelte Kinder, Fumagalli et al., Lancet 2022, PMID 35065785. (§4)
-4. `app/public/data/meta.json`, Version `2026-10-03+397464a`: 874 Krankheiten (350 Kern), 1.066 Gene, 4.717 Phänotype im Index; Stufen 14.512 observed, 27.066 curated, 4.181 inferred, 488 contradicted; 251 Gegenbeispiel-Paare; 17 Cluster. Vor dem Pitch gegen den dann aktuellen Export prüfen.
-5. C5-Challenge-Brief, Seite 2: 10,000 known rare diseases, <5 % have an approved treatment.
+2. PSAP: Saposin-A-Defizienz Krabbe-ähnlich (OMIM 611722), Saposin-B-Defizienz MLD-ähnlich (OMIM 249900), Saposin-C-Defizienz Gaucher-ähnlich (OMIM 610539). Drei Krankheitsnamen in drei Patientengemeinschaften (§5). Die App zeigt auf `/g/PSAP` vier Namen (die vierte ist die kombinierte PSAP-Defizienz, OMIM 611721); der Pitch sagt „three", weil die drei Verwandtschaften die Pointe sind, die Gen-Seite steht als Beleg daneben.
+3. MLD-Gentherapie (atidarsagene autotemcel, Libmeldy/Lenmeldy): EU-Zulassung 17.12.2020 (EMA EPAR Libmeldy), FDA 18.03.2024 (FDA-Pressemitteilung). Wirksamkeit gegen Natural-History-Kohorte: 29 behandelte vs. 31 unbehandelte Kinder, Fumagalli et al., Lancet 2022, PMID 35065785 (§4, §8). Im Video nur sprechen, wenn die Action Card den Abschnitt „Approved therapies" mit EMA- oder FDA-Quelle aus Pipeline-Daten zeigt (siehe VIDEO-STRATEGY §2).
+4. Nicht mehr im gesprochenen Text, als Reserve für Q&A: `app/public/data/meta.json` Version `2026-10-03+397464a`: 874 Krankheiten (350 Kern), 1.066 Gene, 4.717 Phänotype im Index; 14.512 observed, 27.066 curated, 4.181 inferred, 488 contradicted; 251 Gegenbeispiel-Paare; 17 Cluster. Vor dem Pitch gegen den aktuellen Export prüfen.
+5. Q&A-Reserve: C5-Challenge-Brief S. 2, 10.000 bekannte seltene Krankheiten, unter 5 % mit zugelassener Therapie.

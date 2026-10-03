@@ -2,7 +2,7 @@
 
 In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie), z. B. nach einem Kontext-Reset, am Abgabetag oder vor der Preisverleihung am 10.10. Der Prompt beschreibt **wie** man arbeitet, nicht **wo** man gerade steht: den Stand ermittelst du selbst (Abschnitt 2). Pflege: am Ende jeder Arbeitseinheit aktualisieren (Abschnitt 8).
 
-Letzte Aktualisierung: So 04.10.2026, 01:10 Wien (Branch `data-steward`).
+Letzte Aktualisierung: So 04.10.2026, 01:16 Wien (Branch `data-steward`).
 
 ---
 
@@ -100,7 +100,7 @@ Hinweis zum Branch: Ein mit `git switch -c data-steward origin/main` angelegter 
 8. Zuständigkeit: du änderst `pipeline/`, `data/`, `app/public/data/`, Daten-Doku. `app/` (außer Daten) gehört der App-/Design-Session; bei Bedarf eine präzise Bitte an Hanno formulieren.
 9. Melden statt raten: jede Stunde 5 Zeilen an Hanno (fertig / dran / blockiert / nächster Schritt / Uhrzeit), außerdem sofort bei rotem validate, Kosten > 5 USD oder einem medizinisch heiklen Fund (z. B. eine Krabbe-Zulassung taucht auf).
 
-Ergänzend aus der Praxis: Der Git-Guardrail-Hook auf Hannos Mac blockt `git clean -f` und ähnliche Befehle. Nicht umgehen (auch nicht mit `rm`); meist reicht `git restore <pfad>`, sonst Hanno fragen.
+Ergänzend aus der Praxis: `pub.orcid.org` verbietet per robots.txt jeden automatischen Abruf; ORCID-Belege (z. B. für `data/curated/person_aliases.csv`) nur im Browser selbst öffnen. Der Git-Guardrail-Hook auf Hannos Mac blockt `git clean -f` und ähnliche Befehle. Nicht umgehen (auch nicht mit `rm`); meist reicht `git restore <pfad>`, sonst Hanno fragen.
 
 ## 6 · Checkliste „Datenlauf"
 

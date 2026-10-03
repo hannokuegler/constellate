@@ -1,7 +1,10 @@
 """06_openai_reconcile — patient-organisation disease names (free text) -> MONDO IDs -> advocated_by edges.
 
-Input : data/curated/orgs.csv (Osman); if it has no rows: data/curated/orgs_draft.csv (unverified, tests only, flagged
-        in every output). Column disease_names is split at ";". Disease catalog: label + synonyms of all slice diseases.
+Input : data/curated/orgs.csv, ONLY rows with verified_date set (checked by hand on the org's own page). Unverified rows are
+        skipped and listed. data/curated/orgs_draft.csv is read only with --allow-draft; those org nodes and their evidence
+        carry draft_input: true and meta.warning (tests only, never ship). An org without url gets no node and no edge: its
+        names land in unmatched.csv with reason "no url". Column disease_names is split at ";".
+        Disease catalog: label + synonyms of all slice diseases.
 Method: openai (default when OPENAI_API_KEY, OPENAI_MODEL_EMBED and OPENAI_MODEL_JUDGE are set)
           1. embeddings (OPENAI_MODEL_EMBED) of every catalog name, computed once and cached; top-5 MONDO by cosine
           2. judge (OPENAI_MODEL_JUDGE, Structured Outputs) picks one of the 5 or "none"; the schema only allows those IDs
@@ -12,7 +15,7 @@ Output: data/reconcile/org_disease_edges.json   {meta, nodes: org nodes ORG:<slu
         data/reconcile/unmatched.csv            names without a MONDO match (input for the honest-gap screen)
 Cache : data/cache/openai/reconcile/embeddings_<model>.npz, data/cache/openai/reconcile/judge/<model>/<prompt_version>/
 
-  uv run --project pipeline python pipeline/06_openai_reconcile.py [--method auto|openai|fuzzy] [--orgs PATH]
+  uv run --project pipeline python pipeline/06_openai_reconcile.py [--method auto|openai|fuzzy] [--orgs PATH] [--allow-draft [--draft PATH]]
 """
 from __future__ import annotations
 
@@ -57,6 +60,7 @@ LEVEL_ORDER = ["observed", "curated", "text_mined", "inferred"]
 ORG_FIELDS = ["country", "has_registry", "registry_url", "has_natural_history_study", "nhs_url", "has_biobank", "contact_url",
               "notes", "verified_date"]
 UNMATCHED_COLUMNS = ["org_name", "org_id", "org_url", "disease_name", "method", "reason", "top_candidates", "input_file"]
+NO_URL = "no url"
 
 
 class CacheMiss(RuntimeError):
@@ -71,22 +75,35 @@ def read_orgs(path: Path) -> list[dict]:
         return [row for row in csv.DictReader(handle) if (row.get("org_name") or "").strip()]
 
 
-def choose_input(orgs: Path | None = None, draft: Path | None = None, override: Path | None = None) -> tuple[Path, list[dict], bool] | None:
-    """(file, rows, is_draft). orgs.csv wins as soon as it has one row; the draft is only a test fallback."""
+def load_input(orgs: Path | None = None, draft: Path | None = None, allow_draft: bool = False) -> tuple[list[dict], dict]:
+    """Rows that may enter the product: orgs.csv rows with verified_date; with allow_draft also orgs_draft.csv rows
+    (flagged _draft, skipped when the same org is already verified). Every row gets _input_file and _draft."""
     orgs, draft = orgs or ORGS, draft or ORGS_DRAFT
-    if override:
-        return override, read_orgs(override), "draft" in override.name
-    for path, is_draft in ((orgs, False), (draft, True)):
-        rows = read_orgs(path)
-        if rows:
-            return path, rows, is_draft
-    return None
+    rows: list[dict] = []
+    report = {"verified": 0, "skipped_unverified": [], "draft": 0, "draft_skipped_as_verified": 0}
+    seen: set[str] = set()
+    for row in read_orgs(orgs):
+        if not (row.get("verified_date") or "").strip():
+            report["skipped_unverified"].append(row["org_name"].strip())
+            continue
+        seen.add(slugify(row["org_name"]))
+        rows.append(row | {"_input_file": orgs.name, "_draft": False})
+        report["verified"] += 1
+    if allow_draft:
+        for row in read_orgs(draft):
+            if slugify(row["org_name"]) in seen:
+                report["draft_skipped_as_verified"] += 1
+                continue
+            seen.add(slugify(row["org_name"]))
+            rows.append(row | {"_input_file": draft.name, "_draft": True})
+            report["draft"] += 1
+    return rows, report
 
 
 def split_names(value: str | None) -> list[str]:
     seen: set[str] = set()
     names = []
-    for name in (value or "").split(";"):
+    for name in re.split(r";(?![^()]*\))", value or ""):  # ';' inside parentheses belongs to the name: "Niemann-Pick (ASMD; NPC)"
         name = " ".join(name.split())
         if name and name.lower() not in seen:
             seen.add(name.lower())
@@ -380,36 +397,51 @@ def edge_id(source: str, target: str, edge_type: str) -> str:
     return "e_" + hashlib.sha1(f"{source}|{target}|{edge_type}".encode()).hexdigest()[:12]  # identical to 03_build_graph
 
 
-def org_node(row: dict, org_id: str, is_draft: bool, input_name: str) -> dict:
+def org_node(row: dict, org_id: str) -> dict:
     node = {"id": org_id, "type": "org", "label": row["org_name"].strip(), "url": (row.get("url") or "").strip() or None,
             "disease_names": split_names(row.get("disease_names")),
             "orpha_ids": [x.strip() for x in (row.get("orpha_ids") or "").split(";") if x.strip()]}
     node.update({k: (row.get(k) or "").strip() or None for k in ORG_FIELDS})
-    node.update(input_file=input_name, draft_input=is_draft)
+    node.update(input_file=row.get("_input_file", ORGS.name), draft_input=bool(row.get("_draft")))
     return node
 
 
-def evidence_for(decision: Decision, row: dict, org_url: str | None, is_draft: bool, input_name: str, catalog: Catalog) -> dict:
+def evidence_for(decision: Decision, row: dict, org_url: str, catalog: Catalog) -> dict:
     label = catalog.labels[decision.mondo_id]
     evidence = {
         "db": DB, "origin": decision.origin, "record": org_url, "url": org_url, "level": LEVEL_BY_ORIGIN[decision.origin],
         "date": (row.get("verified_date") or "").strip() or date.today().isoformat(), "confidence": decision.confidence,
         "snippet": f"\"{decision.name}\" (disease name on the {row['org_name'].strip()} website) → {decision.mondo_id} {label}",
-        "reason": decision.reason, "free_text_name": decision.name, "input_file": input_name, "draft_input": is_draft, **decision.details,
+        "reason": decision.reason, "free_text_name": decision.name, "input_file": row.get("_input_file", ORGS.name),
+        "draft_input": bool(row.get("_draft")), **decision.details,
     }
     if decision.origin == ORIGIN_OPENAI:
         evidence["candidates"] = [{k: c[k] for k in ("mondo_id", "label", "similarity")} for c in decision.candidates]
     return evidence
 
 
-def reconcile(rows: list[dict], input_name: str, is_draft: bool, catalog: Catalog, ctx: OpenAIContext | None = None,
-              concurrency: int = 8) -> dict:
-    """ctx None = fuzzy only. With ctx, a failing API call for one name falls back to fuzzy for that name."""
+def unmatched_row(row: dict, org_id: str, name: str, method: str, reason: str, candidates: list[dict] | None = None) -> dict:
+    return {"org_name": row["org_name"].strip(), "org_id": org_id, "org_url": (row.get("url") or "").strip(), "disease_name": name,
+            "method": method, "reason": reason, "input_file": row.get("_input_file", ORGS.name),
+            "top_candidates": " | ".join(f"{c['mondo_id']} {c['label']} ({c.get('similarity', c.get('score'))})" for c in (candidates or [])[:3])}
+
+
+def reconcile(rows: list[dict], catalog: Catalog, ctx: OpenAIContext | None = None, concurrency: int = 8) -> dict:
+    """ctx None = fuzzy only. With ctx, a failing API call for one name falls back to fuzzy for that name.
+    Orgs without url: no node, no edge, every name -> unmatched with reason NO_URL (an edge needs record/url)."""
     jobs: list[tuple[dict, str, str]] = []
     nodes: dict[str, dict] = {}
+    unmatched: list[dict] = []
+    no_url_orgs = 0
     for row in rows:
         org_id = "ORG:" + slugify(row["org_name"])
-        nodes.setdefault(org_id, org_node(row, org_id, is_draft, input_name))
+        if org_id in nodes:
+            continue
+        if not (row.get("url") or "").strip():
+            no_url_orgs += 1
+            unmatched.extend(unmatched_row(row, org_id, name, "skipped", NO_URL) for name in split_names(row.get("disease_names")) or [""])
+            continue
+        nodes[org_id] = org_node(row, org_id)
         jobs.extend((row, org_id, name) for name in split_names(row.get("disease_names")))
 
     def decide(job: tuple[dict, str, str]) -> Decision:
@@ -432,19 +464,15 @@ def reconcile(rows: list[dict], input_name: str, is_draft: bool, catalog: Catalo
         decisions = list(pool.map(decide, jobs))
 
     edges: dict[tuple[str, str, str], dict] = {}
-    unmatched: list[dict] = []
     for (row, org_id, name), decision in zip(jobs, decisions):
         org_url = nodes[org_id]["url"]
         if decision.mondo_id is None:
-            unmatched.append({"org_name": row["org_name"].strip(), "org_id": org_id, "org_url": org_url or "", "disease_name": name,
-                              "method": decision.origin, "reason": decision.reason, "input_file": input_name,
-                              "top_candidates": " | ".join(f"{c['mondo_id']} {c['label']} ({c.get('similarity', c.get('score'))})"
-                                                           for c in decision.candidates[:3])})
+            unmatched.append(unmatched_row(row, org_id, name, decision.origin, decision.reason, decision.candidates))
             continue
         key = (decision.mondo_id, org_id, EDGE_TYPE)
         edge = edges.setdefault(key, {"id": edge_id(*key), "source": key[0], "target": key[1], "type": EDGE_TYPE,
                                       "evidence": [], "contradicting": []})
-        edge["evidence"].append(evidence_for(decision, row, org_url, is_draft, input_name, catalog))
+        edge["evidence"].append(evidence_for(decision, row, org_url, catalog))
     edge_list = sorted(edges.values(), key=lambda e: e["id"])
     for edge in edge_list:  # same aggregates as 03_build_graph
         edge["confidence"] = max(ev["confidence"] for ev in edge["evidence"])
@@ -452,18 +480,24 @@ def reconcile(rows: list[dict], input_name: str, is_draft: bool, catalog: Catalo
         edge["level"] = min((ev["level"] for ev in edge["evidence"]), key=LEVEL_ORDER.index)
     origins = [d.origin for d in decisions if d.mondo_id]
     return {"nodes": sorted(nodes.values(), key=lambda n: n["id"]), "edges": edge_list, "unmatched": unmatched,
-            "summary": {"orgs": len(nodes), "names": len(jobs), "matched": len(jobs) - len(unmatched), "unmatched": len(unmatched),
+            "summary": {"orgs": len(nodes), "orgs_without_url": no_url_orgs, "draft_orgs": sum(1 for n in nodes.values() if n["draft_input"]),
+                        "names": len(jobs), "matched": sum(1 for d in decisions if d.mondo_id), "unmatched": len(unmatched),
                         "edges": len(edge_list), "matched_by": {o: origins.count(o) for o in sorted(set(origins))},
                         "fallbacks": sum(1 for d in decisions if "fallback_from" in d.details)}}
 
 
-def write_outputs(result: dict, out_dir: Path, input_name: str, is_draft: bool, method: str, ctx: OpenAIContext | None) -> None:
+def write_outputs(result: dict, out_dir: Path, method: str, ctx: OpenAIContext | None, input_report: dict | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
+    is_draft = any(n["draft_input"] for n in result["nodes"])
     meta = {"generated": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"), "step": "06_openai_reconcile",
-            "input_file": input_name, "input_is_draft": is_draft, "method": method, "edge_type": EDGE_TYPE,
-            "levels": LEVEL_BY_ORIGIN, "fuzzy_threshold": FUZZY_THRESHOLD, "judge_min_confidence": JUDGE_MIN_CONFIDENCE, **result["summary"]}
+            "input_files": sorted({n["input_file"] for n in result["nodes"]} | {u["input_file"] for u in result["unmatched"]}),
+            "input_is_draft": is_draft, "input_rule": "orgs.csv rows with verified_date; orgs_draft.csv only with --allow-draft",
+            "method": method, "edge_type": EDGE_TYPE, "levels": LEVEL_BY_ORIGIN, "fuzzy_threshold": FUZZY_THRESHOLD,
+            "judge_min_confidence": JUDGE_MIN_CONFIDENCE, **result["summary"]}
+    if input_report:
+        meta["skipped_unverified"] = input_report["skipped_unverified"]
     if is_draft:
-        meta["warning"] = "built from orgs_draft.csv (unverified draft, tests only): do not ship these edges"
+        meta["warning"] = "contains orgs from orgs_draft.csv (unverified draft, tests only, draft_input: true): do not ship these edges"
     if ctx is not None:
         meta.update(judge_model=ctx.judge_model, embedding_model=ctx.embed_model, prompt_version=prompt_version())
     (out_dir / "org_disease_edges.json").write_text(json.dumps({"meta": meta, "nodes": result["nodes"], "edges": result["edges"]},
@@ -472,6 +506,14 @@ def write_outputs(result: dict, out_dir: Path, input_name: str, is_draft: bool, 
         writer = csv.DictWriter(handle, fieldnames=UNMATCHED_COLUMNS)
         writer.writeheader()
         writer.writerows(result["unmatched"])
+
+
+def existing_is_draft(out_dir: Path) -> bool:
+    path = out_dir / "org_disease_edges.json"
+    try:
+        return path.exists() and bool(json.loads(path.read_text()).get("meta", {}).get("input_is_draft"))
+    except json.JSONDecodeError:
+        return False
 
 
 def existing_has_openai(out_dir: Path) -> bool:
@@ -496,18 +538,29 @@ def build_context(catalog: Catalog, client, embed_model: str, judge_model: str, 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--method", choices=["auto", "openai", "fuzzy"], default="auto")
-    parser.add_argument("--orgs", type=Path, default=None, help="org CSV instead of orgs.csv / orgs_draft.csv")
+    parser.add_argument("--orgs", type=Path, default=None, help="curated org CSV (default data/curated/orgs.csv); rows need verified_date")
+    parser.add_argument("--allow-draft", action="store_true", help="also read the unverified draft CSV (tests only, flagged draft_input)")
+    parser.add_argument("--draft", type=Path, default=None, help="draft org CSV (default data/curated/orgs_draft.csv), only with --allow-draft")
     parser.add_argument("--out-dir", type=Path, default=None)
     args = parser.parse_args(argv)
     args.out_dir = args.out_dir or OUT_DIR
+    orgs_path, draft_path = args.orgs or ORGS, args.draft or ORGS_DRAFT
 
-    chosen = choose_input(override=args.orgs)
-    if chosen is None:
-        print(f"[reconcile] no org rows in {ORGS.name} and no {ORGS_DRAFT.name} in {ORGS.parent}: nothing to reconcile. Skipped.")
+    rows, report = load_input(orgs_path, draft_path, args.allow_draft)
+    if report["skipped_unverified"]:
+        print(f"[reconcile] {len(report['skipped_unverified'])} rows in {orgs_path.name} without verified_date skipped: "
+              + "; ".join(report["skipped_unverified"][:8]) + (" ..." if len(report["skipped_unverified"]) > 8 else ""))
+    print(f"[reconcile] {report['verified']} verified orgs from {orgs_path.name}"
+          + (f" + {report['draft']} UNVERIFIED draft orgs from {draft_path.name} (tests only, draft_input: true)" if args.allow_draft
+             else f"; {draft_path.name} ignored (only with --allow-draft)"))
+    if not rows:
+        if existing_is_draft(args.out_dir):  # never leave draft orgs in the product after a default run
+            write_outputs({"nodes": [], "edges": [], "unmatched": [], "summary": {"orgs": 0, "names": 0, "matched": 0, "unmatched": 0,
+                                                                                   "edges": 0}}, args.out_dir, "none", None, report)
+            print(f"[reconcile] no verified org rows: replaced the draft-based output in {args.out_dir} with an empty one.")
+        else:
+            print("[reconcile] no verified org rows: nothing to reconcile. Skipped.")
         return 0
-    path, rows, is_draft = chosen
-    input_name = path.name
-    print(f"[reconcile] {len(rows)} orgs from {input_name}" + (" (UNVERIFIED DRAFT, tests only)" if is_draft else ""))
     catalog = Catalog.from_file()
     ready = not openai_config.missing(["embed", "judge"])
     method = args.method if args.method != "auto" else ("openai" if ready else "fuzzy")
@@ -516,7 +569,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if method == "fuzzy" and args.method == "auto":
         print("[reconcile] " + openai_config.hint(["embed", "judge"], "reconcile") + f" Falling back to fuzzy (threshold {FUZZY_THRESHOLD}).")
-        if existing_has_openai(args.out_dir):
+        if existing_has_openai(args.out_dir) and not existing_is_draft(args.out_dir):
             print(f"[reconcile] {args.out_dir}/org_disease_edges.json "
                   "holds OpenAI-judged edges: kept, not overwritten by fuzzy. Use --method fuzzy to overwrite.")
             return 0
@@ -528,11 +581,12 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 - catalog embeddings failed: whole run falls back to fuzzy
             print(f"[reconcile] catalog embeddings failed ({type(exc).__name__}: {str(exc)[:200]}): fuzzy fallback")
             method = "fuzzy"
-    result = reconcile(rows, input_name, is_draft, catalog, ctx)
-    write_outputs(result, args.out_dir, input_name, is_draft, method, ctx)
+    result = reconcile(rows, catalog, ctx)
+    write_outputs(result, args.out_dir, method, ctx, report)
     s = result["summary"]
-    print(f"[reconcile] {s['names']} names from {s['orgs']} orgs: {s['matched']} matched {s['matched_by']}, {s['unmatched']} unmatched, "
-          f"{s['fallbacks']} fuzzy fallbacks · {s['edges']} advocated_by edges → {args.out_dir}/")
+    print(f"[reconcile] {s['names']} names from {s['orgs']} orgs ({s['draft_orgs']} draft): {s['matched']} matched {s['matched_by']}, "
+          f"{s['unmatched']} unmatched ({s['orgs_without_url']} orgs without url), {s['fallbacks']} fuzzy fallbacks · "
+          f"{s['edges']} advocated_by edges → {args.out_dir}/")
     if ctx is not None:
         print(openai_config.cost_line("embed", ctx.embed_model, ctx.embeddings.input_tokens, 0, ctx.embeddings.calls, 0))
         print(openai_config.cost_line("judge", ctx.judge_model, ctx.usage["input_tokens"], ctx.usage["output_tokens"],

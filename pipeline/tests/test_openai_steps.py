@@ -302,7 +302,7 @@ def openai_ctx(reconcile_mod, catalog, client, tmp_path):
 def test_reconcile_judge_picks_correct_candidate(reconcile_mod, catalog, tmp_path, fake_client):
     client = fake_client(judge_picking("Krabbe disease"))
     ctx = openai_ctx(reconcile_mod, catalog, client, tmp_path)
-    result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], "orgs.csv", False, catalog, ctx)
+    result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], catalog, ctx)
     assert result["summary"]["matched"] == 1
     edge = result["edges"][0]
     assert (edge["source"], edge["target"], edge["type"]) == ("MONDO:0009499", "ORG:hunter-hope-foundation", "advocated_by")
@@ -326,7 +326,7 @@ def test_reconcile_judge_picks_correct_candidate(reconcile_mod, catalog, tmp_pat
 def test_reconcile_judge_none_and_low_confidence_go_to_unmatched(reconcile_mod, catalog, tmp_path, fake_client):
     for handler in (judge_picking(None), judge_picking("Krabbe disease", confidence=0.3)):
         ctx = openai_ctx(reconcile_mod, catalog, fake_client(handler), tmp_path / str(id(handler)))
-        result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], "orgs.csv", False, catalog, ctx)
+        result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], catalog, ctx)
         assert result["edges"] == [] and result["unmatched"][0]["disease_name"] == "Krabbe disease"
         assert result["unmatched"][0]["method"] == "OpenAI judge"
 
@@ -335,50 +335,100 @@ def test_reconcile_api_failure_falls_back_to_fuzzy(reconcile_mod, catalog, tmp_p
     request = httpx.Request("POST", "https://api.openai.com/v1/responses")
     client = fake_client(lambda kwargs: openai.InternalServerError("down", response=httpx.Response(500, request=request), body=None))
     ctx = openai_ctx(reconcile_mod, catalog, client, tmp_path)
-    result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], "orgs.csv", False, catalog, ctx)
+    result = reconcile_mod.reconcile([ORG_ROWS[0] | {"disease_names": "Krabbe disease"}], catalog, ctx)
     evidence = result["edges"][0]["evidence"][0]
     assert result["edges"][0]["source"] == "MONDO:0009499"
     assert (evidence["origin"], evidence["level"]) == ("fuzzy", "inferred") and "fallback_from" in evidence
 
 
-def test_reconcile_main_fuzzy_on_draft_without_key(reconcile_mod, tmp_path, monkeypatch, capsys):
+HUNTERS_HOPE = "Hunter's Hope Foundation,https://www.huntershope.org,US,Krabbe disease; Leukodystrophies,ORPHA:487,yes,,unknown,,unknown,,,{verified}\n"
+
+
+@pytest.fixture
+def reconcile_files(reconcile_mod, tmp_path, monkeypatch):
     slice_file = tmp_path / "slice.json"
     slice_file.write_text(json.dumps(SLICE))
     monkeypatch.setattr(reconcile_mod, "SLICE", slice_file)
     monkeypatch.setattr(reconcile_mod, "ORGS", tmp_path / "orgs.csv")
     monkeypatch.setattr(reconcile_mod, "ORGS_DRAFT", tmp_path / "orgs_draft.csv")
-    (tmp_path / "orgs.csv").write_text(ORG_HEADER)  # header only = empty -> draft is used
-    (tmp_path / "orgs_draft.csv").write_text(ORG_HEADER + "Hunter's Hope Foundation,https://www.huntershope.org,US,Krabbe disease; Leukodystrophies,ORPHA:487,yes,,unknown,,unknown,,,\n")
-    out = tmp_path / "reconcile"
-    assert reconcile_mod.main(["--out-dir", str(out)]) == 0
-    assert "Falling back to fuzzy" in capsys.readouterr().out
-    data = json.loads((out / "org_disease_edges.json").read_text())
-    assert data["meta"]["input_is_draft"] is True and "warning" in data["meta"] and data["meta"]["method"] == "fuzzy"
-    node = data["nodes"][0]
-    assert node["id"] == "ORG:hunter-hope-foundation" and node["type"] == "org" and node["has_registry"] == "yes" and node["draft_input"] is True
-    assert node["orpha_ids"] == ["ORPHA:487"]
-    edge = data["edges"][0]
-    assert edge["source"] == "MONDO:0009499" and edge["evidence"][0]["origin"] == "fuzzy" and edge["evidence"][0]["level"] == "inferred"
+    return tmp_path
+
+
+def read_outputs(out: Path) -> tuple[dict, list[dict]]:
     with (out / "unmatched.csv").open() as handle:
-        rows = list(csv.DictReader(handle))
-    assert list(rows[0]) == reconcile_mod.UNMATCHED_COLUMNS and rows[0]["disease_name"] == "Leukodystrophies"
+        return json.loads((out / "org_disease_edges.json").read_text()), list(csv.DictReader(handle))
 
 
-def test_reconcile_main_skips_without_rows_and_keeps_openai_output(reconcile_mod, tmp_path, monkeypatch, capsys):
-    monkeypatch.setattr(reconcile_mod, "ORGS", tmp_path / "orgs.csv")
-    monkeypatch.setattr(reconcile_mod, "ORGS_DRAFT", tmp_path / "missing_draft.csv")
-    (tmp_path / "orgs.csv").write_text(ORG_HEADER)
-    assert reconcile_mod.main(["--out-dir", str(tmp_path / "out")]) == 0
-    assert "nothing to reconcile" in capsys.readouterr().out and not (tmp_path / "out").exists()
+def test_reconcile_main_uses_only_verified_rows_fuzzy_without_key(reconcile_mod, reconcile_files, capsys):
+    (reconcile_files / "orgs.csv").write_text(ORG_HEADER + HUNTERS_HOPE.format(verified="2026-10-04")
+                                              + "Unchecked Org,https://unchecked.org,US,Krabbe disease,,,,,,,,,\n")
+    (reconcile_files / "orgs_draft.csv").write_text(ORG_HEADER + "Draft Org,https://draft.org,US,Krabbe disease,,,,,,,,,\n")
+    out = reconcile_files / "reconcile"
+    assert reconcile_mod.main(["--out-dir", str(out)]) == 0
+    printed = capsys.readouterr().out
+    assert "Falling back to fuzzy" in printed and "Unchecked Org" in printed and "ignored (only with --allow-draft)" in printed
+    data, unmatched = read_outputs(out)
+    assert [n["id"] for n in data["nodes"]] == ["ORG:hunter-hope-foundation"]       # neither the unverified row nor the draft
+    assert data["meta"]["input_is_draft"] is False and "warning" not in data["meta"] and data["meta"]["method"] == "fuzzy"
+    assert data["meta"]["skipped_unverified"] == ["Unchecked Org"]
+    node = data["nodes"][0]
+    assert node["type"] == "org" and node["has_registry"] == "yes" and node["draft_input"] is False and node["orpha_ids"] == ["ORPHA:487"]
+    edge = data["edges"][0]
+    evidence = edge["evidence"][0]
+    assert edge["source"] == "MONDO:0009499" and (evidence["origin"], evidence["level"]) == ("fuzzy", "inferred")
+    assert evidence["date"] == "2026-10-04" and evidence["record"] == evidence["url"] == "https://www.huntershope.org"
+    assert list(unmatched[0]) == reconcile_mod.UNMATCHED_COLUMNS and unmatched[0]["disease_name"] == "Leukodystrophies"
 
-    (tmp_path / "orgs.csv").write_text(ORG_HEADER + "X,https://x.org,US,Krabbe disease,,,,,,,,,\n")
-    out = tmp_path / "out"
+
+def test_reconcile_main_reads_draft_only_with_flag(reconcile_mod, reconcile_files):
+    (reconcile_files / "orgs.csv").write_text(ORG_HEADER + HUNTERS_HOPE.format(verified="2026-10-04"))
+    (reconcile_files / "orgs_draft.csv").write_text(ORG_HEADER + HUNTERS_HOPE.format(verified="")       # verified version wins
+                                                    + "Draft Org,https://draft.org,US,Krabbe disease,,,,,,,,,\n")
+    out = reconcile_files / "reconcile"
+    assert reconcile_mod.main(["--out-dir", str(out), "--allow-draft"]) == 0
+    data, _ = read_outputs(out)
+    flags = {n["id"]: (n["draft_input"], n["input_file"]) for n in data["nodes"]}
+    assert flags == {"ORG:hunter-hope-foundation": (False, "orgs.csv"), "ORG:draft-org": (True, "orgs_draft.csv")}
+    assert data["meta"]["input_is_draft"] is True and "warning" in data["meta"]
+    draft_edge = next(e for e in data["edges"] if e["target"] == "ORG:draft-org")
+    assert draft_edge["evidence"][0]["draft_input"] is True
+
+
+def test_split_names_keeps_parenthesised_semicolons(reconcile_mod):
+    assert reconcile_mod.split_names("Niemann-Pick (ASMD; NPC); Krabbe disease;; krabbe disease") == ["Niemann-Pick (ASMD; NPC)", "Krabbe disease"]
+
+
+def test_org_without_url_gets_no_edge(reconcile_mod, catalog):
+    rows = [ORG_ROWS[0] | {"disease_names": "Krabbe disease"}, {"org_name": "No Site Org", "url": " ", "disease_names": "Krabbe disease; MLD"}]
+    result = reconcile_mod.reconcile(rows, catalog)
+    assert [n["id"] for n in result["nodes"]] == ["ORG:hunter-hope-foundation"]
+    assert all(e["target"] != "ORG:no-site-org" for e in result["edges"])
+    assert all(ev["url"] and ev["record"] for e in result["edges"] for ev in e["evidence"])
+    no_url = [u for u in result["unmatched"] if u["org_id"] == "ORG:no-site-org"]
+    assert [(u["disease_name"], u["reason"]) for u in no_url] == [("Krabbe disease", "no url"), ("MLD", "no url")]
+    assert result["summary"]["orgs_without_url"] == 1
+
+
+def test_reconcile_main_skips_without_verified_rows(reconcile_mod, reconcile_files, capsys):
+    (reconcile_files / "orgs.csv").write_text(ORG_HEADER + "X,https://x.org,US,Krabbe disease,,,,,,,,,\n")   # no verified_date
+    (reconcile_files / "orgs_draft.csv").write_text(ORG_HEADER + "Draft Org,https://draft.org,US,Krabbe disease,,,,,,,,,\n")
+    out = reconcile_files / "out"
+    assert reconcile_mod.main(["--out-dir", str(out)]) == 0
+    assert "nothing to reconcile" in capsys.readouterr().out and not out.exists()
+
+    assert reconcile_mod.main(["--out-dir", str(out), "--allow-draft"]) == 0      # a test run leaves a draft-based output ...
+    assert json.loads((out / "org_disease_edges.json").read_text())["meta"]["input_is_draft"] is True
+    assert reconcile_mod.main(["--out-dir", str(out)]) == 0                       # ... which the next default run removes
+    data, unmatched = read_outputs(out)
+    assert data["nodes"] == [] and data["edges"] == [] and data["meta"]["input_is_draft"] is False and unmatched == []
+
+
+def test_reconcile_main_keeps_openai_output_without_key(reconcile_mod, reconcile_files):
+    (reconcile_files / "orgs.csv").write_text(ORG_HEADER + "X,https://x.org,US,Krabbe disease,,,,,,,,,2026-10-04\n")
+    out = reconcile_files / "out"
     out.mkdir()
     kept = {"meta": {}, "nodes": [], "edges": [{"evidence": [{"origin": "OpenAI judge"}]}]}
     (out / "org_disease_edges.json").write_text(json.dumps(kept))
-    slice_file = tmp_path / "slice.json"
-    slice_file.write_text(json.dumps(SLICE))
-    monkeypatch.setattr(reconcile_mod, "SLICE", slice_file)
     assert reconcile_mod.main(["--out-dir", str(out)]) == 0
     assert json.loads((out / "org_disease_edges.json").read_text()) == kept
 

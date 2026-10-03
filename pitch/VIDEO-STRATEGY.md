@@ -22,13 +22,13 @@ Hero-Kanten im Export verifiziert: `e_3dbc42738b5a` (Krabbe → GALC, curated, O
 
 ## 1. Team Introduction · ≤ 60 s · Osman filmt, echte Gesichter, echte Stimmen, kein Voice-over
 
-Umgebaut nach Osmans Feedback (04.10., ca. 01:30): Das Team-Video zeigt **den Hintergrund der Menschen**, nicht ihren Beitrag zum Projekt. Wer was gebaut hat, sieht die Jury in Demo und Tech-Video.
+Umgebaut nach Osmans Feedback (04.10., 01:15 und 01:40): Das Team-Video zeigt **die Menschen und ihre Interessen**, nicht ihren Beitrag zum Projekt und keinen Projekt-Schlusssatz je Person. Wer was gebaut hat, sieht die Jury in Demo und Tech-Video.
 
 **Ziel:** Drei Menschen, denen man eine Mutter um zwei Uhr nachts anvertrauen würde: ruhig, konkret, kein Pitch. Die Jury sieht, wer hinter dem Tool steht, was jeder mitbringt und warum ihn das Thema packt.
 
 **Zuschauer:** Jury, Hack-Nation-Community.
 
-**Kernbotschaft:** Drei verschiedene Hintergründe (Daten, Risiko, Automation), ein Grund: Niemand soll bei null anfangen, wenn die Nachbarkrankheit schon weiter ist.
+**Kernbotschaft:** Drei verschiedene Hintergründe (Wirtschaftsinformatik, Risiko und Geodaten, KI-Automation), gemeinsames Interesse an Daten und Gesundheit. Der Bogen zum Projekt kommt erst im gemeinsamen Schluss.
 
 **Form:** Handy quer (16:9), gleicher Ort, Tageslicht, derselbe Hintergrund, Kamera auf Augenhöhe, eine Person pro Take, ohne Zoom. Keine KI-Stimme, kein Avatar, kein Voice-over. Einwilligung aller drei vorher (Recep holt sie ein). Namens-Einblendung unten links für zwei Sekunden, Untertitel aus dem Schnittprogramm.
 
@@ -37,43 +37,48 @@ Umgebaut nach Osmans Feedback (04.10., ca. 01:30): Das Team-Video zeigt **den Hi
 | Zeit | Bild | Einblendung | Text |
 |---|---|---|---|
 | 0:00–0:02 | Titelkarte, Klartext: „Constellate · Vienna Hub · Hack-Nation C5" | – | kein Ton |
-| 0:02–0:18 | Hanno, Brustbild | Hanno Kügler · Data Science (WU Vienna) · Business Informatics (TU Wien) | Text H unten |
-| 0:18–0:34 | Osman, Brustbild | Osman [Nachname] · Business Informatics (WU Vienna) · Retail Risk, Raiffeisen Bank International | Text O unten |
-| 0:34–0:50 | Recep, Brustbild | Recep [Nachname] · TGM Vienna, Business Informatics | Text R unten |
+| 0:02–0:18 | Hanno, Brustbild | Hanno Kügler · Business Informatics (WU Vienna) · starting MSc at TU Wien and WU | Text H unten |
+| 0:18–0:34 | Osman, Brustbild | Osman [Nachname] · Business Informatics (WU Vienna) · Retail Risk Methodology, Raiffeisen Bank International | Text O unten |
+| 0:34–0:50 | Recep, Brustbild | Recep [Nachname] · TGM Vienna, Industrial Engineering & Business Informatics | Text R unten |
 | 0:50–0:57 | alle drei im Bild | – | Hanno: „Your family is not the first." Recep: „What you need may already exist under another disease's name." Osman: „We're Constellate, Vienna Hub." |
 | 0:57–0:58 | Schlussbild `/about` mit URL, oder die Titelkarte | – | kein Ton |
 
-Summe 0:58. Je Person 16 s, Sprechtext 36 bis 40 Wörter (echte Stimmen sprechen etwas schneller als die KI, ca. 2,5 Wörter/s). Die Teile in eckigen Klammern sind optional; mit ihnen sind es 44 bis 45 Wörter, das ist für 16 s zu schnell. Erst mit Stoppuhr proben, dann entscheiden.
+Summe 0:58. Je Person 16 s, Sprechtext 34 bis 39 Wörter (echte Stimmen sprechen etwas schneller als die KI, ca. 2,5 Wörter/s). Vorher mit Stoppuhr proben; wer über 16 s liegt, kürzt die Aufzählung.
 
-### Sprechtexte (Vorschlag, jeder sagt es in eigenen Worten nach)
+### Sprechtexte v3 (Osmans zweites Feedback, 01:40; jeder sagt es in eigenen Worten nach)
 
-**Text H · Hanno (39 Wörter ohne Klammer)**
+Aufbau je Person: wer ich bin → was ich studiere/mache → meine Interessen. **Kein eigener Schlusssatz mit Projektbezug mehr** (Osman: „auf Krampf", verwirrend). Die Interessen dürfen allgemein Richtung Gesundheit/Medizin zeigen, nicht auf seltene Krankheiten. Den Bogen zum Projekt macht nur der gemeinsame Schluss.
 
-```
-I'm Hanno. I studied data science at WU Vienna, and I'm starting business informatics at TU Wien. I also teach first aid for the Red Cross. [There's one thing you learn there:] in a crisis, people don't need a textbook. They need the next step.
-```
-
-**Text O · Osman (40 Wörter ohne Klammer)**
+**Text H · Hanno (37 Wörter)**
 
 ```
-I'm Osman. I study business informatics at WU Vienna and work in retail risk and methodology at Raiffeisen Bank International. I'm into machine learning and automation. In risk, a number only counts if you can trace where it came from. [Families deserve that too.]
+Hi, I'm Hanno. I studied business informatics at WU Vienna, and I'm starting two master's degrees, at TU Wien and at WU. I'm into data, AI and automation, and I teach first aid with the Red Cross.
 ```
 
-**Text R · Recep (38 Wörter ohne Klammer)**
+**Text O · Osman (39 Wörter)**
 
 ```
-I'm Recep. I graduated from TGM in Vienna, industrial engineering with a focus on business informatics. I'm into general-purpose AI and automation: [systems that don't just answer, but] do the work. Here, that's the search a parent would otherwise do alone at 2 a.m.
+Hi, I'm Osman. I study business informatics at WU Vienna and work in retail risk methodology at Raiffeisen Bank International. I've worked a lot with geospatial data: flood, satellite, climate. I'm into machine learning and automation, especially for health.
 ```
 
-**Warum diese „Warum"-Sätze:** Jeder Satz hängt am echten Hintergrund der Person, nicht an einer erfundenen Krankengeschichte. Hanno: Erste Hilfe → „der nächste Schritt" (genau das, was die Action Card liefert). Osman: Risikomethodik → „keine Zahl ohne Herkunft" (genau das Evidenzmodell, jede Linie mit Quelle). Recep: KI-Automation → „die Suche um zwei Uhr nachts" (genau Devon aus dem Brief). Damit erzählt das Team-Video nebenbei schon das Produkt, ohne über das Projekt zu reden.
+**Text R · Recep (34 Wörter)**
 
-**Bewusst nicht erfunden:** Osman wollte eine „kurze gute Story". Eine erfundene persönliche Verbindung zu einer seltenen Krankheit (Verwandte, Freunde) kommt nicht in Frage: Das Video zeigt echte Gesichter, die Jury nimmt es als wahr, und es widerspricht Regel 2 (keine erfundenen Patientengeschichten). Wer eine **echte** Verbindung hat, darf sie in einem Satz statt des Warum-Satzes sagen.
+```
+Hi, I'm Recep. I graduated from TGM in Vienna, in industrial engineering with a focus on business informatics. I'm into general-purpose AI and AI automation, especially AI that makes medical knowledge easier to understand.
+```
+
+Woher die Begriffe kommen:
+
+- Hanno: Bachelor Wirtschaftsinformatik an der WU (laut Osman; **Hanno bestätigt**, sein Profil sagt Data Science und Produktionsmanagement, Option „business informatics at WU Vienna, with a focus on data science"), ab WS26 Dipl.-Ing. Wirtschaftsinformatik an der TU Wien und MSc Digital Economics an der WU. Länger, falls Zeit: „… two master's degrees: business informatics at TU Wien and digital economics at WU."
+- Osman: „geospatial data" ist der Oberbegriff für Hochwasser-, HORA-, Satelliten- und Klimadaten (alles Daten mit Ortsbezug). Alternativen: „environmental risk data" (betont Risiko statt Ort), „geodata". Empfehlung „geospatial", weil es Hochwasser, HORA und Satelliten gleichermaßen abdeckt und international verstanden wird.
+- Recep: Der Gesundheitsbezug („medical knowledge easier to understand") ist ein Vorschlag nach Osmans Wunsch; **Recep bestätigt, dass das wirklich sein Interesse ist**, sonst streichen.
+- Keine erfundene persönliche Krankheitsgeschichte (Regel 2).
 
 **Vor dem Dreh klären (je Person selbst):**
 
 1. Osman: Darf der Arbeitgeber (Raiffeisen Bank International) in einem öffentlichen Video genannt werden? Viele Banken haben Social-Media-Regeln. Ausweichsatz ohne Namen: „… and work in retail risk and methodology at a bank."
 2. Recep: Was machst du seit dem TGM (Studium, Job)? Ein Halbsatz macht den Background vollständiger; nicht raten, bitte selbst ergänzen. Englische Bezeichnung des Zweigs prüfen (Vorschlag: „industrial engineering, business informatics").
-3. Hanno: Bachelor-Abschluss als „studied" ok? Rotes Kreuz nennen ok?
+3. Hanno: Bachelor Wirtschaftsinformatik oder Data Science an der WU? Rotes Kreuz nennen ok?
 4. Nachnamen von Osman und Recep für die Einblendung.
 
 Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisationsnamen aus der Patientenwelt, keine Geschichte einer fremden Familie.

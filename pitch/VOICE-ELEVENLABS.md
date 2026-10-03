@@ -8,7 +8,7 @@ Seit der Team-Vorgabe (drei Videos, je maximal 60 s) gibt es **nur noch zwei** V
 
 | Video | Voice-over | Request-Aufteilung | Wörter | Zeichen (ca.) |
 |---|---|---|---|---|
-| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 126 | 760 |
+| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 123 | 740 |
 | Technical Walkthrough ≤ 60 s | gleiche Stimme | **ein Request** (T1), Absätze als Pausen; falls der Schnitt es braucht, sechs Requests T1a bis T1f je Szene | 132 | 850 |
 | Team Introduction ≤ 60 s | **keine KI-Stimme**, echte Stimmen, echte Gesichter | – | – | – |
 
@@ -35,7 +35,7 @@ Tempo-Kontrolle: Jeder Block muss in seine Szenenzeit passen (Spalte „Zeit" in
 [calm, measured narration]
 Meet Maria, from the challenge brief. Her son has Krabbe disease.
 
-One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Metachromatic leukodystrophy.
+One gene, P-S-A-P, sits behind four disease names. Metachromatic leukodystrophy, M-L-D, Gaucher.
 ```
 
 ## 2a. Stimmen-Kandidaten (Auswahl So 09:00, Hanno)
@@ -109,12 +109,14 @@ Im Bild dazu die Einblendung „Maria: persona from the challenge brief, not a r
 She types Krabbe. Every line shows its source, how sure we are, what speaks against it.
 ```
 
-### Demo · D3 (0:17–0:24) · 16 Wörter
+### Demo · D3 (0:17–0:24) · 13 Wörter
 
 ```
 [calm, measured narration]
-One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Names hide what they share.
+One gene, P-S-A-P, sits behind four disease names. Names hide what they share.
 ```
+
+Geändert 01:25: „three … Krabbe-like, M-L-D-like, Gaucher-like" raus, weil `/g/PSAP` „One gene, 4 disease names" zeigt; die Zeilen (Krabbe-, MLD-, Gaucher-ähnlich, kombinierte Defizienz) liest die Jury im Bild.
 
 ### Demo · D4 (0:24–0:33) · 20 Wörter
 
@@ -150,7 +152,7 @@ Where there is no trail, we say so, and show what we searched.
 Don't rebuild what a neighbouring disease already built.
 ```
 
-Tempo-Check (01:20, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 2,3 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
+Tempo-Check (01:20, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 1,9 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
 
 ### Tech · T1 (0:00–0:58, ein Request)
 

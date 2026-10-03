@@ -1,6 +1,6 @@
 # 60-Sekunden-Pitch · Constellate
 
-Stand So 04.10.2026, 01:00 (Wien). Fassung nach dem Team-Feedback: weniger Fachbegriffe, Reihenfolge **Problem → Herangehensweise → Lösung → Schluss**, verständlich ohne Medizinwissen. Englisch, Wort für Wort, Regie in eckigen Klammern (nicht sprechen). Jede medizinische Aussage trägt ihre Primärquelle in der Fußnote, nicht im gesprochenen Text. Zahlen stammen aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) (ohne ⚠️) oder `app/public/data/meta.json` (Export `2026-10-03+397464a`). Nora ist eine Komposit-Figur (DECISIONS P9).
+Stand So 04.10.2026, 01:00 (Wien). Fassung nach dem Team-Feedback: weniger Fachbegriffe, Reihenfolge **Problem → Herangehensweise → Lösung → Schluss**, verständlich ohne Medizinwissen. Englisch, Wort für Wort, Regie in eckigen Klammern (nicht sprechen). Jede medizinische Aussage trägt ihre Primärquelle in der Fußnote, nicht im gesprochenen Text. Zahlen stammen aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) (ohne ⚠️) oder `app/public/data/meta.json` (Export `2026-10-04+f35b3a5`). Nora ist eine Komposit-Figur (DECISIONS P9).
 
 Einsatz: Live-Pitch 10.10. (falls Top 2, als erste Minute), Discord-Post als Text, HackOS-Feld „Description". Für die drei 60-s-Videos gelten die Skripte in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md); die Demo folgt derselben Dramaturgie.
 
@@ -24,7 +24,7 @@ Imagine the night after the diagnosis. Your child has Krabbe disease. There is n
 
 [Bild: Gen-Seite `/g/PSAP`, Überschrift „One gene, 4 disease names".]
 
-Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, P-S-A-P, sits behind three disease names, three separate communities.²
+Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, P-S-A-P, sits behind four different disease names.²
 
 [Bild: Edge-Panel mit Quelle, Datum, Stufe, „Counter-evidence".]
 
@@ -53,11 +53,11 @@ Where there is no trail, we say so.
 
 [Stehen bleiben. Kein „thank you".]
 
-Wortzahl: 143 (ohne Regie, gezählt mit `wc -w`). Bei 2,3 bis 2,4 Wörtern pro Sekunde 60 Sekunden einschließlich der drei Pausen.
+Wortzahl: 141 (ohne Regie, gezählt mit `wc -w`). Bei 2,3 bis 2,4 Wörtern pro Sekunde 60 Sekunden einschließlich der drei Pausen.
 
 ### Gesprochener Text am Stück (zum Kopieren, Discord und HackOS)
 
-Your family is not the first. What you need may already exist under another disease's name. Imagine the night after the diagnosis. Your child has Krabbe disease. There is no approved medicine, anywhere in the world. Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, PSAP, sits behind three disease names, three separate communities. Every line shows its source, how sure we are, what speaks against it. A Krabbe family sees its neighbour on the map: metachromatic leukodystrophy, MLD. MLD has an approved gene therapy, proven with a study that followed untreated children for years. That study design exists. The family leaves with a one-page proposal: what carries over, what differs, what an expert must check. Where there is no trail, we say so. Don't rebuild what a neighbouring disease already built.
+Your family is not the first. What you need may already exist under another disease's name. Imagine the night after the diagnosis. Your child has Krabbe disease. There is no approved medicine, anywhere in the world. Constellate is a map of rare diseases, sorted by what goes wrong in the body, not by name. One gene, PSAP, sits behind four different disease names. Every line shows its source, how sure we are, what speaks against it. A Krabbe family sees its neighbour on the map: metachromatic leukodystrophy, MLD. MLD has an approved gene therapy, proven with a study that followed untreated children for years. That study design exists. The family leaves with a one-page proposal: what carries over, what differs, what an expert must check. Where there is no trail, we say so. Don't rebuild what a neighbouring disease already built.
 
 ## Kurzfassung · 30 s
 
@@ -103,7 +103,7 @@ Bewusst behalten: „gene", „gene therapy", „diagnosis", „approved medicin
 ## Fußnoten (Primärquellen)
 
 1. Krabbe: kein zugelassenes Medikament weltweit; HSCT ist die einzige etablierte Option und wirkt nur präsymptomatisch. GeneReviews NBK1238; Escolar et al., NEJM 2005, PMID 15901860. ([docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) §3)
-2. PSAP: Saposin-A-Defizienz Krabbe-ähnlich (OMIM 611722), Saposin-B-Defizienz MLD-ähnlich (OMIM 249900), Saposin-C-Defizienz Gaucher-ähnlich (OMIM 610539). Drei Krankheitsnamen in drei Patientengemeinschaften (§5). Die App zeigt auf `/g/PSAP` vier Namen (die vierte ist die kombinierte PSAP-Defizienz, OMIM 611721); der Pitch sagt „three", weil die drei Verwandtschaften die Pointe sind, die Gen-Seite steht als Beleg daneben.
+2. PSAP: Saposin-A-Defizienz Krabbe-ähnlich (OMIM 611722), Saposin-B-Defizienz MLD-ähnlich (OMIM 249900), Saposin-C-Defizienz Gaucher-ähnlich (OMIM 610539). Drei Krankheitsnamen in drei Patientengemeinschaften (§5). Die App zeigt auf `/g/PSAP` vier Namen (die vierte ist die kombinierte PSAP-Defizienz, OMIM 611721); der Pitch sagt seit 04.10. 01:25 „four", weil `/g/PSAP` im Bild „One gene, 4 disease names" zeigt (Hinweis Orchestrator: gesprochen „three" gegen „4" im Bild wäre ein sichtbarer Widerspruch).
 3. MLD-Gentherapie (atidarsagene autotemcel, Libmeldy/Lenmeldy): EU-Zulassung 17.12.2020 (EMA EPAR Libmeldy), FDA 18.03.2024 (FDA-Pressemitteilung). Wirksamkeit gegen Natural-History-Kohorte: 29 behandelte vs. 31 unbehandelte Kinder, Fumagalli et al., Lancet 2022, PMID 35065785 (§4, §8). Im Video nur sprechen, wenn die Action Card den Abschnitt „Approved therapies" mit EMA- oder FDA-Quelle aus Pipeline-Daten zeigt (siehe VIDEO-STRATEGY §2).
-4. Nicht mehr im gesprochenen Text, als Reserve für Q&A: `app/public/data/meta.json` Version `2026-10-03+397464a`: 874 Krankheiten (350 Kern), 1.066 Gene, 4.717 Phänotype im Index; 14.512 observed, 27.066 curated, 4.181 inferred, 488 contradicted; 251 Gegenbeispiel-Paare; 17 Cluster. Vor dem Pitch gegen den aktuellen Export prüfen.
+4. Nicht mehr im gesprochenen Text, als Reserve für Q&A: `app/public/data/meta.json` Version `2026-10-04+f35b3a5`: 874 Krankheiten (350 Kern), 1.066 Gene, 4.717 Phänotype im Index; 14.512 observed, 27.066 curated, 4.181 inferred, 488 contradicted; 251 Gegenbeispiel-Paare; 17 Cluster. Vor dem Pitch gegen den aktuellen Export prüfen.
 5. Q&A-Reserve: C5-Challenge-Brief S. 2, 10.000 bekannte seltene Krankheiten, unter 5 % mit zugelassener Therapie.

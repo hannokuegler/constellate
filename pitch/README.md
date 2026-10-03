@@ -2,7 +2,7 @@
 
 Stand So 04.10.2026, ca. 01:20 (Wien), Branch `marketing` (davor `pitch-v2`). Dauer-Prompt der Marketing-Session: [docs/prompts/MARKETING-STANDING.md](../docs/prompts/MARKETING-STANDING.md). Überarbeitung nach dem Team-Feedback: **drei Pflichtvideos, jedes höchstens 60 Sekunden** (Team Introduction, Product Demo, Technical Walkthrough), Dateiformat MP4 oder MOV; Pitch mit weniger Fachbegriffen in der Reihenfolge Problem → Herangehensweise → Lösung. Entscheidungen P9 bis P11 ([docs/DECISIONS.md](../docs/DECISIONS.md)): Nora als Komposit-Mutter in zwei Momenten, Pitch „Herz zuerst", ElevenLabs `eleven_v4` für die Voice-over, Team-Video mit echten Gesichtern, Honest-Gap-Fall `MONDO:0012720`.
 
-Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärquelle oder aus `app/public/data/meta.json` (Export `2026-10-03+397464a`), ⚠️-Punkte aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) kommen nicht vor. Nora ist eine Komposit-Figur und wird so genannt. Keine Patientenorganisation wird genannt, solange `data/curated/orgs.csv` leer ist. Kein „cure"; Constellate ist Forschungs-Navigation, keine medizinische Beratung.
+Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärquelle oder aus `app/public/data/meta.json` (Export `2026-10-04+f35b3a5`), ⚠️-Punkte aus [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) kommen nicht vor. Nora ist eine Komposit-Figur und wird so genannt. Keine Patientenorganisation wird genannt, solange `data/curated/orgs.csv` leer ist. Kein „cure"; Constellate ist Forschungs-Navigation, keine medizinische Beratung.
 
 ## Dateien
 
@@ -26,7 +26,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 ## Befunde aus dem Export, die vor dem Dreh gelten
 
 1. `e_e270315fe572` (Krabbe → MLD) ist eine `similar_phenotype`-Kante (`inferred`, Konfidenz 0,216), nicht die „shared gene PSAP"-Kante. Demo sagt „linked by shared symptoms, formula shown"; die PSAP-Brücke zeigt `/g/PSAP`.
-2. **Update 01:15 (Export `2026-10-04+f35b3a5`):** `approved_therapies` und `assets` sind live (Libmeldy bei MLD mit EMA-Quelle, Krabbe 0 Treffer in EMA/FDA), die Therapie-Sätze D1 und D5 sind damit im Tool belegt. Vorher: `approved_therapies` und `assets` fehlten im Export (PR #1 `data-v2` im Review), `orgs.csv` hat nur die Kopfzeile, `docs/MOONSHOT.md` fehlt. Folge: keine Organisation, keine 10×-Zahl; die beiden Therapie-Sätze (Krabbe ohne Medikament, MLD-Gentherapie) nur mit sichtbarem Beleg in der Action Card, sonst Ersatzsätze (in VIDEO-STRATEGY und VOICE-ELEVENLABS markiert).
+2. **Update 01:15 (Export `2026-10-04+f35b3a5`):** `approved_therapies`, `assets` und `newborn_screening` sind live (MLD: Libmeldy EMA 2020-12-17, Lenmeldy FDA 2024-03-18; Krabbe 0 Zulassungen, EMA und FDA durchsucht), die Therapie-Sätze D1 und D5 sind damit im Tool belegt. Vorher: `approved_therapies` und `assets` fehlten im Export (PR #1 `data-v2` im Review), `orgs.csv` hat nur die Kopfzeile, `docs/MOONSHOT.md` fehlt. Folge: keine Organisation, keine 10×-Zahl; die beiden Therapie-Sätze (Krabbe ohne Medikament, MLD-Gentherapie) nur mit sichtbarem Beleg in der Action Card, sonst Ersatzsätze (in VIDEO-STRATEGY und VOICE-ELEVENLABS markiert).
 3. Honest-Gap-Fall `MONDO:0012720` (P11): ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2 im Export vom 2026-10-03; Osman bestätigt die Org-Lage.
 
 ## Offene Punkte für Hanno

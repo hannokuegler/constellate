@@ -8,7 +8,7 @@ Für alle drei: Englisch, Querformat, keine Musik, keine Effekte, Aufnahme erst 
 
 ## 0. Befunde aus dem Export, die für den Dreh gelten
 
-Geprüft gegen `app/public/data/` (Version `2026-10-03+397464a`, kein Fixture), vor dem Dreh gegen den dann aktuellen Export wiederholen (Skript über die Shards, nie die Dateien in den Kontext laden).
+Geprüft gegen `app/public/data/` (Version `2026-10-04+f35b3a5`, kein Fixture), vor dem Dreh gegen den dann aktuellen Export wiederholen (Skript über die Shards, nie die Dateien in den Kontext laden).
 
 | Befund | Folge |
 |---|---|
@@ -98,13 +98,13 @@ Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisations
 |---|---|---|---|---|
 | 0:00–0:10 | `/` Startseite, Karten „We just got the diagnosis" und „I lead a patient group" | Karte Moment 1 anklicken, „Krabbe" tippen | „Meet Maria, from the challenge brief. Her son has Krabbe disease. There is no approved medicine, anywhere in the world.*" | Einblendung „Maria: persona from the challenge brief, not a real person"; Karten im Bild |
 | 0:10–0:17 | `/d/MONDO_0009499` Krabbe disease, Graph | Linie Krabbe → GALC anklicken, Edge-Panel öffnet | „She types Krabbe. Every line shows its source, how sure we are, what speaks against it." | `e_3dbc42738b5a`, Badge `curated`, OMIM:245200, Konfidenz 0,90, „Counter-evidence (0)" |
-| 0:17–0:24 | `/g/PSAP` „One gene, 4 disease names" | vom Gen-Kästchen PSAP auf die Gen-Seite, Zeilen Saposin A, B, C sichtbar | „One gene, P-S-A-P, sits behind three disease names: Krabbe-like, M-L-D-like, Gaucher-like. Names hide what they share." | `e_795da9c4a6cd` OMIM:611722 · `e_316e60c8ee91` OMIM:249900 · `e_b4f9b02250a7` ORPHA:309252 / OMIM:610539 |
+| 0:17–0:24 | `/g/PSAP` „One gene, 4 disease names" | vom Gen-Kästchen PSAP auf die Gen-Seite, Zeilen Saposin A, B, C sichtbar | „One gene, P-S-A-P, sits behind four disease names. Names hide what they share." | `e_795da9c4a6cd` OMIM:611722 · `e_316e60c8ee91` OMIM:249900 · `e_b4f9b02250a7` ORPHA:309252 / OMIM:610539 |
 | 0:24–0:33 | zurück `/d/MONDO_0009499`, Umschalter „I lead a patient group", „Related communities" | Zeile „metachromatic leukodystrophy", Button „Why linked", Edge-Panel | „Now she leads a patient group. Her neighbour on the map: metachromatic leukodystrophy, M-L-D, linked by shared symptoms, formula shown." | `e_e270315fe572`, Badge `inferred`, Abschnitt „Formula (inferred)", Konfidenz 0,22 |
 | 0:33–0:48 | `/d/MONDO_0009499/action?via=MONDO_0018868` Action Card | Spalten „What transfers / What differs / Needs expert review", ein `[e_…]`-Zitat anklicken, Abschnitt „Approved therapies" ins Bild | „The Action Card: what carries over, what differs, what an expert must check. MLD has an approved gene therapy, and a study of how the disease unfolds over time.** That study design exists." | `[e_…]` öffnet Edge-Panel; „Approved therapies" Libmeldy `e_f3ef159024b6` (EMA 2020-12-17); „Reusable assets" HOME-Studie `e_7ee9ef63ec03` (NCT04628364, Natural history study) |
 | 0:48–0:54 | `/d/MONDO_0012720` Krabbe disease due to saposin A deficiency | Abschnitte „What was searched, as of …" und „What would close this gap" | „Where there is no trail, we say so, and show what we searched." | ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2, Datum 2026-10-03 (Export prüfen) |
 | 0:54–0:58 | `/about`, Überschrift „Your family is not the first …", URL sichtbar | kein Klick, Cursor weg | „Don't rebuild what a neighbouring disease already built." | URL |
 
-Summe 0:58. Wortzahl Voice-over: 126 (je Szene ≤ 2,3 Wörter/s, nachgerechnet 01:20). Szenenzeiten gegenüber 01:15 verschoben (D1 +1 s, D2 −2 s, D7 +1 s), weil D1, D5, D6 und D7 vorher zu dicht waren.
+Summe 0:58. Wortzahl Voice-over: 123 (je Szene ≤ 2,3 Wörter/s, nachgerechnet 01:20). Szenenzeiten gegenüber 01:15 verschoben (D1 +1 s, D2 −2 s, D7 +1 s), weil D1, D5, D6 und D7 vorher zu dicht waren.
 
 \* Nur, wenn die Action Card für Krabbe „Approved therapies: Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (im Bild ab 0:34, also auch dann sprechbar, wenn es in Szene 1 noch nicht sichtbar ist). Stand 01:30: im Live-Tool belegt (Krabbe „Honest Gap" unter „Approved therapies"). Ersatzsatz nur noch für den Notfall: „Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research." (C5-Brief S. 1.)
 

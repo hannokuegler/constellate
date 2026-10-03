@@ -49,7 +49,7 @@ Gliederung Problem → Herangehensweise → Lösung → Evidenzmodell → OpenAI
 ### 5a · Haupttext
 
 ```
-Problem. There are about 10,000 known rare diseases, and fewer than 5 % have an approved therapy. A family that receives a rare diagnosis often ends up organising research it never planned to lead. The knowledge it needs is scattered across databases, and disease names hide shared biology: one gene, PSAP, sits behind a Krabbe-like, an MLD-like and a Gaucher-like disease, three names in three separate communities. So groups rebuild registries and studies that already exist next door.
+Problem. There are about 10,000 known rare diseases, and fewer than 5 % have an approved therapy. A family that receives a rare diagnosis often ends up organising research it never planned to lead. The knowledge it needs is scattered across databases, and disease names hide shared biology: one gene, PSAP, sits behind four disease names, among them a Krabbe-like, an MLD-like and a Gaucher-like disease. So groups rebuild registries and studies that already exist next door.
 
 Approach. Constellate is a map of rare diseases sorted by what goes wrong in the body, not by name. An offline pipeline joins open primary sources (HPO, MONDO, Orphanet, ClinVar, ClinicalTrials.gov, Europe PMC, NIH RePORTER, Open Targets, Reactome, EMA and FDA records) into a graph of 874 diseases (350 lysosomal and leukodystrophy core diseases plus 524 neighbours), 1,066 genes and 5,642 phenotypes. Every link carries its source, date, evidence level, confidence and a slot for counter-evidence.
 

@@ -1,6 +1,6 @@
 # Die Verkaufsgeschichte · Constellate
 
-Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Persona seit 04.10. 01:20 Maria statt Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-03+397464a`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
+Stand So 04.10.2026, ca. 01:30 (Wien), Branch `pitch-v2`. Entscheidungen P9 bis P11 sind gefallen (Persona seit 04.10. 01:20 Maria statt Nora, „Herz zuerst", Honest-Gap-Fall `MONDO:0012720`); seit der Team-Vorgabe gibt es drei Pflichtvideos à höchstens 60 s ([VIDEO-STRATEGY.md](VIDEO-STRATEGY.md)) und die Fachwort-Regel aus [PITCH-60S.md](PITCH-60S.md): ein Fachwort nur, wenn es im selben Moment im Bild erklärt wird. Quellenregel wie im ganzen Repo: jede Zahl und jede medizinische Aussage trägt ihre Primärquelle (PMID, OMIM, ORPHA, NCT, EMA/FDA) oder stammt aus `app/public/data/meta.json` (Export `2026-10-04+f35b3a5`). Was in [docs/MEDICAL-BACKGROUND.md](../docs/MEDICAL-BACKGROUND.md) mit ⚠️ markiert ist, kommt hier nicht vor. Die Mutter ist eine Komposit-Figur und wird in jedem Video so genannt.
 
 ## 1. Das Problem in einem Satz, den jeder fühlt
 
@@ -8,7 +8,7 @@ Eine Familie bekommt eine Diagnose, für die es kein Medikament gibt, und wird �
 
 Kürzer, für den Pitch: **Your family is not the first. What you need may already exist under another disease's name.** (Hannos Satz aus dem Grilling, steht bereits als Überschrift auf `/about`.)
 
-Warum das jeder fühlt, auch ohne Medizinwissen: Jeder kennt das Gefühl, bei null anzufangen, während irgendwo die Lösung schon liegt. Das Rare-Disease-Feld macht daraus eine Tragödie mit Zeitstempel, denn bei der infantilen Form von Krabbe liegt die mediane Lebenserwartung bei 24 Monaten (GeneReviews NBK1238). Diese Zahl wird im Pitch **nicht** gesagt (siehe Abschnitt 6, Kitsch-Grenze), aber sie ist der Grund, warum Zeit hier die eigentliche Währung ist.
+Warum das jeder fühlt, auch ohne Medizinwissen: Jeder kennt das Gefühl, bei null anzufangen, während irgendwo die Lösung schon liegt. Das Rare-Disease-Feld macht daraus eine Tragödie mit Zeitstempel, denn bei der infantilen Form von Krabbe liegt das durchschnittliche Sterbealter bei 24 Monaten, Spanne 8 Monate bis 9 Jahre (GeneReviews NBK1238; korrigiert 04.10., vorher fälschlich „mediane Lebenserwartung"). Diese Zahl wird im Pitch **nicht** gesagt (siehe Abschnitt 6, Kitsch-Grenze), aber sie ist der Grund, warum Zeit hier die eigentliche Währung ist.
 
 ## 2. Drei Blickwinkel
 
@@ -45,7 +45,7 @@ Fazit: Maria passt zum Brief. Die eine echte Reibung ist Moment 1 (Devon); sie i
 Was der Zuschauer verstehen muss, in dieser Reihenfolge, und nicht mehr:
 
 1. Es gibt Krankheiten so selten, dass die Familien die Forschung selbst organisieren müssen. (Brief, Seite 2: „A diagnosis has made you the organizer of a research effort you never expected to lead.")
-2. Krankheiten haben Namen, aber die Biologie hält sich nicht an Namen. Ein einziges Gen, PSAP, steht hinter drei Krankheitsnamen: einer Krabbe-ähnlichen, einer MLD-ähnlichen und einer Gaucher-ähnlichen Krankheit, je nachdem, welcher Abschnitt des Proteins kaputt ist (OMIM 611722, 249900, 610539). Das ist der Aha-Moment, den jeder ohne Vorwissen versteht: **drei Türen, ein Raum.**
+2. Krankheiten haben Namen, aber die Biologie hält sich nicht an Namen. Ein einziges Gen, PSAP, steht hinter vier Krankheitsnamen (so zeigt es `/g/PSAP`), drei davon tragen die Pointe: einer Krabbe-ähnlichen, einer MLD-ähnlichen und einer Gaucher-ähnlichen Krankheit, je nachdem, welcher Abschnitt des Proteins kaputt ist (OMIM 611722, 249900, 610539). Das ist der Aha-Moment, den jeder ohne Vorwissen versteht: **drei Türen, ein Raum.**
 3. Deshalb kann die Nachbarkrankheit schon gebaut haben, was du brauchst. MLD hat ein Studiendesign, das eine Zulassung getragen hat (PMID 35065785). Krabbe kann beitreten oder adaptieren, statt bei null zu beginnen.
 4. Und jede Linie auf der Karte sagt, woher sie kommt, wie sicher sie ist, und was dagegen spricht. Wo nichts ist, steht „nichts gefunden, das haben wir durchsucht".
 

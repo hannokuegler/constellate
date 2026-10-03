@@ -13,7 +13,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 | [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) | Die drei 60-s-Videos: je Ziel, Zuschauer, Kernbotschaft, Shotlist mit Zeitcodes (Summe ≤ 0:58), Route, Voice-over Wort für Wort (≤ 135 Wörter), Beleg im Bild, Aufnahme-Checkliste, Schnitt, Export, wer, Deadline; Tech-Video mit exakten Dateien, Zeilen und Befehlen | Recep (Demo), Hanno (Tech), Osman (Team) |
 | [VOICE-ELEVENLABS.md](VOICE-ELEVENLABS.md) | Voice-over mit `eleven_v4` nur noch für Demo (D1–D7) und Tech (T1): Stimmprofil, Regler, Skript-Blöcke je Request, Aussprache, Streichreihenfolge, Offenlegung | Hanno (Erzeugung), Recep (`.tts.txt`) |
 | [MENTOR-INTRO.md](MENTOR-INTRO.md) | Vorstellung für das Mentor-Gespräch Woan-Yu Lin (03:45) in Pitch-v2-Sprache, Belegstand im Tool, Plan nach dem Gespräch je Antwort A/B/C | Hanno (spricht), Osman (Protokoll) |
-| [SUBMISSION-TEXTS.md](SUBMISSION-TEXTS.md) | Abgabetexte v1 für HackOS und Google Form (Englisch, je Feld ein Code-Block): Name, Einzeiler, 50-Wort-Text, Langbeschreibung, OpenAI-Absatz in zwei Varianten, Stack, Quellen mit Lizenz, Team, Links, Offenlegung, Prüfbefehl | Osman (Abgabe 14:00), Hanno (Varianten wählen) |
+| [SUBMISSION-TEXTS.md](SUBMISSION-TEXTS.md) | Abgabetexte v1 für HackOS und Google Form (Englisch, je Feld ein Code-Block): Name, Einzeiler, 50-Wort-Text, Langbeschreibung, KI-Absatz (seit P15 Claude, OpenAI als Reserve), Stack, Quellen mit Lizenz, Team, Links, Offenlegung, Prüfbefehl | Osman (Abgabe 14:00), Hanno (Varianten wählen) |
 | [MOTION-PROMPTS.md](MOTION-PROMPTS.md) | Sechs Prompts für kurze Motion-Clips, alle **nur für den Pitch am 10.10. und Teaser nach der Abgabe** markiert; in den 60-s-Videos kein Platz (höchstens eine 2-s-Titelkarte in Klartext) | Hanno, nach der Abgabe |
 
 ## Was sich gegenüber dem Stand 03:00 geändert hat
@@ -40,7 +40,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 | 6 | Persona Maria statt Nora (Osmans Wunsch, umgesetzt in allen `pitch/`-Dateien) | DECISIONS P9 nachtragen (sagt noch Nora und „Maria verworfen"); Abgleich mit dem Brief in [STORY.md](STORY.md) §2a: passt, eine Reibung (Moment 1 ist im Brief Devon) |
 | 7 | Team-Video: Background statt Projektbeitrag | Texte H/O/R in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) §1; vor dem Dreh: Osman klärt, ob RBI genannt werden darf, Recep ergänzt, was er seit dem TGM macht, beide Nachnamen |
 | 8 | Demo als Motion-Hybrid (Opener 10 s + Outro 4 s mit Motion, Mitte echte App) | Go und Musik-Frage; komplett animiert geht nicht (Brief verlangt den Weg durch den Graphen), Plan in [VIDEO-STRATEGY.md](VIDEO-STRATEGY.md) §2a |
-| 5 | Abgabetexte: Einzeiler A oder B, OpenAI-Absatz A oder B, Satz zu KI-Coding-Assistenten | A; OpenAI-Absatz um 11:00 nach echtem Stand (heute wäre B wahr); KI-Satz ja ([SUBMISSION-TEXTS.md](SUBMISSION-TEXTS.md) §12) |
+| 5 | Abgabetexte: Einzeiler A oder B, KI-Absatz, Track-Preis-Risiko durch P15, Satz zu KI-Coding-Assistenten | A; KI-Absatz Variante C (Claude); Track-Preis-Frage klären (§12 Nr. 2); KI-Satz ja ([SUBMISSION-TEXTS.md](SUBMISSION-TEXTS.md) §12) |
 
 ## Zeitplan bis 15:00 (Aufnahme ab Freeze 12:00, Upload bis 14:00)
 
@@ -55,7 +55,7 @@ Quellen: [docs/SUBMISSION-CHECKLIST.md](../docs/SUBMISSION-CHECKLIST.md) §4, [d
 | 09:00 | ElevenLabs: Dashboard, Test-Call, Stimme Y wählen | | |
 | 09:00–11:00 | Polish, Moonshot-Panel nur mit MOONSHOT.md | Skripte final + `.tts.txt` (Demo D1–D7, Tech T1), Einwilligung Team-Video einholen, MOONSHOT.md (R2) | README (O3), Lizenzen, Reproduce-Test vorbereiten |
 | 11:00 | **Repo public.** `make validate` und `npm run build` für das Tech-Video vorbereiten | **Skripte eingefroren** | Reproduce-Test auf frischem Clone |
-| 11:00–12:00 | Quality-Gates mit Osman (Live-URL, Hero-Pfad, Honest Gap, Edge-Quellen, OpenAI 3×, Fallback, README, Lizenzen, Secrets) | Kanten-IDs aus VIDEO-STRATEGY §0 im Live-Tool prüfen | Quality-Gates prüfen |
+| 11:00–12:00 | Quality-Gates mit Osman (Live-URL, Hero-Pfad, Honest Gap, Edge-Quellen, KI 3× (P15: Claude), Fallback, README, Lizenzen, Secrets) | Kanten-IDs aus VIDEO-STRATEGY §0 im Live-Tool prüfen | Quality-Gates prüfen |
 | 11:15–11:45 | MP3s erzeugen (Demo 7, Tech 1), Hörprobe mit Recep | Hörprobe | |
 | **12:00** | **Feature-Freeze.** Danach nur P1-Bugs. Entscheidung Sterne-Sätze an der Live-Action-Card | | |
 | 12:00–12:45 | Tech-Video aufnehmen (Terminal, Editor, Browser) | Demo-Pfad stumm aufnehmen, 2–3 Takes (12:00–12:30) | Team-Video filmen (alle drei, gleicher Ort, 12:00–12:30) |

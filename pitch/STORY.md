@@ -63,7 +63,7 @@ Der Satz, den der Zuschauer mitnimmt: **Don't rebuild what a neighbouring diseas
 | **10× impact** | Meilenstein, heutige Timeline gegen unsere Route, Annahmen | Meilenstein „nutzbarer externer Kontrollarm", Präzedenz Libmeldy (29 vs. 31, PMID 35065785) | **offen:** `docs/MOONSHOT.md` fehlt (Recep, R2). Bis dahin keine 10×-Zahl in Videos oder Pitch, nur die Annahmen in Worten |
 | **Ambition and product craft** | intuitive Erfahrung, Zusammenarbeit über Communitys hinweg | eine Suche, zwei Momente, Progressive Reveal, Honest Gap als eigener Screen | Startseite, MomentBar, `/methods`, `/about` |
 
-Jury-Zusatz, den fast kein Team hat: Das Tool sagt **Nein**. Das Gegenbeispiel wird aktiv gezeigt, nicht versteckt. Die Honest Gap ist ein First-Class-Screen. Und beim OpenAI-Track: „The graph is the guardrail. No edge, no sentence." (W13, positive Abgrenzung, nie „ChatGPT halluziniert".)
+Jury-Zusatz, den fast kein Team hat: Das Tool sagt **Nein**. Das Gegenbeispiel wird aktiv gezeigt, nicht versteckt. Die Honest Gap ist ein First-Class-Screen. Und bei der KI (seit P15 Claude): „The graph is the guardrail. No edge, no sentence." (W13, positive Abgrenzung, nie „ChatGPT halluziniert".)
 
 ## 3. Der Moment, der ans Herz geht
 

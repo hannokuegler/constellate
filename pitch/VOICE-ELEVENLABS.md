@@ -154,7 +154,9 @@ Don't rebuild what a neighbouring disease already built.
 
 Tempo-Check (01:20, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 1,9 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
 
-### Tech · T1 (0:00–0:58, ein Request)
+### Tech · T1 (0:00–0:58, ein Request) · 132 Wörter
+
+Umgestellt 01:40 auf DECISIONS P15 (keine OpenAI-Credits: Extract und Explain mit Claude Sonnet 5.5, Reconcile als Fuzzy-Fallback, OpenAI-Pfade per Key aktivierbar). Kein OpenAI im Präsens.
 
 ```
 [calm, measured narration]
@@ -162,9 +164,9 @@ Open databases go through a Python pipeline into an evidence-graded graph, expor
 
 Make validate checks every edge: source, date, confidence, a counter-evidence field that may be empty but never missing. And it asserts the hero path exists.
 
-OpenAI at three points. Extract: claims from abstracts; code rejects any claim whose quoted snippet is not in the abstract. Reconcile: names to MONDO ids; the judge can only pick from five candidates, or none.
+A language model at three points. Extract: Claude turns abstracts into claims; code rejects any claim whose quoted snippet is not in the abstract. Reconcile: names to MONDO ids by fuzzy match.
 
-Explain, the third point: a sentence without a source is dropped and shown struck through. Model ids come from environment variables, never hard-coded.
+Explain: Claude writes the Action Card in plain words; a sentence without a source is dropped and shown struck through. OpenAI stays switchable by key.
 
 The Playwright test clicks the hero path at desktop and phone width and fails on any console error.
 
@@ -175,7 +177,7 @@ Falls T1 als sechs Einzel-Requests gebraucht wird (T1a bis T1f): je Absatz ein R
 
 ## 6. Streichreihenfolge, falls ein Block zu lang wird
 
-Demo (die ersten zwei Kürzungen der alten Liste sind schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „or none" → Absatz 4 „never hard-coded" → Absatz 6 ganz (dann Untertitel statt gesprochen).
+Demo (die ersten zwei Kürzungen der alten Liste sind schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „by fuzzy match" → Absatz 4 „OpenAI stays switchable by key." → Absatz 6 ganz (dann Untertitel statt gesprochen).
 
 ## 7. Offenlegung
 

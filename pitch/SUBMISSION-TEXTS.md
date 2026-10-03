@@ -44,7 +44,7 @@ Rare-disease families rebuild registries and studies that a neighbouring disease
 
 ## 5 · Long description
 
-Gliederung Problem → Herangehensweise → Lösung → Evidenzmodell → OpenAI → Messung → Nächste Schritte. Länge: Haupttext 415 Wörter / ca. 2.650 Zeichen, mit OpenAI-Absatz ca. 510 Wörter / 3.250 Zeichen. Hat das Feld ein Limit darunter, streicht v2 in dieser Reihenfolge: „What we measured", „Evidence model" auf einen Satz, Quellenliste im Absatz „Approach". Der Absatz „Built with OpenAI" kommt in zwei Varianten (§5b); **Hanno wählt um 11:00** je nachdem, ob Extract und Explain bis dahin mit Key gelaufen sind. Heute (01:30) ist Variante B die wahre: Action Card zeigt „Template text", `/methods` zeigt Extract precision „pending", der Export hat keine OpenAI-Kanten.
+Gliederung Problem → Herangehensweise → Lösung → Evidenzmodell → KI → Messung → Nächste Schritte. Länge: Haupttext 415 Wörter / ca. 2.650 Zeichen, mit OpenAI-Absatz ca. 510 Wörter / 3.250 Zeichen. Hat das Feld ein Limit darunter, streicht v2 in dieser Reihenfolge: „What we measured", „Evidence model" auf einen Satz, Quellenliste im Absatz „Approach". Der KI-Absatz steht in §5b; seit P15 (01:40) gilt Variante C (Claude), A bleibt Reserve. Stand 01:30: Action Card zeigt „Template text", `/methods` zeigt Extract precision „pending", der Export hat keine Modell-Kanten.
 
 ### 5a · Haupttext
 
@@ -57,7 +57,7 @@ Solution. We follow Maria, the patient leader from the challenge brief, in two m
 
 Evidence model. Four levels: observed, curated, text-mined, inferred. A level is never raised, and computed links show their formula. 251 disease pairs that look alike but differ in mechanism are flagged automatically, for example Pelizaeus-Merzbacher disease next to Krabbe disease.
 
-[BUILT WITH OPENAI: Variante A oder B aus §5b einsetzen]
+[BUILT WITH AI: Variante C aus §5b einsetzen, A nur bei echtem OpenAI-Lauf]
 
 What we measured. Our symptom similarity agrees with Monarch semantic similarity (Spearman 0.66, n = 49). Of the 350 core diseases, 126 have a trial, 233 a paper and 117 a reusable asset such as a registry or natural-history study. An automated check confirms the hero path after every data build.
 
@@ -66,30 +66,32 @@ What we validate next. Extract precision and Reconcile accuracy on hand-labelled
 Constellate is research navigation, not medical advice. Maria is the persona from the challenge brief, not a real patient.
 ```
 
-### 5b · Built with OpenAI
+### 5b · Built with AI (seit DECISIONS P15, 01:40)
 
-Variante **A**, nur wenn bis 11:00 Extract mit Key gelaufen ist (text-mined Kanten mit Modell im Edge-Panel sichtbar) und Explain-Texte vorberechnet live sind:
+P15: keine OpenAI-Credits. Extract und Explain laufen mit Claude (Sonnet 5.5), Reconcile als Fuzzy-Fallback, die OpenAI-Pfade bleiben im Code und sind per Key aktivierbar. **Kein OpenAI im Präsens.** Achtung: Der Brief (S. 5) sagt „If you want to win the challenge track prizes, then you would need to leverage OpenAI's models or tools." (siehe §12 Nr. 2).
+
+Variante **C** (gilt jetzt; nur einsetzen, wenn Extract und Explain mit Claude bis 11:00 wirklich laufen):
+
+```
+Built with AI. Extract: Claude (Anthropic) reads PubMed abstracts and returns structured claims with the PMID and the quoted sentence; a claim without a quote is dropped, and every claim stays at level text-mined. Explain: Claude turns the links of an Action Card into plain language; every sentence must end with a link ID or it is struck out, and explanations are precomputed, so no API key sits on the website. Reconcile matches patient-organisation names to MONDO disease IDs by fuzzy matching; only hand-verified organisations reach the product. OpenAI paths for all three steps remain in the code and switch on with an API key; we had no OpenAI credits in time.
+```
+
+Variante **A** (Reserve, nur wenn doch ein OpenAI-Key mit echtem Lauf kommt):
 
 ```
 Built with OpenAI. OpenAI runs at three points, each marked in the product. Extract reads PubMed abstracts and returns structured claims with the PMID and the quoted sentence (Structured Outputs); a claim without a quote is dropped, and every claim stays at level text-mined. Reconcile matches patient-organisation names to MONDO disease IDs: embeddings propose candidates, a model judges them and gives a reason. Explain turns the links of an Action Card into plain language; every sentence must end with a link ID or it is struck out. Explain is precomputed, so no API key sits on the website.
 ```
 
-Variante **B**, wenn der Key-Lauf nicht geklappt hat (ehrlich, kostet aber den Track-Anspruch):
-
-```
-Built with OpenAI. OpenAI is designed in at three points, each marked in the product: Extract (PubMed abstracts to structured claims with PMID and quoted sentence, Structured Outputs), Reconcile (patient-organisation names to MONDO disease IDs with embeddings and a judging model) and Explain (Action Card links to plain language, every sentence citing a link ID). In this build the API key was not available in time: the pipeline steps are covered by mocked tests, and Explain shows template text, labelled as such in the app.
-```
-
-Teilvarianten (z. B. Extract ja, Explain nein) baue ich aus A und B, sobald der Stand um 11:00 feststeht.
+Variante B (OpenAI ohne Key) ist durch C ersetzt. Läuft bis 11:00 auch Claude nicht: Satz „Extract and Explain are built and tested with mocks; the app shows labelled template text." statt der beiden Claude-Sätze.
 
 ## 6 · Tech stack
 
 ```
-Pipeline: Python (uv), steps 01 to 09 (fetch, slice, build graph, enrich, OpenAI extract, OpenAI reconcile, analytics, trial details, metrics), validator against a data contract (make validate), full rebuild from primary sources (make reproduce).
+Pipeline: Python (uv), steps 01 to 09 (fetch, slice, build graph, enrich, extract, reconcile, analytics, trial details, metrics), validator against a data contract (make validate), full rebuild from primary sources (make reproduce).
 Analytics: information content over HPO, simGIC and Resnik phenotype similarity, curated mechanism classes for counter-examples, Louvain clustering.
 Data delivery: static JSON shards per disease, gene and phenotype, no database and no server to fail during a demo.
 App: Next.js 15 (App Router, TypeScript, Tailwind 4), react-force-graph-2d, deployed on Vercel, no login.
-AI: OpenAI API (Structured Outputs, embeddings) for Extract, Reconcile and Explain; model IDs set by environment variable only.
+AI: Claude Sonnet 5.5 (Anthropic) for Extract and Explain, fuzzy matching for Reconcile; OpenAI paths (Structured Outputs, embeddings) remain in the code and switch on with an API key; model IDs set by environment variable only.
 Video: voice-over generated with ElevenLabs (Eleven v4).
 ```
 
@@ -154,6 +156,6 @@ Belege im Text, die nicht aus `meta.json` kommen: 10.000 Krankheiten und unter 5
 | # | Frage | Empfehlung |
 |---|---|---|
 | 1 | Einzeiler A oder B | A (Pitch-Schluss, kein Fachwort) |
-| 2 | OpenAI-Absatz A oder B | um 11:00 nach echtem Stand; ohne Key-Lauf ehrlich B, nie A „auf Vorrat" |
-| 3 | Satz zu KI-Coding-Assistenten (Claude Code) in der Offenlegung | ja, ein Satz: „The code was written with the help of AI coding assistants." Kostet nichts, schützt vor Nachfragen; OpenAI bleibt das Modell im Produkt |
+| 2 | **Track-Preis:** P15 (Claude statt OpenAI) heißt laut Brief S. 5: kein Anspruch auf „challenge track prizes". Falls damit auch Platz 1 in C5 gemeint ist, ist unser Ziel weg | Prüfen, ob „track prize" = C5-Sieg ist (Discord/Mentor fragen). Wenn ja: eigener OpenAI-Key mit hartem Limit 5 USD (P12 rechnete unter 5 USD), nur Explain für den Hero-Pfad und eine Extract-Stichprobe über OpenAI, zahlt Hanno selbst; dann Variante A oder eine Mischung. Sonst Variante C |
+| 3 | Satz zu KI-Coding-Assistenten (Claude Code) in der Offenlegung | ja, ein Satz: „The code was written with the help of AI coding assistants." Seit P15 ist Claude auch im Produkt, also erst recht offenlegen |
 | 4 | Nachnamen Osman und Recep | die beiden tragen selbst ein |

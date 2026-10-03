@@ -131,9 +131,9 @@ Ablauf: Opener und Outro hängen nicht an der App, also **vor dem Freeze** erzeu
 
 ## 3. Technical Walkthrough · ≤ 60 s · Hanno, Terminal und Editor, Voice-over ElevenLabs
 
-**Ziel:** Glaubwürdigkeit durch echten Code und echte Terminals in einer Minute: Architektur in einem Satz, Validator grün, drei OpenAI-Stellen mit Datei, E2E grün. Kriterien: Graph quality, Evidence integrity, Built with OpenAI.
+**Ziel:** Glaubwürdigkeit durch echten Code und echte Terminals in einer Minute: Architektur in einem Satz, Validator grün, die drei KI-Stellen mit Datei (seit P15, 01:40: Extract und Explain mit Claude Sonnet 5.5, Reconcile als Fuzzy-Fallback, OpenAI-Pfade bleiben per Key aktivierbar), E2E grün. Kriterien: Graph quality, Evidence integrity. **Offen:** Die Claude-Dateien für Extract und Explain gibt es um 01:40 in keinem Branch; Dateinamen und Zeilen in den Zeilen 0:22–0:47 unten trägt Hanno nach, sobald gebaut. Die OpenAI-Dateien dürfen im Bild bleiben, gesprochen wird nur „switchable by key".
 
-**Zuschauer:** technische Jury, OpenAI-Track-Reviewer.
+**Zuschauer:** technische Jury.
 
 **Kernbotschaft:** Der Graph ist die Leitplanke: kein Satz ohne Quelle, kein Modell ohne Prüfung durch Code.
 
@@ -145,8 +145,8 @@ Ablauf: Opener und Outro hängen nicht an der App, also **vor dem Freeze** erzeu
 |---|---|---|---|
 | 0:00–0:11 | Terminal: `grep -nE '^[a-z]+:' Makefile` (Targets `fetch` bis `reproduce`), dahinter kurz das README-Diagramm | `Makefile` Zeilen 8–27 | „Open databases go through a Python pipeline into an evidence-graded graph, exported as static JSON for a Next.js app. No server database, nothing to go down." |
 | 0:11–0:22 | Terminal: `make validate` live; letzte Zeile beginnt mit `hero:` und zeigt `Krabbe -> GALC ok · Krabbe family -> PSAP ok · …`; daneben Editor | `pipeline/validate.py` Zeilen 30 (`REQUIRED_EDGE_KEYS`, enthält `contradicting`) und 315–329 (Hero-Checks) | „make validate checks every edge: source, date, confidence, a counter-evidence field that may be empty but never missing. And it asserts the hero path exists." |
-| 0:22–0:37 | Editor, zwei Dateien nacheinander | `pipeline/05_openai_extract.py` Zeilen 129 (`snippet_in_abstract`) und 226–233 (`validate_claim`); `pipeline/06_openai_reconcile.py` Zeilen 1–18 (Docstring: judge aus fünf Kandidaten oder `none`, Fuzzy-Fallback); `pipeline/openai_config.py` Zeilen 5–7 (`OPENAI_MODEL_EXTRACT`, `OPENAI_MODEL_JUDGE`, `OPENAI_MODEL_EMBED`) | „OpenAI at three points. Extract: claims from abstracts; code rejects any claim whose quoted snippet is not in the abstract. Reconcile: names to MONDO ids; the judge can only pick from five candidates, or none." |
-| 0:37–0:47 | Editor, dann Browser Action Card mit Explain-Text | `app/lib/explain.ts` Zeilen 14–26 (Post-Check: `no edge citation` → `dropped`); `app/lib/prompts/explain.ts` Zeilen 8–10 (Regeln 2 bis 4); `app/app/api/explain/route.ts` Zeile 153 (`OPENAI_MODEL_EXPLAIN`) | „Explain, the third point: a sentence without a source is dropped and shown struck through. Model ids come from environment variables, never hard-coded." |
+| 0:22–0:37 | Editor, zwei Dateien nacheinander | `pipeline/05_openai_extract.py` Zeilen 129 (`snippet_in_abstract`) und 226–233 (`validate_claim`); `pipeline/06_openai_reconcile.py` Zeilen 1–18 (Docstring: judge aus fünf Kandidaten oder `none`, Fuzzy-Fallback); `pipeline/openai_config.py` Zeilen 5–7 (`OPENAI_MODEL_EXTRACT`, `OPENAI_MODEL_JUDGE`, `OPENAI_MODEL_EMBED`) | „A language model at three points. Extract: Claude turns abstracts into claims; code rejects any claim whose quoted snippet is not in the abstract. Reconcile: names to MONDO ids by fuzzy match." |
+| 0:37–0:47 | Editor, dann Browser Action Card mit Explain-Text | `app/lib/explain.ts` Zeilen 14–26 (Post-Check: `no edge citation` → `dropped`); `app/lib/prompts/explain.ts` Zeilen 8–10 (Regeln 2 bis 4); `app/app/api/explain/route.ts` Zeile 153 (`OPENAI_MODEL_EXPLAIN`) | „Explain: Claude writes the Action Card in plain words; a sentence without a source is dropped and shown struck through. OpenAI stays switchable by key." |
 | 0:47–0:55 | Terminal: `cd app && npm run e2e:run`, grüne Zeilen `hero path @1280`, `hero path @375`, `dark mode renders the disease page` | `app/e2e/hero.spec.ts` Zeile 5 (Kommentar mit dem Pfad), Zeilen 29–32 | „The Playwright test clicks the hero path at desktop and phone width and fails on any console error." |
 | 0:55–0:58 | Browser `/methods`, Abschnitt mit den Limits, oder README-Abschnitt „Limitations" | – | „Research navigation, not medical advice." |
 

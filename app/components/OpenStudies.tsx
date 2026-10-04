@@ -1,74 +1,35 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types";
-import { loadTrial } from "@/lib/data";
 import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
 import { phaseText } from "@/lib/present";
+import { ALL_COUNTRIES as ALL, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, sitesAsOf as newestSiteDate, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
 import { plainDate } from "@/lib/nextSteps";
 import { LevelBadge } from "./Badges";
 import HonestGap, { coverageSearches } from "./HonestGap";
 
-const COUNTRY_KEY = "constellate.country";
-const ALL = "";
-
-function readCountry(): string {
-  try {
-    return window.localStorage.getItem(COUNTRY_KEY) ?? ALL;
-  } catch {
-    return ALL;
-  }
-}
-function writeCountry(value: string) {
-  try {
-    window.localStorage.setItem(COUNTRY_KEY, value);
-  } catch {
-    /* private mode: the choice just does not persist */
-  }
-}
-
 /** Open studies that list this diagnosis, with where they run and how a family contacts the study team. */
 export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFile; onEdge: (e: Edge) => void; family: boolean }) {
   const trials = useMemo(() => openTrials(file), [file]);
-  const [details, setDetails] = useState<Record<string, TrialDetail | null>>({});
-  const [country, setCountry] = useState<string>(ALL);
+  const ids = useMemo(() => trials.map((t) => t.node.id), [trials]);
+  const details = useTrialDetails(ids);
+  const [stored, pickCountry] = useCountry();
   const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => setCountry(readCountry()), []);
-  useEffect(() => {
-    let alive = true;
-    // trial shards are optional (`make trials`): probe one first, and if it is missing do not request the rest (no wall of 404s)
-    (async () => {
-      const first = trials.length ? await loadTrial(trials[0].node.id).catch(() => null) : null;
-      const rest = first ? await Promise.all(trials.slice(1).map((t) => loadTrial(t.node.id).catch(() => null))) : trials.slice(1).map(() => null);
-      const rows = [first, ...rest];
-      if (alive) setDetails(Object.fromEntries(trials.map((t, i) => [t.node.id, rows[i]])));
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [trials]);
-
-  const countries = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const d of Object.values(details)) for (const c of d?.countries ?? []) counts.set(c.country, (counts.get(c.country) ?? 0) + 1);
-    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  }, [details]);
+  const countries = useCountryCounts(details);
   const hasDetails = countries.length > 0;
-  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const unlisted = unlistedCount(ids, details);
+  // the choice is shared with "Studies you could ask about"; "Country not listed" only applies where such a study exists
+  const country = stored === NO_COUNTRY && !unlisted ? ALL : stored;
   const withoutSites = trials.filter((t) => !details[t.node.id]).length;
 
-  const shown = trials.filter((t) => !country || details[t.node.id]?.countries.some((c) => c.country === country));
+  const shown = trials.filter((t) => listsCountry(details[t.node.id], country));
   const visible = showAll ? shown : shown.slice(0, 5);
   const ctgov = coverageSearches(file.coverage, ["ctgov"]);
-  const siteDates = [...Object.values(details).map((d) => d?.retrieved), ...ctgov.map((c) => c.fetched_at)].filter((d): d is string => Boolean(d)).sort();
-  const sitesAsOf = plainDate(siteDates[siteDates.length - 1]);
-
-  const pickCountry = (value: string) => {
-    setCountry(value);
-    writeCountry(value);
-  };
+  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const sitesAsOf = plainDate(newestSiteDate(details, ctgov.map((c) => c.fetched_at)));
 
   return (
     <section className="card scroll-mt-20 px-4 py-4" id="open-studies" aria-labelledby="open-studies-title">
@@ -105,6 +66,12 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
                     {c} ({n})
                   </option>
                 ))}
+                {unlisted > 0 && (
+                  <option value={NO_COUNTRY}>
+                    {NO_COUNTRY_LABEL} ({unlisted})
+                  </option>
+                )}
+                {country && country !== NO_COUNTRY && !countries.some(([c]) => c === country) && <option value={country}>{country} (0)</option>}
               </select>
             </label>
           )}
@@ -195,7 +162,7 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
       </dl>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <a
-          href={detail?.contact_url ?? `${String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`)}#contacts-and-locations`}
+          href={contactUrl(detail, String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`))}
           target="_blank"
           rel="noreferrer"
           className="btn-primary text-[13px]"

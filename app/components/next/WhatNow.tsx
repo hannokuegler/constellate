@@ -1,9 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import type { DiseaseFile, Meta, TrialDetail } from "@/lib/types";
-import { loadTrial } from "@/lib/data";
+import { useMemo } from "react";
+import type { DiseaseFile, Meta } from "@/lib/types";
 import { refOf, xrefUrl } from "@/lib/ids";
 import {
   citedEdges,
@@ -16,12 +15,11 @@ import {
   plainDate,
   therapyState,
   wordsIn,
-  PLAIN_WORDS,
   type OrgRow,
-  type StudyRow,
 } from "@/lib/nextSteps";
 import { useEdgePanel } from "../Providers";
 import RelatedHelp, { useRelated, type RelatedState } from "./RelatedHelp";
+import StudiesNow from "./StudiesNow";
 import { Ext, Explain, NowCard, Source } from "./ui";
 
 /**
@@ -83,7 +81,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
 
         <FamiliesCard label={label} orgs={orgs} relatedOrgs={relatedOrgs} builtAt={builtAt} loading={!orgs.length && related.status === "loading" && !gapOrgs(file).length} />
 
-        <StudiesCard file={file} studies={studies} assets={assets} />
+        <StudiesNow file={file} studies={studies} assets={assets} />
 
         <NowCard id="now-steps" title="Next steps" wide>
           {steps.length ? (
@@ -243,85 +241,6 @@ function FamiliesCard({ label, orgs, relatedOrgs, builtAt, loading }: { label: s
         </ul>
       )}
       {!orgs.length && !relatedOrgs.length && !loading && <p className="text-ink-2">No group for a related disease is listed either.</p>}
-    </NowCard>
-  );
-}
-
-function StudiesCard({ file, studies, assets }: { file: DiseaseFile; studies: StudyRow[]; assets: ReturnType<typeof familyAssets> }) {
-  const label = file.node.label;
-  const shown = useMemo(() => studies.slice(0, 2), [studies]);
-  const [details, setDetails] = useState<Record<string, TrialDetail | null>>({});
-  useEffect(() => {
-    let alive = true;
-    // trial shards are optional: a missing one just means "see the registry entry"
-    Promise.all(shown.map((s) => loadTrial(s.key).catch(() => null))).then((rows) => {
-      if (alive) setDetails(Object.fromEntries(shown.map((s, i) => [s.key, rows[i]])));
-    });
-    return () => {
-      alive = false;
-    };
-  }, [shown]);
-
-  const studyIds = new Set(studies.map((s) => s.key));
-  const registries = assets.filter((a) => a.kind === "registry" && /recruiting/i.test(a.status ?? "") && !studyIds.has(a.record ?? ""));
-  const ctgov = (file.coverage ?? []).find((c) => /ctgov|clinicaltrials/i.test(c.source));
-  const checked = plainDate(ctgov?.retrieved ?? ctgov?.fetched_at);
-
-  return (
-    <NowCard id="now-studies" title="Studies you could ask about" gap={!studies.length}>
-      {studies.length ? (
-        <>
-          <p>
-            {studies.length === 1 ? "One study lists" : `${studies.length} studies list`} {label} and take{studies.length === 1 ? "s" : ""} participants now or soon.
-          </p>
-          <ul className="divide-y divide-line">
-            {shown.map((s) => {
-              const d = details[s.key];
-              const countries = d?.countries.map((c) => c.country) ?? [];
-              return (
-                <li key={s.key} className="py-2">
-                  <p className="text-[15px]">
-                    <span className="font-semibold text-ink">{s.status}</span>
-                    <span className="text-ink-2">
-                      {" "}
-                      · {s.observational ? "observes, no treatment" : "tests a treatment"} ·{" "}
-                      {countries.length ? `${countries.slice(0, 3).join(", ")}${countries.length > 3 ? ` +${countries.length - 3}` : ""}` : "places: see the registry"}
-                    </span>
-                  </p>
-                  <p className="leading-snug">{s.title}</p>
-                  <Source label={`${s.key} on ClinicalTrials.gov`} href={s.href} edge={s.edge} about={`${s.key} lists ${label}`} prefix={false} />
-                </li>
-              );
-            })}
-          </ul>
-          {studies.length > shown.length && (
-            <a href="#open-studies" className="inline-flex min-h-11 items-center text-[15px] underline decoration-line-strong underline-offset-4 hover:decoration-current">
-              See all {studies.length} studies below
-            </a>
-          )}
-          <Explain>Ask your doctor; the registry lists the contact.</Explain>
-        </>
-      ) : (
-        <p>
-          No open study lists {label} on ClinicalTrials.gov right now{checked ? ` (checked ${checked})` : ""}.
-        </p>
-      )}
-      {registries.length > 0 && (
-        <div>
-          <p className="font-semibold">Registries that collect data on {label}</p>
-          <ul>
-            {registries.slice(0, 2).map((r) => (
-              <li key={r.key}>
-                <p className="leading-snug">
-                  {r.label} ({r.status?.toLowerCase()})
-                </p>
-                <Source label={r.record ?? "registry entry"} href={r.href} date={r.date} edge={r.edge} about={`${r.label} for ${label}`} />
-              </li>
-            ))}
-          </ul>
-          <Explain>{PLAIN_WORDS.registry}</Explain>
-        </div>
-      )}
     </NowCard>
   );
 }

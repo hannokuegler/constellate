@@ -1,0 +1,84 @@
+{
+ "key": "ed278043f3434768",
+ "edge_ids": [
+  "e_0efb7d0e40d1",
+  "e_10cd9c45a3ff",
+  "e_1149d14e98a6",
+  "e_2e6faa03a353",
+  "e_3933e7531d9c",
+  "e_3e25cc51aab5",
+  "e_5ee12535f0b7",
+  "e_d96c82796358"
+ ],
+ "from": "MONDO:0009650",
+ "via": "MONDO:0018931",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.596Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucolipidosis type II and mucolipidosis type III alpha/beta are both recorded as caused by the gene GNPTAB [e_3e25cc51aab5] [e_d96c82796358].",
+   "edge_ids": [
+    "e_3e25cc51aab5",
+    "e_d96c82796358"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_3e25cc51aab5] [e_d96c82796358].",
+   "edge_ids": [
+    "e_3e25cc51aab5",
+    "e_d96c82796358"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate also computed that the two conditions have similar symptom profiles, with a score of 0.295 over 38 shared terms, ranked 1 of 1 [e_3933e7531d9c].",
+   "edge_ids": [
+    "e_3933e7531d9c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That similarity is inferred, meaning Constellate calculated it, and it is not a database finding [e_3933e7531d9c].",
+   "edge_ids": [
+    "e_3933e7531d9c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type II has two curated features, restricted chest movement and a protruding belly, both listed as very frequent [e_5ee12535f0b7] [e_2e6faa03a353].",
+   "edge_ids": [
+    "e_5ee12535f0b7",
+    "e_2e6faa03a353"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type III has one completed observational study on ClinicalTrials.gov, a patient group link made by an automatic name match, and a research network grant [e_1149d14e98a6] [e_10cd9c45a3ff] [e_0efb7d0e40d1].",
+   "edge_ids": [
+    "e_1149d14e98a6",
+    "e_10cd9c45a3ff",
+    "e_0efb7d0e40d1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show any treatment, and they list no symptoms for type III [e_1149d14e98a6] [e_3933e7531d9c].",
+   "edge_ids": [
+    "e_1149d14e98a6",
+    "e_3933e7531d9c"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

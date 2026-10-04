@@ -13,7 +13,7 @@ export default function TextMined({ edges, labelOf, onEdge }: { edges: Edge[]; l
         <h2 className="text-[17px] font-semibold">From the literature</h2>
         <span className="tabular text-[13px] text-ink-2">{edges.length}</span>
       </div>
-      <p className="mb-2 text-[13px] text-ink-2">
+      <p className="mb-2 text-[16px] text-ink-2">
         AI-extracted from PubMed abstracts{model ? ` by ${model}` : ""}. Unverified: check the PMID before relying on a claim.
       </p>
       <ul className="divide-y divide-line">
@@ -21,14 +21,14 @@ export default function TextMined({ edges, labelOf, onEdge }: { edges: Edge[]; l
           const ev = e.evidence[0];
           return (
             <li key={e.id} className="py-2">
-              <p className="text-[15px]">
+              <p className="text-[16px]">
                 {labelOf(e.source)} <span className="text-ink-2">{RELATION_LABEL[e.type] ?? e.type.replaceAll("_", " ")}</span> {labelOf(e.target)}
                 {hasCounterEvidence(e) && <span className="ml-2 rounded-full bg-contra-soft px-2 text-[12px] font-semibold text-contra">contradicted</span>}
               </p>
-              {ev?.snippet && <p className="mt-1 line-clamp-2 text-[13px] text-ink-2">“{ev.snippet}”</p>}
+              {ev?.snippet && <p className="mt-1 line-clamp-2 text-[16px] text-ink-2">“{ev.snippet}”</p>}
               <div className="flex flex-wrap items-center gap-x-3 text-[12px] text-ink-2">
                 {ev?.url ? (
-                  <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-accent underline underline-offset-2">
+                  <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                     {ev.record ?? "source"}
                   </a>
                 ) : (
@@ -36,7 +36,7 @@ export default function TextMined({ edges, labelOf, onEdge }: { edges: Edge[]; l
                 )}
                 <span className="tabular">conf. {formatConfidence(e.confidence)}</span>
                 <span>{e.evidence.length} abstract{e.evidence.length === 1 ? "" : "s"}</span>
-                <button onClick={() => onEdge(e)} className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+                <button onClick={() => onEdge(e)} className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
                   Evidence
                 </button>
               </div>

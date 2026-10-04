@@ -8,10 +8,10 @@ export default function CiteLink({ id }: { id: string }) {
   return (
     <button
       onClick={() => openEdge(id)}
-      className="group -my-2.5 mx-0.5 inline-flex min-h-11 items-center align-middle font-mono text-[12px] font-medium text-accent"
+      className="group -my-3 mx-0.5 inline-flex min-h-11 items-center align-baseline font-mono text-[12px] font-medium text-accent"
       aria-label={`Open evidence ${id}`}
     >
-      <span className="rounded-[6px] bg-accent-soft px-1.5 py-0.5 group-hover:underline">[{id}]</span>
+      <span className="rounded-[6px] bg-accent-soft px-1.5 py-0.5 leading-none group-hover:underline">{id}</span>
     </button>
   );
 }

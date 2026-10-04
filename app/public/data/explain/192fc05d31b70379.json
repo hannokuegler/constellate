@@ -1,0 +1,78 @@
+{
+ "key": "192fc05d31b70379",
+ "edge_ids": [
+  "e_222a8163593e",
+  "e_54af47a2c8f8",
+  "e_6b22822b86fb",
+  "e_ac0d73745bd0",
+  "e_d5e7f3585d7a"
+ ],
+ "from": "MONDO:0008769",
+ "via": "MONDO:0012235",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.519Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, neuronal ceroid lipofuscinosis 2 and autosomal recessive spinocerebellar ataxia 7, are both recorded as caused by the gene TPP1 [e_6b22822b86fb] [e_ac0d73745bd0].",
+   "edge_ids": [
+    "e_6b22822b86fb",
+    "e_ac0d73745bd0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_6b22822b86fb] [e_ac0d73745bd0].",
+   "edge_ids": [
+    "e_6b22822b86fb",
+    "e_ac0d73745bd0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9, the lower of the two gene links [e_222a8163593e].",
+   "edge_ids": [
+    "e_222a8163593e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_222a8163593e].",
+   "edge_ids": [
+    "e_222a8163593e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For neuronal ceroid lipofuscinosis 2, an observed feature is reduced activity of the TPP1 enzyme in tissue, seen in 2 of 2 cases in one report [e_d5e7f3585d7a].",
+   "edge_ids": [
+    "e_d5e7f3585d7a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A second feature, extra fluorescent storage material outside nerve cells, is curated at a lower confidence of 0.5 [e_54af47a2c8f8].",
+   "edge_ids": [
+    "e_54af47a2c8f8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show why one gene gives rise to two different conditions, and they list no symptoms for the ataxia, no studies and no treatments [e_222a8163593e] [e_ac0d73745bd0].",
+   "edge_ids": [
+    "e_222a8163593e",
+    "e_ac0d73745bd0"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

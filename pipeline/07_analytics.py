@@ -1,6 +1,6 @@
 """07_analytics — derived edges + browser export (the data contract the app loads from app/public/data/).
 
-Input : data/graph_base.json (03), data/slice.json (02), data/raw/{hp.json, phenotype.hpoa, mondo.json, en_product6.xml},
+Input : data/graph_base.json (03), data/slice.json (02), data/raw/{hp.json, phenotype.hpoa, mondo.json, en_product1.xml, en_product6.xml},
         optional data/enrich/edges_draft.json + coverage.jsonl (04), data/extract/edges_text_mined.json (05),
         data/reconcile/org_disease_edges.json (06), data/enrich/extra_{edges.json, searched.jsonl, prevalence.jsonl,
         kol_overlap.json, metrics.json, run_log.jsonl} (04b, data-v2) — each skipped cleanly when missing
@@ -66,6 +66,8 @@ TOP_RESNIK = 20               # Resnik-BMA is computed for this many simGIC cand
 COUNTEREXAMPLE_MAX_RANK = 20  # "high phenotype similarity" = within the top 20 of either disease
 COUNTEREXAMPLE_MIN_SIMGIC = 0.15
 MAX_SYNONYMS = 8
+MAX_CORE_SYNONYMS = 16      # core diseases: MONDO exact, then Orphanet, OMIM, MONDO related (search finds the plain clinical name)
+SYNONYM_SCOPE_ORDER = {"hasExactSynonym": 0, "hasRelatedSynonym": 2, "hasNarrowSynonym": 3, "hasBroadSynonym": 4}
 MAX_PHENOTYPE_SYNONYMS = 3  # index budget; layperson synonyms first (Devon types symptoms in plain words)
 INDEX_XREF_PREFIXES = {"OMIM", "Orphanet", "MESH", "UMLS", "DOID", "GARD"}
 ROLLUP_CONFIDENCE_FACTOR = 0.5  # rolled-up claim = weakest subtype confidence x 0.5 (never stronger than the subtype)
@@ -244,16 +246,63 @@ def ancestor_closure(parents: dict[str, list[str]], terms) -> dict[str, frozense
 
 def load_mondo() -> dict:
     graph = json.loads((RAW / "mondo.json").read_text())["graphs"][0]
-    labels, parents = {}, defaultdict(list)
+    labels, parents, synonyms = {}, defaultdict(list), {}
     for node in graph["nodes"]:
         if "MONDO_" in node["id"]:
             labels[iri_to_curie(node["id"])] = node.get("lbl", "")
+            synonyms[iri_to_curie(node["id"])] = [(s.get("pred", ""), s.get("val", "")) for s in node.get("meta", {}).get("synonyms", [])]
     for edge in graph["edges"]:
         if edge.get("pred") == "is_a" and "MONDO_" in edge["sub"] and "MONDO_" in edge["obj"]:
             parents[iri_to_curie(edge["sub"])].append(iri_to_curie(edge["obj"]))
     version = graph.get("meta", {}).get("version", "")
-    return {"labels": labels, "parents": parents,
+    return {"labels": labels, "parents": parents, "synonyms": synonyms,
             "version": (re.search(r"releases/([\d-]+)/", version) or [None, version])[1]}
+
+
+def load_orphanet_names() -> dict[str, list[str]]:
+    """ORPHA:<code> -> [preferred name, synonyms...] from en_product1.xml (CC-BY 4.0)."""
+    from lxml import etree
+    out: dict[str, list[str]] = {}
+    for _, disorder in etree.iterparse(str(RAW / "en_product1.xml"), tag="Disorder"):
+        code = disorder.findtext("OrphaCode")
+        if code:
+            names = [disorder.findtext("Name") or ""] + [x.text or "" for x in disorder.iterfind("SynonymList/Synonym")]
+            out[f"ORPHA:{code}"] = [x for x in names if x]
+        disorder.clear()
+    return out
+
+
+def load_omim_titles() -> dict[str, str]:
+    """OMIM:<id> -> disease name as carried in phenotype.hpoa (OMIM is used only indirectly via HPO)."""
+    out: dict[str, str] = {}
+    for line in (RAW / "phenotype.hpoa").read_text().splitlines():
+        cols = line.split("\t")
+        if len(cols) > 1 and cols[0].startswith("OMIM:") and cols[0] not in out:
+            out[cols[0]] = cols[1]
+    return out
+
+
+def synonym_key(name: str) -> str:
+    """Order- and punctuation-free key, so "Leukodystrophy, Krabbe's" and "Krabbe leukodystrophy" count once."""
+    words = re.sub(r"'s\b", "", name.lower())
+    return " ".join(sorted(re.findall(r"[a-z0-9]+", words)))
+
+
+def index_synonyms(d: str, node: dict, mondo: dict, orphanet_names: dict, omim_titles: dict, in_core: bool) -> list[str]:
+    """Search synonyms for one disease: MONDO exact, Orphanet, OMIM title, MONDO related/narrow/broad; deduplicated."""
+    scoped = sorted(mondo["synonyms"].get(d, []), key=lambda ps: SYNONYM_SCOPE_ORDER.get(ps[0], 5))
+    exact = [v for p, v in scoped if SYNONYM_SCOPE_ORDER.get(p) == 0]
+    other = [v for p, v in scoped if SYNONYM_SCOPE_ORDER.get(p) != 0]
+    orpha = [n for x in node["xrefs"] if x.startswith("Orphanet:") for n in orphanet_names.get("ORPHA:" + x.split(":")[1], [])]
+    omim = [omim_titles[x] for x in node["xrefs"] if x in omim_titles]
+    ordered = exact + orpha + omim + other + list(node["synonyms"])
+    seen, out = {synonym_key(node["label"])}, []
+    for name in ordered:
+        key = synonym_key(name)
+        if key and key not in seen:
+            seen.add(key)
+            out.append(name)
+    return out[:MAX_CORE_SYNONYMS if in_core else MAX_SYNONYMS]
 
 
 def information_content(hpo: dict, closure) -> tuple[dict[str, float], int]:
@@ -1390,9 +1439,11 @@ def export(**k) -> None:
 
     # ---- index.json
     index = []
+    orphanet_names, omim_titles = load_orphanet_names(), load_omim_titles()
     for d in diseases:
         n = nodes[d]
-        index.append({"id": d, "type": "disease", "label": n["label"], "synonyms": [s for s in n["synonyms"] if s != n["label"]][:MAX_SYNONYMS],
+        index.append({"id": d, "type": "disease", "label": n["label"],
+                      "synonyms": index_synonyms(d, n, k["mondo"], orphanet_names, omim_titles, d in core_set),
                       "xrefs": [x for x in n["xrefs"] if x.split(":")[0] in INDEX_XREF_PREFIXES], "in_core": d in core_set, "degree": degree[d]})
     for g in genes:
         n = nodes[g]

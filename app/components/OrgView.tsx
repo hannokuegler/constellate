@@ -35,7 +35,7 @@ export default function OrgView({ slug }: { slug: string }) {
           variant="screen"
           title={`No organisation page for “${slug}”`}
           reason="This organisation is not in the curated list of the current data set."
-          searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
+          searched={[{ source: "Curated organisation list (checked against each website)", query: `entry “${slug}”`, hits: 0 }]}
           close={["An entry in the curated organisation list with URL and verification date"]}
         />
       </div>
@@ -55,7 +55,7 @@ export default function OrgView({ slug }: { slug: string }) {
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / patient organisation
       </nav>
       {org.draft_input && (
-        <p className="mb-4 rounded-[12px] border border-warn/40 bg-warn-soft px-4 py-3 text-[15px] text-warn" role="note">
+        <p className="mb-4 rounded-[12px] border border-dashed border-line-strong px-4 py-3 text-[16px]" role="note">
           <span className="font-semibold">Unverified draft.</span> This entry comes from a draft list and has not been checked against the organisation&apos;s own website yet. Do not contact on this basis alone.
         </p>
       )}
@@ -63,14 +63,14 @@ export default function OrgView({ slug }: { slug: string }) {
         <h1 className="text-[28px] font-bold tracking-tight">{org.label}</h1>
         {org.draft_input && <DraftBadge />}
       </div>
-      <p className="mt-1 text-[15px] text-ink-2">
+      <p className="mt-1 text-[16px] text-ink-2">
         {[org.country, org.verified_date ? `verified ${org.verified_date}` : "not verified"].filter(Boolean).join(" · ")}
       </p>
       <div className="mt-3"><OrgAssets org={org} /></div>
       {links.length > 0 && (
         <div className="mt-4 flex flex-wrap gap-2">
           {links.map((l) => (
-            <a key={l.label} href={l.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-4 text-[15px] font-medium">
+            <a key={l.label} href={l.url} target="_blank" rel="noreferrer" className="btn-secondary">
               {l.label} ↗
             </a>
           ))}
@@ -78,17 +78,17 @@ export default function OrgView({ slug }: { slug: string }) {
       )}
 
       <section className="card mt-6 px-4 py-4">
-        <h2 className="text-[17px] font-semibold">
+        <h2 className="text-[20px] font-semibold">
           Diseases it represents <span className="tabular text-[13px] font-normal text-ink-2">{file.diseases.length}</span>
         </h2>
-        <p className="text-[13px] text-ink-2">Matched from the disease names on the organisation&apos;s website; open “Evidence” to see how each name was matched.</p>
+        <p className="text-[16px] text-ink-2">Matched from the disease names on the organisation&apos;s website; open “Evidence” to see how each name was matched.</p>
         <ul className="mt-2 divide-y divide-line">
           {file.diseases.map((d) => (
             <li key={d.edge.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-              <Link href={diseaseHref(d.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
+              <Link href={diseaseHref(d.id)} className="flex min-h-11 min-w-0 basis-full items-center break-words text-[16px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                 {d.label}
               </Link>
-              {d.in_core && <span className="rounded-full bg-accent-soft px-2 text-[12px] font-semibold text-accent">core</span>}
+              {d.in_core && <span className="rounded-full border border-line px-2 text-[12px] font-medium text-ink-2">core</span>}
               <span className="text-[12px] text-ink-2">{RELATION_LABEL[d.edge.type] ?? d.edge.type}</span>
               <LevelBadge level={d.edge.level} small />
               <EvidenceButton edge={d.edge} onEdge={openEdge} />

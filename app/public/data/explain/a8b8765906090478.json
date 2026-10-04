@@ -1,0 +1,83 @@
+{
+ "key": "a8b8765906090478",
+ "edge_ids": [
+  "e_11bb9cf4fb09",
+  "e_32257d4e4e2e",
+  "e_46330a802f74",
+  "e_5c34bdd1fa29",
+  "e_71f9e31c0e45",
+  "e_8d1d18923787",
+  "e_b3e7c04ccbe4",
+  "e_bda06d667c7d",
+  "e_f32b58f2bf55",
+  "e_f73892e916aa"
+ ],
+ "from": "MONDO:0008045",
+ "via": "MONDO:0009218",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.497Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, Farber lipogranulomatosis and spinal muscular atrophy with progressive myoclonic epilepsy, are both linked to the gene ASAH1 in curated databases [e_46330a802f74] [e_71f9e31c0e45].",
+   "edge_ids": [
+    "e_46330a802f74",
+    "e_71f9e31c0e45"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_5c34bdd1fa29].",
+   "edge_ids": [
+    "e_5c34bdd1fa29"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the spinal muscular atrophy syndrome, abnormal lower motor neuron shape is a curated, very frequent feature [e_bda06d667c7d].",
+   "edge_ids": [
+    "e_bda06d667c7d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Progressive muscle wasting far from the center of the body is also listed, but with a lower confidence of 0.5 [e_f73892e916aa].",
+   "edge_ids": [
+    "e_f73892e916aa"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two other features, flexion contracture and enlarged liver and spleen, are marked as contradicted for this syndrome, with 2 contradicting records each [e_b3e7c04ccbe4] [e_f32b58f2bf55].",
+   "edge_ids": [
+    "e_b3e7c04ccbe4",
+    "e_f32b58f2bf55"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The Farber studies in this set are one trial not yet recruiting and one withdrawn trial, so no active study is shown [e_8d1d18923787] [e_11bb9cf4fb09].",
+   "edge_ids": [
+    "e_8d1d18923787",
+    "e_11bb9cf4fb09"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the two conditions relate in symptoms or what the research funding has found [e_32257d4e4e2e].",
+   "edge_ids": [
+    "e_32257d4e4e2e"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

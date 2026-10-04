@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PERSONAS, type PersonaId } from "@/lib/persona";
 import { usePrefs } from "./Providers";
 import SearchBox from "./SearchBox";
 
 export default function Header() {
-  const { persona, setPersona, theme, setTheme } = usePrefs();
+  const { theme, setTheme } = usePrefs();
   const onStart = usePathname() === "/";
   const nextTheme = theme === "auto" ? "dark" : theme === "dark" ? "light" : "auto";
 
@@ -29,29 +28,13 @@ export default function Header() {
             </svg>
           </Link>
         )}
-        <nav aria-label="About" className="hidden shrink-0 items-center gap-1 lg:flex">
-          <Link href="/about" className="inline-flex min-h-11 items-center rounded-full px-3 text-[13px] font-medium text-ink-2 hover:text-ink">About</Link>
-          <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full px-3 text-[13px] font-medium text-ink-2 hover:text-ink">How we know</Link>
+        <nav aria-label="About" className={`hidden shrink-0 items-center gap-1 ${onStart ? "md:flex" : "lg:flex"}`}>
+          <Link href="/about" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">About</Link>
+          <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">How we know</Link>
         </nav>
-        <label className="relative flex shrink-0 items-center">
-          <span className="sr-only">Persona lens</span>
-          <select
-            value={persona.id}
-            onChange={(e) => setPersona(e.target.value as PersonaId)}
-            className="h-11 max-w-[132px] appearance-none truncate rounded-full border border-line bg-surface pl-3 pr-8 text-[13px] font-medium md:max-w-none"
-            title={`${persona.role}: ${persona.goal}`}
-          >
-            {PERSONAS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} · {p.role}
-              </option>
-            ))}
-          </select>
-          <svg className="pointer-events-none absolute right-3 text-ink-2" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" /></svg>
-        </label>
         <button
           onClick={() => setTheme(nextTheme)}
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-surface text-ink-2"
+          className="ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line bg-surface text-ink-2 hover:text-ink sm:ml-0"
           aria-label={`Theme: ${theme}. Switch to ${nextTheme}`}
           title={`Theme: ${theme}`}
         >

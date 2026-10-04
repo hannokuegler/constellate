@@ -1,0 +1,91 @@
+{
+ "key": "c5aa691393d30610",
+ "edge_ids": [
+  "e_115b02ebc882",
+  "e_244c274fe2aa",
+  "e_4d44692bc637",
+  "e_57928ff6fc8f",
+  "e_5b584a90f37e",
+  "e_9f54c1efee87",
+  "e_b88b530788ef",
+  "e_deceb25dcde4",
+  "e_e3e8357f997b",
+  "e_fd55a029b67d"
+ ],
+ "from": "MONDO:0009655",
+ "via": "MONDO:0009656",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.604Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 3A is linked to the gene SGSH, and type 3B to the gene NAGLU, both in curated databases [e_e3e8357f997b] [e_244c274fe2aa].",
+   "edge_ids": [
+    "e_e3e8357f997b",
+    "e_244c274fe2aa"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both genes take part in the same curated pathway, heparan sulfate degradation [e_5b584a90f37e] [e_b88b530788ef].",
+   "edge_ids": [
+    "e_5b584a90f37e",
+    "e_b88b530788ef"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that types 3A and 3B look very much alike in their listed symptoms, with a score of 0.783, which is inferred and not a diagnosis [e_9f54c1efee87].",
+   "edge_ids": [
+    "e_9f54c1efee87"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3A, recurrent upper airway infections are an observed feature, recorded in 61 of 70 people [e_57928ff6fc8f].",
+   "edge_ids": [
+    "e_57928ff6fc8f"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Reduced activity of a white blood cell enzyme is also listed for type 3A, with a low confidence of 0.5 [e_4d44692bc637].",
+   "edge_ids": [
+    "e_4d44692bc637"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3B, two studies are listed as not yet recruiting, one gene therapy study and one drug study [e_fd55a029b67d] [e_deceb25dcde4].",
+   "edge_ids": [
+    "e_fd55a029b67d",
+    "e_deceb25dcde4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A gene therapy grant is also listed for type 3B [e_115b02ebc882].",
+   "edge_ids": [
+    "e_115b02ebc882"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show results of any study, and they list no study for type 3A [e_fd55a029b67d].",
+   "edge_ids": [
+    "e_fd55a029b67d"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

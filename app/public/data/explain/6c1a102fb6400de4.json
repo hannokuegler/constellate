@@ -1,0 +1,79 @@
+{
+ "key": "6c1a102fb6400de4",
+ "edge_ids": [
+  "e_14697036abcf",
+  "e_19ce71376434",
+  "e_57bf08b506ce",
+  "e_d427e9ef5fcc",
+  "e_e94d022ab291"
+ ],
+ "from": "MONDO:0009653",
+ "via": "MONDO:0010425",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.602Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucolipidosis type IV and Lisch epithelial corneal dystrophy are both recorded as caused by the gene MCOLN1 [e_e94d022ab291] [e_19ce71376434].",
+   "edge_ids": [
+    "e_e94d022ab291",
+    "e_19ce71376434"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from Orphanet and OMIM [e_e94d022ab291] [e_19ce71376434].",
+   "edge_ids": [
+    "e_e94d022ab291",
+    "e_19ce71376434"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9 [e_14697036abcf].",
+   "edge_ids": [
+    "e_14697036abcf"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_14697036abcf].",
+   "edge_ids": [
+    "e_14697036abcf"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For mucolipidosis type IV, two curated features are recorded as very frequent, an abnormality of sugar chain handling and a build-up of fats called gangliosides [e_d427e9ef5fcc] [e_57bf08b506ce].",
+   "edge_ids": [
+    "e_d427e9ef5fcc",
+    "e_57bf08b506ce"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how one gene leads to two different conditions, and they list no symptoms for the corneal condition [e_14697036abcf] [e_19ce71376434].",
+   "edge_ids": [
+    "e_14697036abcf",
+    "e_19ce71376434"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, no treatments and no patient groups [e_e94d022ab291].",
+   "edge_ids": [
+    "e_e94d022ab291"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

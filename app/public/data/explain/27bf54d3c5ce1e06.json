@@ -1,0 +1,80 @@
+{
+ "key": "27bf54d3c5ce1e06",
+ "edge_ids": [
+  "e_30be8f76d5d6",
+  "e_507888f69338",
+  "e_6cb63f60092c",
+  "e_b94dc8ea323f",
+  "e_fa413a03adcf",
+  "e_fc5fd7e7eb8d"
+ ],
+ "from": "MONDO:0009165",
+ "via": "MONDO:0008641",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.546Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Aicardi-Goutieres syndrome 1 and a condition called retinal vasculopathy with cerebral leukoencephalopathy are both recorded as caused by the gene TREX1 [e_b94dc8ea323f] [e_30be8f76d5d6].",
+   "edge_ids": [
+    "e_b94dc8ea323f",
+    "e_30be8f76d5d6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_b94dc8ea323f] [e_30be8f76d5d6].",
+   "edge_ids": [
+    "e_b94dc8ea323f",
+    "e_30be8f76d5d6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9 [e_fc5fd7e7eb8d].",
+   "edge_ids": [
+    "e_fc5fd7e7eb8d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_fc5fd7e7eb8d].",
+   "edge_ids": [
+    "e_fc5fd7e7eb8d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For Aicardi-Goutieres syndrome 1, two observed findings in spinal fluid are recorded, white blood cells that stay raised in 23 of 23 cases and raised interferon alpha in 34 of 34 cases [e_507888f69338] [e_6cb63f60092c].",
+   "edge_ids": [
+    "e_507888f69338",
+    "e_6cb63f60092c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Seizures are also listed, in 5 of 19 cases, but this edge has contradicting evidence and a low confidence of 0.26 [e_fa413a03adcf].",
+   "edge_ids": [
+    "e_fa413a03adcf"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the same gene leads to two different conditions, and they list no symptoms for the second condition, no studies and no treatments [e_fc5fd7e7eb8d] [e_30be8f76d5d6].",
+   "edge_ids": [
+    "e_fc5fd7e7eb8d",
+    "e_30be8f76d5d6"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

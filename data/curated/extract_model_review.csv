@@ -1,0 +1,166 @@
+claim_id,pmid,claim,verdict,reason,reviewer
+c_28cc8b4f1cb8,20301416,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_22686f3132d9,33191329,Krabbe disease has_phenotype Spastic paraplegia,ok,background sentence states it for Krabbe in general (paper is adult Krabbe); borderline,claude-opus-5-5 independent model review
+c_51102f2f6790,35456468,Gaucher disease has_phenotype Hepatosplenomegaly,wrong,"entity mapping (too broad): abstract is atypical Gaucher due to PSAP/saposin C deficiency; node MONDO:0012517 exists, mapped to generic Gaucher",claude-opus-5-5 independent model review
+c_cbdc4ee0f749,35456468,Gaucher disease has_phenotype Sensorineural hearing impairment,wrong,"entity mapping (too broad): abstract is atypical Gaucher due to PSAP/saposin C deficiency; node MONDO:0012517 exists, mapped to generic Gaucher",claude-opus-5-5 independent model review
+c_68aef92010b6,35456468,Gaucher disease has_phenotype Thrombocytopenia,wrong,"entity mapping (too broad): abstract is atypical Gaucher due to PSAP/saposin C deficiency; node MONDO:0012517 exists, mapped to generic Gaucher",claude-opus-5-5 independent model review
+c_eeb1f34415be,42478637,Gaucher disease has_phenotype Hepatosplenomegaly,ok,,claude-opus-5-5 independent model review
+c_ec1385034b93,42554324,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_ba70b7f13303,42587728,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_c3de22cdc6d8,1296437,metachromatic leukodystrophy has_phenotype Horizontal nystagmus,wrong,entity mapping (too broad): single late-infantile MLD case; node MONDO:0017729 exists,claude-opus-5-5 independent model review
+c_f8495d002d39,1296437,metachromatic leukodystrophy has_phenotype Generalized hypotonia,wrong,entity mapping (too broad): single late-infantile MLD case; node MONDO:0017729 exists,claude-opus-5-5 independent model review
+c_39cdb27d7f37,23197103,Krabbe disease has_phenotype Peripheral neuropathy,wrong,entity mapping (too broad): cohort of adult Krabbe disease; node MONDO:0016091 (adult Krabbe) exists,claude-opus-5-5 independent model review
+c_160f73c488d0,23197103,Krabbe disease has_phenotype Optic neuropathy,wrong,entity mapping (too broad): cohort of adult Krabbe disease; node MONDO:0016091 (adult Krabbe) exists,claude-opus-5-5 independent model review
+c_f7bb860911f8,35581417,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_d96c90dd4a36,36969110,PSAP causes combined PSAP deficiency,ok,,claude-opus-5-5 independent model review
+c_8f5b3ab814be,36969110,combined PSAP deficiency has_phenotype Hepatosplenomegaly,ok,,claude-opus-5-5 independent model review
+c_6cad522da43e,36969110,combined PSAP deficiency has_phenotype Thrombocytopenia,ok,,claude-opus-5-5 independent model review
+c_6408720daa43,41278553,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_d0509a884d3b,42647246,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_f67936abf019,33728250,SUMF1 causes mucosulfatidosis,ok,,claude-opus-5-5 independent model review
+c_e5b39a97396f,42324087,"PLP1 causes Pelizaeus-Merzbacher disease, classic form",ok,,claude-opus-5-5 independent model review
+c_75bcd31ff433,42324087,Pelizaeus-Merzbacher spectrum disorder has_phenotype Dystonia,ok,,claude-opus-5-5 independent model review
+c_f073764e8b2c,42324087,Pelizaeus-Merzbacher spectrum disorder has_phenotype Ataxia,ok,,claude-opus-5-5 independent model review
+c_b5804c4af421,42324087,Pelizaeus-Merzbacher spectrum disorder has_phenotype Nystagmus,ok,,claude-opus-5-5 independent model review
+c_8784113a754f,41686260,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_0ecb8518aa8e,41747968,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_8f0668238fe7,42169729,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_ce96ee5425b0,42169729,Krabbe disease has_phenotype Neurodegeneration,ok,,claude-opus-5-5 independent model review
+c_37db9e525118,42278317,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_140a747c90cf,42496454,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_c7456d2d97a5,36848337,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_e5636e8ea0c8,40943566,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_a5d4f8110830,40943566,Krabbe disease has_phenotype Neurodegeneration,ok,,claude-opus-5-5 independent model review
+c_50e0a8712275,41080288,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_c00e4c0f3582,41080288,Gaucher disease has_phenotype Splenomegaly,ok,,claude-opus-5-5 independent model review
+c_e605112fccfa,41080288,Gaucher disease has_phenotype Anemia,ok,,claude-opus-5-5 independent model review
+c_7ebb0690fb19,41381017,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_e135dc4a3c10,34654893,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_58c0e68f9dc5,41439962,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_23040c9c390e,41517740,Krabbe disease has_phenotype Unsteady gait,ok,"late-onset case, no single matching subtype node; parent ok",claude-opus-5-5 independent model review
+c_ef8c6738fcfa,41701830,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_7dd817362e0d,42324119,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_6331d5b21b31,39499628,infantile Krabbe disease has_phenotype Spasticity,ok,,claude-opus-5-5 independent model review
+c_589af614ca03,40067424,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_79a0dfe32326,41453885,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_475160f9c40d,41453885,Pelizaeus-Merzbacher spectrum disorder has_phenotype CNS hypomyelination,ok,,claude-opus-5-5 independent model review
+c_436f88c5ebe5,42609480,Gaucher disease has_phenotype Hepatosplenomegaly,ok,,claude-opus-5-5 independent model review
+c_fd6372c49c04,27160716,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_933c22d65e08,41086929,GALC causes Krabbe disease,wrong,"predicate: abstract only says mutations ""have been associated with the onset of"" Krabbe; causes not stated",claude-opus-5-5 independent model review
+c_e5fd61cc3b18,42176404,PLP1 associated_with Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_3fa17766b219,42176404,Pelizaeus-Merzbacher spectrum disorder has_phenotype Stridor,ok,,claude-opus-5-5 independent model review
+c_883e6ff38805,39762264,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,wrong,"entity mapping (too broad): case is explicitly classic PMD (MONDO:0017222 exists); also snippet only says ""harboring"", not causal",claude-opus-5-5 independent model review
+c_f070d34dd1bd,39762264,Pelizaeus-Merzbacher spectrum disorder has_phenotype Nystagmus,wrong,entity mapping (too broad): case is explicitly classic PMD; node MONDO:0017222 exists,claude-opus-5-5 independent model review
+c_857eb31cf731,39762264,Pelizaeus-Merzbacher spectrum disorder has_phenotype Spastic paraparesis,wrong,entity mapping (too broad): case is explicitly classic PMD; node MONDO:0017222 exists,claude-opus-5-5 independent model review
+c_99a74c6d37fa,40391866,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_f517f7c08e1f,40560063,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_98a43a12e8cf,40560063,Krabbe disease has_phenotype Irritability,ok,,claude-opus-5-5 independent model review
+c_1062d72d0742,41777990,PSAP associated_with metachromatic leukodystrophy,wrong,"entity mapping (too broad): abstract suggests atypical MLD due to saposin B deficiency (MONDO:0009590 exists), not generic ARSA-MLD",claude-opus-5-5 independent model review
+c_8ee6e4540c86,41777990,metachromatic leukodystrophy has_phenotype Motor regression,ok,,claude-opus-5-5 independent model review
+c_b9eddfb2e0eb,41777990,metachromatic leukodystrophy has_phenotype Gait ataxia,wrong,entity mapping (too broad): exam findings of one PSAP/saposin-B juvenile MLD patient; MONDO:0009590 / MONDO:0009591 exist,claude-opus-5-5 independent model review
+c_dcde1659deda,31262576,ARSB causes mucopolysaccharidosis type 6,ok,,claude-opus-5-5 independent model review
+c_4d8ba4467d79,33178108,Krabbe disease has_phenotype Blindness,ok,,claude-opus-5-5 independent model review
+c_64cc8d6817c3,41777520,Pelizaeus-Merzbacher spectrum disorder has_phenotype Pendular nystagmus,ok,,claude-opus-5-5 independent model review
+c_86bd57647eab,41777520,Pelizaeus-Merzbacher spectrum disorder has_phenotype Spasticity,ok,,claude-opus-5-5 independent model review
+c_07a36b077e4f,42165577,Gaucher disease has_phenotype Hepatosplenomegaly,wrong,entity mapping (too broad): sentence and case series are about perinatal lethal Gaucher; node MONDO:0011945 exists,claude-opus-5-5 independent model review
+c_0acd06987893,42431052,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_d1d97600fd0e,35281658,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_4ae15f6e7851,40376385,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_7856a214e9b1,41105357,Gaucher disease has_phenotype Hepatosplenomegaly,ok,,claude-opus-5-5 independent model review
+c_638bf1ff8ad2,41105357,Gaucher disease has_phenotype Developmental regression,ok,,claude-opus-5-5 independent model review
+c_550fbb08e02c,41578040,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_c2e5f671e119,31053700,infantile Krabbe disease has_phenotype Spasticity,ok,,claude-opus-5-5 independent model review
+c_efc04ceb1695,31053700,GALC associated_with Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_91153c3e6f9e,31053700,infantile Krabbe disease has_phenotype Hypoventilation,ok,,claude-opus-5-5 independent model review
+c_f80798ebd580,31312839,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_c3f880eea301,40017455,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_128070ef2059,41146229,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_8674e8e4403c,37928748,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_b281fee85d68,39107435,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_ec5a24ca6ab6,39107435,Gaucher disease has_phenotype Parkinsonism,ok,,claude-opus-5-5 independent model review
+c_cd8bee985f43,40074005,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_98aa663c0ad9,40544665,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_a4db152328c2,31185936,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_94e525aebfbe,31195190,SUMF1 causes mucosulfatidosis,ok,,claude-opus-5-5 independent model review
+c_c34b9cb66377,35286032,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_f3be7cde2d79,38582621,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_410485398091,41933778,Gaucher disease associated_with Melanoma,ok,"hedged (""emerging evidence suggests"") but association is stated",claude-opus-5-5 independent model review
+c_ac6e10ad7529,40058166,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_2ca48303ecee,41293478,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_5d7d7e491850,42757141,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_ea0d335617ed,26915362,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_03ac4642d3ca,26915362,Krabbe disease has_phenotype Spastic paraplegia,ok,general sentence: Krabbe sometimes manifests (adult-onset) with spastic paraplegia; borderline,claude-opus-5-5 independent model review
+c_f69add588041,39738378,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_b130bd582b02,39997659,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_26fece833056,41736546,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_6701bf136e77,35966016,infantile Krabbe disease has_phenotype Progressive peripheral neuropathy,ok,,claude-opus-5-5 independent model review
+c_205c686adfb3,37637647,Pelizaeus-Merzbacher spectrum disorder has_phenotype Failure to thrive,ok,,claude-opus-5-5 independent model review
+c_fe446d1a0411,39806039,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_69022b713efd,23845948,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_60864e4ec8e7,18797988,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_44e8a8f04e6b,32965986,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_af1b44ffe9c3,35921286,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_35a0b43db587,40790235,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_b0a5267086d8,32197817,Krabbe disease has_phenotype Hydrocephalus,ok,,claude-opus-5-5 independent model review
+c_0aa5ed76cf5f,42159762,Gaucher disease has_phenotype Splenomegaly,ok,,claude-opus-5-5 independent model review
+c_1532f96cf078,16876017,Krabbe disease has_phenotype Irritability,ok,sentence on 95% of Krabbe cases (infantile onset); borderline,claude-opus-5-5 independent model review
+c_80248675c7eb,17080190,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_c46aeaccc786,37337846,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_463afeed1fd8,42378126,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_b1ec7c618c0c,42378126,PLP1 causes hereditary spastic paraplegia 2,ok,,claude-opus-5-5 independent model review
+c_99598976fc90,14682002,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_afa2e265b58d,24252386,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_b716d89e6b8c,36873559,Pelizaeus-Merzbacher spectrum disorder has_phenotype Ataxia,ok,,claude-opus-5-5 independent model review
+c_393be3484af7,16042308,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_bfce1663e5eb,36519759,Krabbe disease has_phenotype Seizure,wrong,entity mapping (too broad): sentence is explicitly about infantile Krabbe disease; node MONDO:0016089 exists,claude-opus-5-5 independent model review
+c_6f850b2d73bc,40536808,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_c10841d190a9,41661317,Krabbe disease has_phenotype Peripheral neuropathy,ok,,claude-opus-5-5 independent model review
+c_bb6f7ba67a7b,15851012,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_1b705afb16d5,39322379,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_aeda3976f084,39322379,GJC2 causes Pelizaeus-Merzbacher-like disease,ok,,claude-opus-5-5 independent model review
+c_a54956710cf9,39322379,POLR3-related leukodystrophy has_phenotype Hypodontia,ok,,claude-opus-5-5 independent model review
+c_c77f8477f309,39201895,Gaucher disease has_phenotype Hepatosplenomegaly,ok,,claude-opus-5-5 independent model review
+c_03b814dc337d,41083008,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_bcb93272aa3e,39280331,PLP1 associated_with Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_29ae82c62528,30777126,infantile Krabbe disease has_phenotype Irritability,ok,,claude-opus-5-5 independent model review
+c_14b02512701f,30777126,infantile Krabbe disease has_phenotype Feeding difficulties,ok,,claude-opus-5-5 independent model review
+c_d933d865e2a0,30777126,infantile Krabbe disease has_phenotype Appendicular spasticity,ok,,claude-opus-5-5 independent model review
+c_6f92fa7b5607,30777126,infantile Krabbe disease has_phenotype Peripheral neuropathy,ok,,claude-opus-5-5 independent model review
+c_e4649c268132,36003325,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_590a50a8e867,40577679,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_11ffe4b8723d,40500501,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_a83f260c25f9,40500501,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_fe89db124353,40500501,GFAP causes Alexander disease,ok,,claude-opus-5-5 independent model review
+c_3561c90b0180,11814461,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_90de73aefff3,40407513,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_dd23d3a52cb6,42816674,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_6d8824b7a7d1,42816674,Gaucher disease has_phenotype Bone pain,ok,,claude-opus-5-5 independent model review
+c_e58dbbd92950,35217805,MAL causes leukodystrophy,wrong,"entity mapping (too broad): abstract describes a specific MAL-related hypomyelinating leukodystrophy; mapped to generic ""leukodystrophy"" root node",claude-opus-5-5 independent model review
+c_577fca6b2b71,35217805,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_90f7802c86f3,35217805,MAL associated_with PLP1,ok,protein interaction encoded as gene-gene associated_with,claude-opus-5-5 independent model review
+c_fe4dbfcef877,39766783,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_28e2bc0ed5c9,28170189,GALC causes Krabbe disease,ok,background sentence in rhesus macaque paper; human context acceptable for background,claude-opus-5-5 independent model review
+c_216e82d727e5,38104430,PLP1 associated_with Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_33ebd015d379,27491217,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_fb514c9939d1,41627451,PSAP associated_with Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_7a1d676db3f3,41627451,PSAP associated_with metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_d97037a6fcf9,32809357,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_7d639ec2ed08,32809357,Pelizaeus-Merzbacher spectrum disorder has_phenotype Nystagmus,ok,,claude-opus-5-5 independent model review
+c_1ed160068b99,40854718,GALC associated_with Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_3a8a41bf18c4,34364975,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,wrong,"predicate: abstract says PMD is ""linked to"" PLP1 mutations; causes not stated (rhesus model paper)",claude-opus-5-5 independent model review
+c_54b64ba6d9b2,42384678,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_357a668116ed,36743429,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_150327be1749,31794880,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_ffb99e33e655,40145887,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_602036e47b42,42072107,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_050009e05d5d,40199965,PLP1 associated_with Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_951d29b53805,33795668,PLP1 associated_with Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review
+c_8d0cd0cd68d5,39145320,GJC2 causes Pelizaeus-Merzbacher-like disease,ok,,claude-opus-5-5 independent model review
+c_84ac60c61226,39145320,Pelizaeus-Merzbacher-like disease has_phenotype Nystagmus,ok,,claude-opus-5-5 independent model review
+c_4f474e662fa4,36341094,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_080bf98fdfbb,28579020,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_11c97c6b91ef,42821122,GBA1 causes Gaucher disease,ok,,claude-opus-5-5 independent model review
+c_afd12a964ce5,38613540,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_d0286d128dce,41761111,GALC causes Krabbe disease,ok,,claude-opus-5-5 independent model review
+c_bea416ab87bc,37212343,ARSA causes metachromatic leukodystrophy,ok,,claude-opus-5-5 independent model review
+c_023c617d8a1d,33429367,PLP1 causes Pelizaeus-Merzbacher spectrum disorder,ok,,claude-opus-5-5 independent model review

@@ -1,68 +1,35 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types";
-import { loadTrial } from "@/lib/data";
-import { ageRange, coverageRows, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
+import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
+import { phaseText } from "@/lib/present";
+import { ALL_COUNTRIES as ALL, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, sitesAsOf as newestSiteDate, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
+import { plainDate } from "@/lib/nextSteps";
 import { LevelBadge } from "./Badges";
-import HonestGap from "./HonestGap";
-
-const COUNTRY_KEY = "constellate.country";
-const ALL = "";
-
-function readCountry(): string {
-  try {
-    return window.localStorage.getItem(COUNTRY_KEY) ?? ALL;
-  } catch {
-    return ALL;
-  }
-}
-function writeCountry(value: string) {
-  try {
-    window.localStorage.setItem(COUNTRY_KEY, value);
-  } catch {
-    /* private mode: the choice just does not persist */
-  }
-}
+import HonestGap, { coverageSearches } from "./HonestGap";
 
 /** Open studies that list this diagnosis, with where they run and how a family contacts the study team. */
 export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFile; onEdge: (e: Edge) => void; family: boolean }) {
   const trials = useMemo(() => openTrials(file), [file]);
-  const [details, setDetails] = useState<Record<string, TrialDetail | null>>({});
-  const [country, setCountry] = useState<string>(ALL);
+  const ids = useMemo(() => trials.map((t) => t.node.id), [trials]);
+  const details = useTrialDetails(ids);
+  const [stored, pickCountry] = useCountry();
   const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => setCountry(readCountry()), []);
-  useEffect(() => {
-    let alive = true;
-    // trial shards are optional (`make trials`): probe one first, and if it is missing do not request the rest (no wall of 404s)
-    (async () => {
-      const first = trials.length ? await loadTrial(trials[0].node.id).catch(() => null) : null;
-      const rest = first ? await Promise.all(trials.slice(1).map((t) => loadTrial(t.node.id).catch(() => null))) : trials.slice(1).map(() => null);
-      const rows = [first, ...rest];
-      if (alive) setDetails(Object.fromEntries(trials.map((t, i) => [t.node.id, rows[i]])));
-    })();
-    return () => {
-      alive = false;
-    };
-  }, [trials]);
-
-  const countries = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const d of Object.values(details)) for (const c of d?.countries ?? []) counts.set(c.country, (counts.get(c.country) ?? 0) + 1);
-    return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-  }, [details]);
+  const countries = useCountryCounts(details);
   const hasDetails = countries.length > 0;
+  const unlisted = unlistedCount(ids, details);
+  // the choice is shared with "Studies you could ask about"; "Country not listed" only applies where such a study exists
+  const country = stored === NO_COUNTRY && !unlisted ? ALL : stored;
+  const withoutSites = trials.filter((t) => !details[t.node.id]).length;
 
-  const shown = trials.filter((t) => !country || details[t.node.id]?.countries.some((c) => c.country === country));
+  const shown = trials.filter((t) => listsCountry(details[t.node.id], country));
   const visible = showAll ? shown : shown.slice(0, 5);
-  const ctgov = coverageRows(file.coverage).filter((c) => c.source === "ctgov");
-
-  const pickCountry = (value: string) => {
-    setCountry(value);
-    writeCountry(value);
-  };
+  const ctgov = coverageSearches(file.coverage, ["ctgov"]);
+  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const sitesAsOf = plainDate(newestSiteDate(details, ctgov.map((c) => c.fetched_at)));
 
   return (
     <section className="card scroll-mt-20 px-4 py-4" id="open-studies" aria-labelledby="open-studies-title">
@@ -70,7 +37,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
         <h2 id="open-studies-title" className="text-[17px] font-semibold">{family ? `Studies looking for participants with ${file.node.label}` : "Open studies"}</h2>
         <span className="tabular text-[13px] text-ink-2">{trials.length}</span>
       </div>
-      <p className="mb-3 text-[13px] text-ink-2">
+      <p className="mb-3 text-[16px] text-ink-2">
         Studies on ClinicalTrials.gov that list {file.node.label} and take participants now or soon.
       </p>
 
@@ -79,18 +46,19 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
           variant="section"
           title={`No open study lists ${file.node.label} right now`}
           reason="ClinicalTrials.gov has no recruiting or upcoming study whose conditions or title name this diagnosis or one of its synonyms."
-          searched={ctgov.length ? ctgov : [{ source: "ClinicalTrials.gov" }]}
+          searched={ctgov.length ? ctgov : [{ source: "ClinicalTrials.gov", fetched_at: undefined }]}
+          asOf={ctgov[0]?.fetched_at}
           close={["A study registration that names this diagnosis", "Studies of related diseases (see related communities) may accept it: ask their teams"]}
         />
       ) : (
         <>
           {hasDetails && (
-            <label className="mb-3 flex flex-wrap items-center gap-2 text-[13px]">
+            <label className="mb-3 flex flex-wrap items-center gap-2 text-[16px]">
               <span className="text-ink-2">Where do you live?</span>
               <select
                 value={country}
                 onChange={(e) => pickCountry(e.target.value)}
-                className="h-11 rounded-full border border-line bg-surface px-3 text-[13px] font-medium"
+                className="min-h-11 rounded-full border border-line bg-surface px-3 text-[16px] font-medium"
               >
                 <option value={ALL}>All countries</option>
                 {countries.map(([c, n]) => (
@@ -98,11 +66,23 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
                     {c} ({n})
                   </option>
                 ))}
+                {unlisted > 0 && (
+                  <option value={NO_COUNTRY}>
+                    {NO_COUNTRY_LABEL} ({unlisted})
+                  </option>
+                )}
+                {country && country !== NO_COUNTRY && !countries.some(([c]) => c === country) && <option value={country}>{country} (0)</option>}
               </select>
             </label>
           )}
+          {hasDetails && (
+            <p className="-mt-1 mb-3 text-[16px] text-ink-2" data-testid="study-countries">
+              Listed in: {countries.map(([c, n]) => `${c} (${n})`).join(", ")}. No listed study in other countries{sitesAsOf ? ` as of ${sitesAsOf}` : ""}.
+              {withoutSites > 0 && ` Site data is missing for ${withoutSites} ${withoutSites === 1 ? "study" : "studies"}; see the registry entry.`}
+            </p>
+          )}
           {shown.length === 0 ? (
-            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[13px] text-warn">
+            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[16px] text-warn">
               None of these studies lists a site in {country}. Studies abroad sometimes accept international families: ask the study team.
             </p>
           ) : (
@@ -113,12 +93,12 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </ul>
           )}
           {shown.length > 5 && (
-            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-accent">
+            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
               {showAll ? "Show fewer" : `Show all ${shown.length}`}
             </button>
           )}
-          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[13px] leading-relaxed">
-            Whether a child can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
+          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[16px] leading-relaxed">
+            Whether you or your family member can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
             not treat; studies that test a treatment have risks as well as possible benefits. Constellate only shows what the registry says.
           </p>
         </>
@@ -142,11 +122,11 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
       <div className="flex flex-wrap items-center gap-2 text-[12px]">
         <span className={`rounded-full px-2 py-0.5 font-semibold ${status === "RECRUITING" ? "bg-ok-soft text-ok" : "bg-accent-soft text-accent"}`}>{trialStatusLabel(status)}</span>
         <span className="rounded-full border border-line px-2 py-0.5">{observational ? "Observes, no treatment" : "Tests a treatment"}</span>
-        {!observational && trialPhase(n) && <span className="text-ink-2">{trialPhase(n)}</span>}
+        {!observational && phaseText(n, trialPhase(n)) && <span className="text-ink-2">{phaseText(n, trialPhase(n))}</span>}
         <span className="tabular text-ink-2">{n.id}</span>
       </div>
-      <p className="mt-1.5 text-[15px] font-semibold leading-snug">{n.label}</p>
-      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[13px]">
+      <p className="mt-1.5 text-[16px] font-semibold leading-snug">{n.label}</p>
+      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[16px]">
         {typeof n.sponsor === "string" && (
           <>
             <dt className="text-ink-2">Run by</dt>
@@ -175,22 +155,24 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
         <dd>
           {!detail
             ? "See the registry entry"
-            : here
-              ? `${here.sites} site${here.sites > 1 ? "s" : ""} in ${country}${sitesHere.length ? `: ${sitesHere.map((s) => [s.facility, s.city].filter(Boolean).join(", ")).join("; ")}` : ""}`
-              : `${detail.sites_total} site${detail.sites_total === 1 ? "" : "s"} in ${detail.countries.length} countr${detail.countries.length === 1 ? "y" : "ies"}${topCountries.length ? ` (${topCountries.join(", ")}${detail.countries.length > 4 ? ", …" : ""})` : ""}`}
+            : detail.sites_total === 0
+              ? "Sites not listed in the registry"
+              : here
+                ? `${here.sites} site${here.sites > 1 ? "s" : ""} in ${country}${sitesHere.length ? `: ${sitesHere.map((s) => [s.facility, s.city].filter(Boolean).join(", ")).join("; ")}` : ""}`
+                : `${detail.sites_total} site${detail.sites_total === 1 ? "" : "s"} in ${detail.countries.length} countr${detail.countries.length === 1 ? "y" : "ies"}${topCountries.length ? ` (${topCountries.join(", ")}${detail.countries.length > 4 ? ", …" : ""})` : ""}`}
         </dd>
       </dl>
       <div className="mt-2 flex flex-wrap items-center gap-2">
         <a
-          href={detail?.contact_url ?? `${String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`)}#contacts-and-locations`}
+          href={contactUrl(detail, String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`))}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-[13px] font-semibold text-accent-ink"
+          className="btn-primary text-[16px]"
         >
           Contact the study team
         </a>
         <LevelBadge level={item.edge.level} small />
-        <button onClick={() => onEdge(item.edge)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+        <button onClick={() => onEdge(item.edge)} aria-label={`Why listed: ${n.id} ${n.label}`} className="inline-flex min-h-11 items-center rounded-full px-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
           Why listed
         </button>
         {detail && <span className="text-[12px] text-ink-2">Registry checked {formatDate(detail.retrieved)}</span>}

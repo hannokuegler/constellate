@@ -34,6 +34,15 @@
   --shadow: 0 1px 2px rgb(20 24 38 / 0.06), 0 8px 24px rgb(20 24 38 / 0.06);
   --anim: 180ms;
   color-scheme: light;
+
+  /* names used by the newer components, aliased onto the classic values */
+  --glass: var(--surface);
+  --line-strong: #b4bacb;
+  --amber: var(--accent);
+  --amber-soft: var(--accent-soft);
+  --amber-on-accent: var(--accent-ink);
+  --star: var(--ink-2);
+  --star-dim: #6b7289;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -67,6 +76,8 @@
 
     --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
     color-scheme: dark;
+    --line-strong: #4a5180;
+    --star-dim: #8d94b0;
   }
 }
 
@@ -100,6 +111,8 @@
 
   --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
   color-scheme: dark;
+  --line-strong: #4a5180;
+  --star-dim: #8d94b0;
 }
 
 @theme inline {
@@ -122,7 +135,18 @@
   --color-warn-soft: var(--warn-soft);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-glass: var(--glass);
+  --color-line-strong: var(--line-strong);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-star: var(--star);
+  --color-star-dim: var(--star-dim);
+  --color-lvl-strong: var(--lvl-strong);
+  --color-lvl-text: var(--lvl-text);
+  --color-lvl-inferred: var(--lvl-inferred);
+  --font-sans: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* one family: the display slot is the same sans as the body */
+  --font-display: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
@@ -146,10 +170,13 @@ body {
   border-radius: 6px;
 }
 
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 20px;
+/* in the components layer, so a utility on the same element (border-accent, bg-surface-2) still wins */
+@layer components {
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
 }
 
 .tabular {
@@ -197,4 +224,211 @@ body {
   header, .no-print { display: none !important; }
   body { background: #fff; color: #000; }
   .card { border-color: #ccc; }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Component classes used by the newer screens, drawn in the classic look:
+   indigo filled primary, quiet bordered secondary, opaque cards, one sans family.
+   --------------------------------------------------------------------------------------------- */
+@layer components {
+  .t-hero {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .t-h1 {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .t-h2 {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .t-body {
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .t-meta {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .t-label {
+    font-size: 13px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  /* inline list with "·" separators that never hang at a line end: each item carries its separator on its left,
+     the wrapper hides the one that lands at the start of a wrapped line */
+  .sep-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -24px;
+    list-style: none;
+    padding: 0;
+  }
+  .sep-list > li {
+    position: relative;
+    padding-left: 24px;
+  }
+  .sep-list > li::before {
+    content: "·" / "";
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .zaehler {
+    font-variant-numeric: tabular-nums;
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  /* small status points; "lit" and "linked" use the accent */
+  .dot {
+    --dot-size: 8px;
+    display: inline-block;
+    flex: none;
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    background: var(--ink-2);
+  }
+  .dot[data-state="lit"],
+  .dot[data-state="linked"] {
+    background: var(--accent);
+  }
+  /* step chain (share flow): points joined by hairlines, done and current steps in the accent */
+  .dot-chain {
+    --dot-link: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dot-link);
+  }
+  .dot-chain > .dot {
+    position: relative;
+  }
+  .dot-chain > .dot:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: calc(50% - 0.5px);
+    width: var(--dot-link);
+    height: 1px;
+    background: var(--line-strong);
+  }
+  .dot-chain > .dot[data-state]:not(:first-child)::before {
+    background: var(--accent);
+  }
+  .dot-chain[data-vertical] {
+    flex-direction: column;
+  }
+  /* honest gap: a dashed hollow ring */
+  .dot-ring {
+    --ring-size: 14px;
+    display: inline-block;
+    flex: none;
+    width: var(--ring-size);
+    height: var(--ring-size);
+    border: 1.5px dashed var(--ink-2);
+    border-radius: 50%;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform var(--anim) ease, background-color var(--anim) ease;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: 1px solid transparent;
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+  }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+  .btn-secondary:hover {
+    background: var(--surface-2);
+  }
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-primary[aria-disabled="true"],
+  .btn-secondary[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .card-lift {
+    background: var(--surface);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  /* no glass in the classic look: an opaque card */
+  .glass {
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+
+  .skel-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .skel-dots > i {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.25;
+    animation: skel-pulse 1.2s ease-in-out infinite;
+  }
+  .skel-dots > i:nth-child(2) { animation-delay: 0.15s; }
+  .skel-dots > i:nth-child(3) { animation-delay: 0.3s; }
+  .skel-dots > i:nth-child(4) { animation-delay: 0.45s; }
+  .skel-dots > i:nth-child(5) { animation-delay: 0.6s; }
+  .skel-block {
+    background: var(--surface-2);
+    border-radius: 20px;
+  }
+}
+
+@keyframes skel-pulse {
+  0%, 100% { opacity: 0.25; }
+  40% { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skel-dots > i {
+    animation: none;
+    opacity: 0.6;
+  }
 }

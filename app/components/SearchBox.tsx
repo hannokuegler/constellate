@@ -3,7 +3,7 @@
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadIndex } from "@/lib/data";
-import { createSearcher, type SearchHit } from "@/lib/search";
+import { createSearcher, revealSuggestions, type SearchHit } from "@/lib/search";
 import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
 import { usePrefs } from "./Providers";
@@ -17,17 +17,36 @@ function getSearcher(): Promise<Searcher> {
   return searcherPromise;
 }
 
-export default function SearchBox({ compact = false, autoFocus = false }: { compact?: boolean; autoFocus?: boolean }) {
+export default function SearchBox({
+  compact = false,
+  autoFocus = false,
+  label = "Search diseases, genes, symptoms or IDs",
+}: {
+  compact?: boolean;
+  autoFocus?: boolean;
+  /** a second search box on the same page needs its own name */
+  label?: string;
+}) {
   const { persona } = usePrefs();
   const router = useRouter();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
   const [searcher, setSearcher] = useState<Searcher | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const deferred = useDeferredValue(query);
+  // phones: the long placeholder would be cut off inside the pill
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 480px)");
+    const update = () => setNarrow(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   const warm = useCallback(() => {
     if (searcher) return;
@@ -49,6 +68,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
     router.push(hrefFor(hit.entry.type, hit.entry.id));
   };
 
+  const showList = open && query.trim().length >= 2;
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -61,16 +82,30 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
       event.preventDefault();
       go(hits[active]);
     } else if (event.key === "Escape") {
-      setOpen(false);
+      // first Esc closes the list (the browser would clear a search field), a second Esc clears the text
+      if (showList) {
+        event.preventDefault();
+        setOpen(false);
+      } else setQuery("");
     }
   };
 
-  const showList = open && query.trim().length >= 2;
+  // phones: keep at least three suggestions on screen (the field may sit near the bottom or under the keyboard)
+  useEffect(() => {
+    if (showList) revealSuggestions(fieldRef.current);
+  }, [showList, hits.length]);
 
   return (
     <div className="relative w-full">
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
-        <svg width={compact ? 16 : 20} height={compact ? 16 : 20} viewBox="0 0 20 20" className="shrink-0 text-ink-2" aria-hidden="true">
+      {/* the input fills the whole pill, so its own focus ring (global :focus-visible) follows the pill shape */}
+      <div ref={fieldRef} className={`relative rounded-full border border-line bg-surface ${compact ? "h-12" : "h-14 shadow-[var(--shadow)] md:h-16"}`}>
+        <svg
+          width={compact ? 16 : 20}
+          height={compact ? 16 : 20}
+          viewBox="0 0 20 20"
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-2 ${compact ? "left-4" : "left-5"}`}
+          aria-hidden="true"
+        >
           <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -82,8 +117,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
-          aria-label="Search diseases, genes, symptoms or IDs"
-          placeholder={persona.placeholder}
+          aria-label={label}
+          placeholder={narrow ? "Type a diagnosis" : persona.placeholder}
           autoFocus={autoFocus}
           autoComplete="off"
           spellCheck={false}
@@ -99,7 +134,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
+          style={{ borderRadius: 9999 }}
+          className={`absolute inset-0 h-full w-full bg-transparent placeholder:text-ink-2 ${compact ? "pl-10 pr-4 text-[16px]" : "pl-[53px] pr-5 text-[17px] md:text-[22px]"}`}
         />
       </div>
       {showList && (
@@ -128,8 +164,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             >
               <TypeBadge type={hit.entry.type} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[15px] font-medium">{hit.entry.label}</span>
-                {hit.matched && <span className="block truncate text-[12px] text-ink-2">matches “{hit.matched}”</span>}
+                <span className="block break-words text-[15px] font-medium leading-snug">{hit.entry.label}</span>
+                {hit.matched && <span className="block break-words text-[12px] text-ink-2">matches “{hit.matched}”</span>}
               </span>
               <span className="hidden shrink-0 text-[12px] text-ink-2 sm:inline">{hit.entry.id}</span>
             </li>

@@ -1,0 +1,68 @@
+{
+ "key": "8ead8626bd3ba730",
+ "edge_ids": [
+  "e_53a209f18884",
+  "e_5c09bb5aa234",
+  "e_97c36a357231",
+  "e_a57e51d7c163",
+  "e_b81e379bd26c"
+ ],
+ "from": "MONDO:0009737",
+ "via": "MONDO:0980711",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.633Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Galactosialidosis and brain small vessel disease 6 with leukoencephalopathy are both linked to the gene CTSA in curated databases [e_b81e379bd26c] [e_97c36a357231].",
+   "edge_ids": [
+    "e_b81e379bd26c",
+    "e_97c36a357231"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.9, the lowest of the two gene links [e_53a209f18884].",
+   "edge_ids": [
+    "e_53a209f18884"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For galactosialidosis, a cherry red spot in the macula, a part of the eye, is a curated, very frequent feature [e_5c09bb5aa234].",
+   "edge_ids": [
+    "e_5c09bb5aa234"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Reduced beta-galactosidase activity is also listed for galactosialidosis, but with a low confidence of 0.5 [e_a57e51d7c163].",
+   "edge_ids": [
+    "e_a57e51d7c163"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for brain small vessel disease 6 [e_97c36a357231].",
+   "edge_ids": [
+    "e_97c36a357231"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, funding or patient groups for either disease [e_b81e379bd26c].",
+   "edge_ids": [
+    "e_b81e379bd26c"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

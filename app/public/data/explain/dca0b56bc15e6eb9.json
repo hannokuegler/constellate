@@ -1,0 +1,95 @@
+{
+ "key": "dca0b56bc15e6eb9",
+ "edge_ids": [
+  "e_2c5236d2f740",
+  "e_371301408104",
+  "e_3dbc42738b5a",
+  "e_41dcc92045d2",
+  "e_6331a370f2a1",
+  "e_82dda6df3b0d",
+  "e_8da635bc98c9",
+  "e_8f8f3574e614",
+  "e_993c3f6ead03",
+  "e_b061bdc2342e",
+  "e_bc3284363317",
+  "e_c9e7007213ce",
+  "e_deb97136f1d7",
+  "e_e270315fe572",
+  "e_eafba62e86fa"
+ ],
+ "from": "MONDO:0009499",
+ "via": "MONDO:0018868",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.475Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Krabbe disease is linked to the gene GALC in curated databases, and no contradicting evidence is recorded [e_3dbc42738b5a].",
+   "edge_ids": [
+    "e_3dbc42738b5a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A low level of tissue galactocerebrosidase activity is an observed feature of Krabbe disease in the databases [e_371301408104].",
+   "edge_ids": [
+    "e_371301408104"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GALC and a second gene called PSAP both take part in the same curated pathway, glycosphingolipid catabolism [e_993c3f6ead03] [e_8f8f3574e614].",
+   "edge_ids": [
+    "e_993c3f6ead03",
+    "e_8f8f3574e614"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate also links Krabbe disease to PSAP, but this link is only inferred from the infantile subtype, with confidence 0.475 (lowest subtype confidence times 0.5) [e_2c5236d2f740].",
+   "edge_ids": [
+    "e_2c5236d2f740"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That PSAP link holds for the named subtype and not necessarily for every form of Krabbe disease [e_2c5236d2f740].",
+   "edge_ids": [
+    "e_2c5236d2f740"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Krabbe disease and metachromatic leukodystrophy look similar in their listed symptoms, but this is a computed score (simGIC 0.216) and not a diagnosis [e_e270315fe572].",
+   "edge_ids": [
+    "e_e270315fe572"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The two clinical trials in this set are about metachromatic leukodystrophy, not Krabbe disease, and both are listed as not yet recruiting [e_c9e7007213ce] [e_82dda6df3b0d].",
+   "edge_ids": [
+    "e_c9e7007213ce",
+    "e_82dda6df3b0d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show any trial for Krabbe disease itself, so they say nothing about what can help [e_c9e7007213ce].",
+   "edge_ids": [
+    "e_c9e7007213ce"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

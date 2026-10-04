@@ -8,7 +8,7 @@ import { LevelBadge } from "./Badges";
 
 export function DraftBadge() {
   return (
-    <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn" title="From a draft list, not yet hand-verified against the organisation's website">
+    <span className="rounded-full border border-dashed border-line-strong px-2 py-0.5 text-[12px] font-semibold text-ink" title="From a draft list, not yet hand-verified against the organisation's website">
       unverified draft
     </span>
   );
@@ -26,8 +26,8 @@ export function OrgAssets({ org }: { org: OrgCard }) {
     <span className="flex flex-wrap gap-1.5">
       {items.map((i) => {
         const chip = (
-          <span className={`rounded-full px-2 py-0.5 text-[12px] font-medium ${i.value ? "bg-ok-soft text-ok" : "border border-line text-ink-2"}`}>
-            {i.value ? i.label : `no ${i.label}`}
+          <span className={`rounded-full px-2 py-0.5 text-[12px] font-medium ${i.value ? "border border-line-strong text-ink" : "border border-dashed border-line text-ink-2"}`}>
+            {i.value ? `✓ ${i.label}` : `no ${i.label}`}
           </span>
         );
         return i.value && i.url ? (
@@ -48,12 +48,12 @@ export function OrgList({ orgs, onEdge }: { orgs: { org: OrgCard; edge: Edge }[]
       {orgs.map(({ org, edge }) => (
         <li key={org.id} className="py-3">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <Link href={orgHref(org.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[15px] font-semibold underline-offset-2 hover:underline">
+            <Link href={orgHref(org.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[16px] font-semibold underline decoration-line underline-offset-2 hover:decoration-current">
               {org.label}
             </Link>
             {org.draft_input && <DraftBadge />}
             <LevelBadge level={edge.level} small />
-            <button onClick={() => onEdge(edge)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+            <button onClick={() => onEdge(edge)} aria-label={`Evidence: patient organisation ${org.label}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
               Evidence
             </button>
           </div>

@@ -1,0 +1,80 @@
+{
+ "key": "4b8ca4258e9d95ef",
+ "edge_ids": [
+  "e_92c0e3ba4f84",
+  "e_ad327e2ac535",
+  "e_bf9e4c9393d5",
+  "e_d3bff9fbde9c",
+  "e_db4a1049ed53",
+  "e_ebcdbdec8f81"
+ ],
+ "from": "MONDO:0009261",
+ "via": "MONDO:0009660",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.555Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, GM1 gangliosidosis type 2 and mucopolysaccharidosis type 4B, are both recorded as caused by the gene GLB1 [e_ad327e2ac535] [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_ad327e2ac535",
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_ad327e2ac535] [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_ad327e2ac535",
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.95 [e_bf9e4c9393d5].",
+   "edge_ids": [
+    "e_bf9e4c9393d5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_bf9e4c9393d5].",
+   "edge_ids": [
+    "e_bf9e4c9393d5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For GM1 gangliosidosis type 2, two observed features are recorded, loss of motor skills and small vertebral bodies, each from a single report [e_d3bff9fbde9c] [e_db4a1049ed53].",
+   "edge_ids": [
+    "e_d3bff9fbde9c",
+    "e_db4a1049ed53"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "An enlarged spleen is listed for this condition but marked as contradicted [e_92c0e3ba4f84].",
+   "edge_ids": [
+    "e_92c0e3ba4f84"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how one gene gives rise to two different conditions, and they list no symptoms for mucopolysaccharidosis type 4B, no studies and no treatments [e_bf9e4c9393d5] [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_bf9e4c9393d5",
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

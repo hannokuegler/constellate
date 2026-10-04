@@ -1,0 +1,75 @@
+{
+ "key": "0282b8626f99d769",
+ "edge_ids": [
+  "e_2734b3a5f5c8",
+  "e_83a7fab381f2",
+  "e_8656c7454794",
+  "e_a7feafdad1c8"
+ ],
+ "from": "MONDO:0009093",
+ "via": "MONDO:0014665",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.544Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Charcot-Marie-Tooth disease axonal type 2V is linked to the gene NAGLU in curated databases [e_2734b3a5f5c8].",
+   "edge_ids": [
+    "e_2734b3a5f5c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Dermatoleukodystrophy has no gene listed in these edges [e_a7feafdad1c8].",
+   "edge_ids": [
+    "e_a7feafdad1c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For dermatoleukodystrophy, thickened skin and an excess of horny skin are listed as curated, very frequent features [e_83a7fab381f2] [e_a7feafdad1c8].",
+   "edge_ids": [
+    "e_83a7fab381f2",
+    "e_a7feafdad1c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed a very weak similarity between the two diseases in their listed symptoms, with a score of 0.091 [e_8656c7454794].",
+   "edge_ids": [
+    "e_8656c7454794"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That score is inferred, and the two diseases share 0 listed symptom terms [e_8656c7454794].",
+   "edge_ids": [
+    "e_8656c7454794"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "So these edges do not support calling the two diseases related [e_8656c7454794].",
+   "edge_ids": [
+    "e_8656c7454794"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no trials, funding or patient groups for either disease [e_2734b3a5f5c8].",
+   "edge_ids": [
+    "e_2734b3a5f5c8"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

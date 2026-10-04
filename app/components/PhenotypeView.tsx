@@ -12,6 +12,7 @@ import { LevelBadge } from "./Badges";
 import { EvidenceButton } from "./DiseaseView";
 import HonestGap from "./HonestGap";
 import { Skeleton } from "./Skeleton";
+import PhenotypeNow from "./next/PhenotypeNow";
 
 export default function PhenotypeView({ id }: { id: string }) {
   const [file, setFile] = useState<PhenotypeFile | null | undefined>(undefined);
@@ -56,7 +57,9 @@ export default function PhenotypeView({ id }: { id: string }) {
         {url ? <a href={url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">{id}</a> : id}
         {file.node.ic !== undefined && ` · information content ${file.node.ic.toFixed(2)} (higher = more specific)`}
       </p>
-      <section className="card mt-6 px-4 py-4">
+      <PhenotypeNow file={file} index={index} />
+      <h2 className="t-h2 mt-12 border-t border-line pt-8 text-ink">The evidence behind this</h2>
+      <section className="card mt-4 px-4 py-4">
         <h2 className="text-[17px] font-semibold">
           Diseases with this phenotype <span className="tabular text-[13px] font-normal text-ink-2">{file.diseases_total ?? rows.length}</span>
         </h2>
@@ -66,7 +69,7 @@ export default function PhenotypeView({ id }: { id: string }) {
         <ul className="mt-2 divide-y divide-line">
           {rows.map(({ id: diseaseId, label: diseaseLabel, edge: e }) => (
             <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-              <Link href={diseaseHref(diseaseId)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
+              <Link href={diseaseHref(diseaseId)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                 {diseaseLabel ?? index.get(diseaseId)?.label ?? diseaseId}
               </Link>
               <span className="tabular text-[12px] text-ink-2">conf. {formatConfidence(e.confidence)}</span>

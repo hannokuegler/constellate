@@ -1,0 +1,85 @@
+{
+ "key": "e7c18be1cbf1f632",
+ "edge_ids": [
+  "e_2250833a9045",
+  "e_6d85fc5799ee",
+  "e_6fbefb0b0214",
+  "e_770181181ee7",
+  "e_7bdf5b1f6385",
+  "e_83d258382324",
+  "e_991819d32c28",
+  "e_e939e060e080",
+  "e_f0d3169e456c"
+ ],
+ "from": "MONDO:0009064",
+ "via": "MONDO:0018467",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.538Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Both ocular cystinosis and nephropathic infantile cystinosis are recorded as caused by the gene CTNS in curated databases [e_2250833a9045] [e_6fbefb0b0214].",
+   "edge_ids": [
+    "e_2250833a9045",
+    "e_6fbefb0b0214"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed a weak symptom similarity between the two, with a score of 0.130 over only 2 shared terms [e_991819d32c28].",
+   "edge_ids": [
+    "e_991819d32c28"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_991819d32c28].",
+   "edge_ids": [
+    "e_991819d32c28"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For ocular cystinosis, observed and curated records list raised cystine in white blood cells and visual impairment, both as very frequent [e_7bdf5b1f6385] [e_770181181ee7].",
+   "edge_ids": [
+    "e_7bdf5b1f6385",
+    "e_770181181ee7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two other features, abnormal retina shape and raised creatinine in the blood, are marked as contradicted for ocular cystinosis, with no supporting evidence [e_f0d3169e456c] [e_6d85fc5799ee].",
+   "edge_ids": [
+    "e_f0d3169e456c",
+    "e_6d85fc5799ee"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The infantile form has a recruiting patient registry and natural history study on ClinicalTrials.gov, and a very old eye research record in NIH RePORTER with a latest award of 0 dollars [e_e939e060e080] [e_83d258382324].",
+   "edge_ids": [
+    "e_e939e060e080",
+    "e_83d258382324"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the two forms differ in severity, and they show no treatments [e_991819d32c28] [e_2250833a9045] [e_6fbefb0b0214].",
+   "edge_ids": [
+    "e_991819d32c28",
+    "e_2250833a9045",
+    "e_6fbefb0b0214"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

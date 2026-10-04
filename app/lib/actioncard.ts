@@ -1,12 +1,16 @@
 // Action Card = template sentences built only from edges. Every sentence carries the edge ids it rests on.
 import type { DiseaseFile, Edge, GeneFile, Neighbour } from "./types";
 import { refOf } from "./ids";
-import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase } from "./normalize";
+import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase, v2Therapies } from "./normalize";
 import { RELATION_LABEL, formatConfidence, formatDate } from "./evidence";
+import { humanizeRank, phaseText } from "./present";
+import { plainDate, therapyState } from "./nextSteps";
 
 export interface CardSentence {
   text: string;
   edgeIds: string[];
+  /** formula and ranks behind a computed link: shown folded under "How this link is computed", never in the plain sentence */
+  technical?: string;
 }
 
 export interface CardSection {
@@ -31,6 +35,18 @@ interface CardInput {
   geneFiles: GeneFile[];
 }
 
+/** Said next to every study of the neighbour: it belongs to the neighbour, fit is for experts to judge. */
+export const studyCaveat = (neighbour: string, disease: string) =>
+  `This study is for ${neighbour}; whether its design fits ${disease} is a question for clinical experts`;
+
+/** Said next to every approved therapy of the neighbour: approval does not travel. */
+export const therapyCaveat = (neighbour: string, disease: string) =>
+  `Approved for ${neighbour}, not for ${disease}. What carries over and what differs needs expert review`;
+
+/** Capital letter at the start of every sentence; labels from MONDO ("metachromatic leukodystrophy") stay as they are inside a sentence. */
+export const sentenceCase = (text: string) => text.replace(/(^|[.!?]\s+)(\p{Ll})/gu, (_m, lead: string, ch: string) => lead + ch.toUpperCase());
+const capSentences = (items: CardSentence[]): CardSentence[] => items.map((x) => ({ ...x, text: sentenceCase(x.text) }));
+
 const list = (items: string[]) =>
   items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 
@@ -48,6 +64,7 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   const transfers: CardSentence[] = [];
   const differs: CardSentence[] = [];
   const review: CardSentence[] = [];
+  const reviewFromNote: CardSentence[] = [];
   const similarity = neighbour.edge;
 
   // --- what transfers ------------------------------------------------------------------------------
@@ -97,8 +114,12 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   const trials = neighbourFile ? enrichmentItems(neighbourFile, "trials") : [];
   for (const trial of trials.slice(0, 2)) {
     const status = typeof trial.node.status === "string" ? trial.node.status.toLowerCase().replaceAll("_", " ") : "status not recorded";
-    const phase = trialPhase(trial.node);
-    transfers.push({ text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected`, edgeIds: cite(trial.edge) });
+    const phase = phaseText(trial.node, trialPhase(trial.node));
+    // a trial of the neighbour is never evidence that anything works for this disease: say so in the same sentence
+    transfers.push({
+      text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected. ${studyCaveat(N, D)}`,
+      edgeIds: cite(trial.edge),
+    });
   }
   for (const { org, edge } of (neighbourFile ? orgItems(neighbourFile) : []).slice(0, 2)) {
     const assets = [flag(org.has_registry) && "a patient registry", flag(org.has_natural_history_study) && "a natural history study", flag(org.has_biobank) && "a biobank"].filter(Boolean) as string[];
@@ -122,9 +143,27 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   }
   const note = neighbour.mechanism_note?.trim();
   if (note) {
-    // the pipeline's own explanation of the mechanism call, sentence by sentence, each resting on the link edge
-    for (const sentence of note.split(/(?<=\.)\s+(?=[A-Z])/).map((s) => s.replace(/\.$/, "")).filter(Boolean).slice(0, 6)) {
-      differs.push({ text: sentence, edgeIds: cite(similarity) });
+    // The pipeline writes ONE note for the pair, and it mixes what the two diseases share with where they part ways.
+    // Sort each sentence to its column (the data stays as it is): sharing -> transfers, differences -> differs, gaps and caveats -> review.
+    // The generic "shared gene" and "shared pathway" sentences are skipped when the card already states them from the gene and pathway edges above.
+    const sharesClass = /^same curated mechanism class/i;
+    const sharesGene = /^shared causal gene/i;
+    const sharesPathway = /^reactome: shared/i;
+    const caveat = /data gap|cannot be judged|without expert review|no curated mechanism class|no pathway annotated/i;
+    const sentences = note
+      .split(/(?<=\.)\s+(?=[A-Z])/)
+      .map((sentence) => sentence.replace(/\.$/, "").replace(/\(via MONDO:\d+ /g, "(via ").replace(/\bvia MONDO:\d+ /g, "via "))
+      .filter(Boolean)
+      .slice(0, 6);
+    for (const sentence of sentences) {
+      const ids = cite(similarity);
+      if (sharesGene.test(sentence)) {
+        if (!sharedGenes.length) transfers.push({ text: sentence, edgeIds: ids });
+      } else if (sharesPathway.test(sentence)) {
+        if (!sharedPathways.size) transfers.push({ text: sentence, edgeIds: ids });
+      } else if (sharesClass.test(sentence)) transfers.push({ text: sentence, edgeIds: ids });
+      else if (caveat.test(sentence)) reviewFromNote.push({ text: sentence, edgeIds: ids });
+      else differs.push({ text: sentence, edgeIds: ids });
     }
   } else if (neighbour.mechanism_differs === true) {
     differs.push({
@@ -146,7 +185,11 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
 
   // --- needs expert review ---------------------------------------------------------------------------
   if (similarity.level === "inferred") {
-    review.push({ text: `The link between ${D} and ${N} is computed, not observed: ${similarity.formula ?? similarity.evidence[0]?.snippet ?? "formula not recorded"}`, edgeIds: cite(similarity) });
+    review.push({
+      text: `The two diseases were linked by computing how similar their symptom profiles are; experts should check this`,
+      technical: `Computed, not observed: ${humanizeRank(similarity.formula ?? similarity.evidence[0]?.snippet ?? "formula not recorded", labels[similarity.source] ?? D, labels[similarity.target] ?? N)}`,
+      edgeIds: cite(similarity),
+    });
   }
   for (const e of [...disease.genes, ...(neighbourFile?.genes ?? [])].filter((g) => g.rolled_up_from?.length).slice(0, 2)) {
     const owner = e.source === disease.node.id ? D : N;
@@ -159,15 +202,23 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   } else if (neighbourFile && paperRecords(neighbourFile).length && trials[0]) {
     review.push({ text: `Papers found for ${N} are literature search matches, not extracted claims, so they need reading before they support a statement`, edgeIds: cite(trials[0].edge) });
   }
+  // approved therapies of the neighbour: named with their record, and never as if they applied to this disease
+  const ownTherapies = new Set(v2Therapies(disease).items.map((t) => t.node.id));
+  const theirTherapies = (neighbourFile ? v2Therapies(neighbourFile).items : []).filter((t) => !ownTherapies.has(t.node.id));
+  if (theirTherapies.length) {
+    const names = [...new Set(theirTherapies.map((t) => t.node.label))];
+    review.push({ text: `${N} has approved therapies in EMA or FDA records (${list(names)}). ${therapyCaveat(N, D)}`, edgeIds: cite(...theirTherapies.map((t) => t.edge)) });
+  }
+  review.push(...reviewFromNote);
   review.push({ text: `Whether endpoints, registries or study designs from ${N} fit ${D} is a question for clinical experts in both diseases`, edgeIds: cite(similarity) });
 
   return {
     from: { id: disease.node.id, label: D },
     via: { id: neighbour.id, label: N },
     sections: [
-      { key: "transfers", title: "What transfers", hint: "Shared biology and existing assets", sentences: transfers },
-      { key: "differs", title: "What differs", hint: "Where the two diseases part ways", sentences: differs },
-      { key: "review", title: "Needs expert review", hint: "Computed links and open questions", sentences: review },
+      { key: "transfers", title: "What transfers", hint: `Shared biology and existing work, not a treatment for ${D}`, sentences: capSentences(transfers) },
+      { key: "differs", title: "What differs", hint: "Where the two diseases part ways", sentences: capSentences(differs) },
+      { key: "review", title: "Needs expert review", hint: "Computed links and open questions", sentences: capSentences(review) },
     ],
     edges,
     labels: { ...labels, ...pathwayLabels, ...orgLabels(neighbourFile), ...labelsFrom(disease, neighbourFile) },
@@ -201,7 +252,7 @@ export function pickDefaultVia(neighbours: Neighbour[]): string | null {
 }
 
 /** Markdown proposal for download: sentences with [e_id] plus an evidence appendix. */
-export function actionCardMarkdown(card: ActionCardModel, builtAt?: string): string {
+export function actionCardMarkdown(card: ActionCardModel, builtAt?: string, glance: GlanceLine[] = []): string {
   const today = new Date().toISOString().slice(0, 10);
   const lines = [
     `# Proposal: what ${card.from.label} can learn from ${card.via.label}`,
@@ -209,10 +260,18 @@ export function actionCardMarkdown(card: ActionCardModel, builtAt?: string): str
     `Generated by Constellate on ${today}${builtAt ? ` from data built ${formatDate(builtAt)}` : ""}. Every sentence cites the evidence edges it rests on. This is a research-navigation draft, not medical advice.`,
     "",
   ];
+  if (glance.length) {
+    lines.push("## At a glance", "");
+    for (const g of glance) {
+      const sources = g.sources.map((s) => (s.href ? `${s.label} (${s.href})` : s.label)).join("; ");
+      lines.push(`- ${g.text}${sources ? ` Source: ${sources}.` : ""} ${g.edgeIds.map((id) => `[${id}]`).join(" ")}`.trimEnd());
+    }
+    lines.push("");
+  }
   for (const section of card.sections) {
     lines.push(`## ${section.title}`, "");
     if (!section.sentences.length) lines.push("_No supported statement in the graph._", "");
-    for (const s of section.sentences) lines.push(`- ${s.text} ${s.edgeIds.map((id) => `[${id}]`).join(" ")}.`);
+    for (const s of section.sentences) lines.push(`- ${s.text}${s.technical ? ` (${s.technical})` : ""} ${s.edgeIds.map((id) => `[${id}]`).join(" ")}.`);
     lines.push("");
   }
   lines.push("## Evidence", "", "| Edge | Relation | Level | Confidence | Source | Date |", "|---|---|---|---|---|---|");
@@ -223,4 +282,71 @@ export function actionCardMarkdown(card: ActionCardModel, builtAt?: string): str
     lines.push(`| ${e.id} | ${relation} | ${e.level} | ${formatConfidence(e.confidence)} | ${source.replaceAll("|", "/")} | ${formatDate(ev?.date)} |`);
   }
   return lines.join("\n") + "\n";
+}
+
+// ---------------------------------------------------------------------------------------------------
+// "At a glance": the two or three plain lines a parent reads first, each with its source
+
+/** Height kept free for "At a glance" while the card loads: the smallest real box (235 px at 1280, measured 4 Oct), so nothing below jumps into view. */
+export const GLANCE_RESERVE_PX = 236;
+
+export interface GlanceLine {
+  key: "own" | "neighbour" | "purpose";
+  text: string;
+  sources: { label: string; href: string | null }[];
+  edgeIds: string[];
+}
+
+
+/** Approval status of the disease, the neighbour's approvals (named as the neighbour's), and what the card is for. */
+export function buildGlance(disease: DiseaseFile, neighbourFile: DiseaseFile | null, neighbourLabel: string, builtAt?: string | null): GlanceLine[] {
+  const D = disease.node.label;
+  const N = neighbourLabel;
+  const lines: GlanceLine[] = [];
+  const own = therapyState(disease);
+  if (own.kind === "none") {
+    lines.push({
+      key: "own",
+      text: `No approved medicine for ${D} found in ${own.authorities} records${own.asOf ? ` as of ${own.asOf}` : ""}.`,
+      sources: own.sources.length ? [{ label: `searched ${own.sources.join("; ")}`, href: null }] : [],
+      edgeIds: [],
+    });
+  } else if (own.kind === "approved") {
+    const named = own.items.slice(0, 3).map((t) => `${t.name}${t.authority || t.date ? ` (${[t.authority, t.date].filter(Boolean).join(", ")})` : ""}`);
+    lines.push({
+      key: "own",
+      text: `${D} has ${own.items.length === 1 ? "an approved medicine" : "approved medicines"} in EMA or FDA records: ${list(named)}${own.items.length > 3 ? ` and ${own.items.length - 3} more` : ""}. Whether it fits is for your specialist to decide.`,
+      sources: own.items.slice(0, 3).map((t) => ({ label: [t.authority, t.record].filter(Boolean).join(" ") || t.name, href: t.href })),
+      edgeIds: own.items.slice(0, 3).map((t) => t.edge.id),
+    });
+  } else {
+    lines.push({
+      key: "own",
+      text: `The EMA and FDA medicine records have not been searched for ${D} yet, so this card cannot say whether a medicine is approved.`,
+      sources: [{ label: "no search recorded in the data", href: null }],
+      edgeIds: [],
+    });
+  }
+  const theirs = neighbourFile ? therapyState(neighbourFile) : null;
+  if (theirs?.kind === "approved") {
+    const ownIds = new Set(own.kind === "approved" ? own.items.map((t) => t.key) : []);
+    const items = theirs.items.filter((t) => !ownIds.has(t.key)).slice(0, 3);
+    if (items.length) {
+      const named = items.map((t) => `${t.name}${t.authority || t.date ? ` (${[t.authority, t.date].filter(Boolean).join(", ")})` : ""}`);
+      lines.push({
+        key: "neighbour",
+        text: `${N[0].toUpperCase()}${N.slice(1)} has ${list(named)}, approved for ${N}, not for ${D}.`,
+        sources: items.map((t) => ({ label: [t.authority, t.record].filter(Boolean).join(" ") || t.name, href: t.href })),
+        edgeIds: items.map((t) => t.edge.id),
+      });
+    }
+  }
+  const built = plainDate(builtAt ?? null);
+  lines.push({
+    key: "purpose",
+    text: "This card lists what the two diseases share and where they differ, for a conversation with your specialist.",
+    sources: [{ label: `Constellate graph edges${built ? `, data built ${built}` : ""}`, href: "/methods" }],
+    edgeIds: [],
+  });
+  return lines.map((l) => ({ ...l, text: sentenceCase(l.text) }));
 }

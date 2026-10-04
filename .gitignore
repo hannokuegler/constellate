@@ -8,6 +8,9 @@
 data/raw/
 data/cache/
 data/enrich/
+# 05/06 intermediates, rebuilt from the caches; edges with snippets ship in the export
+data/extract/
+data/reconcile/
 *.xml
 *.hpoa
 # python

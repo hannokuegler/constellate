@@ -5,6 +5,7 @@ import ForceGraph2D, { type ForceGraphMethods, type LinkObject, type NodeObject 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Edge } from "@/lib/types";
 import { LEVEL_INFO, hasCounterEvidence } from "@/lib/evidence";
+import { EDGE_PANEL_EVENT } from "./EdgePanel";
 
 export type GraphNodeKind = "center" | "gene" | "phenotype" | "neighbour" | "counter" | "disease" | "family";
 
@@ -34,6 +35,8 @@ interface Props {
   height: number;
   onLinkClick: (edge: Edge) => void;
   onNodeClick: (node: GraphNode) => void;
+  /** gene pages: the centre is a gene, drawn as a ring instead of a filled point */
+  centerShape?: "point" | "ring";
 }
 
 const VARS = ["--n-center", "--n-gene", "--n-phenotype", "--n-neighbour", "--n-disease", "--lvl-strong", "--lvl-text", "--lvl-inferred", "--contra", "--warn", "--ink", "--ink-2", "--bg", "--surface"] as const;
@@ -63,13 +66,20 @@ function usePalette(): Palette | null {
 
 const RADIUS: Record<GraphNodeKind, number> = { center: 9, gene: 6, neighbour: 6.5, counter: 7, disease: 6, phenotype: 4, family: 9 };
 
-export default function ForceGraphClient({ nodes, links, height, onLinkClick, onNodeClick }: Props) {
+export default function ForceGraphClient({ nodes, links, height, onLinkClick, onNodeClick, centerShape = "point" }: Props) {
   const graphRef = useRef<ForceGraphMethods<N, L> | undefined>(undefined);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(0);
   const [hoverLink, setHoverLink] = useState<L | null>(null);
   const [hoverNode, setHoverNode] = useState<string | null>(null);
   const palette = usePalette();
+  // the edge whose evidence panel is open is drawn highlighted
+  const [activeEdge, setActiveEdge] = useState<string | null>(null);
+  useEffect(() => {
+    const onPanel = (event: Event) => setActiveEdge((event as CustomEvent<{ id: string | null }>).detail?.id ?? null);
+    window.addEventListener(EDGE_PANEL_EVENT, onPanel);
+    return () => window.removeEventListener(EDGE_PANEL_EVENT, onPanel);
+  }, []);
   const reducedMotion = useMemo(() => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
   const fitted = useRef(false);
   const placed = useRef<{ x0: number; y0: number; x1: number; y1: number }[]>([]); // label boxes drawn in the current frame
@@ -111,6 +121,7 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
     ({ center: palette["--n-center"], gene: palette["--n-gene"], phenotype: palette["--n-phenotype"], neighbour: palette["--n-neighbour"], counter: palette["--n-neighbour"], disease: palette["--n-disease"], family: palette["--n-neighbour"] })[kind];
 
   const linkColor = (link: L) => {
+    if (link.edge.id === activeEdge) return palette["--n-center"];
     if (link.counter || hasCounterEvidence(link.edge)) return palette["--contra"];
     if (link.edge.level === "inferred") return palette["--lvl-inferred"];
     if (link.edge.level === "text_mined" || link.edge.level === "search_hit") return palette["--lvl-text"];
@@ -137,7 +148,7 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
             graphRef.current?.zoomToFit(reducedMotion ? 0 : 400, narrow ? 24 : 64);
           }}
           linkColor={(link) => linkColor(link)}
-          linkWidth={(link) => (link === hoverLink ? 3.5 : link.counter ? 3 : link.secondHop ? 0.8 : 1.6)}
+          linkWidth={(link) => (link === hoverLink || link.edge.id === activeEdge ? 3.5 : link.counter ? 3 : link.secondHop ? 0.8 : 1.6)}
           linkLineDash={(link) => {
             if (link.counter) return null; // counter-examples: thick solid red, labelled
             const dash = LEVEL_INFO[link.edge.level]?.dash;
@@ -159,12 +170,22 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
             const y = node.y ?? 0;
             ctx.beginPath();
             ctx.arc(x, y, r, 0, 2 * Math.PI);
-            ctx.fillStyle = nodeColor(node.kind);
-            ctx.fill();
-            if (node.kind === "center") {
-              ctx.lineWidth = 3;
-              ctx.strokeStyle = palette["--surface"];
+            if (node.kind === "center" && centerShape === "ring") {
+              ctx.fillStyle = palette["--surface"];
+              ctx.fill();
+              ctx.lineWidth = 3.5;
+              ctx.strokeStyle = palette["--n-center"];
               ctx.stroke();
+            } else {
+              ctx.fillStyle = nodeColor(node.kind);
+              ctx.fill();
+            }
+            if (node.kind === "center") {
+              if (centerShape !== "ring") {
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = palette["--surface"];
+                ctx.stroke();
+              }
               ctx.beginPath();
               ctx.arc(x, y, r + 4, 0, 2 * Math.PI);
               ctx.lineWidth = 1.5;

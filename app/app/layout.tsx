@@ -1,7 +1,12 @@
 import type { Metadata, Viewport } from "next";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import Header from "@/components/Header";
+import DataFooter from "@/components/DataFooter";
+
+// self-hosted at build time by next/font: no request to Google at runtime (CSP stays closed)
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "Constellate",
@@ -23,7 +28,7 @@ const themeScript = `try{var t=localStorage.getItem("constellate.theme");if(t===
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
@@ -33,9 +38,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             Skip to content
           </a>
           <Header />
-          <main id="main" className="mx-auto w-full max-w-[1400px] px-4 pb-16 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] md:px-6">
+          <main id="main" className="mx-auto w-full max-w-[1400px] px-4 pb-8 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] md:px-6">
             {children}
           </main>
+          <DataFooter />
         </Providers>
       </body>
     </html>

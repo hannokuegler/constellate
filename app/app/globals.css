@@ -1,104 +1,104 @@
 @import "tailwindcss";
 
-/* Tokens. Light is the default; dark follows the OS unless the user picks a theme (data-theme on <html>).
-   Type ladder 11 · 12 · 13 · 15 · 17 · 22 · 28 (+ 40 for the start title), spacing on the 4 px grid,
-   radii 12 (chips, fields) · 20 (cards) · 999 (pills). */
+/* Constellate v2 "Deep Sky": tokens from pitch/DESIGN.md §4. Names are contract, values live only here.
+   Colour = evidence, nothing else. Node type is carried by shape and brightness, never by hue.
+   One warm light: amber = "you are here / this disease / the edge you are reading".
+   Dark is the video look and follows the OS unless the user picks a theme (data-theme on <html>).
+   Type ladder 12 · 13 · 15 · 17 · 22 · 28 · 44/56, spacing on the 4 px grid, radii 12 (fields) · 20 (cards) · 999 (pills).
+   Contrast (measured, WCAG): every text pair >= 4.5, graphics >= 3, in both themes. Light --amber is #8F570C instead of
+   the concept's #9A5E0E: amber text on its own soft tint over --bg only reaches 4.29 with the lighter value. */
 :root {
-  --bg: #f4f5f8;
+  --bg: #f5f6fa;
   --surface: #ffffff;
   --surface-2: #eef0f5;
-  --ink: #141826;
-  --ink-2: #4a5168;
-  --line: #dfe2ea;
-  --accent: #4b49c8;
+  --glass: rgb(255 255 255 / 0.78);
+  --glass-blur: 16px;
+  --ink: #121629;
+  --ink-2: #4b526b;
+  --line: #dcdfe8;
+  --line-strong: #7b83a0;
+  --accent: #121629;
   --accent-ink: #ffffff;
-  --accent-soft: #e9e8fb;
+  --accent-soft: var(--surface-2);
+  --amber: #8f570c;
+  --amber-soft: rgb(143 87 12 / 0.1);
+  --amber-on-accent: #f5c46b;
+  --star: #3a4157;
+  --star-dim: #6e7590;
+  --lvl-strong: #3a4157;
+  --lvl-text: #1f64b8;
+  --lvl-inferred: #6b4fd1;
+  --contra: #c2303b;
+  --contra-soft: #fbeaeb;
 
-  --n-disease: #4b49c8;
-  --n-center: #e0a100;
-  --n-gene: #0f8a78;
-  --n-phenotype: #8a6a1d;
-  --n-neighbour: #8e44c4;
-  --n-pathway: #2f6fb0;
-
-  --lvl-strong: #3c4357;
-  --lvl-text: #2f6fb0;
-  --lvl-inferred: #8e44c4;
-  --contra: #c62f3a;
-  --contra-soft: #fbe9ea;
-  --warn: #9a5b00;
-  --warn-soft: #fff1d6;
-  --ok: #17794a;
-  --ok-soft: #e1f4ea;
-
-  --shadow: 0 1px 2px rgb(20 24 38 / 0.06), 0 8px 24px rgb(20 24 38 / 0.06);
+  --shadow: 0 1px 2px rgb(18 22 41 / 0.06), 0 8px 24px rgb(18 22 41 / 0.07);
   --anim: 180ms;
   color-scheme: light;
+
+  /* old names, kept as aliases until no code reads them (type now lives in shape, not hue) */
+  --n-center: var(--amber);
+  --n-disease: var(--star);
+  --n-neighbour: var(--star);
+  --n-gene: var(--ink-2);
+  --n-pathway: var(--ink-2);
+  --n-phenotype: var(--star-dim);
+  --warn: var(--amber);
+  --warn-soft: var(--amber-soft);
+  --ok: var(--ink);
+  --ok-soft: var(--surface-2);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0d1020;
-    --surface: #161a2e;
-    --surface-2: #1f2440;
-    --ink: #eef0f8;
-    --ink-2: #a9b0cc;
-    --line: #2c3254;
-    --accent: #a4a2ff;
-    --accent-ink: #12142a;
-    --accent-soft: #262a52;
+    --bg: #0b1020;
+    --surface: #121831;
+    --surface-2: #1a2142;
+    --glass: rgb(18 24 49 / 0.72);
+    --ink: #eceef6;
+    --ink-2: #a3aac4;
+    --line: #262e52;
+    --line-strong: #5a648e;
+    --accent: #eceef6;
+    --accent-ink: #0b1020;
+    --amber: #f5c46b;
+    --amber-soft: rgb(245 196 107 / 0.14);
+    --amber-on-accent: #9a5e0e;
+    --star: #d7dbea;
+    --star-dim: #8d94b0;
+    --lvl-strong: #d7dbea;
+    --lvl-text: #7cb4ff;
+    --lvl-inferred: #b8a2ff;
+    --contra: #ff7b7b;
+    --contra-soft: #2e1620;
 
-    --n-disease: #8f8dff;
-    --n-center: #ffc94a;
-    --n-gene: #42d1b9;
-    --n-phenotype: #d9b45a;
-    --n-neighbour: #c48af0;
-    --n-pathway: #6fb1f0;
-
-    --lvl-strong: #c9cee3;
-    --lvl-text: #6fb1f0;
-    --lvl-inferred: #c48af0;
-    --contra: #ff6b74;
-    --contra-soft: #3a1a24;
-    --warn: #ffb648;
-    --warn-soft: #3a2a12;
-    --ok: #5fd39a;
-    --ok-soft: #14301f;
-
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.3);
     color-scheme: dark;
   }
 }
 
 :root[data-theme="dark"] {
-  --bg: #0d1020;
-  --surface: #161a2e;
-  --surface-2: #1f2440;
-  --ink: #eef0f8;
-  --ink-2: #a9b0cc;
-  --line: #2c3254;
-  --accent: #a4a2ff;
-  --accent-ink: #12142a;
-  --accent-soft: #262a52;
+  --bg: #0b1020;
+  --surface: #121831;
+  --surface-2: #1a2142;
+  --glass: rgb(18 24 49 / 0.72);
+  --ink: #eceef6;
+  --ink-2: #a3aac4;
+  --line: #262e52;
+  --line-strong: #5a648e;
+  --accent: #eceef6;
+  --accent-ink: #0b1020;
+  --amber: #f5c46b;
+  --amber-soft: rgb(245 196 107 / 0.14);
+  --amber-on-accent: #9a5e0e;
+  --star: #d7dbea;
+  --star-dim: #8d94b0;
+  --lvl-strong: #d7dbea;
+  --lvl-text: #7cb4ff;
+  --lvl-inferred: #b8a2ff;
+  --contra: #ff7b7b;
+  --contra-soft: #2e1620;
 
-  --n-disease: #8f8dff;
-  --n-center: #ffc94a;
-  --n-gene: #42d1b9;
-  --n-phenotype: #d9b45a;
-  --n-neighbour: #c48af0;
-  --n-pathway: #6fb1f0;
-
-  --lvl-strong: #c9cee3;
-  --lvl-text: #6fb1f0;
-  --lvl-inferred: #c48af0;
-  --contra: #ff6b74;
-  --contra-soft: #3a1a24;
-  --warn: #ffb648;
-  --warn-soft: #3a2a12;
-  --ok: #5fd39a;
-  --ok-soft: #14301f;
-
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.25);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.3);
   color-scheme: dark;
 }
 
@@ -106,67 +106,344 @@
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-glass: var(--glass);
   --color-ink: var(--ink);
   --color-ink-2: var(--ink-2);
   --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-accent-soft: var(--accent-soft);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-star: var(--star);
+  --color-star-dim: var(--star-dim);
+  --color-lvl-strong: var(--lvl-strong);
+  --color-lvl-text: var(--lvl-text);
+  --color-lvl-inferred: var(--lvl-inferred);
+  --color-contra: var(--contra);
+  --color-contra-soft: var(--contra-soft);
+  /* old utility names */
   --color-gene: var(--n-gene);
   --color-phenotype: var(--n-phenotype);
   --color-neighbour: var(--n-neighbour);
   --color-node-center: var(--n-center);
-  --color-contra: var(--contra);
-  --color-contra-soft: var(--contra-soft);
   --color-warn: var(--warn);
   --color-warn-soft: var(--warn-soft);
   --color-ok: var(--ok);
   --color-ok-soft: var(--ok-soft);
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --font-sans: var(--font-inter), ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 
 html {
   -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 80px;
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.5;
   overflow-x: hidden;
+  font-optical-sizing: auto;
+}
+
+::selection {
+  background: var(--amber-soft);
 }
 
 /* visible keyboard focus everywhere, never removed without replacement */
 :focus-visible {
-  outline: 2px solid var(--accent);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
   border-radius: 6px;
 }
 
-.card {
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 20px;
+@layer base {
+  h1, h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50;
+    letter-spacing: -0.01em;
+  }
 }
 
-.tabular {
-  font-variant-numeric: tabular-nums;
+/* ---------------------------------------------------------------------------------------------
+   Type ladder (DESIGN.md §5). Classes, so a page never invents a size.
+   --------------------------------------------------------------------------------------------- */
+@layer components {
+  .t-hero {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50;
+    font-weight: 400;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+  .t-h1 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50;
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .t-h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 50;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.25;
+  }
+  .t-body {
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+  .t-meta {
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-2);
+  }
+  .t-label {
+    font-size: 12px;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .zaehler,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  .t-mono {
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+}
+
+/* ---------------------------------------------------------------------------------------------
+   Brand pattern: isolated point of light -> connected amber dot (DESIGN.md §3).
+   Pages use only these classes. The React wrappers in components/brand/ are for header and footer.
+   --------------------------------------------------------------------------------------------- */
+@layer components {
+  .dot {
+    --dot-size: 8px;
+    position: relative;
+    display: inline-block;
+    flex: none;
+    width: var(--dot-size);
+    height: var(--dot-size);
+    border-radius: 50%;
+    background: var(--star);
+    transition: background-color var(--anim) ease, box-shadow var(--anim) ease;
+  }
+  .dot[data-state="lit"] {
+    background: var(--amber);
+    box-shadow: 0 0 0 4px var(--amber-soft), 0 0 14px 3px var(--amber-soft);
+  }
+  .dot[data-state="linked"] {
+    background: var(--amber);
+  }
+  /* standalone linked dot: a hairline running to the right, toward the next point */
+  .dot[data-state="linked"]::after {
+    content: "";
+    position: absolute;
+    left: 100%;
+    top: calc(50% - 0.5px);
+    width: var(--dot-link, 14px);
+    height: 1px;
+    background: var(--amber);
+  }
+
+  /* a horizontal chain of dots; a segment is amber when the dot it leads to is linked or lit */
+  .dot-chain {
+    --dot-link: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--dot-link);
+  }
+  .dot-chain > .dot::after {
+    display: none;
+  }
+  .dot-chain > .dot:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    right: 100%;
+    top: calc(50% - 0.5px);
+    width: var(--dot-link);
+    height: 1px;
+    background: var(--line-strong);
+    transition: background-color var(--anim) ease;
+  }
+  .dot-chain > .dot[data-state="linked"]:not(:first-child)::before,
+  .dot-chain > .dot[data-state="lit"]:not(:first-child)::before {
+    background: var(--amber);
+  }
+  .dot-chain[data-vertical] {
+    flex-direction: column;
+  }
+
+  /* honest gap: one point without a line, a dashed hollow ring (a finding, not a failure) */
+  .dot-ring {
+    --ring-size: 14px;
+    display: inline-block;
+    flex: none;
+    width: var(--ring-size);
+    height: var(--ring-size);
+    border: 1.5px dashed var(--star-dim);
+    border-radius: 50%;
+    background: transparent;
+  }
+
+  /* buttons: ink, with a dot on the left that turns amber and reaches toward the label on hover/focus */
+  .btn-primary,
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 20px;
+    border-radius: 999px;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.2;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--anim) ease, border-color var(--anim) ease, transform var(--anim) ease;
+  }
+  .btn-primary {
+    --btn-dot: color-mix(in srgb, var(--accent-ink) 55%, transparent);
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: 1px solid transparent;
+  }
+  .btn-primary::before {
+    content: "";
+    flex: none;
+    width: 20px;
+    height: 8px;
+    margin-right: -2px;
+    background:
+      radial-gradient(circle at 4px 4px, var(--btn-dot) 3.5px, transparent 4px) left center / 8px 8px no-repeat,
+      linear-gradient(var(--btn-dot), var(--btn-dot)) 4px center / 0 1px no-repeat;
+    transition: background-size 220ms ease;
+  }
+  .btn-primary:hover,
+  .btn-primary:focus-visible,
+  .btn-primary[aria-pressed="true"] {
+    --btn-dot: var(--amber-on-accent);
+  }
+  .btn-primary:hover::before,
+  .btn-primary:focus-visible::before,
+  .btn-primary[aria-pressed="true"]::before {
+    background-size: 8px 8px, calc(100% - 4px) 1px;
+  }
+  .btn-primary:active {
+    transform: translateY(1px);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line-strong);
+  }
+  .btn-secondary:hover {
+    background: var(--surface-2);
+    border-color: var(--ink-2);
+  }
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-primary[aria-disabled="true"],
+  .btn-secondary[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* card: ONE means of separation. .card = hairline border, .card-lift = shadow without border */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+  }
+  .card-lift {
+    background: var(--surface);
+    border: 0;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  /* glass: only for overlays above the 3D sky, otherwise surfaces stay opaque */
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.2);
+    border: 1px solid var(--line);
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass {
+      background: var(--surface);
+    }
+  }
+
+  /* loading: a row of points that light up one after another */
+  .skel-dots {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .skel-dots > i {
+    display: block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--star-dim);
+    opacity: 0.35;
+    animation: skel-glow 1.5s ease-in-out infinite;
+  }
+  .skel-dots > i:nth-child(2) { animation-delay: 0.2s; }
+  .skel-dots > i:nth-child(3) { animation-delay: 0.4s; }
+  .skel-dots > i:nth-child(4) { animation-delay: 0.6s; }
+  .skel-dots > i:nth-child(5) { animation-delay: 0.8s; }
+
+  .skel-block {
+    background: var(--surface-2);
+    border-radius: 20px;
+  }
+
+  /* wordmark: three points, two joined, one amber; hover joins the amber one as well */
+  .wordmark-mark .wm-link-amber {
+    stroke-dasharray: 14;
+    stroke-dashoffset: 14;
+    transition: stroke-dashoffset 260ms ease;
+  }
+  a:hover .wordmark-mark .wm-link-amber,
+  a:focus-visible .wordmark-mark .wm-link-amber {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes skel-glow {
+  0%, 100% { background: var(--star-dim); opacity: 0.35; box-shadow: none; }
+  40% { background: var(--amber); opacity: 1; box-shadow: 0 0 0 4px var(--amber-soft); }
 }
 
 /* start page: a quiet star field behind the hero, only decoration */
 .starfield {
   background-image:
-    radial-gradient(1.5px 1.5px at 12% 28%, var(--n-disease) 50%, transparent 51%),
-    radial-gradient(1px 1px at 32% 72%, var(--n-gene) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 58% 18%, var(--n-center) 50%, transparent 51%),
-    radial-gradient(1px 1px at 78% 62%, var(--n-neighbour) 50%, transparent 51%),
-    radial-gradient(1px 1px at 88% 30%, var(--n-disease) 50%, transparent 51%),
-    radial-gradient(1.5px 1.5px at 44% 44%, var(--n-phenotype) 50%, transparent 51%),
-    radial-gradient(1px 1px at 6% 82%, var(--n-neighbour) 50%, transparent 51%),
-    radial-gradient(1px 1px at 68% 88%, var(--n-gene) 50%, transparent 51%);
+    radial-gradient(1.5px 1.5px at 12% 28%, var(--star) 50%, transparent 51%),
+    radial-gradient(1px 1px at 32% 72%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 58% 18%, var(--amber) 50%, transparent 51%),
+    radial-gradient(1px 1px at 78% 62%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 88% 30%, var(--star) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 44% 44%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 6% 82%, var(--star-dim) 50%, transparent 51%),
+    radial-gradient(1px 1px at 68% 88%, var(--star) 50%, transparent 51%);
   opacity: 0.8;
 }
 
@@ -190,6 +467,15 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+  /* loading dots: static end state instead of a running glow */
+  .skel-dots > i {
+    animation: none;
+    opacity: 0.6;
+  }
+  .skel-dots > i:nth-child(3) {
+    background: var(--amber);
+    opacity: 1;
   }
 }
 

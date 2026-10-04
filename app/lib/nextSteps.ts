@@ -12,6 +12,37 @@ export function plainDate(value: string | null | undefined): string | null {
   return m ? `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${m[1]}` : null;
 }
 
+// ---------------------------------------------------------------------------------------------------
+// countries: the "Where do you live?" choice of the studies block also orders groups and next steps
+
+const foldName = (s: string) => s.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "").replace(/\s*\(.*\)\s*$/, "").trim();
+
+/** English country name for a two-letter code ("DE" -> "Germany", "GB" -> "United Kingdom"); a name is returned as it is. */
+export function countryName(value: string | null | undefined): string {
+  const v = (value ?? "").trim();
+  if (!/^[A-Z]{2}$/.test(v)) return v;
+  try {
+    return new Intl.DisplayNames(["en"], { type: "region" }).of(v === "UK" ? "GB" : v) ?? v;
+  } catch {
+    return v;
+  }
+}
+
+/** Does a country (code or name) mean the chosen country? "DE" matches "Germany", "Turkey (Türkiye)" matches "Turkey". */
+export function sameCountry(value: string | null | undefined, chosen: string | null | undefined): boolean {
+  if (!value || !chosen) return false;
+  return foldName(countryName(value)) === foldName(chosen);
+}
+
+/** A real country choice (not "All countries", not "Country not listed"). */
+export const isCountry = (chosen: string | null | undefined): chosen is string => Boolean(chosen) && chosen !== "(none)";
+
+/** Stable sort: rows in the chosen country first, the rest in their order. */
+export function inCountryFirst<T>(rows: T[], countryOf: (row: T) => string | null | undefined, chosen: string | null | undefined): T[] {
+  if (!isCountry(chosen)) return rows;
+  return [...rows.filter((r) => sameCountry(countryOf(r), chosen)), ...rows.filter((r) => !sameCountry(countryOf(r), chosen))];
+}
+
 function latest(dates: (string | null | undefined)[]): string | null {
   const sorted = dates.filter((d): d is string => Boolean(d)).sort();
   return sorted.length ? sorted[sorted.length - 1] : null;
@@ -36,7 +67,8 @@ export type TherapyState =
   | { kind: "unchecked" }
   /** searched, nothing found */
   | { kind: "none"; authorities: string; asOf: string | null; sources: string[] }
-  | { kind: "approved"; items: TherapyRow[]; asOf: string | null };
+  /** total: the shard's items_total when it is larger than the listed items */
+  | { kind: "approved"; items: TherapyRow[]; total: number; asOf: string | null };
 
 function authorityNames(searched: SearchLog[]): string {
   const names = [...new Set(searched.map((s) => (/\bEMA\b/i.test(s.source) ? "EMA" : /FDA/i.test(s.source) ? "FDA" : null)).filter(Boolean))];
@@ -48,9 +80,12 @@ export function therapyState(file: DiseaseFile): TherapyState {
   if (!read.present) return { kind: "unchecked" };
   const asOf = plainDate(latest(read.searched.map((s) => s.retrieved)));
   if (!read.items.length) return { kind: "none", authorities: authorityNames(read.searched), asOf, sources: read.searched.map((s) => s.source) };
+  // the shard may list fewer items than its items_total says (pipeline cut-off): count with the larger number, say how many are listed
+  const declared = Number((file.approved_therapies as { items_total?: unknown } | undefined)?.items_total);
   return {
     kind: "approved",
     asOf,
+    total: Number.isFinite(declared) ? Math.max(declared, read.items.length) : read.items.length,
     items: read.items.map(({ node, edge }) => {
       const ev = edge.evidence[0];
       return {
@@ -304,6 +339,8 @@ export function nextSteps({
   assets,
   related,
   actionVia,
+  country,
+  studyCountries,
 }: {
   file: DiseaseFile;
   therapy: TherapyState;
@@ -312,17 +349,32 @@ export function nextSteps({
   assets: AssetRow[];
   related: RelatedFinding[];
   actionVia: { id: string; label: string } | null;
+  /** the "Where do you live?" choice of the studies block ("" = all countries) */
+  country?: string;
+  /** per study (NCT id): the countries with an open site, once the registry details have loaded */
+  studyCountries?: Record<string, string[] | null>;
 }): NextStep[] {
   const label = file.node.label;
   const steps: NextStep[] = [];
-  const org = orgs.find((o) => !o.forDisease);
-  const relatedOrg = orgs.find((o) => o.forDisease);
+  const chosen = isCountry(country) ? country : null;
+  const where = (o: OrgRow) => (o.country ? ` (${countryName(o.country)})` : "");
+  const own = inCountryFirst(orgs.filter((o) => !o.forDisease), (o) => o.country, chosen);
+  const org = own[0];
+  const relatedOrg = inCountryFirst(orgs.filter((o) => o.forDisease), (o) => o.country, chosen)[0];
   if (org) {
-    steps.push({ key: "org", text: `Contact ${org.label}, a patient group for ${label}.`, link: { href: org.contact ?? org.site ?? "", label: "Contact page", external: true } });
-  } else if (relatedOrg?.forDisease) {
+    const local = !chosen || sameCountry(org.country, chosen);
     steps.push({
       key: "org",
-      text: `Contact ${relatedOrg.label}, a patient group for the related ${relatedOrg.forDisease.label}, and ask whether they also support families with ${label}.`,
+      text: local
+        ? `Contact ${org.label}${where(org)}, a patient group for ${label}.`
+        : `No patient group for ${label} in ${chosen} in our list; groups elsewhere: contact ${org.label}${where(org)}.`,
+      link: { href: org.contact ?? org.site ?? "", label: "Contact page", external: true },
+    });
+  } else if (relatedOrg?.forDisease) {
+    const local = !chosen || sameCountry(relatedOrg.country, chosen);
+    steps.push({
+      key: "org",
+      text: `${local ? "" : `No patient group for ${label} in ${chosen} in our list. `}Contact ${relatedOrg.label}${where(relatedOrg)}, a patient group for the related ${relatedOrg.forDisease.label}, and ask whether they also support families with ${label}.`,
       link: { href: relatedOrg.contact ?? relatedOrg.site ?? "", label: "Contact page", external: true },
     });
   }
@@ -330,10 +382,17 @@ export function nextSteps({
     const t = therapy.items[0];
     steps.push({ key: "therapy", text: `Ask your specialist about ${t.name}${t.authority ? `, approved by the ${t.authority}` : ""} for ${label}, and whether it fits your child.`, link: t.href ? { href: t.href, label: `${t.name}: official record`, external: true } : undefined });
   }
-  const study = studies[0];
+  const sitesOf = (s: StudyRow) => studyCountries?.[s.key] ?? null;
+  const localStudy = chosen ? studies.find((s) => (sitesOf(s) ?? []).some((c) => sameCountry(c, chosen))) : undefined;
+  const study = localStudy ?? studies[0];
   const registry = assets.find((a) => a.kind === "registry" && /recruiting/i.test(a.status ?? ""));
   if (study) {
-    steps.push({ key: "study", text: `Ask your specialist about the study ${study.key} (${study.status.toLowerCase()}). The registry entry lists who to contact.`, link: { href: study.href, label: `${study.key} on ClinicalTrials.gov`, external: true } });
+    const elsewhere = sitesOf(study)?.length ? ` (open sites: ${sitesOf(study)!.slice(0, 3).join(", ")}${sitesOf(study)!.length > 3 ? " and more" : ""})` : "";
+    const text =
+      chosen && !localStudy
+        ? `No study for ${label} lists an open site in ${chosen}; studies elsewhere: ask your specialist about ${study.key}${elsewhere}, and ask the study team whether they accept participants from other countries.`
+        : `Ask your specialist about the study ${study.key} (${study.status.toLowerCase()}${chosen ? `, open site in ${chosen}` : ""}). The registry entry lists who to contact.`;
+    steps.push({ key: "study", text, link: { href: study.href, label: `${study.key} on ClinicalTrials.gov`, external: true } });
   } else if (registry?.href) {
     steps.push({ key: "registry", text: `Ask whether your child can be added to the ${registry.label}${registry.record ? ` (${registry.record})` : ""}.`, link: { href: registry.href, label: `Open ${registry.record ?? "the registry entry"}`, external: true } });
   }
@@ -363,14 +422,25 @@ export const PLAIN_WORDS = {
   finding: "A finding is a sign or symptom a doctor can see or measure, as listed in the Human Phenotype Ontology (HPO).",
 } as const;
 
-/** Plain explanations for the words a definition uses, in reading order, each once. */
-export function wordsIn(text: string): string[] {
-  const rules: [RegExp, string][] = [
-    [/lysosom/i, PLAIN_WORDS.lysosomal],
-    [/leukodystroph/i, PLAIN_WORDS.leukodystrophy],
-    [/white matter|myelin/i, PLAIN_WORDS.whiteMatter],
+/** Sources for the medical word explanations (checked in docs/MEDICAL-BACKGROUND.md). */
+export const PLAIN_SOURCES = {
+  lysosomal: { label: "Platt et al. 2018, PMID 30275469", href: "https://pubmed.ncbi.nlm.nih.gov/30275469/" },
+  leukodystrophy: { label: "Leukodystrophy review, PMC9313024", href: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9313024/" },
+} as const;
+
+export interface PlainWord {
+  text: string;
+  source: { label: string; href: string };
+}
+
+/** Plain explanations for the words a definition uses, in reading order, each once, each with its source. */
+export function wordsIn(text: string): PlainWord[] {
+  const rules: [RegExp, PlainWord][] = [
+    [/lysosom/i, { text: PLAIN_WORDS.lysosomal, source: PLAIN_SOURCES.lysosomal }],
+    [/leukodystroph/i, { text: PLAIN_WORDS.leukodystrophy, source: PLAIN_SOURCES.leukodystrophy }],
+    [/white matter|myelin/i, { text: PLAIN_WORDS.whiteMatter, source: PLAIN_SOURCES.leukodystrophy }],
   ];
-  const found = rules.filter(([re]) => re.test(text)).map(([, words]) => words);
+  const found = rules.filter(([re]) => re.test(text)).map(([, word]) => word);
   // the leukodystrophy sentence already explains white matter
-  return found.includes(PLAIN_WORDS.leukodystrophy) ? found.filter((w) => w !== PLAIN_WORDS.whiteMatter) : found;
+  return found.some((w) => w.text === PLAIN_WORDS.leukodystrophy) ? found.filter((w) => w.text !== PLAIN_WORDS.whiteMatter) : found;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState, type FormEvent } from "react";
 import { loadIndexMap } from "@/lib/data";
 import { diseaseHref, toNodeId } from "@/lib/ids";
@@ -37,9 +36,9 @@ function parseDiseaseId(raw: string | null): string | null {
   return /^MONDO:\d{1,10}$/.test(id) ? id : null;
 }
 
-export default function ShareFlow() {
-  const searchParams = useSearchParams();
-  const diseaseId = parseDiseaseId(searchParams.get("disease") ?? searchParams.get("d"));
+/** `rawDisease` comes from the server page (?disease= or ?d=), so the first step renders on the server at full height (no layout shift). */
+export default function ShareFlow({ rawDisease = null }: { rawDisease?: string | null }) {
+  const diseaseId = parseDiseaseId(rawDisease);
   const [diseaseLabel, setDiseaseLabel] = useState<string | null>(null);
   const [step, setStep] = useState<Step>(1);
   const [kindId, setKindId] = useState<KindId | null>(null);
@@ -264,26 +263,28 @@ export default function ShareFlow() {
               <p className="mt-4 text-[16px] text-ink-2">
                 GitHub opens in a new tab with your note filled in. It is sent only when you press <span className="font-medium text-ink">Submit new issue</span> there. A person then checks it.
               </p>
+              <p className="mt-4 text-[16px] font-semibold text-ink" data-share-public>
+                GitHub issues are public. Do not include names or anything that identifies your child.
+              </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <a href={issueUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" data-share-github onClick={() => setSent(true)}>
                   Open GitHub to send<span className="sr-only"> (opens in a new tab)</span>
                 </a>
+                {/* the way without a GitHub account sits right next to the main button, not at the end */}
+                <button type="button" className="btn-secondary" onClick={copyText}>
+                  Copy text
+                </button>
                 <button type="button" className="btn-secondary" onClick={() => setStep(2)}>
                   Back
                 </button>
               </div>
-              <div className="mt-8 border-t border-line pt-5">
+              <p role="status" className="mt-2 min-h-6 text-[16px] text-ink-2">
+                {copy === "copied" && "Copied. Nothing has been sent yet."}
+                {copy === "failed" && "Copying did not work here. Select the note above and copy it by hand."}
+              </p>
+              <div className="mt-6 border-t border-line pt-5">
                 <h2 className="t-h2">No GitHub account?</h2>
-                <p className="mt-2 text-[16px] text-ink-2">Copy the text and give it to your patient group or to anyone who can post it for you. It works the same way.</p>
-                <div className="mt-3 flex flex-wrap items-center gap-3">
-                  <button type="button" className="btn-secondary" onClick={copyText}>
-                    Copy text
-                  </button>
-                  <p role="status" className="text-[16px] text-ink-2">
-                    {copy === "copied" && "Copied. Nothing has been sent yet."}
-                    {copy === "failed" && "Copying did not work here. Select the note above and copy it by hand."}
-                  </p>
-                </div>
+                <p className="mt-2 text-[16px] text-ink-2">Use Copy text and give the note to your patient group or to anyone who can post it for you. It works the same way.</p>
               </div>
             </div>
           )}

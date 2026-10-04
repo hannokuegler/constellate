@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useMemo } from "react";
+import { useId, useMemo, useState } from "react";
 import type { DiseaseFile } from "@/lib/types";
 import { trialStatusLabel } from "@/lib/normalize";
 import { familyAssets, plainDate, PLAIN_WORDS, type StudyRow } from "@/lib/nextSteps";
@@ -40,7 +40,10 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
   }, [countries, country]);
 
   const matching = ordered.filter((s) => listsCountry(details[s.key], country));
-  const shown = (matching.length ? matching : ordered).slice(0, 2);
+  // "See all" opens the rest right here (studies in the chosen country first), instead of jumping to the list far below
+  const [expanded, setExpanded] = useState(false);
+  const listId = useId();
+  const shown = expanded ? [...matching, ...ordered.filter((s) => !matching.includes(s))] : (matching.length ? matching : ordered).slice(0, 2);
 
   const studyIds = new Set(studies.map((s) => s.key));
   const registries = assets.filter((a) => a.kind === "registry" && /recruiting/i.test(a.status ?? "") && !studyIds.has(a.record ?? ""));
@@ -55,6 +58,7 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
           <p>
             {studies.length === 1 ? "One study lists" : `${studies.length} studies list`} {label} and take{studies.length === 1 ? "s" : ""} participants now or soon.
           </p>
+          <Explain>{PLAIN_WORDS.observational}</Explain>
           {countries.length > 0 && (
             <div className="flex flex-col gap-1.5">
               <label htmlFor={selectId} className="text-[15px] font-semibold text-ink">
@@ -97,11 +101,11 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                 ? `${matching.length === 1 ? "One study does" : `${matching.length} studies do`} not list a country yet; ask the study team where it will run.`
                 : matching.length
                 ? `${matching.length === 1 ? "One study lists" : `${matching.length} studies list`} a site in ${country}.`
-                : `No study for ${label} lists a site in ${country}${registryChecked ? ` as of ${registryChecked}` : ""}. Studies elsewhere sometimes accept travelling participants; ask the study team.`}
+                : `No study for ${label} lists a site in ${country}${registryChecked ? ` as of ${registryChecked}` : ""}. Ask the study team whether they accept participants from other countries.`}
             </p>
           )}
           {country && !matching.length && <p className="text-[15px] font-semibold text-ink">Studies in other countries</p>}
-          <ul className="divide-y divide-line">
+          <ul id={listId} className="divide-y divide-line">
             {shown.map((s) => {
               const d = details[s.key];
               const here = country ? d?.countries.find((c) => c.country === country) : undefined;
@@ -135,9 +139,20 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
               );
             })}
           </ul>
-          {studies.length > shown.length && (
+          {(studies.length > 2 || expanded) && (
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              aria-controls={listId}
+              className="inline-flex min-h-11 items-center text-left text-[15px] underline decoration-line-strong underline-offset-4 hover:decoration-current"
+            >
+              {expanded ? "Show fewer studies" : `See all ${studies.length} studies`}
+            </button>
+          )}
+          {expanded && (
             <a href="#open-studies" className="inline-flex min-h-11 items-center text-[15px] underline decoration-line-strong underline-offset-4 hover:decoration-current">
-              See all {studies.length} studies below
+              Full list with details further down
             </a>
           )}
           <Explain>Whether your child can take part is decided with your doctor and the study team.</Explain>

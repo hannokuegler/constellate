@@ -6,7 +6,7 @@ import type { ExplainEvent } from "@/lib/explain";
 import { CitedText } from "./CiteLink";
 
 /** Calls /api/explain and renders the NDJSON stream sentence by sentence. */
-export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels: Record<string, string> }) {
+export default function ExplainStream({ edges, labels, from, via }: { edges: Edge[]; labels: Record<string, string>; from?: string; via?: string }) {
   const [events, setEvents] = useState<ExplainEvent[]>([]);
   const [running, setRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -21,7 +21,7 @@ export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels
       const response = await fetch("/api/explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ edges, labels, audience: "a patient-group lead or parent without medical training" }),
+        body: JSON.stringify({ edges, labels, from, via, audience: "a patient-group lead or parent without medical training" }),
         signal: controller.signal,
       });
       if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);
@@ -48,6 +48,9 @@ export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels
   const sentences = events.filter((e): e is Extract<ExplainEvent, { type: "sentence" }> => e.type === "sentence");
   const dropped = events.filter((e): e is Extract<ExplainEvent, { type: "dropped" }> => e.type === "dropped");
   const errors = events.filter((e): e is Extract<ExplainEvent, { type: "error" }> => e.type === "error");
+  const status = events.find((e): e is Extract<ExplainEvent, { type: "status" }> => e.type === "status");
+  // neutral labels only: why the server fell back (no key, budget, upstream error) is never shown to the reader
+  const label = meta ? (meta.mode === "llm" ? "AI-written summary, every sentence checked against the sources" : "Plain-language summary built from the sources on this card") : null;
 
   return (
     <div className="rounded-[20px] border border-line bg-surface-2 px-4 py-5 md:px-6">
@@ -58,12 +61,17 @@ export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels
         </button>
         {meta && (
           <span className={`rounded-full border px-2.5 py-1 text-[12px] font-semibold ${meta.mode === "llm" ? "border-line-strong text-ink" : "border-dashed border-line-strong text-ink-2"}`}>
-            {meta.mode === "llm" ? <>AI · <span className="font-mono">{meta.model}</span></> : "template, no LLM"}
+            {meta.mode === "llm" ? <span title={meta.model}>AI-written</span> : "Built from the sources"}
           </span>
         )}
       </div>
-      {meta && <p className="mt-2 text-[13px] text-ink-2">{meta.note}</p>}
+      {label && <p className="mt-2 text-[13px] text-ink-2">{label}</p>}
       <div aria-live="polite">
+        {status && (
+          <p className="mt-4 max-w-[68ch] text-[17px] font-semibold leading-[1.65]" data-testid="explain-status">
+            {status.text} <span className="text-[12px] font-normal text-ink-2">({status.source})</span>
+          </p>
+        )}
         {sentences.length > 0 && (
           <p className="mt-4 max-w-[68ch] text-[17px] leading-[1.65]">
             {sentences.map((s, i) => (
@@ -86,9 +94,9 @@ export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels
             </ul>
           </details>
         )}
-        {errors.map((e, i) => (
-          <p key={i} className="mt-2 text-[13px] text-contra">⚠️ {e.message}</p>
-        ))}
+        {errors.length > 0 && !sentences.length && (
+          <p className="mt-2 text-[13px] text-contra">The summary could not be loaded. The card above lists every statement with its source; try again in a moment.</p>
+        )}
       </div>
     </div>
   );

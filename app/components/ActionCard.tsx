@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { DiseaseFile, GeneFile, Meta } from "@/lib/types";
 import { loadDisease, loadGene } from "@/lib/data";
-import { actionCardMarkdown, buildActionCard, buildGlance, type CardSentence, type GlanceLine } from "@/lib/actioncard";
+import { GLANCE_RESERVE_PX, actionCardMarkdown, buildActionCard, buildGlance, type CardSentence, type GlanceLine } from "@/lib/actioncard";
 import { diseaseHref, toFileKey } from "@/lib/ids";
 import { useEdgePanel } from "./Providers";
 import CiteLink from "./CiteLink";
@@ -199,11 +199,11 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
         </div>
       </header>
 
-      {glance ? <AtAGlance lines={glance} Heading={SectionTitle} /> : <ExplainPlaceholder />}
+      {glance ? <AtAGlance lines={glance} Heading={SectionTitle} /> : <div aria-hidden="true" className="border-b border-line" style={{ minHeight: GLANCE_RESERVE_PX }} />}
 
       {/* plain language first: the explanation a parent takes to the doctor sits above the detail columns */}
       <div className="border-b border-line px-5 py-5 md:px-6">
-        {card ? <ExplainStream edges={[...card.edges.values()]} labels={card.labels} /> : <ExplainPlaceholder />}
+        {card ? <ExplainStream edges={[...card.edges.values()]} labels={card.labels} from={disease.node.id} via={neighbour?.id} /> : <ExplainPlaceholder />}
       </div>
 
       {!card ? (

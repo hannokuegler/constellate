@@ -60,7 +60,7 @@ export default function StoryPlayer() {
         {ended && (
           <div className="grid place-items-center bg-[#0d1020] px-4 py-10 text-center text-[#eef0f8] md:absolute md:inset-0">
             <div>
-              <p className="text-[22px] font-bold tracking-tight md:text-[28px]">Your family is not the first.</p>
+              <p className="text-[22px] font-bold tracking-tight md:text-[28px]">Don&apos;t rebuild what a neighbouring disease already built.</p>
               <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/"

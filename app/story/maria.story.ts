@@ -2,7 +2,7 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
+import { SPEAKERS, STORY_TITLE, storyLine } from "../lib/story";
 
 // Records Maria's walkthrough through the live app with Consti's speech bubbles and a visible cursor,
 // then encodes it to public/story/maria.mp4 and maria.webm plus a poster frame. Run: npm run story:record (needs ffmpeg).
@@ -237,7 +237,7 @@ test("record Maria's story", async ({ browser }) => {
   // title card over the start page
   await page.goto("/");
   await expect(page.getByRole("combobox", { name: /search diseases/i })).toBeVisible();
-  await card(page, STORY_TITLE, STORY_NOTE);
+  await card(page, STORY_TITLE, "A composite story, filmed in the live app."); // the full note stands on /intro, not twice
   const lead = Date.now() - t0;
   cursor = { x: 900, y: 300 };
   await page.mouse.move(cursor.x, cursor.y);
@@ -314,7 +314,7 @@ test("record Maria's story", async ({ browser }) => {
   // silence, then the last line over the closing card
   await page.waitForTimeout(700);
   await page.evaluate(() => (window as unknown as { __storyClear: () => void }).__storyClear());
-  await card(page, "Your family is not the first.", "Now try it yourself: search your diagnosis, open any line, take your action card.");
+  await card(page, "Constellate", ""); // the last line is spoken once, the card only signs off
   await page.waitForTimeout(300);
   await say(page, "c-end", false); // the card carries the words
   await page.waitForTimeout(700);

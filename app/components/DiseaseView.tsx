@@ -173,7 +173,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         <CommunityBlock file={file} onEdge={openEdge} builtAt={meta?.built_at} />
       </Section>
     ),
-    studies: <OpenStudies key="studies" file={file} onEdge={openEdge} family={persona.id === "family"} />,
+    studies: <OpenStudies key="studies" file={file} onEdge={openEdge} family />,
     neighbours: (
       <Section key="neighbours" id="related" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
         {noNeighbours ? (
@@ -301,7 +301,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         )}
       </div>
 
-      <MomentBar onOpenCard={noNeighbours ? null : () => openCard(via ?? defaultVia!)} diseaseLabel={node.label} orgs={orgs.length} hasGap={Boolean(file.gap)} openStudies={openTrials(file).length} neighbours={file.neighbours.length} />
+      <MomentBar diseaseLabel={node.label} orgs={orgs.length} hasGap={Boolean(file.gap)} openStudies={openTrials(file).length} neighbours={file.neighbours.length} />
 
       {noNeighbours && (
         <div className="mt-6">

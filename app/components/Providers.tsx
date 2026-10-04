@@ -2,17 +2,19 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { Edge } from "@/lib/types";
-import { DEFAULT_PERSONA, personaById, type Persona, type PersonaId } from "@/lib/persona";
+import { DEFAULT_PERSONA_VIEW, type Persona } from "@/lib/persona";
 import EdgePanel from "./EdgePanel";
 
 // ---------------------------------------------------------------------------------------------------
-// Persona + theme (per-viewer conveniences, kept in localStorage, failures ignored)
+// Fixed view + theme (per-viewer conveniences, kept in localStorage, failures ignored)
 
 type ThemeChoice = "auto" | "light" | "dark";
 
 interface Prefs {
+  /** the one fixed view; lib/search.ts still ranks with a persona object */
   persona: Persona;
-  setPersona: (id: PersonaId) => void;
+  /** @deprecated no-op, only until StartView stops calling it */
+  setPersona: (id: string) => void;
   theme: ThemeChoice;
   setTheme: (t: ThemeChoice) => void;
 }
@@ -47,20 +49,15 @@ interface EdgePanelApi {
 const EdgeContext = createContext<EdgePanelApi | null>(null);
 
 export function Providers({ children }: { children: ReactNode }) {
-  const [personaId, setPersonaId] = useState<PersonaId>(DEFAULT_PERSONA);
   const [theme, setThemeState] = useState<ThemeChoice>("auto");
 
   useEffect(() => {
-    // restoring the stored preference after hydration is intentional (server render has no localStorage)
-    setPersonaId(personaById(readStorage("constellate.persona")).id);
+    // restoring the stored theme after hydration is intentional (server render has no localStorage); an old stored persona is ignored
     const storedTheme = readStorage("constellate.theme");
     if (storedTheme === "light" || storedTheme === "dark") setThemeState(storedTheme);
   }, []);
 
-  const setPersona = useCallback((id: PersonaId) => {
-    setPersonaId(id);
-    writeStorage("constellate.persona", id);
-  }, []);
+  const setPersona = useCallback(() => undefined, []);
 
   const setTheme = useCallback((t: ThemeChoice) => {
     setThemeState(t);
@@ -69,7 +66,7 @@ export function Providers({ children }: { children: ReactNode }) {
     else document.documentElement.setAttribute("data-theme", t);
   }, []);
 
-  const prefs = useMemo(() => ({ persona: personaById(personaId), setPersona, theme, setTheme }), [personaId, setPersona, theme, setTheme]);
+  const prefs = useMemo(() => ({ persona: DEFAULT_PERSONA_VIEW, setPersona, theme, setTheme }), [setPersona, theme, setTheme]);
 
   // edge registry
   const edgesRef = useRef(new Map<string, Edge>());

@@ -2,22 +2,20 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PERSONAS, type PersonaId } from "@/lib/persona";
 import { usePrefs } from "./Providers";
 import SearchBox from "./SearchBox";
 import Wordmark, { Mark } from "./brand/Wordmark";
 
 export default function Header() {
-  const { persona, setPersona, theme, setTheme } = usePrefs();
+  const { theme, setTheme } = usePrefs();
   const onStart = usePathname() === "/";
   const nextTheme = theme === "auto" ? "dark" : theme === "dark" ? "light" : "auto";
 
   return (
     <header className="glass sticky top-0 z-30 border-0 border-b pt-[env(safe-area-inset-top)]">
       <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-1.5 md:gap-4 md:px-6">
-        <Link href="/" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-[12px] sm:pr-1" aria-label="Constellate home">
-          <span className="sm:hidden"><Mark /></span>
-          <span className="hidden sm:inline-flex"><Wordmark /></span>
+        <Link href="/" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-[12px] pr-1" aria-label="Constellate home">
+          <Wordmark />
         </Link>
         {/* phones: the header is too narrow for a usable field, so search lives on the start page */}
         <div className="hidden min-w-0 flex-1 sm:block">{!onStart && <SearchBox compact />}</div>
@@ -34,22 +32,6 @@ export default function Header() {
           <Link href="/about" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">About</Link>
           <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">How we know</Link>
         </nav>
-        <label className="relative hidden shrink-0 items-center md:flex">
-          <span className="sr-only">Persona lens</span>
-          <select
-            value={persona.id}
-            onChange={(e) => setPersona(e.target.value as PersonaId)}
-            className="h-11 max-w-[200px] lg:max-w-none appearance-none truncate rounded-full border border-line-strong bg-transparent pl-4 pr-9 text-[13px] font-medium"
-            title={`${persona.role}: ${persona.goal}`}
-          >
-            {PERSONAS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} · {p.role}
-              </option>
-            ))}
-          </select>
-          <svg className="pointer-events-none absolute right-4 text-ink-2" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" /></svg>
-        </label>
         <button
           onClick={() => setTheme(nextTheme)}
           className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line-strong text-ink-2 hover:text-ink"

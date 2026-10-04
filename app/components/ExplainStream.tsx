@@ -3,12 +3,10 @@
 import { useRef, useState } from "react";
 import type { Edge } from "@/lib/types";
 import type { ExplainEvent } from "@/lib/explain";
-import { usePrefs } from "./Providers";
 import { CitedText } from "./CiteLink";
 
 /** Calls /api/explain and renders the NDJSON stream sentence by sentence. */
 export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels: Record<string, string> }) {
-  const { persona } = usePrefs();
   const [events, setEvents] = useState<ExplainEvent[]>([]);
   const [running, setRunning] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -23,7 +21,7 @@ export default function ExplainStream({ edges, labels }: { edges: Edge[]; labels
       const response = await fetch("/api/explain", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ edges, labels, audience: `${persona.role.toLowerCase()} without medical training` }),
+        body: JSON.stringify({ edges, labels, audience: "a patient-group lead or parent without medical training" }),
         signal: controller.signal,
       });
       if (!response.ok || !response.body) throw new Error(`HTTP ${response.status}`);

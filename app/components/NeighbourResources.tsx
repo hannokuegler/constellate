@@ -20,8 +20,13 @@ export default function NeighbourResources({ file, onEdge, onCard }: { file: Dis
     const communities = (file.gap?.nearest_communities ?? []).filter((n) => n.mechanism_differs !== true && (n.shared_genes?.length || n.shared_pathways?.length));
     const unique = [...communities, ...neighbours].filter((n, index, rows) => rows.findIndex((other) => other.id === n.id) === index);
     // Prefer the parent disease over multiple subtypes so a small request budget covers distinct communities.
-    const groups = new Set<string>();
-    return unique.filter((n) => { const key = n.label.toLowerCase().split(/ due to |, | type /)[0].replace(/\s+\d+[a-z]?$/, ""); if (groups.has(key)) return false; groups.add(key); return true; }).slice(0, 3);
+    const groups = new Map<string, (typeof unique)[number]>();
+    for (const neighbour of unique) {
+      const key = neighbour.label.toLowerCase().split(/ due to |, | type /)[0].replace(/\s+\d+[a-z]?$/, "");
+      const previous = groups.get(key);
+      if (!previous || neighbour.label.length < previous.label.length) groups.set(key, neighbour);
+    }
+    return [...groups.values()].slice(0, 3);
   }, [file]);
   useEffect(() => {
     if (!ref.current) return;

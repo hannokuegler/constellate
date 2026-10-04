@@ -24,7 +24,7 @@ export default function ActionCardPage({ id, via }: { id: string; via: string | 
     return (
       <div className="card mx-auto mt-8 max-w-[720px] px-5 py-5">
         <p className="font-semibold">No data file for {id}.</p>
-        <Link href={diseaseHref(id)} className="mt-2 inline-block text-accent underline">Open the disease page</Link>
+        <Link href={diseaseHref(id)} className="mt-2 inline-block text-ink underline decoration-line underline-offset-2 hover:decoration-current">Open the disease page</Link>
       </div>
     );
 

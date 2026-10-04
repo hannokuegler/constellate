@@ -188,7 +188,7 @@ function SkyLegend() {
   return (
     <ul
       aria-label="How to read the sky"
-      className="glass pointer-events-auto mt-4 flex w-full max-w-[580px] flex-wrap gap-x-4 gap-y-1 rounded-[16px] px-4 py-2 text-[12px] text-ink-2 md:absolute md:bottom-8 md:right-6 md:mt-0 md:w-auto md:max-w-none"
+      className="glass pointer-events-auto mt-4 flex w-full max-w-[580px] flex-wrap gap-x-4 gap-y-1 rounded-[16px] px-4 py-2 text-[12px] text-ink-2 md:absolute md:right-6 md:top-[84px] md:mt-0 md:w-auto md:max-w-none"
     >
       <li className="flex min-h-7 items-center gap-2">
         <span className="inline-block h-[7px] w-[7px] rounded-full bg-[color:var(--star)]" aria-hidden="true" /> disease

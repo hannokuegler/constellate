@@ -11,6 +11,8 @@ export interface TourStep {
   text: string;
   ids: string[];
   source: string;
+  /** in-page anchor the step scrolls to */
+  hash?: string;
   /** edge the bar can open in the evidence panel when the page has registered it */
   openEdge?: string;
 }
@@ -59,9 +61,10 @@ export const TOUR_STEPS: TourStep[] = [
     text: "Krabbe disease due to saposin A deficiency: where the data runs out, Constellate shows what was searched instead of guessing.",
     ids: ["e_795da9c4a6cd"],
     source: "OMIM:611722 · curated",
+    hash: "#patient-organisations",
   },
 ];
 
-export function tourHref(path: string, step: number): string {
-  return `${path}${path.includes("?") ? "&" : "?"}tour=${TOUR_ID}&step=${step}`;
+export function tourHref(path: string, step: number, hash = ""): string {
+  return `${path}${path.includes("?") ? "&" : "?"}tour=${TOUR_ID}&step=${step}${hash}`;
 }

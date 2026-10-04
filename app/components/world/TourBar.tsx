@@ -137,7 +137,7 @@ function TourBarInner() {
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
           {step > 1 ? (
-            <Link href={tourHref(TOUR_STEPS[step - 2].path, step - 1)} className="btn-secondary" scroll={step - 1 !== 1}>
+            <Link href={tourHref(TOUR_STEPS[step - 2].path, step - 1, TOUR_STEPS[step - 2].hash)} className="btn-secondary" scroll={step - 1 !== 1}>
               Back
             </Link>
           ) : (
@@ -146,7 +146,7 @@ function TourBarInner() {
             </button>
           )}
           {!onStepPage && (
-            <Link href={tourHref(current.path, step)} className="btn-secondary">
+            <Link href={tourHref(current.path, step, current.hash)} className="btn-secondary">
               Return to step {step}
             </Link>
           )}
@@ -156,8 +156,10 @@ function TourBarInner() {
             </button>
           )}
           {step < total ? (
-            <Link href={tourHref(TOUR_STEPS[step].path, step + 1)} className="btn-primary ml-auto">
-              Next<span className="hidden md:inline">: {TOUR_STEPS[step].title}</span>
+            <Link href={tourHref(TOUR_STEPS[step].path, step + 1, TOUR_STEPS[step].hash)} className="btn-primary ml-auto">
+              <span>
+                Next<span className="hidden md:inline">: {TOUR_STEPS[step].title}</span>
+              </span>
             </Link>
           ) : (
             <button type="button" onClick={close} className="btn-primary ml-auto">

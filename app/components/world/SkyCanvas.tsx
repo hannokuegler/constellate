@@ -72,11 +72,12 @@ const STAR_VERTEX = /* glsl */ `
     else if (aKind > 3.5) { base = uStarDim; alpha = 0.6; }                         // symptom
     float twinkle = 1.0 - uTwinkle * 0.22 * (0.5 + 0.5 * sin(uTime * (0.6 + aSeed * 1.7) + aSeed * 40.0));
     alpha *= mix(1.0, twinkle, step(0.5, aKind));
+    alpha *= mix(aKind > 2.5 ? 0.6 : 0.85, 1.0, uDark);                            // day atlas: dark ink, lighter dust
     alpha *= mix(1.0, 0.28, uDim * (1.0 - lit));
     vec3 litColor = center ? uAmber : uStar;
     vColor = mix(base, litColor, lit);
     vAlpha = mix(alpha, 1.0, lit);
-    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit);
+    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark);
     float attenuation = pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75);
     gl_PointSize = max(size * attenuation, 2.2) * uPixelRatio;
     gl_Position = projectionMatrix * mv;
@@ -350,7 +351,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       lineUniforms.uText.value.set(palette.lvlText);
       lineUniforms.uInferred.value.set(palette.lvlInferred);
       lineUniforms.uStarDim.value.set(palette.starDim);
-      lineUniforms.uBase.value = palette.dark ? 0.06 : 0.09;
+      lineUniforms.uBase.value = palette.dark ? 0.06 : 0.07;
       halo.material.uniforms.uColor.value.set(palette.amber);
       hoverRing.material.uniforms.uColor.value.set(palette.star);
       const blending = palette.dark ? AdditiveBlending : NormalBlending;

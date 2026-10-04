@@ -124,13 +124,13 @@ export default function GeneView({ symbol }: { symbol: string }) {
                     <ul className="mt-1 space-y-0.5 pl-[34px]">
                       {f.edges.map((e) => (
                         <li key={e.id} className="flex flex-wrap items-center gap-x-3">
-                          <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 grow basis-[10rem] items-center break-words text-[13px] underline decoration-line underline-offset-2 hover:decoration-current">
+                          <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center break-words text-[13px] underline decoration-line underline-offset-2 hover:decoration-current">
                             {label(e.source)}
                           </Link>
-                          <span className="text-[12px] text-ink-2">
+                          <span className="-mt-2 text-[12px] text-ink-2">
                             <span className="font-mono">{e.id}</span> · {e.evidence[0]?.db ?? "source n/a"}
                           </span>
-                          <EvidenceButton edge={e} onEdge={openEdge} />
+                          <span className="-mt-2 ml-auto"><EvidenceButton edge={e} onEdge={openEdge} /></span>
                         </li>
                       ))}
                     </ul>

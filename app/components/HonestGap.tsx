@@ -143,8 +143,8 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
             <td className="block min-w-0 text-ink-2 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
               {r.query ? (
                 r.url ? (
-                  <a href={r.url} target="_blank" rel="noreferrer" className="line-clamp-3 min-w-0 break-words text-ink underline decoration-line underline-offset-2 hover:decoration-current [overflow-wrap:anywhere]" title={r.query}>
-                    {r.query}
+                  <a href={r.url} target="_blank" rel="noreferrer" className="flex min-h-11 min-w-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current" title={r.query}>
+                    <span className="line-clamp-3 min-w-0 break-words [overflow-wrap:anywhere]">{r.query}</span>
                     <span className="sr-only"> (opens the stored query in a new tab)</span>
                   </a>
                 ) : (

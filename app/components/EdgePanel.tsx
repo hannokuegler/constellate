@@ -103,7 +103,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
         role="dialog"
         aria-modal="false"
         aria-labelledby="edge-panel-title"
-        className="drawer-enter fixed z-50 inset-x-0 bottom-0 max-h-[85vh] md:inset-x-auto md:right-4 md:top-20 md:bottom-4 md:max-h-none md:w-[440px] overflow-y-auto overscroll-contain rounded-t-[20px] md:rounded-[20px] border border-line bg-surface shadow-[var(--shadow,0_8px_32px_rgb(0_0_0/0.35))] pb-[env(safe-area-inset-bottom)]"
+        className="@container drawer-enter fixed z-50 inset-x-0 bottom-0 max-h-[85vh] md:inset-x-auto md:right-4 md:top-20 md:bottom-4 md:max-h-none md:w-[440px] overflow-y-auto overscroll-contain rounded-t-[20px] md:rounded-[20px] border border-line bg-surface shadow-[var(--shadow,0_8px_32px_rgb(0_0_0/0.35))] pb-[env(safe-area-inset-bottom)]"
       >
         <div className="sticky top-0 z-10 border-b border-line bg-surface px-5 pb-4 pt-3">
           <div className="mx-auto mb-2 h-1 w-9 rounded-full bg-line md:hidden" aria-hidden="true" />
@@ -238,16 +238,16 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
         )
       ) : computed ? "formula" : "n/a",
     },
-    { key: "Date", value: <span className="tabular">{formatDate(lead?.date)}</span> },
+    { key: "Date", value: <span className="tabular whitespace-nowrap">{formatDate(lead?.date)}</span> },
     { key: "Level", value: LEVEL_INFO[edge.level]?.label ?? edge.level },
   ];
   return (
-    <ol className="grid grid-cols-4 gap-x-1" aria-label="Provenance of this link">
+    <ol className="grid grid-cols-2 gap-x-3 gap-y-4 @sm:grid-cols-4 @sm:gap-x-1" aria-label="Provenance of this link">
       {steps.map((step, i) => (
         <li key={step.key} className="min-w-0 pr-1">
           <div className="flex items-center" aria-hidden="true">
             <span className="dot" data-state={i === steps.length - 1 ? "lit" : undefined} />
-            {i < steps.length - 1 && <span className="ml-1 mr-1 h-px flex-1 bg-line-strong" />}
+            {i < steps.length - 1 && <span className={`ml-1 mr-1 h-px flex-1 bg-line-strong ${i === 1 ? "hidden @sm:block" : ""}`} />}
           </div>
           <p className="mt-2 text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
           <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>

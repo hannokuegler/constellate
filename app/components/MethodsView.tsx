@@ -207,7 +207,7 @@ export default function MethodsView() {
                   <tr key={s.db} className="border-t border-line align-top">
                     <th scope="row" className="px-4 py-0.5 font-semibold">
                       {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">{s.db}<span className="sr-only"> (opens in a new tab)</span></a>
+                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">{s.db}<span className="sr-only"> (opens in a new tab)</span></a>
                       ) : (
                         s.db
                       )}

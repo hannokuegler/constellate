@@ -6,13 +6,12 @@ import { useEffect, useMemo, useState } from "react";
 import type { Edge, GeneFile, IndexEntry } from "@/lib/types";
 import { loadGene, loadIndexMap } from "@/lib/data";
 import { diseaseHref } from "@/lib/ids";
-import { RELATION_LABEL } from "@/lib/evidence";
+import { formatDate, RELATION_LABEL } from "@/lib/evidence";
 import { useEdgePanel } from "./Providers";
 import EgoGraph from "./EgoGraph";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 import { LevelBadge } from "./Badges";
 import { EvidenceButton } from "./DiseaseView";
-import HonestGap from "./HonestGap";
 import { Skeleton } from "./Skeleton";
 import { pathwayRefs } from "@/lib/normalize";
 import TextMined from "./TextMined";
@@ -81,46 +80,43 @@ export default function GeneView({ symbol }: { symbol: string }) {
 
   if (error) return <p className="card mt-6 px-5 py-5" role="alert">⚠️ Gene data could not be loaded: {error}</p>;
   if (file === undefined || !index) return <Skeleton />;
-  if (file === null)
-    return (
-      <div className="mx-auto mt-8 max-w-[1100px]">
-        <HonestGap
-          variant="screen"
-          title={`${symbol}: no gene page in this dataset`}
-          reason="This gene has no detail file. It may lie outside the current slice or have no disease annotation here."
-          searched={[{ source: "HPO genes_to_phenotype" }, { source: "Orphanet product6" }]}
-          close={["Extend the slice to diseases annotated with this gene", "Check the symbol spelling (HGNC approved symbol)"]}
-        />
-      </div>
-    );
+  if (file === null) return (
+    <div className="page-shell max-w-[800px]">
+      <p className="eyebrow">Data pending</p>
+      <h1 className="page-heading">{symbol}</h1>
+      <p className="subtle mt-5">No detail page for this gene is included in the current dataset. This is a missing record, not evidence that no connections exist.</p>
+      <Link href="/" className="button button-primary mt-6">Return to search</Link>
+    </div>
+  );
 
   const v = view!;
-  const manyNames = v.familyList.length >= 2;
+  const manyNames = v.familyList.length > 0;
   return (
-    <div className="mt-6">
-      <nav className="mb-3 text-[13px] text-ink-2" aria-label="Breadcrumb">
+    <div className="page-shell">
+      <nav className="mb-3 text-[1rem] text-ink-2" aria-label="Breadcrumb">
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / gene
       </nav>
-      <h1 className="text-[28px] font-bold tracking-tight">{file.node.id}</h1>
+      <p className="eyebrow">Gene connections</p>
+      <h1 className="page-heading">{file.node.id}</h1>
       {file.node.full_name && <p className="mt-1 text-[17px] text-ink-2">{file.node.full_name}</p>}
 
       {manyNames && (
-        <section className="card mt-6 overflow-hidden" aria-labelledby="names-title">
-          <div className="border-b border-line bg-accent-soft px-5 py-4 md:px-6">
-            <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Names hide mechanisms</p>
+        <section className="answer-card mt-8 overflow-hidden" aria-labelledby="names-title">
+          <div className="border-b border-line pb-6">
+            <p className="text-[0.875rem] font-semibold uppercase tracking-wide text-accent">A shared starting point</p>
             <h2 id="names-title" className="mt-1 text-[22px] font-semibold">
-              One gene, {v.familyList.length} disease names
+              One gene, {v.familyList.length} disease {v.familyList.length === 1 ? "name" : "names"}
             </h2>
-            <p className="mt-1 text-[13px] text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
+            <p className="mt-1 text-[1rem] text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
           </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
             {v.familyList.map((f) => (
-              <li key={f.name} className="px-5 py-4 shadow-[0_0_0_0.5px_var(--line)]">
+              <li key={f.name} className="min-w-0 border-b border-line py-6 last:border-0">
                 <p className="text-[17px] font-semibold">{f.name}</p>
                 <ul className="mt-2 space-y-1">
                   {f.edges.map((e) => (
-                    <li key={e.id} className="flex min-h-11 items-center gap-2">
-                      <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 items-center text-[13px] text-accent underline-offset-2 hover:underline">
+                    <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-3">
+                      <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 items-center text-[1rem] text-accent underline-offset-2 hover:underline">
                         {label(e.source)}
                       </Link>
                       <EvidenceButton edge={e} onEdge={openEdge} />
@@ -133,11 +129,14 @@ export default function GeneView({ symbol }: { symbol: string }) {
         </section>
       )}
 
-      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+      <p className="source-line mt-4">Sources: {[...new Set(v.causal.flatMap((edge) => edge.evidence.map((e) => e.db)))].join(", ") || "See the evidence for each connection"}. {(() => { const dates = v.causal.flatMap((edge) => edge.evidence.map((e) => e.retrieved ?? e.date).filter((d): d is string => Boolean(d))).sort(); return dates.length ? `Latest source date: ${formatDate(dates[dates.length - 1])}.` : "Source dates are shown with the evidence when recorded."; })()}</p>
+      <details className="mt-10 border-t border-line pt-4">
+        <summary className="min-h-11 cursor-pointer py-3 font-semibold text-accent">Show the evidence and pathways</summary>
+      <div className="mt-6 grid grid-cols-1 gap-6">
         <EgoGraph
           nodes={v.nodes}
           links={v.links}
-          height={typeof window !== "undefined" && window.innerWidth < 768 ? 340 : 480}
+          height={360}
           caption={`Diseases annotated with ${file.node.id}`}
           onLinkClick={openEdge}
           onNodeClick={(n) => n.kind !== "center" && router.push(diseaseHref(n.id))}
@@ -145,14 +144,14 @@ export default function GeneView({ symbol }: { symbol: string }) {
         />
         <div className="space-y-4">
           <section className="card px-4 py-4">
-            <h2 className="text-[17px] font-semibold">All disease annotations <span className="tabular text-[13px] font-normal text-ink-2">{file.diseases.length}</span></h2>
+            <h2 className="text-[17px] font-semibold">All disease annotations <span className="tabular text-[1rem] font-normal text-ink-2">{file.diseases.length}</span></h2>
             <ul className="mt-2 divide-y divide-line">
               {[...v.causal, ...v.other].map((e) => (
                 <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                  <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
+                  <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center text-[1.0625rem] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
                     {label(e.source)}
                   </Link>
-                  <span className="text-[12px] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}{e.rolled_up_from?.length ? " · via subtypes" : ""}</span>
+                  <span className="text-[0.875rem] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}{e.rolled_up_from?.length ? " · via subtypes" : ""}</span>
                   <LevelBadge level={e.level} small />
                   <EvidenceButton edge={e} onEdge={openEdge} />
                 </li>
@@ -161,18 +160,18 @@ export default function GeneView({ symbol }: { symbol: string }) {
           </section>
           <TextMined edges={file.text_mined ?? []} labelOf={(id) => v.labels[id] ?? id} onEdge={openEdge} />
           <section className="card px-4 py-4">
-            <h2 className="text-[17px] font-semibold">Pathways <span className="tabular text-[13px] font-normal text-ink-2">{v.pathways.length}</span></h2>
-            {file.pathways_note && <p className="mt-1 text-[13px] text-ink-2">{file.pathways_note}</p>}
+            <h2 className="text-[17px] font-semibold">Pathways <span className="tabular text-[1rem] font-normal text-ink-2">{v.pathways.length}</span></h2>
+            {file.pathways_note && <p className="mt-1 text-[1rem] text-ink-2">{file.pathways_note}</p>}
             {file.pathways === undefined ? (
-              <p className="mt-1 text-[13px] text-ink-2">Pathway data not loaded for this gene yet.</p>
+              <p className="mt-1 text-[1rem] text-ink-2">Pathway data not loaded for this gene yet.</p>
             ) : v.pathways.length === 0 ? (
-              <p className="mt-1 text-[13px] text-ink-2">Reactome lists no pathway for {file.node.id} (queried, zero results).</p>
+              <p className="mt-1 text-[1rem] text-ink-2">No pathway records are included for {file.node.id} in this dataset. Search date not recorded.</p>
             ) : (
               <ul className="mt-2 divide-y divide-line">
                 {v.pathways.map((p) => (
-                  <li key={p.id} className="flex min-h-11 items-center gap-2 py-1">
-                    <span className="min-w-0 flex-1 text-[15px]">{p.label}</span>
-                    <span className="text-[12px] text-ink-2">{p.id}</span>
+                  <li key={p.id} className="flex min-h-11 flex-wrap items-center gap-3 py-2">
+                    <span className="min-w-0 flex-1 text-[1.0625rem]">{p.label}</span>
+                    <span className="text-[0.875rem] text-ink-2">{p.id}</span>
                     <EvidenceButton edge={p.edge} onEdge={openEdge} />
                   </li>
                 ))}
@@ -180,11 +179,11 @@ export default function GeneView({ symbol }: { symbol: string }) {
             )}
             {v.pathwaysMore.length > 0 && (
               <details className="mt-2">
-                <summary className="min-h-11 cursor-pointer py-2 text-[13px] font-medium text-accent">{v.pathwaysMore.length} more general pathways</summary>
+                <summary className="min-h-11 cursor-pointer py-2 text-[1rem] font-medium text-accent">{v.pathwaysMore.length} more general pathways</summary>
                 <ul className="divide-y divide-line">
                   {v.pathwaysMore.map((p) => (
-                    <li key={p.id} className="flex min-h-11 items-center gap-2 py-1">
-                      <span className="min-w-0 flex-1 text-[13px]">{p.label}</span>
+                    <li key={p.id} className="flex min-h-11 flex-wrap items-center gap-3 py-2">
+                      <span className="min-w-0 flex-1 text-[1rem]">{p.label}</span>
                       <EvidenceButton edge={p.edge} onEdge={openEdge} />
                     </li>
                   ))}
@@ -194,6 +193,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
           </section>
         </div>
       </div>
+      </details>
     </div>
   );
 }

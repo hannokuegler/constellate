@@ -125,11 +125,8 @@ export function tierLabel(tier: number | undefined): string | null {
 export function aiOrigin(ev: { db?: string; origin?: string; model?: string; level?: string }): string | null {
   if (!ev.model && ev.level !== "text_mined") return null;
   const origin = (ev.origin ?? "").toLowerCase();
-  // P15: neutral label; the model that produced it is named when the evidence says so ("Claude extract", "claude-sonnet-5-5", "OpenAI extract")
-  const producer = ev.model || (ev.origin && /extract|judge/i.test(ev.origin) ? ev.origin : "");
-  const by = producer ? ` (${producer})` : "";
-  if (ev.db === "PubMed" || origin.includes("extract")) return `AI-extracted from a PubMed abstract${by}`;
-  if (origin.includes("judge")) return `Matched by an AI judge from the organisation website${by}`;
+  if (ev.db === "PubMed" || origin.includes("extract")) return "Extracted by OpenAI from a PubMed abstract";
+  if (origin.includes("judge")) return "Matched by an OpenAI judge from the organisation website";
   return "Produced by a language model";
 }
 

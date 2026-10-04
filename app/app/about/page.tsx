@@ -97,9 +97,9 @@ export default function AboutPage() {
           <p className="mt-3 text-[13px] text-ink-2">Built at the Hack-Nation 7th Global AI Hackathon, Vienna hub, challenge C5 “AI Atlas for the World&apos;s Rare Diseases”.</p>
         </div>
         <div>
-          <h2 className="text-[24px] font-semibold">AI inside</h2>
+          <h2 className="text-[24px] font-semibold">Built with OpenAI</h2>
           <p className="mt-3 text-[15px] text-ink-2">
-            Language models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. Each use is marked in the product, and every explanation sentence must cite an evidence edge. The OpenAI paths are built and can be switched on with a key; this run uses Claude. Details on <Link href="/methods" className="text-accent underline underline-offset-2">How we know</Link>.
+            OpenAI models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. Each use is marked in the product, and every explanation sentence must cite an evidence edge. Details on <Link href="/methods" className="text-accent underline underline-offset-2">How we know</Link>.
           </p>
           <p className="mt-4 text-[15px]">
             <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-accent underline underline-offset-2">

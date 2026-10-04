@@ -11,7 +11,7 @@ const LEVELS: EdgeLevel[] = ["observed", "curated", "text_mined", "inferred"];
 const LEVEL_SOURCES: Record<string, string> = {
   observed: "e.g. ClinVar pathogenic variants, HPO annotations with a frequency, trial records",
   curated: "e.g. Orphanet, MONDO, Reactome, OMIM annotations, EMA and FDA records",
-  text_mined: "A language model extracts a claim from a PubMed abstract; PMID and the quoted sentence are kept",
+  text_mined: "OpenAI extracts a claim from a PubMed abstract; PMID and the quoted sentence are kept",
   inferred: "computed by Constellate; the formula and its inputs are stored on the edge",
 };
 
@@ -25,7 +25,7 @@ const METRICS: Row[] = [
   {
     key: "extract_precision",
     label: "Extract precision",
-    measures: "Share of AI-extracted claims that a person confirmed against the abstract, on a hand-labelled sample.",
+    measures: "Share of OpenAI-extracted claims that a person confirmed against the abstract, on a hand-labelled sample.",
     render: (m) => withN(m.extract_precision),
   },
   {
@@ -133,7 +133,7 @@ export default function MethodsView() {
       </section>
 
       <section aria-labelledby="ai">
-        <h2 id="ai" className="text-[22px] font-semibold">Where AI is used</h2>
+        <h2 id="ai" className="text-[22px] font-semibold">Where OpenAI is used</h2>
         <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product. Without an API key the app still runs; Explain falls back to template text and says so.</p>
         <ol className="mt-4 grid gap-3 md:grid-cols-3">
           {[

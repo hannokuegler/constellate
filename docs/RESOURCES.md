@@ -15,6 +15,7 @@ Grundregel: **ein Werkzeug pro Job.** Kern-App = Next.js, Daten = Python-Pipelin
 | **Lovable** | optional: Story-/Moonshot-Page (nicht die App) | Recep (oder Osman) | Timebox So 08:00–10:30, nur wenn R1–R3 fertig | Free: 5 Build-Credits/Tag, max. 30/Monat | ✅ geprüft · ⚠️ Entscheidung offen (Empfehlung: nur bei Luft) |
 | **Motion** | optional: Pitch-Opener 10.10. (nicht die 4 Pflichtvideos) | Hanno | nach Abgabe | Credits-Preis ⚠️ nicht geprüft (nichts aufgerufen) | ⚠️ |
 | **/brag** (Hyperframes) | optional: 20-s-Teaser für Discord/LinkedIn | Hanno | nach Abgabe 15:00 | Open Source, braucht Node 22+ und FFmpeg | ✅ |
+| **Recordly** ([recordly.dev](https://recordly.dev)) | Kandidat: Screen-Recording der Live-App für das Demo-Video (Product Demo, 12:00) | Recep (Aufnahme) · Hanno | nur falls die Bildschirmaufnahme am Mac nicht reicht | ⚠️ Preis und Export-Format (MP4 H.264, 1920×1080, 30 fps) nicht geprüft | 💡 gemerkt |
 | **GitHub** | Repo `constellate`, Übergabe-Ort | alle | steht | gratis | ✅ |
 | **Vercel** | Hosting der Next.js-App | Hanno oder Osman, siehe §7 | erster Deploy So 02:00 | Hobby gratis, nur Owner-Commits deployen | ✅ geprüft · ⚠️ Owner-Entscheidung nötig |
 | **HackOS Credits & Codes** | OpenAI-Key, evtl. Codes für Bright Data, ElevenLabs, Lovable | Osman | Sa 20:30 | – | ⚠️ Login nötig, nicht geprüft |

@@ -264,7 +264,7 @@ export default function ShareFlow({ rawDisease = null }: { rawDisease?: string |
                 GitHub opens in a new tab with your note filled in. It is sent only when you press <span className="font-medium text-ink">Submit new issue</span> there. A person then checks it.
               </p>
               <p className="mt-4 text-[16px] font-semibold text-ink" data-share-public>
-                GitHub issues are public. Do not include names or anything that identifies your child.
+                GitHub issues are public. Do not include names or anything that identifies you or your family.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
                 <a href={issueUrl} target="_blank" rel="noopener noreferrer" className="btn-primary" data-share-github onClick={() => setSent(true)}>

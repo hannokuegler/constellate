@@ -98,7 +98,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </button>
           )}
           <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[16px] leading-relaxed">
-            Whether a child can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
+            Whether you or your family member can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
             not treat; studies that test a treatment have risks as well as possible benefits. Constellate only shows what the registry says.
           </p>
         </>

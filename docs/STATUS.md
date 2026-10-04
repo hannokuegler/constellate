@@ -1,6 +1,6 @@
 # Status · Constellate
 
-**Letzte Aktualisierung: So 04.10.2026, 01:00 (Wien)**. Freeze So 12:00 (in 11 h), Abgabe So 15:00 (in 14 h). Mentor-Gespräch Woan-Yu Lin 03:45. **Orchestrierung ab jetzt lokal:** [prompts/LOCAL-ORCHESTRATOR.md](prompts/LOCAL-ORCHESTRATOR.md), Daten: [prompts/LOCAL-DATA-STEWARD.md](prompts/LOCAL-DATA-STEWARD.md). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
+**Letzte Aktualisierung: So 04.10.2026, 03:40 (Wien)**. Freeze So 12:00 (in 8 h), Abgabe So 15:00 (in 11 h). Mentor-Gespräch Woan-Yu Lin 03:45. **Orchestrierung ab jetzt lokal:** [prompts/LOCAL-ORCHESTRATOR.md](prompts/LOCAL-ORCHESTRATOR.md), Daten: [prompts/LOCAL-DATA-STEWARD.md](prompts/LOCAL-DATA-STEWARD.md). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
 
 Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).
 
@@ -8,10 +8,10 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 
 | Status | Was |
 |---|---|
-| **Fertig** | App live (Suche, Ego-Graph mit Familienknoten, Edge-Panel, Action Card v2, Honest Gap, offene Studien mit 142 Trial-Shards, `/methods`, `/about`) · Hero-Pfad-E2E grün · Security-Review (keine Secrets in der History, `/api/explain` mit Limits, Security-Header) · Explain wird vorberechnet (`make explain`), die Webseite braucht keinen Key · Data Chief fertig: PR hannokuegler/constellate#1 (`data-v2`: 135 Beobachtungsstudien + 9 Outcome-Skalen, 39 Medikamente inkl. Libmeldy/Lenmeldy, keine Krabbe-Zulassung, NBS 11 belegt/11 UNBELEGT, Prävalenz 638 Einträge, Monarch ρ = 0,661) · `pitch/` (Story, 60-s-Pitch, Video-Strategie, ElevenLabs, Motion) · Entscheidungen P9–P13 |
-| **Dran** | Review von PR #1 und Datenmanagement/Performance (Branch `data-quality`) · Code für 07-Integration und `09_metrics.py` (Branch `integrate-v2`, läuft danach lokal mit den echten Daten) · Design-Session lokal (Branch `design`) · Mentor-Vorbereitung Woan-Yu Lin (RTW Foundation) · Osman: `orgs.csv` · Recep: `hero_path` Block A, `MOONSHOT.md` |
-| **Blockiert** | `OPENAI_API_KEY` fehlt lokal (Extract, Reconcile, Explain; HackOS hat keine OpenAI-Credits) · `BRIGHTDATA_ZONE` fehlt (B8) · `orgs.csv` und `hero_path.yaml` leer · `MOONSHOT.md` fehlt |
-| **Nächster Block** | PR #1 nach Review mergen · 07+09 lokal laufen lassen, Daten committen · Key holen, Extract/Reconcile/Explain lokal · E2E gegen die Live-URL bis 06:00 · ab 11:00 Gates, Repo public, 12:00 Freeze, Videos |
+| **Fertig** | App live, E2E grün lokal und live · QA-Lauf live: kein P1 (4 × P2, 5 × P3 in BUGS.md) · Repo-Check vor public: keine Secrets · Zahlen-Check Texte gegen Daten, Fixes im Pitch umgesetzt · Branch `integrate-claude` geprüft: Claude-Extract (50 Kanten aus 342 Abstracts, Precision 0,897 Modell-Review), 39 Orgs (coverage 43/350), 53 Explain-Dateien, Such-Synonyme, neutrale KI-Labels · Entscheidungen P14–P16 |
+| **Dran** | Design-Relaunch `design-v2` (Scroll-Story „Brille", 3D, Personas raus), pausiert 03:45, Übergabe `pitch/DESIGN-HANDOVER.md` · Drehbuch nach P16 (Branch `marketing`) · Cloud: `claude/public-readme` · Osman: orgs.csv gegenlesen · Recep: hero_path.yaml, MOONSHOT.md |
+| **Blockiert** | `integrate-claude` wartet auf Hannos Go (mit oder ohne Orgs) · Track-Preis: Brief S. 5 verlangt OpenAI, Run nutzt Claude, Orga fragen · Challenge-PDF im Repo (raus vor 11:00?) · Receps Mail in Commit 2b14b1f |
+| **Nächster Block** | Go → integrate-claude nach main, live testen → design-v2 auf neuen main mergen · bis 10:30 Design-Endstand · 11:00 Repo public · 12:00 Freeze und Aufnahme · 14:00 Abgabe |
 
 ## Branches (P8: ein Branch je Agent, `main` = live)
 

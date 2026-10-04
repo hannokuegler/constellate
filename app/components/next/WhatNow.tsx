@@ -111,7 +111,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
             <ol className="space-y-3">
               {steps.map((s, i) => (
                 <li key={s.key} className="flex gap-4">
-                  <span className="tabular mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full border border-line-strong text-[15px] font-semibold" aria-hidden="true">
+                  <span className="tabular mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-soft text-[15px] font-semibold text-accent" aria-hidden="true">
                     {i + 1}
                   </span>
                   <div className="min-w-0">
@@ -136,7 +136,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
             <a href={`/share?disease=${encodeURIComponent(node.id)}`} className="btn-primary">
               Share what you know
             </a>
-            <span className="text-[15px] text-ink-2">Know a patient group, study or source we are missing?</span>
+            <span className="text-[16px] text-ink-2">Know a patient group, study or source we are missing?</span>
           </div>
         </NowCard>
 
@@ -153,7 +153,7 @@ function RelatedPrecedent({ label, related }: { label: string; related: RelatedS
   if (related.status === "loading")
     return (
       <div className="flex min-h-[236px] items-start rounded-[14px] border border-dashed border-line px-4 py-3 md:min-h-[146px]" role="status">
-        <p className="text-[15px] text-ink-2">Checking related diseases…</p>
+        <p className="text-[16px] text-ink-2">Checking related diseases…</p>
       </div>
     );
   if (!precedent) return null;
@@ -191,7 +191,7 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
         <p className="font-semibold">
           No approved medicine found in {therapy.authorities} records{therapy.asOf ? ` as of ${therapy.asOf}` : ""}.
         </p>
-        <p className="text-[15px] text-ink-2" title={therapy.sources.join("; ")}>
+        <p className="text-[16px] text-ink-2" title={therapy.sources.join("; ")}>
           EMA: European Union medicines agency. FDA: United States.
         </p>
         <RelatedPrecedent label={label} related={related} />
@@ -210,8 +210,8 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
           </li>
         ))}
       </ul>
-      {therapy.items.length > 4 && <p className="text-[15px] text-ink-2">{therapy.items.length - 4} more in the action card below.</p>}
-      <p className="text-[15px] text-ink-2">Whether it fits your child is for your specialist to decide. EMA: European Union medicines agency. FDA: United States.</p>
+      {therapy.items.length > 4 && <p className="text-[16px] text-ink-2">{therapy.items.length - 4} more in the action card below.</p>}
+      <p className="text-[16px] text-ink-2">Whether it fits your child is for your specialist to decide. EMA: European Union medicines agency. FDA: United States.</p>
     </NowCard>
   );
 }
@@ -243,7 +243,7 @@ function FamiliesCard({ label, orgs, relatedOrgs, country, builtAt, loading }: {
           {rows.map((o) => (
             <li key={o.key} className="py-1.5">
               <p className="font-semibold leading-snug">{o.site ? <Ext href={o.site}>{o.label}</Ext> : o.label}</p>
-              <p className="flex flex-wrap items-center gap-x-1.5 text-[15px] text-ink-2">
+              <p className="flex flex-wrap items-center gap-x-1.5 text-[16px] text-ink-2">
                 {[
                   o.forDisease ? <span key="for">for {o.forDisease.label}</span> : null,
                   o.country ? <span key="c">{countryName(o.country)}</span> : null,

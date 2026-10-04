@@ -52,7 +52,7 @@ export default function PhenotypeView({ id }: { id: string }) {
       <nav className="mb-3 text-[13px] text-ink-2" aria-label="Breadcrumb">
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / phenotype
       </nav>
-      <h1 className="t-h1 text-[28px] font-semibold tracking-tight md:text-[40px]">{file.node.label}</h1>
+      <h1 className="text-[28px] font-bold tracking-tight">{file.node.label}</h1>
       <p className="mt-1 text-[13px] text-ink-2">
         {url ? <a href={url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">{id}</a> : id}
         {file.node.ic !== undefined && ` · information content ${file.node.ic.toFixed(2)} (higher = more specific)`}

@@ -6,7 +6,6 @@ import type { Meta } from "@/lib/types";
 import { loadMeta } from "@/lib/data";
 import { formatDate } from "@/lib/evidence";
 import { metaCount } from "@/lib/normalize";
-import DotChain from "./brand/DotChain";
 
 const count = (n: number | null | undefined) => (typeof n === "number" ? n.toLocaleString("en") : "?");
 
@@ -37,8 +36,7 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
             Development fixture: a small slice built by app/scripts/make_fixture.py. Similarity scores are placeholders until the pipeline publishes its analytics.
           </p>
         )}
-        <p className="zaehler flex items-start gap-3 text-[15px] text-ink">
-          <span className="mt-[9px] shrink-0"><DotChain states={["idle", "linked"]} /></span>
+        <p className="tabular min-h-[44px] text-[15px] text-ink">
           <span>
             {meta ? (
               <>

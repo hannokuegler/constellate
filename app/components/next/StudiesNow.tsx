@@ -96,7 +96,7 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
             </div>
           )}
           {country && (
-            <p role="status" className={matching.length ? "text-[15px] text-ink-2" : "rounded-[12px] bg-warn-soft px-3 py-2 text-[15px] leading-relaxed text-warn"}>
+            <p role="status" className={matching.length ? "text-[16px] text-ink-2" : "rounded-[12px] bg-warn-soft px-3 py-2 text-[16px] leading-relaxed text-warn"}>
               {country === NO_COUNTRY
                 ? `${matching.length === 1 ? "One study does" : `${matching.length} studies do`} not list a country yet; ask the study team where it will run.`
                 : matching.length
@@ -117,14 +117,14 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                   : "places: see the registry";
               return (
                 <li key={s.key} className="py-3">
-                  <p className="text-[15px]">
-                    <span className="font-semibold text-ink">{s.status}</span>
+                  <p className="text-[15px] leading-7">
+                    <span className={`rounded-full px-2 py-0.5 font-semibold ${s.status === RECRUITING ? "bg-ok-soft text-ok" : "bg-accent-soft text-accent"}`}>{s.status}</span>
                     <span className="text-ink-2">
                       {" "}
                       · {s.observational ? "observes, no treatment" : "tests a treatment"} · {where}
                     </span>
                   </p>
-                  <p className="mt-0.5 leading-snug">{s.title}</p>
+                  <p className="mt-1 font-semibold leading-snug">{s.title}</p>
                   <a
                     href={contactUrl(d, s.href)}
                     target="_blank"

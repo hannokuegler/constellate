@@ -37,7 +37,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
         <h2 id="open-studies-title" className="text-[17px] font-semibold">{family ? `Studies looking for participants with ${file.node.label}` : "Open studies"}</h2>
         <span className="tabular text-[13px] text-ink-2">{trials.length}</span>
       </div>
-      <p className="mb-3 text-[15px] text-ink-2">
+      <p className="mb-3 text-[16px] text-ink-2">
         Studies on ClinicalTrials.gov that list {file.node.label} and take participants now or soon.
       </p>
 
@@ -76,7 +76,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </label>
           )}
           {hasDetails && (
-            <p className="-mt-1 mb-3 text-[15px] text-ink-2" data-testid="study-countries">
+            <p className="-mt-1 mb-3 text-[16px] text-ink-2" data-testid="study-countries">
               Listed in: {countries.map(([c, n]) => `${c} (${n})`).join(", ")}. No listed study in other countries{sitesAsOf ? ` as of ${sitesAsOf}` : ""}.
               {withoutSites > 0 && ` Site data is missing for ${withoutSites} ${withoutSites === 1 ? "study" : "studies"}; see the registry entry.`}
             </p>

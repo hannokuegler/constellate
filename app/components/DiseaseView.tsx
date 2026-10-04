@@ -59,7 +59,7 @@ export default function DiseaseView({ id }: { id: string }) {
     return (
       <div className="card mt-6 px-5 py-5" role="alert">
         <p className="font-semibold">⚠️ The data for {id} could not be loaded.</p>
-        <p className="mt-1 text-[15px] text-ink-2">{state.message}</p>
+        <p className="mt-1 text-[16px] text-ink-2">{state.message}</p>
       </div>
     );
   if (state.status === "missing") return <MissingDisease id={id} entry={state.entry} core={state.core} meta={meta} />;
@@ -182,7 +182,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
     neighbours: (
       <Section key="neighbours" id="related" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
         {noNeighbours ? (
-          <p className="text-[15px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
+          <p className="text-[16px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
         ) : (
           <ul className="divide-y divide-line">
             {file.neighbours.map((n) => (
@@ -211,7 +211,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
             ))}
           </ul>
         ) : (
-          <p className="text-[15px] text-ink-2">No gene annotation recorded for this disease.</p>
+          <p className="text-[16px] text-ink-2">No gene annotation recorded for this disease.</p>
         )}
       </Section>
     ),
@@ -257,25 +257,25 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
       </nav>
       <div className="flex flex-wrap items-start gap-x-4 gap-y-3">
         <div className="min-w-0 flex-1">
-          <h1 className="t-h1 text-[28px] font-semibold leading-tight tracking-tight md:text-[40px]" style={{ fontFamily: "var(--font-display, inherit)" }}>{node.label}</h1>
-          <p className="tabular mt-1 text-[13px] text-ink-2">{node.id}</p>
+          <h1 className="text-[28px] font-bold leading-tight tracking-tight">{node.label}</h1>
+          <p className="mt-2 flex flex-wrap items-center gap-2 text-[12px]"><span className="rounded-full bg-surface-2 px-2.5 py-1 font-medium text-ink">{node.id}</span></p>
           <IdentifiersDetails>
-            <div className="flex flex-wrap items-center gap-2 pb-1 pt-1 text-[13px] text-ink-2">
+            <div className="flex flex-wrap items-center gap-2 pb-1 pt-1 text-[12px] text-ink">
               {omim.map((x) => {
                 const url = xrefUrl(x.replace("Orphanet:", "ORPHA:"));
                 const text = x.replace("Orphanet:", "ORPHA:");
                 return url ? (
                   <a key={x} href={url} target="_blank" rel="noreferrer" className="-my-2 inline-flex min-h-11 items-center">
-                    <span className="tabular rounded-full border border-line px-2.5 py-0.5 underline-offset-2 hover:text-ink hover:underline">{text}</span>
+                    <span className="tabular rounded-full border border-line px-2.5 py-1 font-medium underline-offset-2 hover:underline">{text}</span>
                   </a>
                 ) : (
-                  <span key={x} className="tabular rounded-full border border-line px-2.5 py-0.5">{text}</span>
+                  <span key={x} className="tabular rounded-full border border-line px-2.5 py-1">{text}</span>
                 );
               })}
-              {node.in_core && <span className="rounded-full border border-line px-2.5 py-0.5" title="One of the core diseases (lysosomal storage diseases and leukodystrophies)">core cluster</span>}
-              {node.is_group && <span className="rounded-full border border-line px-2.5 py-0.5" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
+              {node.in_core && <span className="rounded-full bg-accent-soft px-2.5 py-1 font-semibold text-accent" title="One of the core diseases (lysosomal storage diseases and leukodystrophies)">core cluster</span>}
+              {node.is_group && <span className="rounded-full border border-line px-2.5 py-1" title="A grouping class in MONDO, not a single diagnosis">disease group</span>}
               {node.mechanism_classes?.map((m) => (
-                <span key={m.key} className="rounded-[14px] border border-line px-2.5 py-0.5" title={m.via_label ? `via ${m.via_label}` : undefined}>
+                <span key={m.key} className="rounded-[14px] bg-surface-2 px-2.5 py-1" title={m.via_label ? `via ${m.via_label}` : undefined}>
                   mechanism: {m.label}
                 </span>
               ))}
@@ -473,7 +473,7 @@ function Section({ id, title, hint, count, children }: { id?: string; title: str
         <h2 className="text-[17px] font-semibold">{title}</h2>
         <span className="tabular text-[13px] text-ink-2">{count}</span>
       </div>
-      <p className="mb-2 text-[15px] text-ink-2">{hint}</p>
+      <p className="mb-2 text-[16px] text-ink-2">{hint}</p>
       {children}
     </section>
   );
@@ -529,7 +529,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
         {n.mechanism_differs === null && <span className="rounded-full border border-line px-2 py-0.5 text-ink-2" title="Pathway data missing for at least one gene">mechanism not compared</span>}
       </div>
       {n.shared_phenotypes.length > 0 && (
-        <p className="mt-1.5 text-[15px] text-ink-2">
+        <p className="mt-1.5 text-[16px] text-ink-2">
           {n.shared_phenotypes.length}+ shared phenotypes, e.g. {n.shared_phenotypes[0].label.toLowerCase()}
         </p>
       )}

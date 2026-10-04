@@ -97,7 +97,7 @@ interface Props {
 /** One-line gap state inside a card section: "Not found in X as of D" or "Data pending". Never an empty box. */
 export function GapNote({ kind, children }: { kind: "gap" | "pending"; children: React.ReactNode }) {
   return (
-    <p className="flex items-start gap-3 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[13px] leading-relaxed text-ink-2">
+    <p className="flex items-start gap-3 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[15px] leading-relaxed text-ink-2">
       <GapDot size={16} />
       <span className="min-w-0 break-words">
         <span className="mr-2 text-[12px] font-semibold uppercase tracking-[0.08em]">{kind === "gap" ? "Honest gap" : "Pending"}</span>
@@ -206,7 +206,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                     <p className="text-[12px] text-ink-2">
                       {n.tier && <span className="font-semibold">{n.tier}: </span>}
                       {n.via}
-                      {n.confidence !== undefined && n.confidence !== null && ` · simGIC ${formatConfidence(n.confidence)}`}
+                      {n.confidence !== undefined && n.confidence !== null && ` · similarity ${formatConfidence(n.confidence)}`}
                     </p>
                     {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full border border-dashed border-line px-2 text-[12px] font-medium text-ink-2">mechanism differs</span>}
                     {!!n.orgs?.length && (
@@ -226,7 +226,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                     </Link>
                     {n.edge && onEdge ? (
                       <button onClick={() => onEdge(n.edge!)} className="tabular min-h-11 shrink-0 rounded-full pr-1 text-left text-[12px] text-ink-2 underline underline-offset-2">
-                        {n.via} {n.confidence !== undefined && formatConfidence(n.confidence)}
+                        {n.via}{n.confidence !== undefined && (n.edge?.type === "similar_phenotype" ? `, similarity ${formatConfidence(n.confidence)}` : ` ${formatConfidence(n.confidence)}`)}
                       </button>
                     ) : (
                       <span className="text-[12px] text-ink-2">{n.via}</span>
@@ -235,7 +235,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                 ))}
               </ul>
             ) : (
-              <p className="mt-2 text-[13px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
+              <p className="mt-2 text-[15px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
             )}
           </div>
           )}

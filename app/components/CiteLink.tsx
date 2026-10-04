@@ -11,9 +11,9 @@ export default function CiteLink({ id }: { id: string }) {
       className="group -my-3 inline-flex min-h-11 items-center align-baseline"
       aria-label={`Open evidence ${id}`}
     >
-      <sup className="relative ml-0.5 mr-0.5 font-mono text-[12px] font-medium leading-none text-ink-2 underline decoration-line decoration-dotted underline-offset-2 group-hover:text-ink group-hover:decoration-current">
+      <span className="relative ml-1 mr-0.5 rounded-full border border-line px-1.5 py-0.5 font-mono text-[12px] font-medium leading-none text-ink-2 group-hover:border-line-strong group-hover:text-ink">
         {id}
-      </sup>
+      </span>
     </button>
   );
 }

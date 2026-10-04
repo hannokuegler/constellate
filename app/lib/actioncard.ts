@@ -3,6 +3,7 @@ import type { DiseaseFile, Edge, GeneFile, Neighbour } from "./types";
 import { refOf } from "./ids";
 import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase } from "./normalize";
 import { RELATION_LABEL, formatConfidence, formatDate } from "./evidence";
+import { humanizeRank, phaseText } from "./present";
 
 export interface CardSentence {
   text: string;
@@ -48,6 +49,7 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   const transfers: CardSentence[] = [];
   const differs: CardSentence[] = [];
   const review: CardSentence[] = [];
+  const reviewFromNote: CardSentence[] = [];
   const similarity = neighbour.edge;
 
   // --- what transfers ------------------------------------------------------------------------------
@@ -97,7 +99,7 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   const trials = neighbourFile ? enrichmentItems(neighbourFile, "trials") : [];
   for (const trial of trials.slice(0, 2)) {
     const status = typeof trial.node.status === "string" ? trial.node.status.toLowerCase().replaceAll("_", " ") : "status not recorded";
-    const phase = trialPhase(trial.node);
+    const phase = phaseText(trial.node, trialPhase(trial.node));
     transfers.push({ text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected`, edgeIds: cite(trial.edge) });
   }
   for (const { org, edge } of (neighbourFile ? orgItems(neighbourFile) : []).slice(0, 2)) {
@@ -122,9 +124,27 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   }
   const note = neighbour.mechanism_note?.trim();
   if (note) {
-    // the pipeline's own explanation of the mechanism call, sentence by sentence, each resting on the link edge
-    for (const sentence of note.split(/(?<=\.)\s+(?=[A-Z])/).map((s) => s.replace(/\.$/, "")).filter(Boolean).slice(0, 6)) {
-      differs.push({ text: sentence, edgeIds: cite(similarity) });
+    // The pipeline writes ONE note for the pair, and it mixes what the two diseases share with where they part ways.
+    // Sort each sentence to its column (the data stays as it is): sharing -> transfers, differences -> differs, gaps and caveats -> review.
+    // The generic "shared gene" and "shared pathway" sentences are skipped when the card already states them from the gene and pathway edges above.
+    const sharesClass = /^same curated mechanism class/i;
+    const sharesGene = /^shared causal gene/i;
+    const sharesPathway = /^reactome: shared/i;
+    const caveat = /data gap|cannot be judged|without expert review|no curated mechanism class|no pathway annotated/i;
+    const sentences = note
+      .split(/(?<=\.)\s+(?=[A-Z])/)
+      .map((sentence) => sentence.replace(/\.$/, "").replace(/\(via MONDO:\d+ /g, "(via ").replace(/\bvia MONDO:\d+ /g, "via "))
+      .filter(Boolean)
+      .slice(0, 6);
+    for (const sentence of sentences) {
+      const ids = cite(similarity);
+      if (sharesGene.test(sentence)) {
+        if (!sharedGenes.length) transfers.push({ text: sentence, edgeIds: ids });
+      } else if (sharesPathway.test(sentence)) {
+        if (!sharedPathways.size) transfers.push({ text: sentence, edgeIds: ids });
+      } else if (sharesClass.test(sentence)) transfers.push({ text: sentence, edgeIds: ids });
+      else if (caveat.test(sentence)) reviewFromNote.push({ text: sentence, edgeIds: ids });
+      else differs.push({ text: sentence, edgeIds: ids });
     }
   } else if (neighbour.mechanism_differs === true) {
     differs.push({
@@ -146,7 +166,7 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
 
   // --- needs expert review ---------------------------------------------------------------------------
   if (similarity.level === "inferred") {
-    review.push({ text: `The link between ${D} and ${N} is computed, not observed: ${similarity.formula ?? similarity.evidence[0]?.snippet ?? "formula not recorded"}`, edgeIds: cite(similarity) });
+    review.push({ text: `The link between ${D} and ${N} is computed, not observed: ${humanizeRank(similarity.formula ?? similarity.evidence[0]?.snippet ?? "formula not recorded", labels[similarity.source] ?? D, labels[similarity.target] ?? N)}`, edgeIds: cite(similarity) });
   }
   for (const e of [...disease.genes, ...(neighbourFile?.genes ?? [])].filter((g) => g.rolled_up_from?.length).slice(0, 2)) {
     const owner = e.source === disease.node.id ? D : N;
@@ -159,6 +179,7 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   } else if (neighbourFile && paperRecords(neighbourFile).length && trials[0]) {
     review.push({ text: `Papers found for ${N} are literature search matches, not extracted claims, so they need reading before they support a statement`, edgeIds: cite(trials[0].edge) });
   }
+  review.push(...reviewFromNote);
   review.push({ text: `Whether endpoints, registries or study designs from ${N} fit ${D} is a question for clinical experts in both diseases`, edgeIds: cite(similarity) });
 
   return {

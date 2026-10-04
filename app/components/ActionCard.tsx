@@ -86,7 +86,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
         <Title id="action-card-title" className="t-h2 mt-1 text-[24px] font-semibold leading-snug md:text-[28px]">
           What {disease.node.label} can learn from {neighbour.label}
         </Title>
-        <p className="mt-1 text-[13px] text-ink-2">Template text built only from graph edges. Every sentence ends with the edges it rests on; click one to see the evidence.</p>
+        <p className="mt-1 text-[15px] text-ink-2">Template text built only from graph edges. Every sentence ends with a small source marker (an edge ID); click one to see the evidence.</p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {onViaChange && (
             <label className="relative flex items-center">
@@ -136,11 +136,11 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
                 {section.title}
                 <span className="grid h-7 w-7 place-items-center rounded-full border border-line-strong text-[14px] font-semibold leading-none" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
-              <p className="mt-0.5 text-[13px] text-ink-2">{section.hint}</p>
+              <p className="mt-0.5 text-[15px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (
                 <ul className="mt-4 space-y-3.5">
                   {section.sentences.map((s, i) => (
-                    <li key={i} className="text-[15px] leading-relaxed">
+                    <li key={i} className="text-[17px] leading-relaxed">
                       {s.text}
                       {s.edgeIds.map((id) => (
                         <CiteLink key={id} id={id} />

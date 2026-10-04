@@ -6,6 +6,7 @@ import { useEdgePanel } from "./Providers";
 import { LevelBadge } from "./Badges";
 import CiteLink from "./CiteLink";
 import { GapNote } from "./HonestGap";
+import { plainSnippet } from "@/lib/present";
 
 function Row({ row }: { row: V2Row }) {
   return (
@@ -15,9 +16,9 @@ function Row({ row }: { row: V2Row }) {
         <LevelBadge level={row.level} small />
         {row.edgeId && <CiteLink id={row.edgeId} />}
       </div>
-      {!!row.chips.length && <p className="mt-0.5 text-[13px] text-ink-2">{row.chips.join(" · ")}</p>}
-      {row.detail && <p className="text-[13px] text-ink-2">{row.detail}</p>}
-      {row.snippet && <p className="mt-1 text-[12px] italic text-ink-2">“{row.snippet}”</p>}
+      {!!row.chips.length && <p className="mt-0.5 text-[15px] text-ink-2">{row.chips.join(" · ")}</p>}
+      {row.detail && <p className="text-[15px] text-ink-2">{row.detail}</p>}
+      {row.snippet && <p className="mt-1 text-[13px] italic text-ink-2">“{plainSnippet(row.snippet)}”</p>}
       {!!row.sources.length && (
         <p className="mt-1 flex flex-wrap gap-x-3 text-[13px]">
           {row.sources.map((s) =>
@@ -39,11 +40,11 @@ function Row({ row }: { row: V2Row }) {
 function Group({ group, showName, Heading }: { group: V2Group; showName: boolean; Heading: "h3" | "h4" | "h5" }) {
   return (
     <div className="mt-3">
-      {showName && <Heading className="mb-1 text-[13px] font-semibold text-ink-2">{group.diseaseLabel}</Heading>}
+      {showName && <Heading className="mb-1 text-[15px] font-semibold text-ink-2">{group.diseaseLabel}</Heading>}
       {group.state === "items" ? (
         <>
           <ul>{group.rows.map((r) => <Row key={r.key} row={r} />)}</ul>
-          {group.note && <p className="mt-1 text-[12px] text-ink-2">How this link is computed: {group.note}</p>}
+          {group.note && <p className="mt-1 text-[13px] text-ink-2">How this link is computed: {group.note}</p>}
         </>
       ) : (
         <GapNote kind={group.state}>{group.note}</GapNote>
@@ -75,7 +76,7 @@ export default function ActionCardV2({ model, level }: { model: V2Model; level: 
         {model.sections.map((section) => (
           <section key={section.key} aria-label={section.title} data-section={section.key}>
             <Title className="text-[17px] font-semibold">{section.title}</Title>
-            <p className="text-[13px] text-ink-2">{section.hint}</p>
+            <p className="text-[15px] text-ink-2">{section.hint}</p>
             {section.groups.map((g) => (
               <Group key={g.role} group={g} showName={section.groups.length > 1 || g.role === "pair"} Heading={Sub} />
             ))}

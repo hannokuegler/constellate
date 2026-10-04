@@ -21,8 +21,25 @@ export interface TenxAsset {
   retrieved: string | null;
   countries: string[] | null;
   open_sites: number | null;
+  contact_url: string | null;
   named_by: number;
   edge: Edge;
+}
+
+export interface TenxBackup {
+  id: string;
+  label: string;
+  type: string;
+  status: string | null;
+  record: string | null;
+  url: string | null;
+  sponsor: string | null;
+  end: string | null;
+  last_update: string | null;
+  enrollment: number | null;
+  named_by: number;
+  edge: Edge;
+  via?: { id: string; label: string; relation: string };
 }
 
 export interface TenxDisease {
@@ -35,6 +52,7 @@ export interface TenxDisease {
   own_total: number;
   own_open: number;
   alternatives: number;
+  backups: TenxBackup[];
 }
 
 export interface TenxFile {
@@ -124,10 +142,13 @@ export function endPassed(a: TenxAsset): boolean {
   return Date.parse(end) < Date.parse(a.retrieved);
 }
 
-/** Recently updated, still open and not past its end date: the first e-mail is a formality, not an investigation. */
+/**
+ * The sponsor said "recruiting" in the last 12 months: the first e-mail confirms, it does not investigate.
+ * A passed end date is an estimate the sponsor has not yet moved; it stays on the validate list, not in the weeks.
+ */
 export function looksCurrent(a: TenxAsset): boolean {
-  const fresh = a.last_update && a.retrieved ? monthsBetween(a.last_update, a.retrieved) <= 12 : false;
-  return fresh && !endPassed(a);
+  const open = a.status === "RECRUITING" || a.status === "ENROLLING_BY_INVITATION";
+  return open && !!a.last_update && !!a.retrieved && monthsBetween(a.last_update, a.retrieved) <= 12;
 }
 
 const statusWords = (s: string | null) => (s ? s.toLowerCase().replaceAll("_", " ") : "unknown");
@@ -147,9 +168,9 @@ export function atlasRoute(d: TenxDisease): Step[] {
     kind: "assumption",
     lo: current ? 1 : 2,
     hi: current ? 4 : 8,
-    note: `Registered status ${statusWords(a.status)}${a.last_update ? `, record last updated ${a.last_update}` : ""}${
-      a.end ? `, registered end ${a.end}${endPassed(a) ? " (already passed, so the first e-mail asks whether it is extended)" : ""}` : ""
-    }.`,
+    note: `Registered status ${statusWords(a.status)}${a.last_update ? `, record last updated by the sponsor on ${a.last_update}` : ""}${
+      a.end ? `, registered end ${a.end}${endPassed(a) ? " (already passed: the first e-mail also asks whether it is extended)" : ""}` : ""
+    }. ${current ? "A record the sponsor updated within the last year is a confirmation, not an investigation." : "An older or unclear record needs a longer exchange."}`,
     check: "Record how long the study team takes to reply.",
   };
   const consent: Step = {
@@ -254,4 +275,26 @@ export function validateNext(d: TenxDisease): string[] {
   out.push("Its consent terms let the group see and reuse the data it contributes.");
   out.push("Each assumption above, by recording the real number of weeks with the first family.");
   return out;
+}
+
+/** Which single assumption moves the midpoint speed-up most when it runs from its fewest to its most weeks. */
+export function topLever(build: Step[], atlas: Step[], w: Record<string, Range>): { step: Step; route: "usual" | "atlas"; low: number; high: number } | null {
+  if (!atlas.length) return null;
+  const mid = (r: Range) => (r.lo + r.hi) / 2;
+  let best: { step: Step; route: "usual" | "atlas"; low: number; high: number; swing: number } | null = null;
+  for (const [route, steps] of [["usual", build], ["atlas", atlas]] as const) {
+    for (const st of steps) {
+      const at = (v: number) => {
+        const ww = { ...w, [st.id]: { lo: v, hi: v } };
+        const others = (list: Step[]) => total(list, ww);
+        return mid(others(build)) / Math.max(mid(others(atlas)), 0.5);
+      };
+      const r = w[st.id] ?? { lo: st.lo, hi: st.hi };
+      const a = at(r.lo);
+      const b = at(r.hi);
+      const swing = Math.abs(a - b);
+      if (!best || swing > best.swing) best = { step: st, route, low: Math.min(a, b), high: Math.max(a, b), swing };
+    }
+  }
+  return best && { step: best.step, route: best.route, low: best.low, high: best.high };
 }

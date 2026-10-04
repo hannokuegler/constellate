@@ -122,10 +122,17 @@ function assetOut(item) {
     last_update: t?.last_update ?? null,
     retrieved: (t?.retrieved ?? item.edge.evidence?.[0]?.retrieved ?? null)?.slice(0, 10) ?? null,
     countries: t ? t.countries.map((c) => c.country) : null,
+    contact_url: t?.contact_url ?? null,
     open_sites: t ? t.countries.reduce((s, c) => s + (c.open_sites ?? 0), 0) : null,
     named_by: namedBy.get(item.node.id) ?? 1,
     edge: slim(item.edge),
   };
+}
+
+// Plan B: further open studies, so the route does not hang on one record
+function backupOut(item) {
+  const a = assetOut(item);
+  return { id: a.id, label: a.label, type: a.type, status: a.status, record: a.record, url: a.url, sponsor: a.sponsor, end: a.end, last_update: a.last_update, enrollment: a.enrollment, named_by: a.named_by, edge: a.edge };
 }
 
 const diseases = [];
@@ -135,12 +142,13 @@ for (const entry of core) {
   if (!file) continue;
   const own = reusable(file).sort(byScore);
   const ownOpen = own.filter((x) => OPEN.has(x.node.status));
-  const out = { id: entry.id, label: entry.label, is_group: !!file.node.is_group, route: "gap", asset: null, via: null, own_total: own.length, own_open: ownOpen.length, alternatives: 0 };
+  const out = { id: entry.id, label: entry.label, is_group: !!file.node.is_group, route: "gap", asset: null, via: null, own_total: own.length, own_open: ownOpen.length, alternatives: 0, backups: [] };
 
   if (ownOpen.length) {
     out.route = "join";
     out.asset = assetOut(ownOpen[0]);
     out.alternatives = ownOpen.length - 1;
+    out.backups = ownOpen.slice(1, 4).map(backupOut);
   } else {
     const mine = mechKeys(file);
     const candidates = [];
@@ -168,6 +176,13 @@ for (const entry of core) {
         shared_mechanism: (best.nf.node.mechanism_classes ?? []).filter((m) => best.sharedMech.includes(m.key)).map((m) => m.label),
         edge: slim(best.n.edge),
       };
+      const seen = new Set([best.item.node.id]);
+      out.backups = [];
+      for (const c of candidates) {
+        if (seen.has(c.item.node.id) || out.backups.length >= 3) continue;
+        seen.add(c.item.node.id);
+        out.backups.push({ ...backupOut(c.item), via: { id: c.n.id, label: c.n.label, relation: c.n.edge.type } });
+      }
       out.alternatives = new Set(candidates.map((c) => c.item.node.id)).size - 1;
     }
   }

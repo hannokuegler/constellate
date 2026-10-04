@@ -10,6 +10,7 @@ import {
   buildRoute,
   fmtX,
   speedup,
+  topLever,
   total,
   validateNext,
   type Range,
@@ -112,7 +113,7 @@ export default function TenXView({ initial }: { initial: string | null }) {
         <DiseasePicker file={file} current={disease.id} onPick={choose} />
       </header>
 
-      <Verdict disease={disease} x={x} buildT={buildT} atlasT={atlasT} />
+      <Verdict disease={disease} x={x} buildT={buildT} atlasT={atlasT} lever={topLever(build, atlas, weeks)} />
 
       <section aria-labelledby="routes" className="space-y-3">
         <div className="flex flex-wrap items-end justify-between gap-2">
@@ -164,8 +165,40 @@ export default function TenXView({ initial }: { initial: string | null }) {
               <li key={line}>{line}</li>
             ))}
           </ul>
+          {disease.backups.length > 0 && (
+            <>
+              <h3 className="mt-5 text-[17px] font-semibold">Plan B: other open studies on the same route</h3>
+              <ul className="mt-2 divide-y divide-line">
+                {disease.backups.map((b) => (
+                  <li key={b.id} className="flex flex-wrap items-center justify-between gap-x-3 py-2 text-[15px]">
+                    <span className="min-w-0 flex-1">
+                      <span className="font-medium">{b.label}</span>
+                      <span className="text-ink-2">
+                        {" "}
+                        · {b.record} · {b.status?.toLowerCase().replaceAll("_", " ")}
+                        {b.end ? ` · registered end ${b.end}` : ""}
+                        {b.via ? ` · via ${b.via.label}` : ""}
+                        {b.named_by > 3 ? ` · names ${b.named_by} diseases` : ""}
+                      </span>
+                    </span>
+                    <EvidenceLink edge={b.edge} disease={disease} label={b.label} sourceLabel={b.via?.label ?? disease.label} />
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <div className="mt-4 flex flex-wrap gap-2">
-            <Link href={diseaseHref(disease.id)} className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-[15px] font-semibold text-accent-ink">
+            {disease.asset.contact_url && (
+              <a
+                href={disease.asset.contact_url}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-[15px] font-semibold text-accent-ink"
+              >
+                This week: contact the {disease.asset.record} study team
+              </a>
+            )}
+            <Link href={diseaseHref(disease.id)} className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-4 text-[15px] font-medium">
               Open {disease.label}
             </Link>
             {disease.via && (
@@ -230,7 +263,19 @@ function DiseasePicker({ file, current, onPick }: { file: TenxFile; current: str
   );
 }
 
-function Verdict({ disease, x, buildT, atlasT }: { disease: TenxDisease; x: ReturnType<typeof speedup>; buildT: Range; atlasT: Range }) {
+function Verdict({
+  disease,
+  x,
+  buildT,
+  atlasT,
+  lever,
+}: {
+  disease: TenxDisease;
+  x: ReturnType<typeof speedup>;
+  buildT: Range;
+  atlasT: Range;
+  lever: ReturnType<typeof topLever>;
+}) {
   if (!x)
     return (
       <section className="card border-l-4 border-l-warn px-5 py-5" aria-label="Verdict">
@@ -266,6 +311,19 @@ function Verdict({ disease, x, buildT, atlasT }: { disease: TenxDisease; x: Retu
         What has to be true for 10×: the {disease.route === "join" ? "join" : "extend"} route finishes within{" "}
         <span className="tabular font-semibold text-ink">{breakEven.toFixed(1)} weeks</span> (a tenth of the usual route’s midpoint).
       </p>
+      {lever && (
+        <p className="mt-1 text-[15px] text-ink-2">
+          The assumption that matters most: <span className="font-semibold text-ink">{lever.step.title.toLowerCase()}</span> ({lever.route === "usual" ? "usual route" : "atlas route"}). Across its
+          range the midpoint moves between <span className="tabular font-semibold text-ink">{fmtX(lever.low)}</span> and{" "}
+          <span className="tabular font-semibold text-ink">{fmtX(lever.high)}</span>, so it is the first number to measure.
+        </p>
+      )}
+      {disease.backups.length > 0 && (
+        <p className="mt-1 text-[15px] text-ink-2">
+          Not one record: <span className="font-semibold text-ink">{disease.backups.length} more open stud{disease.backups.length === 1 ? "y" : "ies"}</span> would carry the same route if this one
+          says no (listed below).
+        </p>
+      )}
     </section>
   );
 }
@@ -384,6 +442,21 @@ function RouteCard({
   );
 }
 
+function EvidenceLink({ edge, disease, label, sourceLabel }: { edge: TenxDisease["backups"][number]["edge"]; disease: TenxDisease; label: string; sourceLabel: string }) {
+  const { openEdge, register } = useEdgePanel();
+  return (
+    <button
+      onClick={() => {
+        register([edge], { [disease.id]: disease.label, [edge.target]: label, [edge.source]: sourceLabel });
+        openEdge(edge);
+      }}
+      className="inline-flex min-h-11 items-center text-[14px] font-medium underline underline-offset-4"
+    >
+      Evidence
+    </button>
+  );
+}
+
 function WeekInput({ value, label, onChange }: { value: number; label: string; onChange: (v: number) => void }) {
   return (
     <input
@@ -435,12 +508,19 @@ function Network({ file, buildT, weeks }: { file: TenxFile; buildT: Range; weeks
   const gap = count("gap");
   // per disease, because the confirm step depends on how current each record is
   const buildMid = (buildT.lo + buildT.hi) / 2;
-  const years =
-    specific.reduce((sum, d) => {
-      if (d.route === "gap") return sum;
-      const t = total(atlasRoute(d), weeks);
-      return sum + Math.max(0, buildMid - (t.lo + t.hi) / 2);
-    }, 0) / 52;
+  let savedWeeks = 0;
+  let inRange = 0;
+  let midTen = 0;
+  for (const d of specific) {
+    if (d.route === "gap") continue;
+    const build = total(buildRoute(d), weeks);
+    const t = total(atlasRoute(d), weeks);
+    savedWeeks += Math.max(0, buildMid - (t.lo + t.hi) / 2);
+    const x = speedup(build, t);
+    if (x && x.hi >= 10) inRange++;
+    if (x && x.mid >= 10) midTen++;
+  }
+  const years = savedWeeks / 52;
   const n = specific.length;
   return (
     <section aria-labelledby="network" className="space-y-3">
@@ -460,6 +540,10 @@ function Network({ file, buildT, weeks }: { file: TenxFile; buildT: Range; weeks
         If each of those groups took the atlas route instead of building, they would save about{" "}
         <span className="tabular font-semibold">{Math.round(years).toLocaleString("en")} group-years</span> of work to this one milestone, at the midpoints of the weeks above
         {Object.keys(weeks).length ? " as you changed them" : ""}. Overlap is not deducted: a study that serves several diseases is counted for each.
+      </p>
+      <p className="max-w-[72ch] text-[16px]">
+        With these weeks, 10× lies inside the estimated range for <span className="tabular font-semibold">{inRange}</span> diseases, and the midpoint reaches 10× for{" "}
+        <span className="tabular font-semibold">{midTen}</span>. For the rest we show the smaller speed-up, not a rounder number.
       </p>
       <p className="text-[15px] text-ink-2">
         Try:{" "}

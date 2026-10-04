@@ -153,7 +153,7 @@ async function show(page: Page, id: string, withBubble = true): Promise<number> 
   const clip = join(VOICE, `${id}.mp3`);
   if (!existsSync(clip)) return Date.now() + readMs(line.text);
   cues.push({ file: clip, at: Date.now() - t0 });
-  return Date.now() + Math.round(speechEnd(clip) * 1000) + 180;
+  return Date.now() + Math.round(speechEnd(clip) * 1000) + 150;
 }
 
 async function until(page: Page, end: number) {
@@ -181,7 +181,7 @@ async function scrollTo(page: Page, target: Locator, block: "start" | "center" |
     const max = document.documentElement.scrollHeight - window.innerHeight;
     const goal = b === "top" ? 0 : b === "start" ? from + r.top - 76 : from + r.top + r.height / 2 - window.innerHeight / 2;
     const to = Math.max(0, Math.min(max, goal));
-    const ms = Math.min(1100, 450 + Math.abs(to - from) * 0.35);
+    const ms = Math.min(950, 420 + Math.abs(to - from) * 0.3);
     const t0 = performance.now();
     await new Promise<void>((done) => {
       const step = (t: number) => {
@@ -213,7 +213,7 @@ async function glideTo(page: Page, target: Locator) {
     const k = i / steps;
     const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     await page.mouse.move(cursor.x + (to.x - cursor.x) * e, cursor.y + (to.y - cursor.y) * e);
-    await page.waitForTimeout(14);
+    await page.waitForTimeout(10);
   }
   cursor = to;
 }

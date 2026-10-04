@@ -47,6 +47,7 @@ async function call(path: string, body: unknown): Promise<Response> {
     method: "POST",
     headers: { "xi-api-key": key!, "Content-Type": "application/json", Accept: "audio/mpeg" },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(90_000), // a stuck request fails loudly instead of hanging
   });
 }
 
@@ -125,9 +126,11 @@ async function main() {
   for (const line of STORY) {
     const out = join(DIR, `${line.id}.mp3`);
     if (only.length ? !only.includes(line.id) : !force && existsSync(out)) continue;
+    process.stdout.write(`${line.id.padEnd(11)} ${line.who.padEnd(7)} \u2026 `);
+    const started = Date.now();
     const { audio, via } = await speak(line.tts ?? line.text, voiceOf(line.who));
     writeFileSync(out, audio);
-    console.log(`${line.id.padEnd(11)} ${line.who.padEnd(7)} ${via.padEnd(28)} ${(audio.length / 1024).toFixed(0)} KB`);
+    console.log(`${via.padEnd(28)} ${(audio.length / 1024).toFixed(0)} KB in ${((Date.now() - started) / 1000).toFixed(1)} s`);
   }
 }
 

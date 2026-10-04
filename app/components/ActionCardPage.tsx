@@ -30,8 +30,8 @@ export default function ActionCardPage({ id, via }: { id: string; via: string | 
 
   const viaId = via ?? pickDefaultVia(file.neighbours);
   return (
-    <div className="mx-auto mt-6 max-w-[1200px]">
-      <nav className="no-print mb-4 text-[13px] text-ink-2" aria-label="Breadcrumb">
+    <div className="page-shell">
+      <nav className="no-print mb-4 text-[1rem] text-ink-2" aria-label="Breadcrumb">
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> /{" "}
         <Link href={diseaseHref(id)} className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">{file.node.label}</Link> / Action card
       </nav>

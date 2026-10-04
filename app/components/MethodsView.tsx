@@ -31,7 +31,7 @@ const METRICS: Row[] = [
   {
     key: "reconcile_accuracy",
     label: "Reconcile accuracy",
-    measures: "Share of organisation-to-disease matches that agree with a hand-checked answer.",
+    measures: "Share of organisation-to-disease matches confirmed in the recorded review. The review method is shown with its result.",
     render: (m) => withN(m.reconcile_accuracy),
   },
   {
@@ -42,7 +42,7 @@ const METRICS: Row[] = [
   },
   {
     key: "coverage",
-    label: "Coverage of the 350 core diseases",
+    label: "Coverage of core diseases",
     measures: "Share of core diseases with at least one trial, paper, reusable asset or patient organisation.",
     render: (m) => {
       const c = m.coverage;
@@ -90,137 +90,84 @@ export default function MethodsView() {
   const levelCount = (l: string) => levels.find(([k]) => k === l)?.[1];
 
   return (
-    <div className="mx-auto mt-8 max-w-[960px] space-y-10">
+    <div className="page-shell max-w-[960px] space-y-12">
       <header>
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Methods</p>
-        <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]">How we know</h1>
-        <p className="mt-2 max-w-[68ch] text-[16px] text-ink-2">
-          Every line in the graph carries a source, a date, an evidence level, a confidence and a slot for counter-evidence. Where we have no source, we say so instead of guessing.
-        </p>
+        <p className="eyebrow">Methods</p>
+        <h1 className="page-heading">Follow the evidence.</h1>
+        <p className="subtle mt-5 max-w-[65ch]">Every connection should be something you can check: a source, a date, and a clear account of what is known and what is uncertain.</p>
+        <p className="source-line mt-4">{meta ? `Dataset ${meta.version} · updated ${formatDate(meta.built_at)}` : state === "loading" ? "Loading dataset information…" : "Dataset information is unavailable."}</p>
       </header>
 
       <section aria-labelledby="levels">
-        <h2 id="levels" className="text-[22px] font-semibold">Four evidence levels</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">A level is never raised: a text-mined claim stays text-mined until a curated source states it too.</p>
-        <ul className="mt-4 grid gap-3 md:grid-cols-2">
+        <h2 id="levels" className="section-heading">How to read a connection</h2>
+        <p className="subtle mt-3">A source observation, a curated record and a computed similarity answer different questions. The label stays with the evidence.</p>
+        <ul className="mt-6 divide-y divide-line">
           {LEVELS.map((level) => (
-            <li key={level} className="card px-4 py-4">
-              <div className="flex items-center justify-between gap-2">
-                <LevelBadge level={level} />
-                {levelCount(level) !== undefined && <span className="tabular text-[13px] text-ink-2">{levelCount(level)!.toLocaleString("en")} edges</span>}
+            <li key={level} className="grid gap-3 py-6 md:grid-cols-[11rem_1fr]">
+              <div><LevelBadge level={level} /></div>
+              <div>
+                <p>{LEVEL_INFO[level].meaning}.</p>
+                <p className="subtle mt-2">{LEVEL_SOURCES[level]}.</p>
+                {levelCount(level) !== undefined && <p className="source-line mt-2">{levelCount(level)!.toLocaleString("en")} connections in this dataset · source: dataset metadata</p>}
               </div>
-              <p className="mt-2 text-[15px]">{LEVEL_INFO[level].meaning}.</p>
-              <p className="mt-1 text-[13px] text-ink-2">{LEVEL_SOURCES[level]}.</p>
             </li>
           ))}
         </ul>
-        <div className="mt-4 grid gap-3 md:grid-cols-2">
-          <div className="card px-4 py-4">
-            <h3 className="text-[17px] font-semibold">Counter-evidence</h3>
-            <p className="mt-1 text-[15px] text-ink-2">
-              Every edge has a <code className="font-mono text-[13px]">contradicting</code> list. It may be empty, it is never missing. Where two sources disagree, both are shown and the edge is drawn in red
-              {levelCount("contradicted") !== undefined && <> ({levelCount("contradicted")!.toLocaleString("en")} edges carry counter-evidence in the current build)</>}.
-            </p>
-          </div>
-          <div className="card px-4 py-4">
-            <h3 className="text-[17px] font-semibold">Confidence</h3>
-            <p className="mt-1 text-[15px] text-ink-2">
-              A number from 0 to 1 per edge and per piece of evidence. It orders what we show; it is not a probability that a diagnosis is right. A link pulled up from a subtype to its parent disease gets the weakest subtype confidence times
-              {typeof meta?.parameters?.rollup_confidence_factor === "number" ? ` ${meta.parameters.rollup_confidence_factor}` : " a factor below 1"}, so it is never stronger than its source.
-            </p>
-          </div>
+        <div className="answer-card mt-6 space-y-5">
+          <div><h3 className="font-semibold">Counter-evidence stays visible</h3><p className="subtle mt-2">The evidence panel always includes a counter-evidence section, even when it is empty. Conflicting records are shown together.</p></div>
+          <div><h3 className="font-semibold">Confidence is a ranking, not a diagnosis</h3><p className="subtle mt-2">The score from 0 to 1 helps order connections. It is not a probability that a diagnosis is correct. Connections inherited from disease subtypes receive a lower score{typeof meta?.parameters?.rollup_confidence_factor === "number" ? `: the weakest subtype score multiplied by ${meta.parameters.rollup_confidence_factor}` : ""}.</p></div>
         </div>
       </section>
 
+      <section aria-labelledby="gaps">
+        <h2 id="gaps" className="section-heading">An honest gap is an answer</h2>
+        <p className="subtle mt-3">“Not found” means a recorded search returned no matching records. We show the source and search date when supplied. “Data pending” means that information has not been delivered yet. Neither means that nothing exists elsewhere.</p>
+      </section>
+
       <section aria-labelledby="ai">
-        <h2 id="ai" className="text-[22px] font-semibold">Where AI is used</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product, with the model named in the evidence. This run uses Claude (Anthropic); the OpenAI paths are built and switch on with a key. Without any key the app still runs and Explain falls back to template text.</p>
-        <ol className="mt-4 grid gap-3 md:grid-cols-3">
+        <h2 id="ai" className="section-heading">Where AI contributes</h2>
+        <p className="subtle mt-3">AI-assisted content is labelled. The evidence record identifies the model where one is recorded.</p>
+        <ol className="mt-5 divide-y divide-line">
           {[
-            ["Extract", "Pipeline step 05", "Reads PubMed abstracts and returns structured claims (subject, predicate, object, polarity, PMID, quoted sentence). Claims without a quote are dropped. Result level: text-mined."],
-            ["Reconcile", "Pipeline step 06", "Matches patient-organisation names and free-text diagnoses to MONDO ids: embeddings propose candidates, a model judges them and gives a reason. Only organisations checked against their own website reach the product."],
-            ["Explain", "App, /api/explain", "Turns the edges of an action card into plain language for a family. Every sentence must end with an edge id; a sentence without a valid id is struck out in the interface."],
-          ].map(([name, where, text]) => (
-            <li key={name} className="card px-4 py-4">
-              <p className="text-[12px] font-semibold uppercase tracking-wide text-ink-2">{where}</p>
-              <h3 className="mt-0.5 text-[17px] font-semibold">{name}</h3>
-              <p className="mt-1 text-[14px] text-ink-2">{text}</p>
-            </li>
-          ))}
+            ["Extract claims", "Claims extracted from research abstracts retain the paper identifier and quoted sentence. They remain unverified, AI-extracted evidence."],
+            ["Match names", "Models help match organisation names and free-text disease names to disease identifiers. A proposed match is not the same as a verified organisation."],
+            ["Explain connections", "Action-card explanations cite supporting connection identifiers. Sentences without a valid citation are excluded; a template is available when AI generation is unavailable."],
+          ].map(([title, description]) => <li key={title} className="py-5"><h3 className="font-semibold">{title}</h3><p className="subtle mt-2">{description}</p></li>)}
         </ol>
       </section>
 
       <section aria-labelledby="quality">
-        <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
-        <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
-          <table className="w-full min-w-[560px] text-left text-[14px]">
-            <caption className="sr-only">Quality metrics</caption>
-            <thead className="bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2">
-              <tr>
-                <th scope="col" className="px-4 py-2">Metric</th>
-                <th scope="col" className="px-4 py-2">Value</th>
-                <th scope="col" className="px-4 py-2">What is measured</th>
-              </tr>
-            </thead>
-            <tbody>
-              {METRICS.map((row) => {
-                const value = state === "ready" ? row.render(metrics) : null;
-                return (
-                  <tr key={row.key} className="border-t border-line align-top" data-metric={row.key}>
-                    <th scope="row" className="px-4 py-3 font-semibold">{row.label}</th>
-                    <td className="px-4 py-3">
-                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn">{state === "loading" ? "loading" : "not yet measured in this build"}</span>}
-                    </td>
-                    <td className="px-4 py-3 text-ink-2">{row.measures}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-        {!!nodes.length && (
-          <p className="mt-4 text-[14px] text-ink-2" data-testid="graph-counts">
-            Current build{meta ? ` (${meta.version}, ${formatDate(meta.built_at)})` : ""}:{" "}
-            {nodes.filter(([k]) => ["disease", "core_disease", "gene", "phenotype"].includes(k)).map(([k, v]) => `${v.toLocaleString("en")} ${k.replace("_", " ")}`).join(", ")}
-            {edges.length ? `; edges by type: ${edges.map(([k, v]) => `${k.replaceAll("_", " ")} ${v.toLocaleString("en")}`).join(", ")}` : ""}.
-          </p>
-        )}
+        <h2 id="quality" className="section-heading">What has been measured</h2>
+        <p className="subtle mt-3">Results below come from this dataset’s metadata. Missing measurements stay missing.</p>
+        <dl className="mt-6 divide-y divide-line">
+          {METRICS.map((row) => {
+            const value = state === "ready" ? row.render(metrics) : null;
+            const record = metrics[row.key] as { kind?: string; source?: string; checked_at?: string; model?: string } | undefined;
+            const modelReview = record?.kind === "model_review";
+            return <div key={row.key} className="py-6" data-metric={row.key}>
+              <dt className="font-semibold">{row.label}</dt>
+              <dd className="mt-2">
+                <p className="font-semibold">{value ?? (state === "loading" ? "Loading measurement…" : "Not yet measured in this build")}</p>
+                {modelReview && <p className="mt-2 text-warn">Independent model review · not a human-reviewed accuracy score</p>}
+                <p className="subtle mt-2">{row.measures}</p>
+                <p className="source-line mt-2">Source: dataset metadata{meta ? ` · ${formatDate(meta.built_at)}` : ""}</p>
+              </dd>
+            </div>;
+          })}
+        </dl>
+        {!!nodes.length && <details className="mt-4 border-t border-line pt-3"><summary className="min-h-11 cursor-pointer py-3 font-semibold text-accent">Show dataset counts</summary><p className="subtle mt-3" data-testid="graph-counts">{nodes.map(([k, v]) => `${v.toLocaleString("en")} ${k.replaceAll("_", " ")}`).join(", ")}{edges.length ? `; connections: ${edges.map(([k, v]) => `${k.replaceAll("_", " ")} ${v.toLocaleString("en")}`).join(", ")}` : ""}. Source: dataset metadata{meta ? `, ${formatDate(meta.built_at)}` : ""}.</p></details>}
       </section>
 
       <section aria-labelledby="sources">
-        <h2 id="sources" className="text-[22px] font-semibold">Data sources and licences</h2>
-        {state === "missing" && <p className="mt-2 text-[15px] text-ink-2">Data status could not be loaded.</p>}
-        {!!meta?.sources.length && (
-          <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
-            <table className="w-full min-w-[560px] text-left text-[14px]">
-              <caption className="sr-only">Data sources</caption>
-              <thead className="bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2">
-                <tr>
-                  <th scope="col" className="px-4 py-2">Source</th>
-                  <th scope="col" className="px-4 py-2">Version</th>
-                  <th scope="col" className="px-4 py-2">Licence</th>
-                </tr>
-              </thead>
-              <tbody>
-                {meta.sources.map((s) => (
-                  <tr key={s.db} className="border-t border-line align-top">
-                    <th scope="row" className="px-4 py-2 font-semibold">
-                      {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">{s.db}</a>
-                      ) : (
-                        s.db
-                      )}
-                    </th>
-                    <td className="px-4 py-2 text-ink-2">{s.version ?? "not recorded"}</td>
-                    <td className="px-4 py-2 text-ink-2">{s.license ?? "not recorded"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <p className="mt-4 text-[13px] text-ink-2">Constellate is a research-navigation tool, not medical advice. Open studies link to the study&apos;s official contact page; we collect no health data and offer no sign-up.</p>
+        <h2 id="sources" className="section-heading">Sources and licences</h2>
+        {state === "missing" && <p className="subtle mt-3">The source list could not be loaded. Reload this page to try again.</p>}
+        <ul className="mt-5 divide-y divide-line">
+          {meta?.sources.map((source) => <li key={source.db} className="min-w-0 py-4">
+            {source.url ? <a href={source.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center font-semibold text-accent underline underline-offset-4">{source.db}<span className="sr-only"> (opens in a new tab)</span></a> : <p className="font-semibold">{source.db}</p>}
+            <p className="subtle break-words">Version: {source.version ?? "not recorded"} · Licence: {source.license ?? "not recorded"}</p>
+          </li>)}
+        </ul>
+        <p className="source-line mt-6">Research navigation, not medical advice. Study participation and treatment decisions belong with clinicians and the study team.</p>
       </section>
     </div>
   );

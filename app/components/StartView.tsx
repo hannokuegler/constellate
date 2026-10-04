@@ -15,7 +15,8 @@ const STEPS = [
 export default function StartView() {
   return (
     <div className="relative">
-      <section className="relative" aria-labelledby="hero-title">
+      {/* own stacking context above the story: the search and symptom suggestion lists must overlap the story below */}
+      <section className="relative z-10" aria-labelledby="hero-title">
         <SkyBackdrop />
         <div className="relative mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-start px-4 pb-10 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] pt-[calc(64px+3svh)] md:px-6 md:pt-[calc(64px+8svh)] lg:justify-center lg:pt-20">
           <StartHere />

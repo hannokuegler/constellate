@@ -35,7 +35,7 @@ export const STORY: StoryLine[] = [
   { id: "m-start", who: "maria", text: "2 a.m. The doctor said \u201cKrabbe disease\u201d. I can't even spell it.", tts: "[exhausted, close to the mic, barely above a whisper] Two a.m. The doctor said\u2026 Krabbe disease. [exhales] I can't even spell it." },
   { id: "c-hello", who: "consti", text: "Maria, I'm Consti. I won't guess. I'll show you how we know.", tts: "[calm, warm, unhurried] Maria, I'm Consti. I won't guess. I'll show you how we know." },
   { id: "m-alone", who: "maria", text: "Is there anyone else like us?", tts: "[softly, voice close to breaking] Is there anyone else\u2026 like us?" },
-  { id: "c-gap", who: "consti", text: "No checked patient group yet. Here's what I searched.", tts: "[gently, honest] No checked patient group yet. Here's what I searched." },
+  { id: "c-gap", who: "consti", text: "You're not alone. These groups are there for Krabbe, each one checked against its own website.", tts: "[warmly, gently] You're not alone. These groups are there for Krabbe\u2026 each one checked against its own website." },
   { id: "c-studies", who: "consti", text: "But these studies are looking for participants.", tts: "[a little warmer] But these studies are looking for participants." },
   { id: "m-trust", who: "maria", text: "How do I know this is true?", tts: "[quietly, wary] How do I know this is true?" },
   { id: "c-evidence", who: "consti", text: "Click any line: its source\u2026 and what speaks against it.", tts: "[calm, steady] Click any line: its source\u2026 and what speaks against it." },

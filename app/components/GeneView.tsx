@@ -8,7 +8,7 @@ import { loadGene, loadIndexMap } from "@/lib/data";
 import { diseaseHref } from "@/lib/ids";
 import { RELATION_LABEL } from "@/lib/evidence";
 import { useEdgePanel } from "./Providers";
-import EgoGraph from "./EgoGraph";
+import EgoGraph, { SKY_BACKGROUND, SKY_VARS } from "./EgoGraph";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 import { LevelBadge } from "./Badges";
 import { EvidenceButton } from "./DiseaseView";
@@ -101,35 +101,44 @@ export default function GeneView({ symbol }: { symbol: string }) {
       <nav className="mb-3 text-[13px] text-ink-2" aria-label="Breadcrumb">
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / gene
       </nav>
-      <h1 className="text-[28px] font-bold tracking-tight">{file.node.id}</h1>
+      <h1 className="t-h1 text-[28px] font-semibold tracking-tight md:text-[40px]">{file.node.id}</h1>
       {file.node.full_name && <p className="mt-1 text-[17px] text-ink-2">{file.node.full_name}</p>}
 
       {manyNames && (
         <section className="card mt-6 overflow-hidden" aria-labelledby="names-title">
-          <div className="border-b border-line bg-accent-soft px-5 py-4 md:px-6">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Names hide mechanisms</p>
-            <h2 id="names-title" className="mt-1 text-[22px] font-semibold">
-              One gene, {v.familyList.length} disease names
-            </h2>
-            <p className="mt-1 text-[13px] text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+            <NamesOrbit gene={file.node.id} names={v.familyList.map((f) => f.name)} />
+            <div className="min-w-0 px-5 py-5 md:px-7 md:py-6">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Names hide mechanisms</p>
+              <h2 id="names-title" className="mt-1 text-[24px] font-semibold leading-snug md:text-[28px]" style={{ fontFamily: "var(--font-display, inherit)" }}>
+                One gene, {v.familyList.length} disease names
+              </h2>
+              <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
+              <ol className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
+                {v.familyList.map((f, i) => (
+                  <li key={f.name} className="min-w-0 border-t border-line py-3">
+                    <p className="flex items-start gap-2.5 text-[17px] font-semibold leading-snug">
+                      <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-line-strong text-[12px] font-semibold tabular-nums" aria-hidden="true">{i + 1}</span>
+                      <span className="min-w-0 break-words">{f.name}</span>
+                    </p>
+                    <ul className="mt-1 space-y-0.5 pl-[34px]">
+                      {f.edges.map((e) => (
+                        <li key={e.id} className="flex flex-wrap items-center gap-x-3">
+                          <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 grow basis-[10rem] items-center break-words text-[13px] underline decoration-line underline-offset-2 hover:decoration-current">
+                            {label(e.source)}
+                          </Link>
+                          <span className="text-[12px] text-ink-2">
+                            <span className="font-mono">{e.id}</span> · {e.evidence[0]?.db ?? "source n/a"}
+                          </span>
+                          <EvidenceButton edge={e} onEdge={openEdge} />
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {v.familyList.map((f) => (
-              <li key={f.name} className="px-5 py-4 shadow-[0_0_0_0.5px_var(--line)]">
-                <p className="text-[17px] font-semibold">{f.name}</p>
-                <ul className="mt-2 space-y-1">
-                  {f.edges.map((e) => (
-                    <li key={e.id} className="flex min-h-11 items-center gap-2">
-                      <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 items-center text-[13px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">
-                        {label(e.source)}
-                      </Link>
-                      <EvidenceButton edge={e} onEdge={openEdge} />
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ul>
         </section>
       )}
 
@@ -142,6 +151,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
           onLinkClick={openEdge}
           onNodeClick={(n) => n.kind !== "center" && router.push(diseaseHref(n.id))}
           showCounter={false}
+          centerShape="ring"
         />
         <div className="space-y-4">
           <section className="card px-4 py-4">
@@ -194,6 +204,38 @@ export default function GeneView({ symbol }: { symbol: string }) {
           </section>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The gene as a ring in the middle of the sky, its disease names as points around it (numbers match the list). */
+function NamesOrbit({ gene, names }: { gene: string; names: string[] }) {
+  const cx = 150;
+  const cy = 150;
+  const radius = 98;
+  const points = names.map((name, i) => {
+    const angle = -Math.PI / 2 + (i * 2 * Math.PI) / names.length;
+    return { name, n: i + 1, x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+  });
+  return (
+    <div className="grid place-items-center border-b border-line p-4 md:border-b-0 md:border-r" style={{ ...SKY_VARS, background: SKY_BACKGROUND }}>
+      <svg viewBox="0 0 300 300" className="h-auto w-full max-w-[300px]" role="img" aria-label={`${gene} in the middle, ${names.length} disease names around it: ${names.join(", ")}`}>
+        <circle cx={cx} cy={cy} r={radius} fill="none" stroke="var(--line)" strokeWidth="1" strokeDasharray="2 5" strokeLinecap="round" />
+        {points.map((p) => (
+          <line key={p.n} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--star-dim)" strokeWidth="1.2" opacity="0.7" />
+        ))}
+        <circle cx={cx} cy={cy} r="46" fill="var(--amber)" opacity="0.08" />
+        <circle cx={cx} cy={cy} r="34" fill="var(--amber)" opacity="0.13" />
+        <circle cx={cx} cy={cy} r="19" fill="var(--bg)" stroke="var(--amber)" strokeWidth="3" />
+        <text x={cx} y={cy + 4} textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{gene}</text>
+        {points.map((p) => (
+          <g key={p.n}>
+            <circle cx={p.x} cy={p.y} r="16" fill="var(--star)" opacity="0.14" />
+            <circle cx={p.x} cy={p.y} r="10.5" fill="var(--star)" />
+            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize="12" fontWeight="700" fill="var(--bg)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{p.n}</text>
+          </g>
+        ))}
+      </svg>
     </div>
   );
 }

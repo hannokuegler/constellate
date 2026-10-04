@@ -47,7 +47,7 @@ export const SKY_VARS = {
   colorScheme: "dark",
 } as CSSProperties;
 
-const SKY_BACKGROUND = [
+export const SKY_BACKGROUND = [
   "radial-gradient(1.2px 1.2px at 9% 14%, rgb(236 238 246 / 0.55) 50%, transparent 51%)",
   "radial-gradient(1px 1px at 27% 83%, rgb(236 238 246 / 0.4) 50%, transparent 51%)",
   "radial-gradient(1.2px 1.2px at 71% 9%, rgb(236 238 246 / 0.5) 50%, transparent 51%)",

@@ -51,7 +51,7 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
             )}
           </span>
         </p>
-        <p className="mt-3 max-w-[68ch] text-[15px] leading-relaxed text-ink">
+        <p className="mt-3 max-w-[68ch] text-[16px] leading-relaxed text-ink">
           Research navigation, not medical advice. Constellate shows what public sources say and where they are silent; it does not diagnose or recommend treatment.
         </p>
         <p className="mt-1 flex flex-wrap items-center gap-x-1">
@@ -68,7 +68,7 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
               {meta.sources.map((s) => (
                 <li key={s.db} className="break-inside-avoid">
                   {s.url ? (
-                    <a className="inline-flex min-h-11 items-center underline underline-offset-2" href={s.url} target="_blank" rel="noreferrer">
+                    <a className="inline-flex min-h-11 min-w-11 items-center underline underline-offset-2" href={s.url} target="_blank" rel="noreferrer">
                       {s.db}
                       <span className="sr-only"> (opens in a new tab)</span>
                     </a>

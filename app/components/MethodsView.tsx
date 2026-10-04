@@ -153,26 +153,26 @@ export default function MethodsView() {
       <section aria-labelledby="quality">
         <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
         <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
-        <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
-          <table className="w-full min-w-[560px] text-left text-[14px]">
+        <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
+          <table className="block w-full text-left text-[14px] sm:table sm:min-w-[560px]">
             <caption className="sr-only">Quality metrics</caption>
-            <thead className="bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2">
+            <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
               <tr>
                 <th scope="col" className="px-4 py-2">Metric</th>
                 <th scope="col" className="px-4 py-2">Value</th>
                 <th scope="col" className="px-4 py-2">What is measured</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="block sm:table-row-group">
               {METRICS.map((row) => {
                 const value = state === "ready" ? row.render(metrics) : null;
                 return (
-                  <tr key={row.key} className="border-t border-line align-top" data-metric={row.key}>
-                    <th scope="row" className="px-4 py-3 font-semibold">{row.label}</th>
-                    <td className="px-4 py-3">
+                  <tr key={row.key} className="block border-t border-line py-2 align-top first:border-t-0 sm:table-row sm:py-0 sm:first:border-t" data-metric={row.key}>
+                    <th scope="row" className="block px-4 pt-1 font-semibold sm:table-cell sm:py-3">{row.label}</th>
+                    <td className="block break-words px-4 py-1 sm:table-cell sm:py-3">
                       {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full border border-dashed border-line-strong px-2 py-0.5 text-[12px] font-semibold text-ink-2">{state === "loading" ? "loading" : "not yet measured in this build"}</span>}
                     </td>
-                    <td className="px-4 py-3 text-ink-2">{row.measures}</td>
+                    <td className="block break-words px-4 pb-1 text-ink-2 sm:table-cell sm:py-3">{row.measures}</td>
                   </tr>
                 );
               })}
@@ -192,28 +192,28 @@ export default function MethodsView() {
         <h2 id="sources" className="text-[22px] font-semibold">Data sources and licences</h2>
         {state === "missing" && <p className="mt-2 text-[15px] text-ink-2">Data status could not be loaded.</p>}
         {!!meta?.sources.length && (
-          <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
-            <table className="w-full min-w-[560px] text-left text-[14px]">
+          <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
+            <table className="block w-full text-left text-[14px] sm:table sm:min-w-[560px]">
               <caption className="sr-only">Data sources</caption>
-              <thead className="bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2">
+              <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
                 <tr>
                   <th scope="col" className="px-4 py-2">Source</th>
                   <th scope="col" className="px-4 py-2">Version</th>
                   <th scope="col" className="px-4 py-2">Licence</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="block sm:table-row-group">
                 {meta.sources.map((s) => (
-                  <tr key={s.db} className="border-t border-line align-top">
-                    <th scope="row" className="px-4 py-0.5 font-semibold">
+                  <tr key={s.db} className="block border-t border-line py-1 align-top first:border-t-0 sm:table-row sm:py-0 sm:first:border-t">
+                    <th scope="row" className="block px-4 py-0.5 font-semibold sm:table-cell">
                       {s.url ? (
                         <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">{s.db}<span className="sr-only"> (opens in a new tab)</span></a>
                       ) : (
                         s.db
                       )}
                     </th>
-                    <td className="px-4 py-2 text-ink-2">{s.version ?? "not recorded"}</td>
-                    <td className="px-4 py-2 text-ink-2">{s.license ?? "not recorded"}</td>
+                    <td className="block break-words px-4 py-0.5 text-ink-2 sm:table-cell sm:py-2">{s.version ?? "not recorded"}</td>
+                    <td className="block break-words px-4 pb-2 text-ink-2 sm:table-cell sm:py-2">{s.license ?? "not recorded"}</td>
                   </tr>
                 ))}
               </tbody>

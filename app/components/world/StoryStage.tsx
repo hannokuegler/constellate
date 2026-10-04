@@ -6,12 +6,30 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import World from "./World";
-import { STORY_CHAPTERS, lensGeometry, setStory, type Lens } from "./story";
+import { STORY_CHAPTERS, captionVisible, lensGeometry, setStory, type ChapterId, type Lens } from "./story";
 import type { Sky } from "./sky";
 
 const READING_LINE = 0.6;
 
-export default function StoryStage({ children, onSky }: { children: ReactNode; onSky?: (sky: Sky) => void }) {
+export interface StarLabel {
+  id: string;
+  text: string;
+  chapters: ChapterId[];
+}
+
+export default function StoryStage({
+  children,
+  captions,
+  labels,
+  onSky,
+}: {
+  children: ReactNode;
+  /** one caption per chapter; a single slot bottom-left shows the active one (crossfade) */
+  captions: Partial<Record<ChapterId, ReactNode>>;
+  /** star names, placed on screen by the renderer, shown only in their chapters */
+  labels: StarLabel[];
+  onSky?: (sky: Sky) => void;
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const [position, setPosition] = useState({ chapter: 0, t: 0 });
   const [viewport, setViewport] = useState({ width: 0, height: 0 });
@@ -66,6 +84,41 @@ export default function StoryStage({ children, onSky }: { children: ReactNode; o
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
         <World onSky={onSky} onModeChange={(mode) => setStaticLens(mode !== "3d")} />
         {lens && lens.on && lens.frame > 0.01 && <Glasses lens={lens} />}
+        {labels.map((label) => {
+          const on = label.chapters.includes(STORY_CHAPTERS[position.chapter]) && (STORY_CHAPTERS[position.chapter] !== "krabbe" || position.t >= 0.3);
+          return (
+            <span
+              key={label.id}
+              data-star-label={label.id}
+              aria-hidden="true"
+              className={`glass pointer-events-none absolute left-0 top-0 whitespace-nowrap rounded-full px-3 py-1 text-[15px] font-medium text-ink transition-opacity duration-300 ${on ? "opacity-100" : "opacity-0"}`}
+              style={{ visibility: "hidden" }}
+            >
+              {label.text}
+            </span>
+          );
+        })}
+        <div className="pointer-events-none absolute inset-x-0 bottom-[max(20px,5svh)] px-4 pl-[max(16px,env(safe-area-inset-left))] lg:px-10">
+          <div className="relative w-full max-w-[680px]">
+            {STORY_CHAPTERS.map((id) => {
+              const caption = captions[id];
+              if (!caption) return null;
+              const on = captionVisible(position.chapter, position.t, id);
+              return (
+                <div
+                  key={id}
+                  aria-hidden={!on}
+                  inert={!on}
+                  className={`glass absolute bottom-0 left-0 w-full rounded-[24px] px-5 py-5 shadow-[var(--shadow)] transition-[opacity,transform] ease-out md:px-8 md:py-7 ${
+                    on ? "pointer-events-auto translate-y-0 opacity-100 delay-150 duration-[250ms]" : "translate-y-2 opacity-0 duration-150"
+                  }`}
+                >
+                  {caption}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
       <div className="relative z-[1] -mt-[100svh]">{children}</div>
     </section>

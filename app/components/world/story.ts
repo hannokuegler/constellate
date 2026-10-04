@@ -46,10 +46,13 @@ export interface Lens {
 export function lensGeometry(chapter: number, t: number, width: number, height: number, staticMode = false): Lens {
   const id = STORY_CHAPTERS[chapter];
   const phone = width < 640;
-  const r0 = phone ? Math.min(width * 0.21, height * 0.17) : Math.min(width * 0.15, height * 0.25);
+  const wide = width >= 1024;
+  const r0 = phone ? Math.min(width * 0.21, height * 0.17) : Math.min(width * 0.13, height * 0.23);
   const gap = r0 * 1.14;
-  const cy = phone ? height * 0.3 : height * 0.42;
-  const base = { ax: width / 2 - gap, ay: cy, bx: width / 2 + gap, by: cy, r: r0 };
+  // wide screens: the glasses sit right of the caption column (bottom left), centred over the sky
+  const cx = wide ? width * (0.5 + LENS_SHIFT) : width / 2;
+  const cy = phone ? height * 0.3 : height * 0.38;
+  const base = { ax: cx - gap, ay: cy, bx: cx + gap, by: cy, r: r0 };
   const off: Lens = { on: false, ...base, frame: 0, full: 0 };
   if (id === "lens") {
     const drop = staticMode ? 1 : ease(span(t, 0, 0.45));
@@ -64,6 +67,24 @@ export function lensGeometry(chapter: number, t: number, width: number, height: 
   }
   if (STORY_CHAPTERS.indexOf(id) > STORY_CHAPTERS.indexOf("wearing")) return { ...off, full: 1 };
   return off;
+}
+
+/** horizontal sky shift while the glasses are on (fraction of the width), shared by shader, overlay and 2D */
+export const LENS_SHIFT = 0.1;
+/** sky shift once the constellation is told: its centre sits in the free space right of the captions */
+const STORY_SHIFT = 0.18;
+
+/**
+ * camera distance that frames Krabbe's constellation at ~55 % of the view height; set by the renderer from the
+ * real star positions (the default is only used before that)
+ */
+export const storyFit = { near: 66, gap: 52 };
+
+/** which chapter's caption is on screen: one at a time, the lens caption only once the glasses are down */
+export function captionVisible(chapter: number, t: number, id: ChapterId): boolean {
+  if (STORY_CHAPTERS[chapter] !== id) return false;
+  if (id === "lens") return t >= 0.32;
+  return t >= 0.04;
 }
 
 export type CameraKey = "home" | "krabbe" | "gap" | "between";
@@ -84,16 +105,16 @@ export interface StoryFrame {
 export const NEIGHBOUR_SHIFT = 400;
 const HOME = 235;
 const LENS = 175; // closer while the glasses are on: the sky fills both lenses
-const NEAR = 66;
 
 export function storyFrame(chapter: number, t: number, width: number): StoryFrame {
   const id = STORY_CHAPTERS[chapter];
   const wide = width >= 1024;
   const narrow = !wide;
+  const NEAR = storyFit.near;
   const frame: StoryFrame = {
     blur: 0,
     lines: 1,
-    shift: wide ? 0.1 : 0,
+    shift: wide ? STORY_SHIFT : 0,
     lift: narrow ? 0.16 : 0,
     camera: { from: "home", to: "home", k: 1, fromDistance: HOME, toDistance: HOME },
     focus: false,
@@ -109,20 +130,20 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
         ...frame,
         blur: 1 - 0.4 * span(t, 0, 0.8),
         lines: 0,
-        shift: wide ? 0.16 * (1 - span(t, 0.2, 1)) : 0,
+        shift: wide ? 0.16 + (LENS_SHIFT - 0.16) * span(t, 0.2, 1) : 0,
         lift: narrow ? 0.28 * (1 - span(t, 0.2, 1)) : 0,
         camera: { from: "home", to: "home", k: ease(span(t, 0.2, 1)), fromDistance: HOME, toDistance: LENS },
       };
     case "lens":
-      return { ...frame, blur: 0.6, lines: 0, shift: 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
+      return { ...frame, blur: 0.6, lines: 0, shift: wide ? LENS_SHIFT : 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
     case "wearing": {
       const sharp = span(t, 0.6, 0.85);
-      return { ...frame, blur: 0.6 * (1 - sharp), lines: sharp, shift: 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
+      return { ...frame, blur: 0.6 * (1 - sharp), lines: sharp, shift: wide ? LENS_SHIFT : 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
     }
     case "krabbe":
       return {
         ...frame,
-        shift: wide ? 0.1 * span(t, 0, 0.6) : 0,
+        shift: wide ? LENS_SHIFT + (STORY_SHIFT - LENS_SHIFT) * span(t, 0, 0.6) : 0,
         lift: narrow ? 0.16 * span(t, 0, 0.6) : 0,
         camera: { from: "home", to: "krabbe", k: ease(span(t, 0, 0.6)), fromDistance: LENS, toDistance: NEAR },
         focus: t >= 0.3,
@@ -131,14 +152,14 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "constellation":
       return {
         ...frame,
-        camera: { from: "krabbe", to: "krabbe", k: 1, fromDistance: NEAR, toDistance: NEAR + 14 },
+        camera: { from: "krabbe", to: "krabbe", k: 1, fromDistance: NEAR, toDistance: NEAR },
         focus: true,
         clock: NEIGHBOUR_SHIFT + span(t, 0, 0.7) * 900,
       };
     case "neighbour":
       return {
         ...frame,
-        camera: { from: "krabbe", to: "krabbe", k: 1, fromDistance: NEAR + 14, toDistance: NEAR + 14 },
+        camera: { from: "krabbe", to: "krabbe", k: 1, fromDistance: NEAR, toDistance: NEAR },
         focus: true,
         clock: 3000,
         amberEdge: span(t, 0, 0.5),
@@ -146,7 +167,7 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "gap":
       return {
         ...frame,
-        camera: { from: "krabbe", to: "gap", k: ease(span(t, 0, 0.6)), fromDistance: NEAR + 14, toDistance: 60 },
+        camera: { from: "krabbe", to: "gap", k: ease(span(t, 0, 0.6)), fromDistance: NEAR, toDistance: storyFit.gap },
         focus: true,
         clock: 3000,
         amberEdge: 1 - span(t, 0, 0.4),
@@ -155,7 +176,7 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "end":
       return {
         ...frame,
-        camera: { from: "gap", to: "between", k: ease(span(t, 0, 0.6)), fromDistance: 60, toDistance: 130 },
+        camera: { from: "gap", to: "between", k: ease(span(t, 0, 0.6)), fromDistance: storyFit.gap, toDistance: NEAR * 1.6 },
         focus: true,
         clock: 3000,
         ring: 1,

@@ -7,7 +7,8 @@
 
 import { useEffect, useRef } from "react";
 import { KIND, constellationOf, readPalette, registerSkyController, watchTheme, type Constellation, type Sky } from "./sky";
-import { NEIGHBOUR_SHIFT, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyEndFrame, type CameraKey, type StoryFrame } from "./story";
+import { NEIGHBOUR_SHIFT, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyEndFrame, storyFit, type CameraKey, type StoryFrame } from "./story";
+import { placeStarLabels } from "./labels";
 import type { HoverInfo } from "./SkyCanvas";
 
 interface Props {
@@ -52,11 +53,21 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
     const mld = sky.indexById.get(STORY_MLD);
     const at = (i: number | undefined): [number, number, number] =>
       i === undefined ? [0, 0, 0] : [sky.positions[i * 3], sky.positions[i * 3 + 1], sky.positions[i * 3 + 2]];
+    // same framing as the 3D story: Krabbe's constellation centred, ~55 % of the height
+    let centre: [number, number, number] = at(krabbe);
+    if (krabbe !== undefined) {
+      const members = [...constellationOf(sky, krabbe).stars.keys()];
+      centre = [0, 1, 2].map((k) => members.reduce((sum, i) => sum + at(i)[k], 0) / members.length) as [number, number, number];
+      const radii = members.map((i) => Math.hypot(at(i)[0] - centre[0], at(i)[1] - centre[1], at(i)[2] - centre[2])).sort((a, b) => a - b);
+      const radius = radii[Math.floor((radii.length - 1) * 0.85)] || 10;
+      storyFit.near = Math.max(28, radius / (0.55 * Math.tan((21 * Math.PI) / 180)));
+      storyFit.gap = storyFit.near * 0.8;
+    }
     const keys: Record<CameraKey, [number, number, number]> = {
       home: [0, 0, 0],
-      krabbe: at(krabbe),
+      krabbe: centre,
       gap: at(gap),
-      between: [0, 1, 2].map((k) => (at(krabbe)[k] + at(gap)[k]) / 2) as [number, number, number],
+      between: [0, 1, 2].map((k) => (centre[k] + at(gap)[k]) / 2) as [number, number, number],
     };
     // every edge between Krabbe and MLD is drawn amber (they share one line on screen)
     const amberEdges = new Set<number>();
@@ -219,6 +230,10 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
       }
       if (focusIndex !== null) ring(focusIndex, rgba(palette.amber, 0.85), false);
       if (!manual && frame && frame.ring > 0.5) ring(gap, rgba(palette.star, 0.9), true);
+      placeStarLabels((id) => {
+        const i = sky.indexById.get(id);
+        return i === undefined || screen[i * 3] < -1e4 ? null : [screen[i * 3], screen[i * 3 + 1]];
+      });
     };
 
     const resize = () => {

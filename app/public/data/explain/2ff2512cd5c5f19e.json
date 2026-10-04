@@ -1,0 +1,90 @@
+{
+ "key": "2ff2512cd5c5f19e",
+ "edge_ids": [
+  "e_0fa2808718e6",
+  "e_10f453590dd2",
+  "e_336fb95e5c8c",
+  "e_5d0f634de678",
+  "e_63fa8cbbaacd",
+  "e_9addb76c341d",
+  "e_ccf4609930ce",
+  "e_ebcdbdec8f81"
+ ],
+ "from": "MONDO:0009659",
+ "via": "MONDO:0009660",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.618Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 4A is linked to the gene GALNS, and type 4B to the gene GLB1, both in curated databases [e_63fa8cbbaacd] [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_63fa8cbbaacd",
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both genes take part in the same curated pathway, keratan sulfate degradation [e_9addb76c341d] [e_10f453590dd2].",
+   "edge_ids": [
+    "e_9addb76c341d",
+    "e_10f453590dd2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that types 4A and 4B look quite alike in their listed symptoms, with a score of 0.653, which is inferred and not a diagnosis [e_0fa2808718e6].",
+   "edge_ids": [
+    "e_0fa2808718e6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 4A, a beak-like bump on the lower spine bones and a forward curve of the lower spine are observed features [e_5d0f634de678] [e_336fb95e5c8c].",
+   "edge_ids": [
+    "e_5d0f634de678",
+    "e_336fb95e5c8c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both observations rest on small counts, 1 of 1 in the records [e_5d0f634de678] [e_336fb95e5c8c].",
+   "edge_ids": [
+    "e_5d0f634de678",
+    "e_336fb95e5c8c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Intellectual disability is marked as contradicted for type 4A, with 1 contradicting record [e_ccf4609930ce].",
+   "edge_ids": [
+    "e_ccf4609930ce"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for type 4B [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, funding or patient groups for either type [e_63fa8cbbaacd].",
+   "edge_ids": [
+    "e_63fa8cbbaacd"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

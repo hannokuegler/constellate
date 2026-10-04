@@ -1,0 +1,79 @@
+{
+ "key": "311dfd21581ac810",
+ "edge_ids": [
+  "e_3ebe7264493c",
+  "e_44d0b28f5807",
+  "e_6dc087c1d0a1",
+  "e_b240bc0219e5",
+  "e_ce354082026d"
+ ],
+ "from": "MONDO:0008083",
+ "via": "MONDO:0008768",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.500Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed that two adult-onset forms of neuronal ceroid lipofuscinosis, called Kufs type 4 and Kufs type 6B, have very similar symptom profiles [e_ce354082026d].",
+   "edge_ids": [
+    "e_ce354082026d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The similarity score is 0.740 over 13 shared terms, and the top shared term is a build-up of fluorescent storage material inside cells [e_ce354082026d].",
+   "edge_ids": [
+    "e_ce354082026d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it from symptom terms, and it is not a database finding [e_ce354082026d].",
+   "edge_ids": [
+    "e_ce354082026d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Curated databases tie the two forms to different genes, DNAJC5 for type 4 and CLN6 for type 6B [e_3ebe7264493c] [e_6dc087c1d0a1].",
+   "edge_ids": [
+    "e_3ebe7264493c",
+    "e_6dc087c1d0a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type 4 has two observed symptoms recorded in OMIM, dementia and myoclonic seizures, both from a single report with a frequency of 1 of 1 [e_44d0b28f5807] [e_b240bc0219e5].",
+   "edge_ids": [
+    "e_44d0b28f5807",
+    "e_b240bc0219e5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "So similar symptoms here come with different causes, according to these edges [e_ce354082026d] [e_3ebe7264493c] [e_6dc087c1d0a1].",
+   "edge_ids": [
+    "e_ce354082026d",
+    "e_3ebe7264493c",
+    "e_6dc087c1d0a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges say nothing about the symptoms of type 6B beyond the computed score, and they show no studies, treatments or contradicting evidence [e_ce354082026d].",
+   "edge_ids": [
+    "e_ce354082026d"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

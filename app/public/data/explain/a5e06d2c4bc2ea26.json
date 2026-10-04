@@ -1,0 +1,87 @@
+{
+ "key": "a5e06d2c4bc2ea26",
+ "edge_ids": [
+  "e_07b4fda8e15a",
+  "e_14334716209a",
+  "e_2818cbae40f1",
+  "e_32aa33e96409",
+  "e_3c267533a8ab",
+  "e_4d71201c4a27",
+  "e_79d2c383f971",
+  "e_8ffbdd801a8b",
+  "e_b79174fc4e22",
+  "e_d7440f028524",
+  "e_eca78a94ecb3",
+  "e_f43fb134f2f7"
+ ],
+ "from": "MONDO:0009254",
+ "via": "MONDO:0009561",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.550Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed that fucosidosis and alpha-mannosidosis have a moderately similar symptom profile, with a score of 0.207 over 20 shared terms, ranked 6 of 9 [e_eca78a94ecb3].",
+   "edge_ids": [
+    "e_eca78a94ecb3"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_eca78a94ecb3].",
+   "edge_ids": [
+    "e_eca78a94ecb3"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Curated databases tie the two diseases to different genes, FUCA1 for fucosidosis and MAN2B1 for alpha-mannosidosis [e_f43fb134f2f7] [e_d7440f028524].",
+   "edge_ids": [
+    "e_f43fb134f2f7",
+    "e_d7440f028524"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Alpha-mannosidosis has one recruiting study of a drug called velmanase alfa in young children and one earlier study of the same drug that was withdrawn [e_14334716209a] [e_3c267533a8ab].",
+   "edge_ids": [
+    "e_14334716209a",
+    "e_3c267533a8ab"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two patient groups are linked to it, the International Society for Mannosidosis and Related Diseases by an automatic name match, and the German MPS society by a text-mined link that is unverified [e_32aa33e96409] [e_2818cbae40f1].",
+   "edge_ids": [
+    "e_32aa33e96409",
+    "e_2818cbae40f1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For fucosidosis, coarse facial features are curated as very frequent, but that edge carries contradicting evidence, and a skull size abnormality is marked as contradicted [e_b79174fc4e22] [e_07b4fda8e15a].",
+   "edge_ids": [
+    "e_b79174fc4e22",
+    "e_07b4fda8e15a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the study of alpha-mannosidosis applies to fucosidosis, and they do not show the drug works [e_14334716209a] [e_eca78a94ecb3].",
+   "edge_ids": [
+    "e_14334716209a",
+    "e_eca78a94ecb3"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

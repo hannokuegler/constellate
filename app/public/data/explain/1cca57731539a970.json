@@ -1,0 +1,96 @@
+{
+ "key": "1cca57731539a970",
+ "edge_ids": [
+  "e_06cb5bccfbf4",
+  "e_10f453590dd2",
+  "e_1a3b6f1c88e1",
+  "e_2002d33295d6",
+  "e_4b6a2b49884c",
+  "e_50b1a2a85102",
+  "e_87691e655721",
+  "e_b7708b486598",
+  "e_c96cb9bc9690",
+  "e_d8e337b6892d",
+  "e_e34f33cea0d4"
+ ],
+ "from": "MONDO:0009658",
+ "via": "MONDO:0018149",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.615Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed a modest symptom similarity between mucopolysaccharidosis type 3D and GM1 gangliosidosis, with a score of 0.211 over 15 shared terms [e_87691e655721].",
+   "edge_ids": [
+    "e_87691e655721"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_87691e655721].",
+   "edge_ids": [
+    "e_87691e655721"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The genes behind them, GNS and GLB1, are both recorded in the same pathway for breaking down keratan sulfate [e_50b1a2a85102] [e_10f453590dd2].",
+   "edge_ids": [
+    "e_50b1a2a85102",
+    "e_10f453590dd2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type 3D is curated as caused by GNS, while GM1 gangliosidosis is linked to GLB1 only by an inferred roll-up from subtypes at confidence 0.475 [e_1a3b6f1c88e1] [e_4b6a2b49884c].",
+   "edge_ids": [
+    "e_1a3b6f1c88e1",
+    "e_4b6a2b49884c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GM1 gangliosidosis has two studies on ClinicalTrials.gov, a prenatal gene transfer study not yet recruiting and a recruiting study of an oral drug called nizubaglustat [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant for an AAV approach is also recorded, and one patient group link comes from unverified text mining [e_d8e337b6892d] [e_b7708b486598].",
+   "edge_ids": [
+    "e_d8e337b6892d",
+    "e_b7708b486598"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3D, two observed features are listed, heparan sulfate in urine and excess facial hair, the second from a single report [e_06cb5bccfbf4] [e_e34f33cea0d4].",
+   "edge_ids": [
+    "e_06cb5bccfbf4",
+    "e_e34f33cea0d4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the GM1 studies apply to type 3D, and they do not show that any drug works [e_87691e655721] [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_87691e655721",
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

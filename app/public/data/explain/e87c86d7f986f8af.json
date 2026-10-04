@@ -1,0 +1,56 @@
+{
+ "key": "e87c86d7f986f8af",
+ "edge_ids": [
+  "e_6a0623a7ced5",
+  "e_aca6760f34d1"
+ ],
+ "from": "MONDO:0008602",
+ "via": "MONDO:0008601",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.508Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Triglyceride storage disease type 1 and type 2 look only weakly alike in their listed symptoms [e_6a0623a7ced5].",
+   "edge_ids": [
+    "e_6a0623a7ced5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This is an inferred, computed score from Constellate (simGIC 0.090, with 0 shared terms), and its confidence is only 0.09 [e_6a0623a7ced5].",
+   "edge_ids": [
+    "e_6a0623a7ced5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The one shared theme the score points to is a general abnormality of body weight [e_6a0623a7ced5].",
+   "edge_ids": [
+    "e_6a0623a7ced5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 2, obesity is listed in a curated database, but with a low confidence of 0.5 [e_aca6760f34d1].",
+   "edge_ids": [
+    "e_aca6760f34d1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show the cause, genes, treatments or studies for either type [e_6a0623a7ced5].",
+   "edge_ids": [
+    "e_6a0623a7ced5"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

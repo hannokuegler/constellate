@@ -1,0 +1,79 @@
+{
+ "key": "e8976c7a42f525ad",
+ "edge_ids": [
+  "e_108d9c44a76e",
+  "e_4f98f11b139c",
+  "e_6dc087c1d0a1",
+  "e_764bcd9e9447",
+  "e_b4ef339e4b8d",
+  "e_b95c825cc787"
+ ],
+ "from": "MONDO:0008768",
+ "via": "MONDO:0979367",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.516Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two forms of neuronal ceroid lipofuscinosis, a Kufs type and a late infantile form, are both linked to the gene CLN6 in curated databases [e_6dc087c1d0a1] [e_b4ef339e4b8d].",
+   "edge_ids": [
+    "e_6dc087c1d0a1",
+    "e_b4ef339e4b8d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_4f98f11b139c].",
+   "edge_ids": [
+    "e_4f98f11b139c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the late infantile form, one gene therapy trial is listed as completed [e_764bcd9e9447].",
+   "edge_ids": [
+    "e_764bcd9e9447"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That record shows the study ended and does not show whether it helped [e_764bcd9e9447].",
+   "edge_ids": [
+    "e_764bcd9e9447"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the Kufs type, two features are listed, a build-up of fluorescent storage material in cells and deposits of a storage material in blood vessels [e_b95c825cc787] [e_108d9c44a76e].",
+   "edge_ids": [
+    "e_b95c825cc787",
+    "e_108d9c44a76e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both are curated from OMIM with a low confidence of 0.5 [e_b95c825cc787] [e_108d9c44a76e].",
+   "edge_ids": [
+    "e_b95c825cc787",
+    "e_108d9c44a76e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show symptoms of the late infantile form or any trial for the Kufs type [e_764bcd9e9447].",
+   "edge_ids": [
+    "e_764bcd9e9447"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

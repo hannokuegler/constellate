@@ -1,0 +1,85 @@
+{
+ "key": "9a00771de3800017",
+ "edge_ids": [
+  "e_22120b66707c",
+  "e_66faea27b5a4",
+  "e_750e6429bb40",
+  "e_b8af2f931bae",
+  "e_efbbf071d930"
+ ],
+ "from": "MONDO:0009267",
+ "via": "MONDO:0011945",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.568Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Gaucher disease type III and Gaucher disease perinatal lethal are both recorded as caused by the gene GBA1 [e_efbbf071d930] [e_66faea27b5a4].",
+   "edge_ids": [
+    "e_efbbf071d930",
+    "e_66faea27b5a4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from Orphanet and OMIM [e_efbbf071d930] [e_66faea27b5a4].",
+   "edge_ids": [
+    "e_efbbf071d930",
+    "e_66faea27b5a4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two forms share this causal gene, at confidence 0.95 [e_b8af2f931bae].",
+   "edge_ids": [
+    "e_b8af2f931bae"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_b8af2f931bae].",
+   "edge_ids": [
+    "e_b8af2f931bae"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type III, slowed horizontal eye movements are listed as frequent, with a confidence of 0.6 [e_22120b66707c].",
+   "edge_ids": [
+    "e_22120b66707c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Avascular necrosis, which is bone tissue dying from lack of blood supply, is also listed for type III as very frequent [e_750e6429bb40].",
+   "edge_ids": [
+    "e_750e6429bb40"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the perinatal lethal form looks, because no symptoms are listed for it [e_66faea27b5a4].",
+   "edge_ids": [
+    "e_66faea27b5a4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies and no treatments for either form [e_b8af2f931bae].",
+   "edge_ids": [
+    "e_b8af2f931bae"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

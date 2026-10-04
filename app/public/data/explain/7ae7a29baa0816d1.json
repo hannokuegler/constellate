@@ -1,0 +1,76 @@
+{
+ "key": "7ae7a29baa0816d1",
+ "edge_ids": [
+  "e_1d0a54ea6f2e",
+  "e_397e5ada2653",
+  "e_643b56d40a83",
+  "e_734463354677",
+  "e_ab2040c4ccef",
+  "e_bfd2ff20e8bd"
+ ],
+ "from": "MONDO:0008215",
+ "via": "MONDO:0007988",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.504Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Adult-onset autosomal dominant demyelinating leukodystrophy is linked to the gene LMNB1 in curated databases [e_bfd2ff20e8bd].",
+   "edge_ids": [
+    "e_bfd2ff20e8bd"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Autosomal dominant primary microcephaly is linked to the same gene, LMNB1, in curated databases [e_734463354677].",
+   "edge_ids": [
+    "e_734463354677"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed from these two links that the diseases share a causal gene, with confidence 0.95, the lowest of the two links [e_643b56d40a83].",
+   "edge_ids": [
+    "e_643b56d40a83"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Microcephaly is also linked to a second gene, DPP6, by curated evidence [e_ab2040c4ccef].",
+   "edge_ids": [
+    "e_ab2040c4ccef"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the leukodystrophy, abnormal function of the autonomic nervous system is a curated, very frequent feature [e_1d0a54ea6f2e].",
+   "edge_ids": [
+    "e_1d0a54ea6f2e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Bladder control problems from the autonomic nerves are listed as frequent, with a lower confidence of 0.6 [e_397e5ada2653].",
+   "edge_ids": [
+    "e_397e5ada2653"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show why one gene can lead to two different conditions, and they list no symptoms for microcephaly [e_643b56d40a83].",
+   "edge_ids": [
+    "e_643b56d40a83"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

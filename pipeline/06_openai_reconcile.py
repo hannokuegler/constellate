@@ -54,8 +54,9 @@ JUDGE_MIN_CONFIDENCE = 0.5    # below: treated as "none" and listed in unmatched
 EMBED_BATCH = 256
 EDGE_TYPE = "advocated_by"
 DB = "Constellate reconcile"
-ORIGIN_OPENAI, ORIGIN_FUZZY = "OpenAI judge", "fuzzy"
-LEVEL_BY_ORIGIN = {ORIGIN_OPENAI: "text_mined", ORIGIN_FUZZY: "inferred"}
+ORIGIN_OPENAI, ORIGIN_FUZZY, ORIGIN_CLAUDE = "OpenAI judge", "fuzzy", "Claude judge"
+LEVEL_BY_ORIGIN = {ORIGIN_OPENAI: "text_mined", ORIGIN_FUZZY: "inferred", ORIGIN_CLAUDE: "text_mined"}
+MAX_JUDGE_CANDIDATES = 8  # cache judge: fuzzy candidates + WRatio candidates (no embeddings without an OpenAI key)
 LEVEL_ORDER = ["observed", "curated", "text_mined", "inferred"]
 ORG_FIELDS = ["country", "has_registry", "registry_url", "has_natural_history_study", "nhs_url", "has_biobank", "contact_url",
               "notes", "verified_date"]
@@ -393,6 +394,48 @@ def openai_decide(name: str, org: dict, catalog: Catalog, ctx: OpenAIContext) ->
     return Decision(name, chosen, round(confidence, 2), decision.get("reason") or "", ORIGIN_OPENAI, details, candidates)
 
 
+def judge_candidates(name: str, fuzzy: "Decision", catalog: Catalog) -> list[dict]:
+    """Candidates for the cache judge: the fuzzy ranking plus the best WRatio hits over all catalog names."""
+    out = {c["mondo_id"]: c for c in fuzzy.candidates}
+    for _, score, i in process.extract(name.lower(), catalog.normalized, scorer=fuzz.WRatio, limit=20):
+        m = catalog.mondo_ids[i]
+        if m not in out:
+            out[m] = {"mondo_id": m, "label": catalog.labels[m], "score": round(float(score), 1), "matched_name": catalog.names[i]}
+        if len(out) >= MAX_JUDGE_CANDIDATES:
+            break
+    return list(out.values())[:MAX_JUDGE_CANDIDATES]
+
+
+def cache_judge_path(cache_dir: Path, model: str, name: str, org: dict, candidates: list[dict]) -> Path:
+    key = text_key(json.dumps([name, org.get("org_name"), [c["mondo_id"] for c in candidates]]))
+    return cache_dir / "judge" / safe_name(model) / prompt_version() / f"{key}.json"
+
+
+def cache_judge_decide(name: str, org: dict, catalog: Catalog, model: str, cache_dir: Path, pending: list[dict]) -> Decision:
+    """Fuzzy first; if fuzzy finds nothing, a judge answer written to the cache by another model (e.g. Claude) decides.
+    Same constraints as the OpenAI judge: only a listed candidate or none, confidence >= JUDGE_MIN_CONFIDENCE.
+    Names without a cached answer stay unmatched and are listed in `pending` (input for the judge)."""
+    fuzzy = fuzzy_match(name, catalog)
+    if fuzzy.mondo_id:
+        return fuzzy
+    candidates = judge_candidates(name, fuzzy, catalog)
+    path = cache_judge_path(cache_dir, model, name, org, candidates)
+    if not path.exists():
+        pending.append({"cache_path": str(path), "candidate_ids": [c["mondo_id"] for c in candidates],
+                        "instructions": prompt_text(), "input": judge_message(name, org, candidates, catalog)})
+        return fuzzy
+    decision = json.loads(path.read_text())["decision"]
+    details = {"model": model, "prompt_version": prompt_version(), "candidates_from": "fuzzy + WRatio (no embeddings)"}
+    confidence = max(0.0, min(1.0, float(decision.get("confidence") or 0.0)))
+    chosen = decision.get("mondo_id")
+    if chosen not in {c["mondo_id"] for c in candidates}:
+        return Decision(name, None, confidence, f"judge: none ({decision.get('reason')})", ORIGIN_CLAUDE, details, candidates)
+    if confidence < JUDGE_MIN_CONFIDENCE:
+        return Decision(name, None, confidence, f"judge confidence {confidence:.2f} < {JUDGE_MIN_CONFIDENCE} ({decision.get('reason')})",
+                        ORIGIN_CLAUDE, details, candidates)
+    return Decision(name, chosen, round(confidence, 2), decision.get("reason") or "", ORIGIN_CLAUDE, details, candidates)
+
+
 def edge_id(source: str, target: str, edge_type: str) -> str:
     return "e_" + hashlib.sha1(f"{source}|{target}|{edge_type}".encode()).hexdigest()[:12]  # identical to 03_build_graph
 
@@ -417,6 +460,8 @@ def evidence_for(decision: Decision, row: dict, org_url: str, catalog: Catalog) 
     }
     if decision.origin == ORIGIN_OPENAI:
         evidence["candidates"] = [{k: c[k] for k in ("mondo_id", "label", "similarity")} for c in decision.candidates]
+    elif decision.origin == ORIGIN_CLAUDE:
+        evidence["candidates"] = [{"mondo_id": c["mondo_id"], "label": c["label"], "score": c.get("score")} for c in decision.candidates]
     return evidence
 
 
@@ -426,7 +471,8 @@ def unmatched_row(row: dict, org_id: str, name: str, method: str, reason: str, c
             "top_candidates": " | ".join(f"{c['mondo_id']} {c['label']} ({c.get('similarity', c.get('score'))})" for c in (candidates or [])[:3])}
 
 
-def reconcile(rows: list[dict], catalog: Catalog, ctx: OpenAIContext | None = None, concurrency: int = 8) -> dict:
+def reconcile(rows: list[dict], catalog: Catalog, ctx: OpenAIContext | None = None, concurrency: int = 8,
+              cache_judge: tuple[str, Path, list[dict]] | None = None) -> dict:
     """ctx None = fuzzy only. With ctx, a failing API call for one name falls back to fuzzy for that name.
     Orgs without url: no node, no edge, every name -> unmatched with reason NO_URL (an edge needs record/url)."""
     jobs: list[tuple[dict, str, str]] = []
@@ -446,6 +492,8 @@ def reconcile(rows: list[dict], catalog: Catalog, ctx: OpenAIContext | None = No
 
     def decide(job: tuple[dict, str, str]) -> Decision:
         row, _, name = job
+        if cache_judge is not None:
+            return cache_judge_decide(name, row, catalog, *cache_judge)
         if ctx is None:
             return fuzzy_match(name, catalog)
         try:
@@ -537,7 +585,9 @@ def build_context(catalog: Catalog, client, embed_model: str, judge_model: str, 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--method", choices=["auto", "openai", "fuzzy"], default="auto")
+    parser.add_argument("--method", choices=["auto", "openai", "fuzzy", "cache-judge"], default="auto")
+    parser.add_argument("--judge-model", default=None, help="cache-judge: model whose answers sit in the judge cache (e.g. claude-sonnet-5-5)")
+    parser.add_argument("--pending", type=Path, default=None, help="cache-judge: write names without a cached answer to this JSONL")
     parser.add_argument("--orgs", type=Path, default=None, help="curated org CSV (default data/curated/orgs.csv); rows need verified_date")
     parser.add_argument("--allow-draft", action="store_true", help="also read the unverified draft CSV (tests only, flagged draft_input)")
     parser.add_argument("--draft", type=Path, default=None, help="draft org CSV (default data/curated/orgs_draft.csv), only with --allow-draft")
@@ -581,7 +631,19 @@ def main(argv: list[str] | None = None) -> int:
         except Exception as exc:  # noqa: BLE001 - catalog embeddings failed: whole run falls back to fuzzy
             print(f"[reconcile] catalog embeddings failed ({type(exc).__name__}: {str(exc)[:200]}): fuzzy fallback")
             method = "fuzzy"
-    result = reconcile(rows, catalog, ctx)
+    cache_judge = None
+    if method == "cache-judge":
+        if not args.judge_model:
+            print("[reconcile] --method cache-judge needs --judge-model")
+            return 2
+        cache_judge = (args.judge_model, CACHE_DIR, [])
+    result = reconcile(rows, catalog, ctx, cache_judge=cache_judge)
+    if cache_judge is not None:
+        pending = cache_judge[2]
+        if args.pending:
+            args.pending.write_text("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in pending))
+        print(f"[reconcile] cache-judge {args.judge_model}: {len(pending)} names without a cached answer"
+              + (f" → {args.pending}" if args.pending else ""))
     write_outputs(result, args.out_dir, method, ctx, report)
     s = result["summary"]
     print(f"[reconcile] {s['names']} names from {s['orgs']} orgs ({s['draft_orgs']} draft): {s['matched']} matched {s['matched_by']}, "

@@ -1,0 +1,80 @@
+{
+ "key": "8d939608a324ceea",
+ "edge_ids": [
+  "e_2df425f8fb7d",
+  "e_2f08386094bb",
+  "e_461243e6046d",
+  "e_844a5c20cf1d",
+  "e_e51d1ba0bb5a",
+  "e_fe8ba553bdf6"
+ ],
+ "from": "MONDO:0008736",
+ "via": "MONDO:0014743",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.511Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, peroxisome biogenesis disorder 2B and rhizomelic chondrodysplasia punctata type 5, are both recorded as caused by the gene PEX5 [e_fe8ba553bdf6] [e_2f08386094bb].",
+   "edge_ids": [
+    "e_fe8ba553bdf6",
+    "e_2f08386094bb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, which means they come from the databases OMIM and Orphanet [e_fe8ba553bdf6] [e_2f08386094bb].",
+   "edge_ids": [
+    "e_fe8ba553bdf6",
+    "e_2f08386094bb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate then computed that the two conditions share a causal gene, at confidence 0.9, the lower of the two gene links [e_844a5c20cf1d].",
+   "edge_ids": [
+    "e_844a5c20cf1d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This shared-gene link is inferred, meaning Constellate calculated it from the other two links [e_844a5c20cf1d].",
+   "edge_ids": [
+    "e_844a5c20cf1d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Peroxisome biogenesis disorder 2B has two recorded features, a high level of long chain fatty acids in the blood and a type of cataract called polar cataract, each with low confidence of 0.5 [e_461243e6046d] [e_2df425f8fb7d].",
+   "edge_ids": [
+    "e_461243e6046d",
+    "e_2df425f8fb7d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The rhizomelic condition has one study listed, a recruiting registry on ClinicalTrials.gov [e_e51d1ba0bb5a].",
+   "edge_ids": [
+    "e_e51d1ba0bb5a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the two conditions look alike or behave alike, and they do not show anything about treatments [e_844a5c20cf1d] [e_e51d1ba0bb5a].",
+   "edge_ids": [
+    "e_844a5c20cf1d",
+    "e_e51d1ba0bb5a"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

@@ -318,8 +318,9 @@ def check_all() -> dict[str, bool]:
     for n in index:
         if not all(k in n for k in ("id", "type", "label", "synonyms", "xrefs", "in_core", "degree")):
             err(f"index.json: incomplete entry {n.get('id')}")
-        if len(n.get("synonyms", [])) > 8:
-            err(f"index.json: {n.get('id')} has more than 8 synonyms")
+        max_synonyms = 16 if n.get("type") == "disease" and n.get("in_core") else 8  # core diseases: MONDO exact + Orphanet + OMIM
+        if len(n.get("synonyms", [])) > max_synonyms:
+            err(f"index.json: {n.get('id')} has more than {max_synonyms} synonyms")
         if str(n.get("id", "")).startswith(V2_SHARD_ONLY_PREFIXES):
             err(f"index.json: {n.get('id')} is a shard-only data-v2 node (no search hit)")
     index_set = set(index_ids)

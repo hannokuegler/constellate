@@ -1,0 +1,82 @@
+{
+ "key": "b91ebc87bd407178",
+ "edge_ids": [
+  "e_1daf626cd3bf",
+  "e_34272bdebcd2",
+  "e_36833e6b1d46",
+  "e_46cb9b7dc0bb",
+  "e_763e9def1b0e",
+  "e_8a9c88239791",
+  "e_d56da1ee4888"
+ ],
+ "from": "MONDO:0009265",
+ "via": "MONDO:0009266",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.564Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Gaucher disease type I and Gaucher disease type II are both recorded as caused by the gene GBA1 [e_d56da1ee4888] [e_8a9c88239791].",
+   "edge_ids": [
+    "e_d56da1ee4888",
+    "e_8a9c88239791"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_d56da1ee4888] [e_8a9c88239791].",
+   "edge_ids": [
+    "e_d56da1ee4888",
+    "e_8a9c88239791"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two types share this causal gene, at confidence 0.95 [e_34272bdebcd2].",
+   "edge_ids": [
+    "e_34272bdebcd2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_34272bdebcd2].",
+   "edge_ids": [
+    "e_34272bdebcd2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type I, two features are recorded, raised glucosylsphingosine seen in 64 of 64 cases and an overactive spleen listed as very frequent [e_36833e6b1d46] [e_763e9def1b0e].",
+   "edge_ids": [
+    "e_36833e6b1d46",
+    "e_763e9def1b0e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type II, there is one completed study on ClinicalTrials.gov of delivering an enzyme to the brain, and one older research record in NIH RePORTER [e_46cb9b7dc0bb] [e_1daf626cd3bf].",
+   "edge_ids": [
+    "e_46cb9b7dc0bb",
+    "e_1daf626cd3bf"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show the results of that study, and they list no symptoms for type II [e_46cb9b7dc0bb] [e_8a9c88239791].",
+   "edge_ids": [
+    "e_46cb9b7dc0bb",
+    "e_8a9c88239791"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

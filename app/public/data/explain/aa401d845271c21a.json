@@ -1,0 +1,78 @@
+{
+ "key": "aa401d845271c21a",
+ "edge_ids": [
+  "e_290723a095b7",
+  "e_2a2eaf172436",
+  "e_4b6cd0fc52ba",
+  "e_66fafb6711d9",
+  "e_e5bde56ef996"
+ ],
+ "from": "MONDO:0008767",
+ "via": "MONDO:0981164",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.515Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, neuronal ceroid lipofuscinosis 3 and retinitis pigmentosa 101, are both recorded as caused by the gene CLN3 [e_2a2eaf172436] [e_66fafb6711d9].",
+   "edge_ids": [
+    "e_2a2eaf172436",
+    "e_66fafb6711d9"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM [e_2a2eaf172436] [e_66fafb6711d9].",
+   "edge_ids": [
+    "e_2a2eaf172436",
+    "e_66fafb6711d9"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9 [e_e5bde56ef996].",
+   "edge_ids": [
+    "e_e5bde56ef996"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated from the two curated links and is not a separate database finding [e_e5bde56ef996].",
+   "edge_ids": [
+    "e_e5bde56ef996"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For neuronal ceroid lipofuscinosis 3, two observed features are recorded in OMIM, a fingerprint-shaped build-up of storage material in cells and vacuolated white blood cells, each from a single report [e_290723a095b7] [e_4b6cd0fc52ba].",
+   "edge_ids": [
+    "e_290723a095b7",
+    "e_4b6cd0fc52ba"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the same gene leads to two different conditions [e_e5bde56ef996].",
+   "edge_ids": [
+    "e_e5bde56ef996"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also record no symptoms for retinitis pigmentosa 101 and no studies or treatments for either condition [e_66fafb6711d9].",
+   "edge_ids": [
+    "e_66fafb6711d9"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

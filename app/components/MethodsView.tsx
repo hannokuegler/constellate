@@ -11,7 +11,7 @@ const LEVELS: EdgeLevel[] = ["observed", "curated", "text_mined", "inferred"];
 const LEVEL_SOURCES: Record<string, string> = {
   observed: "e.g. ClinVar pathogenic variants, HPO annotations with a frequency, trial records",
   curated: "e.g. Orphanet, MONDO, Reactome, OMIM annotations, EMA and FDA records",
-  text_mined: "OpenAI extracts a claim from a PubMed abstract; PMID and the quoted sentence are kept",
+  text_mined: "a language model extracts a claim from a PubMed abstract; PMID and the quoted sentence are kept",
   inferred: "computed by Constellate; the formula and its inputs are stored on the edge",
 };
 
@@ -25,7 +25,7 @@ const METRICS: Row[] = [
   {
     key: "extract_precision",
     label: "Extract precision",
-    measures: "Share of OpenAI-extracted claims that a person confirmed against the abstract, on a hand-labelled sample.",
+    measures: "Share of extracted claims confirmed against the abstract on a reviewed sample; the source line says who reviewed.",
     render: (m) => withN(m.extract_precision),
   },
   {
@@ -133,12 +133,12 @@ export default function MethodsView() {
       </section>
 
       <section aria-labelledby="ai">
-        <h2 id="ai" className="text-[22px] font-semibold">Where OpenAI is used</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product. Without an API key the app still runs; Explain falls back to template text and says so.</p>
+        <h2 id="ai" className="text-[22px] font-semibold">Where AI is used</h2>
+        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product, with the model named in the evidence. This run uses Claude (Anthropic); the OpenAI paths are built and switch on with a key. Without any key the app still runs and Explain falls back to template text.</p>
         <ol className="mt-4 grid gap-3 md:grid-cols-3">
           {[
             ["Extract", "Pipeline step 05", "Reads PubMed abstracts and returns structured claims (subject, predicate, object, polarity, PMID, quoted sentence). Claims without a quote are dropped. Result level: text-mined."],
-            ["Reconcile", "Pipeline step 06", "Matches patient-organisation names and free-text diagnoses to MONDO ids: embeddings propose candidates, a model judges them and gives a reason. Only organisations a person verified reach the product."],
+            ["Reconcile", "Pipeline step 06", "Matches patient-organisation names and free-text diagnoses to MONDO ids: embeddings propose candidates, a model judges them and gives a reason. Only organisations checked against their own website reach the product."],
             ["Explain", "App, /api/explain", "Turns the edges of an action card into plain language for a family. Every sentence must end with an edge id; a sentence without a valid id is struck out in the interface."],
           ].map(([name, where, text]) => (
             <li key={name} className="card px-4 py-4">
@@ -152,7 +152,7 @@ export default function MethodsView() {
 
       <section aria-labelledby="quality">
         <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that has not been measured yet says “pending” and what it will measure.</p>
+        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
         <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
           <table className="w-full min-w-[560px] text-left text-[14px]">
             <caption className="sr-only">Quality metrics</caption>
@@ -170,7 +170,7 @@ export default function MethodsView() {
                   <tr key={row.key} className="border-t border-line align-top" data-metric={row.key}>
                     <th scope="row" className="px-4 py-3 font-semibold">{row.label}</th>
                     <td className="px-4 py-3">
-                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full border border-dashed border-line-strong px-2 py-0.5 text-[12px] font-semibold text-ink-2">{state === "loading" ? "loading" : "pending"}</span>}
+                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full border border-dashed border-line-strong px-2 py-0.5 text-[12px] font-semibold text-ink-2">{state === "loading" ? "loading" : "not yet measured in this build"}</span>}
                     </td>
                     <td className="px-4 py-3 text-ink-2">{row.measures}</td>
                   </tr>

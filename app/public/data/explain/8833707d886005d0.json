@@ -1,0 +1,89 @@
+{
+ "key": "8833707d886005d0",
+ "edge_ids": [
+  "e_3022c27e268a",
+  "e_3229ec8d07f3",
+  "e_4896f8051a88",
+  "e_528faddb6bae",
+  "e_6f119c3d6d01",
+  "e_908b4627e477",
+  "e_a753a3ef31a1",
+  "e_bb17d0663325"
+ ],
+ "from": "MONDO:0009562",
+ "via": "MONDO:0017779",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.586Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Beta-mannosidosis is linked to the gene MANBA in curated databases [e_4896f8051a88].",
+   "edge_ids": [
+    "e_4896f8051a88"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Alpha-N-acetylgalactosaminidase deficiency is linked to the gene NAGA only by inference from three subtypes, with confidence 0.475, and this may not hold for every form [e_6f119c3d6d01].",
+   "edge_ids": [
+    "e_6f119c3d6d01"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For beta-mannosidosis, reduced beta-mannosidase activity in blood and in tissue is an observed feature [e_3229ec8d07f3] [e_a753a3ef31a1].",
+   "edge_ids": [
+    "e_3229ec8d07f3",
+    "e_a753a3ef31a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both observations rest on 1 of 1 in the records [e_3229ec8d07f3] [e_a753a3ef31a1].",
+   "edge_ids": [
+    "e_3229ec8d07f3",
+    "e_a753a3ef31a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two diseases look somewhat alike, with a score of 0.2 that is inferred and not a diagnosis [e_528faddb6bae].",
+   "edge_ids": [
+    "e_528faddb6bae"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For alpha-N-acetylgalactosaminidase deficiency, one completed study without treatment, a long-term follow-up of related diseases, is listed [e_908b4627e477].",
+   "edge_ids": [
+    "e_908b4627e477"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A patient group is matched to this disease, also only by inference from a name match on its website, and a lysosomal disease network grant is listed with a low confidence of 0.5 [e_3022c27e268a] [e_bb17d0663325].",
+   "edge_ids": [
+    "e_3022c27e268a",
+    "e_bb17d0663325"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no study, grant or patient group for beta-mannosidosis [e_4896f8051a88].",
+   "edge_ids": [
+    "e_4896f8051a88"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

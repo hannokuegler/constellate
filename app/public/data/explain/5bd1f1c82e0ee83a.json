@@ -1,0 +1,78 @@
+{
+ "key": "5bd1f1c82e0ee83a",
+ "edge_ids": [
+  "e_5db843bd3cd5",
+  "e_6f5103e08c5d",
+  "e_845be64bf17d",
+  "e_a3d916f13cc6",
+  "e_af63d19a002b",
+  "e_e9eb0b4d1948"
+ ],
+ "from": "MONDO:0008953",
+ "via": "MONDO:0011101",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.530Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two peroxisome biogenesis disorders, 1A (Zellweger) and 1B, are both linked to the gene PEX1 in curated databases [e_845be64bf17d] [e_af63d19a002b].",
+   "edge_ids": [
+    "e_845be64bf17d",
+    "e_af63d19a002b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.9 [e_a3d916f13cc6].",
+   "edge_ids": [
+    "e_a3d916f13cc6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the Zellweger type, a raised level of long chain fatty acids in the blood is an observed feature [e_6f5103e08c5d].",
+   "edge_ids": [
+    "e_6f5103e08c5d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Focal clonic seizures, a type of repeated muscle jerking, are also observed [e_e9eb0b4d1948].",
+   "edge_ids": [
+    "e_e9eb0b4d1948"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both observations rest on very small counts in the records, 3 of 3 and 1 of 1 [e_6f5103e08c5d] [e_e9eb0b4d1948].",
+   "edge_ids": [
+    "e_6f5103e08c5d",
+    "e_e9eb0b4d1948"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Tongue fasciculations, which are small twitches of the tongue, are marked as contradicted for this disease, with 1 contradicting record [e_5db843bd3cd5].",
+   "edge_ids": [
+    "e_5db843bd3cd5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show any symptoms for type 1B or any studies, funding or patient groups [e_af63d19a002b].",
+   "edge_ids": [
+    "e_af63d19a002b"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

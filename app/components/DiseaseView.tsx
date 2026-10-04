@@ -49,7 +49,12 @@ export default function DiseaseView({ id }: { id: string }) {
     };
   }, [id]);
 
-  if (state.status === "loading") return <Skeleton />;
+  if (state.status === "loading")
+    return (
+      <div className="min-h-[200svh]">
+        <Skeleton />
+      </div>
+    );
   if (state.status === "error")
     return (
       <div className="card mt-6 px-5 py-5" role="alert">

@@ -192,7 +192,7 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
           Contact the study team
         </a>
         <LevelBadge level={item.edge.level} small />
-        <button onClick={() => onEdge(item.edge)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
+        <button onClick={() => onEdge(item.edge)} aria-label={`Why listed: ${n.id} ${n.label}`} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
           Why listed
         </button>
         {detail && <span className="text-[12px] text-ink-2">Registry checked {formatDate(detail.retrieved)}</span>}

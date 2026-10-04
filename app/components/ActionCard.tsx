@@ -214,7 +214,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
             <section key={section.key} className="border-b border-line px-5 py-5 md:border-b-0 md:border-r md:px-6 last:border-0">
               <SectionTitle className="flex items-center gap-2.5 text-[20px] font-bold tracking-tight">
                 {section.title}
-                <span className="grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-[14px] font-bold leading-none" style={{ borderColor: SECTION_ACCENT[section.key], color: SECTION_ACCENT[section.key] }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
+                <span className="grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-[15px] font-bold leading-none" style={{ borderColor: SECTION_ACCENT[section.key], color: SECTION_ACCENT[section.key] }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
               <p className="mt-0.5 text-[16px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (

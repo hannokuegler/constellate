@@ -132,7 +132,7 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
   const kinds = new Set(shownAssets.map((a) => a.kind));
   return (
     <li className="rounded-[16px] border border-line px-4 py-3">
-      <p className="text-[19px] font-semibold leading-snug">
+      <p className="text-[20px] font-semibold leading-snug">
         <Link href={diseaseHref(candidate.id)} className="inline-flex min-h-11 items-center underline decoration-line-strong underline-offset-4 hover:decoration-current">
           {other}
         </Link>

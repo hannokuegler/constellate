@@ -130,7 +130,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Evidence for one link</p>
-              <h2 id="edge-panel-title" className="mt-1 text-[19px] font-semibold leading-snug" style={{ fontFamily: "var(--font-display, inherit)" }}>
+              <h2 id="edge-panel-title" className="mt-1 text-[20px] font-semibold leading-snug">
                 {edge ? (
                   <>
                     {labelOf(edge.source)} <span className="font-normal text-ink-2">→ {RELATION_LABEL[edge.type] ?? edge.type} →</span> {labelOf(edge.target)}

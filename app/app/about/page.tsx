@@ -37,7 +37,7 @@ export default function AboutPage() {
           <Logo size={36} />
           <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">About Constellate</p>
         </div>
-        <h1 className="mt-3 text-[30px] font-semibold leading-tight md:text-[40px]">Your family is not the first. What you need may already exist under another disease&apos;s name.</h1>
+        <h1 className="mt-3 text-[28px] font-bold leading-tight tracking-tight md:text-[40px]">Your family is not the first. What you need may already exist under another disease&apos;s name.</h1>
         <p className="mt-4 max-w-[68ch] text-[17px] text-ink-2">
           Families with a rare diagnosis and the groups that support them often work alone, because the registries, studies and tools they need sit under a neighbouring disease with a different name. Constellate is an evidence-graded map of rare diseases that finds those connections and shows the proof for every one of them.
         </p>
@@ -58,7 +58,7 @@ export default function AboutPage() {
           {MOMENTS.map((m) => (
             <li key={m.label} className="card px-5 py-5">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">{m.label}</p>
-              <h3 className="mt-1 text-[19px] font-semibold">{m.title}</h3>
+              <h3 className="mt-1 text-[20px] font-semibold">{m.title}</h3>
               <p className="mt-2 text-[15px] text-ink-2">{m.text}</p>
             </li>
           ))}
@@ -70,9 +70,9 @@ export default function AboutPage() {
         <ol className="mt-4 grid gap-4 md:grid-cols-3">
           {STEPS.map(([n, title, text]) => (
             <li key={n} className="card px-5 py-5">
-              <span className="grid h-8 w-8 place-items-center rounded-full border border-line-strong text-[14px] font-semibold" aria-hidden="true">{n}</span>
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-[15px] font-semibold text-accent" aria-hidden="true">{n}</span>
               <h3 className="mt-3 text-[17px] font-semibold">{title}</h3>
-              <p className="mt-1 text-[14px] text-ink-2">{text}</p>
+              <p className="mt-1 text-[16px] text-ink-2">{text}</p>
             </li>
           ))}
         </ol>

@@ -86,7 +86,7 @@ export default function ActionCardV2({ model, level }: { model: V2Model; level: 
       <div className="mt-3 grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
         {model.sections.map((section) => (
           <section key={section.key} aria-label={section.title} data-section={section.key}>
-            <Title className="text-[19px] font-semibold">{section.title}</Title>
+            <Title className="text-[20px] font-semibold">{section.title}</Title>
             <p className="text-[16px] text-ink-2">{section.hint}</p>
             {section.groups.map((g) => (
               <Group key={g.role} group={g} showName={section.groups.length > 1 || g.role === "pair"} Heading={Sub} />

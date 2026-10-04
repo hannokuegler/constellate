@@ -168,7 +168,11 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
   const activeEnds = useMemo(() => {
     const ends = new Set<string>();
     if (!activeEdge) return ends;
-    for (const l of links) if (l.edge.id === activeEdge) (ends.add(l.source), ends.add(l.target));
+    for (const l of links) {
+      if (l.edge.id !== activeEdge) continue;
+      ends.add(l.source);
+      ends.add(l.target);
+    }
     return ends;
   }, [activeEdge, links]);
 
@@ -204,7 +208,7 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
           onEngineStop={() => {
             if (fitted.current) return;
             fitted.current = true;
-            graphRef.current?.zoomToFit(reducedMotion ? 0 : 400, narrow ? 28 : 72);
+            graphRef.current?.zoomToFit(reducedMotion ? 0 : 400, narrow ? 28 : 56);
           }}
           linkCanvasObjectMode={() => "replace"}
           linkCanvasObject={(link, ctx, scale) => {
@@ -371,7 +375,7 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
               ctx.font = isCenter
                 ? `600 ${sizePx * px}px ${palette.display}`
                 : `${hovered ? 600 : 500} ${sizePx * px}px ${palette.sans}`;
-              const lines = wrapLines(ctx, node.label, maxWidthPx * px, isCenter || hovered ? 3 : 2);
+              const lines = wrapLines(ctx, node.label, maxWidthPx * px, isCenter || hovered || node.kind === "family" ? 3 : 2);
               const lineHeight = (sizePx + 3) * px;
               const textWidth = Math.max(...lines.map((l) => ctx.measureText(l).width));
               const padX = 6 * px;

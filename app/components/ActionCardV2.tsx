@@ -22,12 +22,12 @@ function Row({ row }: { row: V2Row }) {
         <p className="mt-1 flex flex-wrap gap-x-3 text-[13px]">
           {row.sources.map((s) =>
             s.href ? (
-              <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center text-accent underline underline-offset-2">
+              <a key={s.href} href={s.href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                 {s.label}
                 <span className="sr-only"> (opens in a new tab)</span>
               </a>
             ) : (
-              <span key={s.label} className="inline-flex min-h-8 items-center text-ink-2">{s.label}</span>
+              <span key={s.label} className="inline-flex min-h-11 items-center text-ink-2">{s.label}</span>
             ),
           )}
         </p>
@@ -64,7 +64,7 @@ export default function ActionCardV2({ model, level }: { model: V2Model; level: 
   return (
     <div className="border-t border-line px-5 py-5 md:px-6" data-testid="action-card-v2">
       <div className="flex flex-wrap items-center gap-2">
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Assets and context</p>
+        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Assets and context</p>
         {model.fixture && (
           <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn" title="Test data from app/fixtures, not pipeline output">
             FIXTURE data, not real

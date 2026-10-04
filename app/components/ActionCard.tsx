@@ -20,7 +20,8 @@ interface Props {
   standalone?: boolean;
 }
 
-const SECTION_ACCENT = { transfers: "var(--ok)", differs: "var(--warn)", review: "var(--n-neighbour)" } as const;
+/** Meaning travels in the glyph, not in colour: ink only. */
+const SECTION_GLYPH = { transfers: "✓", differs: "≠", review: "?" } as const;
 
 export default function ActionCard({ disease, viaId, onViaChange, meta, standalone = false }: Props) {
   const { register } = useEdgePanel();
@@ -81,8 +82,8 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
   return (
     <article className="card overflow-hidden" aria-labelledby="action-card-title">
       <header className="border-b border-line px-5 py-5 md:px-6">
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Action card</p>
-        <Title id="action-card-title" className="mt-1 text-[22px] font-semibold leading-snug">
+        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Action card</p>
+        <Title id="action-card-title" className="t-h2 mt-1 text-[24px] font-semibold leading-snug md:text-[28px]">
           What {disease.node.label} can learn from {neighbour.label}
         </Title>
         <p className="mt-1 text-[13px] text-ink-2">Template text built only from graph edges. Every sentence ends with the edges it rests on; click one to see the evidence.</p>
@@ -104,17 +105,17 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
               <svg className="pointer-events-none absolute right-3 text-ink-2" width="10" height="6" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" /></svg>
             </label>
           )}
-          <button onClick={download} disabled={!card} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-[15px] font-semibold text-accent-ink disabled:opacity-60">
+          <button onClick={download} disabled={!card} className="btn-primary disabled:opacity-60">
             <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1.5v8M3.5 6.5L7 10l3.5-3.5M2 12.5h10" stroke="currentColor" strokeWidth="1.8" fill="none" strokeLinecap="round" /></svg>
             Export proposal
           </button>
           {!standalone && (
-            <Link href={`${diseaseHref(disease.node.id)}/action?via=${toFileKey(neighbour.id)}`} className="inline-flex min-h-11 items-center rounded-full border border-line px-4 text-[15px] font-medium">
+            <Link href={`${diseaseHref(disease.node.id)}/action?via=${toFileKey(neighbour.id)}`} className="btn-secondary">
               Open as page
             </Link>
           )}
           {standalone && (
-            <button onClick={() => window.print()} className="no-print inline-flex min-h-11 items-center rounded-full border border-line px-4 text-[15px] font-medium">
+            <button onClick={() => window.print()} className="btn-secondary no-print">
               Print
             </button>
           )}
@@ -131,13 +132,13 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
         <div className="grid grid-cols-1 gap-0 md:grid-cols-3">
           {card.sections.map((section) => (
             <section key={section.key} className="border-b border-line px-5 py-5 md:border-b-0 md:border-r md:px-6 last:border-0">
-              <SectionTitle className="flex items-center gap-2 text-[17px] font-semibold">
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: SECTION_ACCENT[section.key] }} aria-hidden="true" />
+              <SectionTitle className="t-h2 flex items-center gap-2.5 text-[20px] font-semibold" style={{ fontFamily: "var(--font-display, inherit)" }}>
                 {section.title}
+                <span className="grid h-7 w-7 place-items-center rounded-full border border-line-strong text-[14px] font-semibold leading-none" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
               <p className="mt-0.5 text-[13px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (
-                <ul className="mt-3 space-y-3">
+                <ul className="mt-4 space-y-3.5">
                   {section.sentences.map((s, i) => (
                     <li key={i} className="text-[15px] leading-relaxed">
                       {s.text}

@@ -35,17 +35,17 @@ export default function AboutPage() {
       <header>
         <div className="flex items-center gap-3">
           <Logo size={36} />
-          <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">About Constellate</p>
+          <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">About Constellate</p>
         </div>
         <h1 className="mt-3 text-[30px] font-semibold leading-tight md:text-[40px]">Your family is not the first. What you need may already exist under another disease&apos;s name.</h1>
         <p className="mt-4 max-w-[68ch] text-[17px] text-ink-2">
           Families with a rare diagnosis and the groups that support them often work alone, because the registries, studies and tools they need sit under a neighbouring disease with a different name. Constellate is an evidence-graded map of rare diseases that finds those connections and shows the proof for every one of them.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
-          <Link href={diseaseHref("MONDO:0009499")} className="inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-ink">
+          <Link href={diseaseHref("MONDO:0009499")} className="btn-primary">
             Follow the hero path: Krabbe disease
           </Link>
-          <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full border border-line px-5 text-[15px] font-medium">
+          <Link href="/methods" className="btn-secondary">
             How we know
           </Link>
         </div>
@@ -57,7 +57,7 @@ export default function AboutPage() {
         <ul className="mt-4 grid gap-4 md:grid-cols-2">
           {MOMENTS.map((m) => (
             <li key={m.label} className="card px-5 py-5">
-              <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">{m.label}</p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">{m.label}</p>
               <h3 className="mt-1 text-[19px] font-semibold">{m.title}</h3>
               <p className="mt-2 text-[15px] text-ink-2">{m.text}</p>
             </li>
@@ -70,7 +70,7 @@ export default function AboutPage() {
         <ol className="mt-4 grid gap-4 md:grid-cols-3">
           {STEPS.map(([n, title, text]) => (
             <li key={n} className="card px-5 py-5">
-              <span className="grid h-8 w-8 place-items-center rounded-full bg-accent-soft text-[14px] font-semibold text-accent" aria-hidden="true">{n}</span>
+              <span className="grid h-8 w-8 place-items-center rounded-full border border-line-strong text-[14px] font-semibold" aria-hidden="true">{n}</span>
               <h3 className="mt-3 text-[17px] font-semibold">{title}</h3>
               <p className="mt-1 text-[14px] text-ink-2">{text}</p>
             </li>
@@ -79,7 +79,7 @@ export default function AboutPage() {
       </section>
 
       <section aria-labelledby="gap" className="card border-dashed px-5 py-6 md:px-8">
-        <p className="text-[12px] font-semibold uppercase tracking-wide text-warn">Honest gap</p>
+        <p className="flex items-center gap-2.5 text-[12px] font-semibold uppercase tracking-[0.1em] text-ink-2"><span className="dot-ring" aria-hidden="true" />Honest gap</p>
         <h2 id="gap" className="mt-1 text-[24px] font-semibold">When there is no trail, we say so</h2>
         <p className="mt-2 max-w-[68ch] text-[16px] text-ink-2">
           Where no source supports a link, Constellate does not fill the space. It shows what was searched and when, which communities are nearest, and what would have to be tested next. A missing answer is a result, and it is marked as one.
@@ -99,10 +99,10 @@ export default function AboutPage() {
         <div>
           <h2 className="text-[24px] font-semibold">Built with OpenAI</h2>
           <p className="mt-3 text-[15px] text-ink-2">
-            OpenAI models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. Each use is marked in the product, and every explanation sentence must cite an evidence edge. Details on <Link href="/methods" className="text-accent underline underline-offset-2">How we know</Link>.
+            OpenAI models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. Each use is marked in the product, and every explanation sentence must cite an evidence edge. Details on <Link href="/methods" className="text-ink underline decoration-line underline-offset-2 hover:decoration-current">How we know</Link>.
           </p>
           <p className="mt-4 text-[15px]">
-            <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-accent underline underline-offset-2">
+            <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">
               Source code on GitHub
               <span className="sr-only"> (opens in a new tab)</span>
             </a>

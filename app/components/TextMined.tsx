@@ -28,7 +28,7 @@ export default function TextMined({ edges, labelOf, onEdge }: { edges: Edge[]; l
               {ev?.snippet && <p className="mt-1 line-clamp-2 text-[13px] text-ink-2">“{ev.snippet}”</p>}
               <div className="flex flex-wrap items-center gap-x-3 text-[12px] text-ink-2">
                 {ev?.url ? (
-                  <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-accent underline underline-offset-2">
+                  <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                     {ev.record ?? "source"}
                   </a>
                 ) : (
@@ -36,7 +36,7 @@ export default function TextMined({ edges, labelOf, onEdge }: { edges: Edge[]; l
                 )}
                 <span className="tabular">conf. {formatConfidence(e.confidence)}</span>
                 <span>{e.evidence.length} abstract{e.evidence.length === 1 ? "" : "s"}</span>
-                <button onClick={() => onEdge(e)} className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+                <button onClick={() => onEdge(e)} className="ml-auto inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
                   Evidence
                 </button>
               </div>

@@ -3,10 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types";
 import { loadTrial } from "@/lib/data";
-import { ageRange, coverageRows, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
+import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
 import { LevelBadge } from "./Badges";
-import HonestGap from "./HonestGap";
+import HonestGap, { coverageSearches } from "./HonestGap";
 
 const COUNTRY_KEY = "constellate.country";
 const ALL = "";
@@ -57,7 +57,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
 
   const shown = trials.filter((t) => !country || details[t.node.id]?.countries.some((c) => c.country === country));
   const visible = showAll ? shown : shown.slice(0, 5);
-  const ctgov = coverageRows(file.coverage).filter((c) => c.source === "ctgov");
+  const ctgov = coverageSearches(file.coverage, ["ctgov"]);
 
   const pickCountry = (value: string) => {
     setCountry(value);
@@ -79,7 +79,8 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
           variant="section"
           title={`No open study lists ${file.node.label} right now`}
           reason="ClinicalTrials.gov has no recruiting or upcoming study whose conditions or title name this diagnosis or one of its synonyms."
-          searched={ctgov.length ? ctgov : [{ source: "ClinicalTrials.gov" }]}
+          searched={ctgov.length ? ctgov : [{ source: "ClinicalTrials.gov", fetched_at: undefined }]}
+          asOf={ctgov[0]?.fetched_at}
           close={["A study registration that names this diagnosis", "Studies of related diseases (see related communities) may accept it: ask their teams"]}
         />
       ) : (
@@ -113,7 +114,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </ul>
           )}
           {shown.length > 5 && (
-            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-accent">
+            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
               {showAll ? "Show fewer" : `Show all ${shown.length}`}
             </button>
           )}
@@ -185,12 +186,12 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
           href={detail?.contact_url ?? `${String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`)}#contacts-and-locations`}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex min-h-11 items-center rounded-full bg-accent px-4 text-[13px] font-semibold text-accent-ink"
+          className="btn-primary text-[13px]"
         >
           Contact the study team
         </a>
         <LevelBadge level={item.edge.level} small />
-        <button onClick={() => onEdge(item.edge)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+        <button onClick={() => onEdge(item.edge)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
           Why listed
         </button>
         {detail && <span className="text-[12px] text-ink-2">Registry checked {formatDate(detail.retrieved)}</span>}

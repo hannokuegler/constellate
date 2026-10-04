@@ -47,7 +47,7 @@ export default function MomentBar({ diseaseLabel, orgs, hasGap, openStudies, nei
           <>Start with <a href="#patient-organisations" className={jump}>the honest gap and the nearest communities</a></>
         )}
         {neighbours > 0 ? (
-          <>, compare <a href="#related" className={jump}>related diagnoses</a>{onActionCard ? <> and open an <button type="button" onClick={onActionCard} className={jump}>action card</button> for the closest one</> : null}.</>
+          <>, compare <a href="#related" className={jump}>related diagnoses</a>{onActionCard ? <> and open an <button type="button" onClick={onActionCard} className={`-my-3 inline-flex min-h-11 items-center align-baseline ${jump}`}>action card</button> for the closest one</> : null}.</>
         ) : (
           "."
         )}

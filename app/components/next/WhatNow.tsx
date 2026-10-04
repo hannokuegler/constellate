@@ -126,7 +126,13 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
 /** "Approved for MLD, not for Krabbe disease: Libmeldy (EMA, 17 Dec 2020) ..." right under the honest no; the details follow in "What exists for related diseases". */
 function RelatedPrecedent({ label, related }: { label: string; related: RelatedState }) {
   const precedent = related.findings.find((f) => f.therapies.length);
-  if (related.status === "loading") return <p className="text-[15px] text-ink-2" role="status">Checking related diseases…</p>;
+  // the answer box is about this tall once loaded: reserving it keeps the cards below from jumping
+  if (related.status === "loading")
+    return (
+      <div className="flex min-h-[236px] items-start rounded-[14px] border border-dashed border-line px-4 py-3 md:min-h-[146px]" role="status">
+        <p className="text-[15px] text-ink-2">Checking related diseases…</p>
+      </div>
+    );
   if (!precedent) return null;
   const names = precedent.therapies.slice(0, 3).map((t) => [t.name, [t.authority, t.date].filter(Boolean).join(", ")].filter(Boolean).join(" (") + (t.authority || t.date ? ")" : ""));
   return (

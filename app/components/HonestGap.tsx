@@ -182,7 +182,7 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
               ) : (
                 <span>list checked as a whole</span>
               )}
-              {r.note && <span className="mt-0.5 block break-words text-[15px]">{r.note}</span>}
+              {r.note && <span className="mt-0.5 block break-words text-[16px]">{r.note}</span>}
             </td>
             <td className="tabular mt-1 inline-block pr-4 text-ink-2 @lg:mt-0 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:text-right @lg:align-top">
               {r.hits !== undefined ? <><span className="text-ink">{r.hits.toLocaleString("en")}</span> {r.hits === 1 ? "hit" : "hits"}</> : <span aria-label="no hit count recorded">n/a</span>}
@@ -238,7 +238,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                     </p>
                     {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full border border-dashed border-line px-2 text-[12px] font-medium text-ink-2">mechanism differs</span>}
                     {!!n.orgs?.length && (
-                      <p className="mt-1 flex flex-wrap gap-x-3 text-[15px]">
+                      <p className="mt-1 flex flex-wrap gap-x-3 text-[16px]">
                         {n.orgs.map((o) => (
                           <Link key={o.id} href={orgHref(o.id)} className="inline-flex min-h-11 items-center underline underline-offset-2">
                             {o.label}

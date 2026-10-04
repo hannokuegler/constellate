@@ -157,7 +157,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
             <ul className="mt-2 divide-y divide-line">
               {[...v.causal, ...v.other].map((e) => (
                 <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                  <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
+                  <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center text-[16px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                     {label(e.source)}
                   </Link>
                   <span className="text-[12px] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}{e.rolled_up_from?.length ? " · via subtypes" : ""}</span>
@@ -170,16 +170,16 @@ export default function GeneView({ symbol }: { symbol: string }) {
           <TextMined edges={file.text_mined ?? []} labelOf={(id) => v.labels[id] ?? id} onEdge={openEdge} />
           <section className="card px-4 py-4">
             <h2 className="text-[17px] font-semibold">Pathways <span className="tabular text-[13px] font-normal text-ink-2">{v.pathways.length}</span></h2>
-            {file.pathways_note && <p className="mt-1 text-[13px] text-ink-2">{file.pathways_note}</p>}
+            {file.pathways_note && <p className="mt-1 text-[16px] text-ink-2">{file.pathways_note}</p>}
             {file.pathways === undefined ? (
-              <p className="mt-1 text-[13px] text-ink-2">Pathway data not loaded for this gene yet.</p>
+              <p className="mt-1 text-[16px] text-ink-2">Pathway data not loaded for this gene yet.</p>
             ) : v.pathways.length === 0 ? (
-              <p className="mt-1 text-[13px] text-ink-2">Reactome lists no pathway for {file.node.id} (queried, zero results).</p>
+              <p className="mt-1 text-[16px] text-ink-2">Reactome lists no pathway for {file.node.id} (queried, zero results).</p>
             ) : (
               <ul className="mt-2 divide-y divide-line">
                 {v.pathways.map((p) => (
                   <li key={p.id} className="flex min-h-11 items-center gap-2 py-1">
-                    <span className="min-w-0 flex-1 text-[15px]">{p.label}</span>
+                    <span className="min-w-0 flex-1 text-[16px]">{p.label}</span>
                     <span className="text-[12px] text-ink-2">{p.id}</span>
                     <EvidenceButton edge={p.edge} onEdge={openEdge} />
                   </li>
@@ -188,11 +188,11 @@ export default function GeneView({ symbol }: { symbol: string }) {
             )}
             {v.pathwaysMore.length > 0 && (
               <details className="mt-2">
-                <summary className="min-h-11 cursor-pointer py-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">{v.pathwaysMore.length} more general pathways</summary>
+                <summary className="min-h-11 cursor-pointer py-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">{v.pathwaysMore.length} more general pathways</summary>
                 <ul className="divide-y divide-line">
                   {v.pathwaysMore.map((p) => (
                     <li key={p.id} className="flex min-h-11 items-center gap-2 py-1">
-                      <span className="min-w-0 flex-1 text-[13px]">{p.label}</span>
+                      <span className="min-w-0 flex-1 text-[16px]">{p.label}</span>
                       <EvidenceButton edge={p.edge} onEdge={openEdge} />
                     </li>
                   ))}

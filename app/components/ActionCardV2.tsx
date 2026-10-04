@@ -51,7 +51,7 @@ function Group({ group, showName, Heading }: { group: V2Group; showName: boolean
         <>
           <ul>{group.rows.map((r) => <Row key={r.key} row={r} />)}</ul>
           {group.note && (
-            <details className="mt-1 text-[15px] text-ink-2">
+            <details className="mt-1 text-[16px] text-ink-2">
               <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-ink underline decoration-line underline-offset-2 hover:decoration-current">How this link is computed</summary>
               <p className="break-words pb-1 leading-snug">{group.note}</p>
             </details>

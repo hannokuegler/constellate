@@ -101,7 +101,7 @@ export default function MethodsView() {
 
       <section aria-labelledby="levels">
         <h2 id="levels" className="text-[22px] font-semibold">Four evidence levels</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">A level is never raised: a text-mined claim stays text-mined until a curated source states it too.</p>
+        <p className="mt-1 max-w-[68ch] text-[16px] text-ink-2">A level is never raised: a text-mined claim stays text-mined until a curated source states it too.</p>
         <ul className="mt-4 grid gap-3 md:grid-cols-2">
           {LEVELS.map((level) => (
             <li key={level} className="card px-4 py-4">
@@ -109,22 +109,22 @@ export default function MethodsView() {
                 <LevelBadge level={level} />
                 {levelCount(level) !== undefined && <span className="tabular text-[13px] text-ink-2">{levelCount(level)!.toLocaleString("en")} edges</span>}
               </div>
-              <p className="mt-2 text-[15px]">{LEVEL_INFO[level].meaning}.</p>
-              <p className="mt-1 text-[13px] text-ink-2">{LEVEL_SOURCES[level]}.</p>
+              <p className="mt-2 text-[16px]">{LEVEL_INFO[level].meaning}.</p>
+              <p className="mt-1 text-[16px] text-ink-2">{LEVEL_SOURCES[level]}.</p>
             </li>
           ))}
         </ul>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           <div className="card px-4 py-4">
             <h3 className="text-[17px] font-semibold">Counter-evidence</h3>
-            <p className="mt-1 text-[15px] text-ink-2">
+            <p className="mt-1 text-[16px] text-ink-2">
               Every edge has a <code className="font-mono text-[13px]">contradicting</code> list. It may be empty, it is never missing. Where two sources disagree, both are shown and the edge is drawn in red
               {levelCount("contradicted") !== undefined && <> ({levelCount("contradicted")!.toLocaleString("en")} edges carry counter-evidence in the current build)</>}.
             </p>
           </div>
           <div className="card px-4 py-4">
             <h3 className="text-[17px] font-semibold">Confidence</h3>
-            <p className="mt-1 text-[15px] text-ink-2">
+            <p className="mt-1 text-[16px] text-ink-2">
               A number from 0 to 1 per edge and per piece of evidence. It orders what we show; it is not a probability that a diagnosis is right. A link pulled up from a subtype to its parent disease gets the weakest subtype confidence times
               {typeof meta?.parameters?.rollup_confidence_factor === "number" ? ` ${meta.parameters.rollup_confidence_factor}` : " a factor below 1"}, so it is never stronger than its source.
             </p>
@@ -134,7 +134,7 @@ export default function MethodsView() {
 
       <section aria-labelledby="ai">
         <h2 id="ai" className="text-[22px] font-semibold">Where AI is used</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product: Extract, Reconcile and Explain. All three are built on the OpenAI API, with the model for each step set by an environment variable (OPENAI_MODEL_EXTRACT, OPENAI_MODEL_JUDGE, OPENAI_MODEL_EMBED) and checked against the available models before a run. The current data export ran these steps on Claude (Anthropic); every evidence item names the model that produced it. Without any key the app still runs and Explain falls back to template text.</p>
+        <p className="mt-1 max-w-[68ch] text-[16px] text-ink-2">Three places, each marked in the product: Extract, Reconcile and Explain. All three are built on the OpenAI API, with the model for each step set by an environment variable (OPENAI_MODEL_EXTRACT, OPENAI_MODEL_JUDGE, OPENAI_MODEL_EMBED) and checked against the available models before a run. The current data export ran these steps on Claude (Anthropic); every evidence item names the model that produced it. Without any key the app still runs and Explain falls back to template text.</p>
         <ol className="mt-4 grid gap-3 md:grid-cols-3">
           {[
             ["Extract", "Pipeline step 05", "Reads PubMed abstracts and returns structured claims (subject, predicate, object, polarity, PMID, quoted sentence). Claims without a quote are dropped. Result level: text-mined."],
@@ -152,9 +152,9 @@ export default function MethodsView() {
 
       <section aria-labelledby="quality">
         <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
+        <p className="mt-1 max-w-[68ch] text-[16px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
         <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
-          <table className="block w-full text-left text-[15px] sm:table sm:min-w-[560px]">
+          <table className="block w-full text-left text-[16px] sm:table sm:min-w-[560px]">
             <caption className="sr-only">Quality metrics</caption>
             <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
               <tr>
@@ -190,10 +190,10 @@ export default function MethodsView() {
 
       <section aria-labelledby="sources">
         <h2 id="sources" className="text-[22px] font-semibold">Data sources and licences</h2>
-        {state === "missing" && <p className="mt-2 text-[15px] text-ink-2">Data status could not be loaded.</p>}
+        {state === "missing" && <p className="mt-2 text-[16px] text-ink-2">Data status could not be loaded.</p>}
         {!!meta?.sources.length && (
           <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
-            <table className="block w-full text-left text-[15px] sm:table sm:min-w-[560px]">
+            <table className="block w-full text-left text-[16px] sm:table sm:min-w-[560px]">
               <caption className="sr-only">Data sources</caption>
               <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
                 <tr>
@@ -220,7 +220,7 @@ export default function MethodsView() {
             </table>
           </div>
         )}
-        <p className="mt-4 text-[13px] text-ink-2">Constellate is a research-navigation tool, not medical advice. Open studies link to the study&apos;s official contact page; we collect no health data and offer no sign-up.</p>
+        <p className="mt-4 text-[16px] text-ink-2">Constellate is a research-navigation tool, not medical advice. Open studies link to the study&apos;s official contact page; we collect no health data and offer no sign-up.</p>
       </section>
     </div>
   );

@@ -93,7 +93,7 @@ export default function MethodsView() {
     <div className="mx-auto mt-8 max-w-[960px] space-y-10">
       <header>
         <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Methods</p>
-        <h1 className="mt-1 text-[28px] font-semibold leading-tight md:text-[34px]">How we know</h1>
+        <h1 className="t-h1 mt-1 text-[28px] font-semibold leading-tight md:text-[40px]">How we know</h1>
         <p className="mt-2 max-w-[68ch] text-[16px] text-ink-2">
           Every line in the graph carries a source, a date, an evidence level, a confidence and a slot for counter-evidence. Where we have no source, we say so instead of guessing.
         </p>
@@ -170,7 +170,7 @@ export default function MethodsView() {
                   <tr key={row.key} className="border-t border-line align-top" data-metric={row.key}>
                     <th scope="row" className="px-4 py-3 font-semibold">{row.label}</th>
                     <td className="px-4 py-3">
-                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn">{state === "loading" ? "loading" : "pending"}</span>}
+                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full border border-dashed border-line-strong px-2 py-0.5 text-[12px] font-semibold text-ink-2">{state === "loading" ? "loading" : "pending"}</span>}
                     </td>
                     <td className="px-4 py-3 text-ink-2">{row.measures}</td>
                   </tr>
@@ -205,9 +205,9 @@ export default function MethodsView() {
               <tbody>
                 {meta.sources.map((s) => (
                   <tr key={s.db} className="border-t border-line align-top">
-                    <th scope="row" className="px-4 py-2 font-semibold">
+                    <th scope="row" className="px-4 py-0.5 font-semibold">
                       {s.url ? (
-                        <a href={s.url} target="_blank" rel="noreferrer" className="text-ink underline decoration-line underline-offset-2 hover:decoration-current">{s.db}</a>
+                        <a href={s.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">{s.db}<span className="sr-only"> (opens in a new tab)</span></a>
                       ) : (
                         s.db
                       )}

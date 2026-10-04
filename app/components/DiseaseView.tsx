@@ -215,7 +215,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         <ul className="divide-y divide-line">
           {(showAllPhenotypes ? file.phenotypes : file.phenotypes.slice(0, 8)).map(({ edge, phenotype }) => (
             <li key={edge.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-              <Link href={phenotypeHref(phenotype.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline-offset-2 hover:underline sm:basis-0 sm:flex-1">
+              <Link href={phenotypeHref(phenotype.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                 {phenotype.label}
               </Link>
               <span className="tabular text-[12px] text-ink-2" title="information content">IC {phenotype.ic.toFixed(1)}</span>
@@ -482,7 +482,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
   return (
     <li className="py-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-        <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[15px] font-semibold underline-offset-2 hover:underline">
+        <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[15px] font-semibold underline decoration-line underline-offset-2 hover:decoration-current">
           {n.label}
         </Link>
         <span className="tabular flex items-center gap-2 text-[12px] text-ink-2" title="similarity (edge confidence)">

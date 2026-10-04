@@ -4,7 +4,7 @@ import { useId, useMemo } from "react";
 import type { DiseaseFile } from "@/lib/types";
 import { trialStatusLabel } from "@/lib/normalize";
 import { familyAssets, plainDate, PLAIN_WORDS, type StudyRow } from "@/lib/nextSteps";
-import { ALL_COUNTRIES, contactUrl, listsCountry, otherCountries, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
+import { ALL_COUNTRIES, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, otherCountries, sitesAsOf, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
 import { Explain, NowCard, Source } from "./ui";
 
 const RECRUITING = trialStatusLabel("RECRUITING");
@@ -27,13 +27,16 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
   const ids = useMemo(() => ordered.map((s) => s.key), [ordered]);
   const details = useTrialDetails(ids);
   const countries = useCountryCounts(details);
-  const [country, pickCountry] = useCountry();
+  const unlisted = unlistedCount(ids, details);
+  const [stored, pickCountry] = useCountry();
+  // the choice is shared with "Open studies" below; "Country not listed" only applies where such a study exists
+  const country = stored === NO_COUNTRY && !unlisted ? ALL_COUNTRIES : stored;
   // every other country stays pickable, so "none here" is said, not implied by a missing option
   const others = useMemo(() => {
     if (!countries.length) return [];
     const rest = otherCountries(countries.map(([c]) => c));
     // a remembered country from another disease page that the browser names differently
-    return country && !countries.some(([c]) => c === country) && !rest.includes(country) ? [country, ...rest] : rest;
+    return country && country !== NO_COUNTRY && !countries.some(([c]) => c === country) && !rest.includes(country) ? [country, ...rest] : rest;
   }, [countries, country]);
 
   const matching = ordered.filter((s) => listsCountry(details[s.key], country));
@@ -43,14 +46,7 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
   const registries = assets.filter((a) => a.kind === "registry" && /recruiting/i.test(a.status ?? "") && !studyIds.has(a.record ?? ""));
   const ctgov = (file.coverage ?? []).find((c) => /ctgov|clinicaltrials/i.test(c.source));
   const checked = plainDate(ctgov?.retrieved ?? ctgov?.fetched_at);
-  const registryChecked =
-    plainDate(
-      Object.values(details)
-        .map((d) => d?.retrieved)
-        .filter((d): d is string => Boolean(d))
-        .sort()
-        .pop(),
-    ) ?? checked;
+  const registryChecked = plainDate(sitesAsOf(details, [ctgov?.retrieved ?? ctgov?.fetched_at]));
 
   return (
     <NowCard id="now-studies" title="Studies you could ask about" gap={!studies.length}>
@@ -71,6 +67,11 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                 className="h-12 w-full max-w-[360px] rounded-[12px] border border-line-strong bg-surface px-3 text-[17px] text-ink"
               >
                 <option value={ALL_COUNTRIES}>All countries</option>
+                {unlisted > 0 && (
+                  <option value={NO_COUNTRY}>
+                    {NO_COUNTRY_LABEL} ({unlisted})
+                  </option>
+                )}
                 <optgroup label="Countries with a study site">
                   {countries.map(([c, n]) => (
                     <option key={c} value={c}>
@@ -92,11 +93,14 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
           )}
           {country && (
             <p role="status" className={matching.length ? "text-[15px] text-ink-2" : "rounded-[12px] bg-warn-soft px-3 py-2 text-[15px] leading-relaxed text-warn"}>
-              {matching.length
+              {country === NO_COUNTRY
+                ? `${matching.length === 1 ? "One study does" : `${matching.length} studies do`} not list a country yet; ask the study team where it will run.`
+                : matching.length
                 ? `${matching.length === 1 ? "One study lists" : `${matching.length} studies list`} a site in ${country}.`
                 : `No study for ${label} lists a site in ${country}${registryChecked ? ` as of ${registryChecked}` : ""}. Studies elsewhere sometimes accept travelling participants; ask the study team.`}
             </p>
           )}
+          {country && !matching.length && <p className="text-[15px] font-semibold text-ink">Studies in other countries</p>}
           <ul className="divide-y divide-line">
             {shown.map((s) => {
               const d = details[s.key];

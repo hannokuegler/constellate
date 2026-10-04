@@ -5,7 +5,7 @@ import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types
 import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
 import { phaseText } from "@/lib/present";
-import { ALL_COUNTRIES as ALL, contactUrl, listsCountry, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
+import { ALL_COUNTRIES as ALL, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, sitesAsOf as newestSiteDate, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
 import { plainDate } from "@/lib/nextSteps";
 import { LevelBadge } from "./Badges";
 import HonestGap, { coverageSearches } from "./HonestGap";
@@ -15,19 +15,21 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
   const trials = useMemo(() => openTrials(file), [file]);
   const ids = useMemo(() => trials.map((t) => t.node.id), [trials]);
   const details = useTrialDetails(ids);
-  const [country, pickCountry] = useCountry();
+  const [stored, pickCountry] = useCountry();
   const [showAll, setShowAll] = useState(false);
 
   const countries = useCountryCounts(details);
   const hasDetails = countries.length > 0;
-  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const unlisted = unlistedCount(ids, details);
+  // the choice is shared with "Studies you could ask about"; "Country not listed" only applies where such a study exists
+  const country = stored === NO_COUNTRY && !unlisted ? ALL : stored;
   const withoutSites = trials.filter((t) => !details[t.node.id]).length;
 
   const shown = trials.filter((t) => listsCountry(details[t.node.id], country));
   const visible = showAll ? shown : shown.slice(0, 5);
   const ctgov = coverageSearches(file.coverage, ["ctgov"]);
-  const siteDates = [...Object.values(details).map((d) => d?.retrieved), ...ctgov.map((c) => c.fetched_at)].filter((d): d is string => Boolean(d)).sort();
-  const sitesAsOf = plainDate(siteDates[siteDates.length - 1]);
+  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const sitesAsOf = plainDate(newestSiteDate(details, ctgov.map((c) => c.fetched_at)));
 
   return (
     <section className="card scroll-mt-20 px-4 py-4" id="open-studies" aria-labelledby="open-studies-title">
@@ -64,6 +66,12 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
                     {c} ({n})
                   </option>
                 ))}
+                {unlisted > 0 && (
+                  <option value={NO_COUNTRY}>
+                    {NO_COUNTRY_LABEL} ({unlisted})
+                  </option>
+                )}
+                {country && country !== NO_COUNTRY && !countries.some(([c]) => c === country) && <option value={country}>{country} (0)</option>}
               </select>
             </label>
           )}

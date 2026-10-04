@@ -8,6 +8,9 @@ import { loadTrial } from "./data";
  */
 
 export const ALL_COUNTRIES = "";
+/** Filter value for studies whose registry entry (or missing trial shard) names no country. */
+export const NO_COUNTRY = "(none)";
+export const NO_COUNTRY_LABEL = "Country not listed";
 const COUNTRY_KEY = "constellate.country";
 
 export function readCountry(): string {
@@ -79,9 +82,21 @@ export function useCountryCounts(details: Record<string, TrialDetail | null>): [
   }, [details]);
 }
 
-/** True if no country is chosen, or the study's registry entry lists a site in it. */
+/** How many of these studies name no country (no trial shard, or an empty country list); 0 until the details have loaded. */
+export function unlistedCount(ids: string[], details: Record<string, TrialDetail | null>): number {
+  return ids.filter((id) => id in details && !details[id]?.countries.length).length;
+}
+
+/** True if no country is chosen, or the study's registry entry lists a site in it ("Country not listed": it names none). */
 export function listsCountry(detail: TrialDetail | null | undefined, country: string): boolean {
+  if (country === NO_COUNTRY) return !detail?.countries.length;
   return !country || Boolean(detail?.countries.some((c) => c.country === country));
+}
+
+/** "as of" for site statements: the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date. */
+export function sitesAsOf(details: Record<string, TrialDetail | null>, searchDates: (string | null | undefined)[] = []): string | null {
+  const dates = [...Object.values(details).map((d) => d?.retrieved), ...searchDates].filter((d): d is string => Boolean(d)).sort();
+  return dates[dates.length - 1] ?? null;
 }
 
 /** The study's official contact section on ClinicalTrials.gov. */

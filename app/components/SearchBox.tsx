@@ -3,7 +3,7 @@
 import { useCallback, useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadIndex } from "@/lib/data";
-import { createSearcher, type SearchHit } from "@/lib/search";
+import { createSearcher, revealSuggestions, type SearchHit } from "@/lib/search";
 import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
 import { usePrefs } from "./Providers";
@@ -31,6 +31,7 @@ export default function SearchBox({
   const router = useRouter();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -67,6 +68,8 @@ export default function SearchBox({
     router.push(hrefFor(hit.entry.type, hit.entry.id));
   };
 
+  const showList = open && query.trim().length >= 2;
+
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
       event.preventDefault();
@@ -79,16 +82,23 @@ export default function SearchBox({
       event.preventDefault();
       go(hits[active]);
     } else if (event.key === "Escape") {
-      setOpen(false);
+      // first Esc closes the list (the browser would clear a search field), a second Esc clears the text
+      if (showList) {
+        event.preventDefault();
+        setOpen(false);
+      } else setQuery("");
     }
   };
 
-  const showList = open && query.trim().length >= 2;
+  // phones: keep at least three suggestions on screen (the field may sit near the bottom or under the keyboard)
+  useEffect(() => {
+    if (showList) revealSuggestions(fieldRef.current);
+  }, [showList, hits.length]);
 
   return (
     <div className="relative w-full">
       {/* the input fills the whole pill, so its own focus ring (global :focus-visible) follows the pill shape */}
-      <div className={`relative rounded-full border border-line bg-surface ${compact ? "h-12" : "h-14 shadow-[var(--shadow)] md:h-16"}`}>
+      <div ref={fieldRef} className={`relative rounded-full border border-line bg-surface ${compact ? "h-12" : "h-14 shadow-[var(--shadow)] md:h-16"}`}>
         <svg
           width={compact ? 16 : 20}
           height={compact ? 16 : 20}

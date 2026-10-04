@@ -42,7 +42,7 @@ export function splitSentences(buffer: string): [string[], string] {
 }
 
 // ---------------------------------------------------------------------------------------------------
-// plain-language fallback (no model and no precomputed text): short sentences a parent can read,
+// plain-language fallback (no model and no precomputed text): short sentences a patient or family can read,
 // no database prefixes, no formulas, no ranks; every sentence still cites the edges it rests on.
 
 export interface PlainContext {
@@ -78,7 +78,16 @@ export function plainSentences(edges: Edge[], labels: Record<string, string>, ct
   const theirDrugs = via ? edges.filter((e) => e.type === "approved_therapy" && e.source === via) : [];
   if (theirDrugs.length) {
     const names = [...new Set(theirDrugs.map((e) => nameOf(e.target, labels)))];
-    out.push(`${andList(names)} ${names.length > 1 ? "are" : "is"} approved for ${N}, not for ${D} ${tags(theirDrugs)}.`);
+    // what kind of medicine, only when the approval record's own text says so (edge snippet), never from memory
+    const gene = theirDrugs.filter((e) => e.evidence.some((ev) => /gene therapy/i.test(ev.snippet ?? "")));
+    const kind = gene.length === theirDrugs.length ? (names.length > 1 ? " (gene therapies)" : " (a gene therapy)") : "";
+    out.push(`${andList(names)}${kind} ${names.length > 1 ? "are" : "is"} approved for ${N}, not for ${D} ${tags(theirDrugs)}.`);
+    // the approval text names children before symptoms start: say so where the record's snippet does
+    const early = theirDrugs.filter((e) => e.evidence.some((ev) => /pre-?symptomatic/i.test(ev.snippet ?? "")));
+    if (early.length) {
+      const which = [...new Set(early.map((e) => nameOf(e.target, labels)))];
+      out.push(`The approval text for ${andList(which)} names children whose symptoms have not started yet ${tags(early)}.`);
+    }
   }
 
   // 2. what they share: gene, cell process, symptoms
@@ -88,7 +97,7 @@ export function plainSentences(edges: Edge[], labels: Record<string, string>, ct
   const shared = ownGenes.filter((e) => theirGenes.some((t) => t.target === e.target));
   for (const own of shared.slice(0, 1)) {
     const theirs = theirGenes.find((t) => t.target === own.target)!;
-    const inferred = own.level === "inferred" ? `; for ${D} this link is inferred from one of its forms, not recorded directly` : "";
+    const inferred = own.level === "inferred" ? `; for ${D}, this gene link comes from one of its subtypes, not from ${D} itself` : "";
     out.push(`Both diseases are linked to the same gene, ${own.target}${inferred} ${tags([own, theirs])}.`);
   }
   const ownSymbols = new Set(ownGenes.map((e) => e.target));
@@ -102,7 +111,7 @@ export function plainSentences(edges: Edge[], labels: Record<string, string>, ct
     const [pathway, list] = sharedPathway;
     const genes = [...new Set(list.map((e) => e.source))];
     out.push(
-      `${genes.length > 1 ? `Their genes ${andList(genes)} work` : `The gene ${genes[0]} works`} in the same process inside the cell, ${lower(nameOf(pathway, labels))} ${tags(list)}.`,
+      `${genes.length > 1 ? `Their genes ${andList(genes)} work` : `The gene ${genes[0]} works`} in the same process inside the cell: ${plainProcess(nameOf(pathway, labels))} ${tags(list)}.`,
     );
   } else if (!shared.length && via) {
     out.push(`No shared gene and no shared process inside the cell is recorded for these two diseases, so similar symptoms may have different causes ${tags([link])}.`);
@@ -111,7 +120,7 @@ export function plainSentences(edges: Edge[], labels: Record<string, string>, ct
   if (link.type === "similar_phenotype") {
     out.push(
       symptoms.length
-        ? `Both can show symptoms such as ${andList(symptoms)} ${tags([link])}.`
+        ? `The symptom lists recorded for both diseases share entries such as ${andList(symptoms)} ${tags([link])}.`
         : `Their recorded symptoms overlap, which is how the two diseases were linked here ${tags([link])}.`,
     );
   }
@@ -136,6 +145,49 @@ export function plainSentences(edges: Edge[], labels: Record<string, string>, ct
     `Ask your specialist whether anything learned for ${N}${what.length ? `, such as ${andList(what)},` : ""} could matter for ${D} ${tags([link])}.`,
   );
   return out.map(cap);
+}
+
+// ---------------------------------------------------------------------------------------------------
+// plain words for technical terms. Only terms docs/MEDICAL-BACKGROUND.md explains with a source:
+// sphingolipids are membrane fats and their breakdown is a pathway (section 2, Platt 2018), lysosomes break down waste
+// inside the cell (section 1, Platt 2018, PMID 30275469), myelin is the insulation of nerves (OMIM 245200, 250100).
+
+const FAT_BREAKDOWN = /\b(?:glyco)?sphingolipid (?:catabolism|degradation|metabolism)\b/i;
+
+/** "Glycosphingolipid catabolism" -> "a shared step in how the body breaks down certain fats (glycosphingolipid catabolism)". */
+export function plainProcess(pathway: string): string {
+  const name = lower(pathway);
+  if (FAT_BREAKDOWN.test(name)) return `a shared step in how the body breaks down certain fats (${name})`;
+  if (/lysosom/i.test(name)) return `a step in how cells break down waste (${name})`;
+  return name;
+}
+
+const TERMS: [RegExp, string][] = [
+  [FAT_BREAKDOWN, "how the body breaks down certain fats"],
+  [/\blysosomal storage\b/i, "waste builds up inside cells"],
+  [/\bdemyelination\b/i, "loss of myelin, the insulation of nerves"],
+  [/\bmyelin\b(?!,)/i, "the insulation of nerves"],
+];
+
+/**
+ * Adds the plain meaning after the first use of each technical term across a text: "... glycosphingolipid catabolism
+ * (how the body breaks down certain fats) ...". Terms already explained (followed by a bracket) are left alone.
+ */
+export function plainTerms(sentences: string[]): string[] {
+  const done = new Set<RegExp>();
+  return sentences.map((text) => {
+    let out = text;
+    for (const [re, plain] of TERMS) {
+      if (done.has(re)) continue;
+      const m = out.match(re);
+      if (!m || m.index === undefined) continue;
+      done.add(re);
+      const end = m.index + m[0].length;
+      if (out.slice(end).trimStart().startsWith("(") || out.slice(0, m.index).endsWith("(")) continue;
+      out = `${out.slice(0, end)} (${plain})${out.slice(end)}`;
+    }
+    return out;
+  });
 }
 
 const rel = (e: Edge, labels: Record<string, string>) => ({ S: labels[e.source] ?? e.source, T: labels[e.target] ?? e.target });

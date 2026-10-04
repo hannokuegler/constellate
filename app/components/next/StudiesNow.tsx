@@ -3,8 +3,8 @@
 import { useId, useMemo, useState } from "react";
 import type { DiseaseFile } from "@/lib/types";
 import { trialStatusLabel } from "@/lib/normalize";
-import { familyAssets, plainDate, PLAIN_WORDS, type StudyRow } from "@/lib/nextSteps";
-import { ALL_COUNTRIES, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, otherCountries, sitesAsOf, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
+import { familyAssets, plainDate, studyFocus, type StudyRow } from "@/lib/nextSteps";
+import { ageRange, ALL_COUNTRIES, NO_COUNTRY, NO_COUNTRY_LABEL, contactUrl, listsCountry, otherCountries, sitesAsOf, unlistedCount, useCountry, useCountryCounts, useTrialDetails } from "@/lib/studies";
 import { Explain, NowCard, Source } from "./ui";
 
 const RECRUITING = trialStatusLabel("RECRUITING");
@@ -17,15 +17,26 @@ function rank(s: StudyRow): number {
 }
 
 /**
- * "Studies you could ask about" in "What you can do now": on a phone, right after the diagnosis, a parent sees whether a study
+ * "Studies you could ask about" in "What you can do now": on a phone, right after the diagnosis, a reader sees whether a study
  * lists a site in their country and reaches the study team through the registry entry. The full list follows in "Open studies".
  */
 export default function StudiesNow({ file, studies, assets }: { file: DiseaseFile; studies: StudyRow[]; assets: ReturnType<typeof familyAssets> }) {
   const label = file.node.label;
   const selectId = useId();
-  const ordered = useMemo(() => studies.map((s, i) => ({ s, i })).sort((a, b) => rank(a.s) - rank(b.s) || a.i - b.i).map(({ s }) => s), [studies]);
-  const ids = useMemo(() => ordered.map((s) => s.key), [ordered]);
+  // registry details load by id; the order below needs them (ages), so the ids come from the unsorted list
+  const ids = useMemo(() => studies.map((s) => s.key), [studies]);
   const details = useTrialDetails(ids);
+  // studies that include children first, adults-only last; then recruiting treatment studies; then studies about this disease alone
+  const ordered = useMemo(() => {
+    const kids = (s: StudyRow) => {
+      const c = ageRange(details[s.key]).children;
+      return c === true ? 0 : c === false ? 2 : 1;
+    };
+    return studies
+      .map((s, i) => ({ s, i }))
+      .sort((a, b) => kids(a.s) - kids(b.s) || rank(a.s) - rank(b.s) || studyFocus(a.s, label).rank - studyFocus(b.s, label).rank || a.i - b.i)
+      .map(({ s }) => s);
+  }, [studies, details, label]);
   const countries = useCountryCounts(details);
   const unlisted = unlistedCount(ids, details);
   const [stored, pickCountry] = useCountry();
@@ -58,10 +69,9 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
           <p>
             {studies.length === 1 ? "One study lists" : `${studies.length} studies list`} {label} and take{studies.length === 1 ? "s" : ""} participants now or soon.
           </p>
-          <Explain>{PLAIN_WORDS.observational}</Explain>
           {countries.length > 0 && (
             <div className="flex flex-col gap-1.5">
-              <label htmlFor={selectId} className="text-[15px] font-semibold text-ink">
+              <label htmlFor={selectId} className="text-[16px] font-semibold text-ink">
                 Where do you live?
               </label>
               <select
@@ -104,7 +114,7 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                 : `No study for ${label} lists a site in ${country}${registryChecked ? ` as of ${registryChecked}` : ""}. Ask the study team whether they accept participants from other countries.`}
             </p>
           )}
-          {country && !matching.length && <p className="text-[15px] font-semibold text-ink">Studies in other countries</p>}
+          {country && !matching.length && <p className="text-[16px] font-semibold text-ink">Studies in other countries</p>}
           <ul id={listId} className="divide-y divide-line">
             {shown.map((s) => {
               const d = details[s.key];
@@ -117,7 +127,7 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                   : "places: see the registry";
               return (
                 <li key={s.key} className="py-3">
-                  <p className="text-[15px] leading-7">
+                  <p className="text-[16px] leading-7">
                     <span className={`rounded-full px-2 py-0.5 font-semibold ${s.status === RECRUITING ? "bg-ok-soft text-ok" : "bg-accent-soft text-accent"}`}>{s.status}</span>
                     <span className="text-ink-2">
                       {" "}
@@ -125,6 +135,10 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
                     </span>
                   </p>
                   <p className="mt-1 font-semibold leading-snug">{s.title}</p>
+                  <p className="text-[16px] text-ink-2">
+                    {ageRange(d).label}
+                    {ageRange(d).children === false ? " (adults only)" : ""} · {studyFocus(s, label).text}
+                  </p>
                   <a
                     href={contactUrl(d, s.href)}
                     target="_blank"
@@ -145,17 +159,17 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
               onClick={() => setExpanded((v) => !v)}
               aria-expanded={expanded}
               aria-controls={listId}
-              className="inline-flex min-h-11 items-center text-left text-[15px] underline decoration-line-strong underline-offset-4 hover:decoration-current"
+              className="inline-flex min-h-11 items-center text-left text-[16px] underline decoration-line-strong underline-offset-4 hover:decoration-current"
             >
               {expanded ? "Show fewer studies" : `See all ${studies.length} studies`}
             </button>
           )}
           {expanded && (
-            <a href="#open-studies" className="inline-flex min-h-11 items-center text-[15px] underline decoration-line-strong underline-offset-4 hover:decoration-current">
+            <a href="#open-studies" className="inline-flex min-h-11 items-center text-[16px] underline decoration-line-strong underline-offset-4 hover:decoration-current">
               Full list with details further down
             </a>
           )}
-          <Explain>Whether your child can take part is decided with your doctor and the study team.</Explain>
+          <Explain>Study type, ages and conditions as the ClinicalTrials.gov entry lists them. Whether you or your family member can take part is decided with your doctor and the study team.</Explain>
         </>
       ) : (
         <p>
@@ -175,7 +189,6 @@ export default function StudiesNow({ file, studies, assets }: { file: DiseaseFil
               </li>
             ))}
           </ul>
-          <Explain>{PLAIN_WORDS.registry}</Explain>
         </div>
       )}
     </NowCard>

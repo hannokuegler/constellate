@@ -2,7 +2,7 @@
 
 In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie), z. B. nach einem Kontext-Reset, am Abgabetag oder vor der Preisverleihung am 10.10. Der Prompt beschreibt **wie** man arbeitet, nicht **wo** man gerade steht: den Stand ermittelst du selbst (Abschnitt 2). Pflege: am Ende jeder Arbeitseinheit aktualisieren (Abschnitt 8).
 
-Letzte Aktualisierung: So 04.10.2026, 01:16 Wien (Branch `data-steward`).
+Letzte Aktualisierung: So 04.10.2026, 02:10 Wien (Branch `explain-from-answers`).
 
 ---
 
@@ -98,7 +98,9 @@ Hinweis zum Branch: Ein mit `git switch -c data-steward origin/main` angelegter 
 6. Keine Secrets, Mailadressen, Telefonnummern, lokalen Pfade oder Server-Interna ins Repo; ab 11:00 ist es öffentlich. Keys nur in `.env.local`.
 7. Nur Verifiziertes ins Produkt (`orgs.csv`, `hero_path.yaml`); Drafts bleiben Drafts.
 8. Zuständigkeit: du änderst `pipeline/`, `data/`, `app/public/data/`, Daten-Doku. `app/` (außer Daten) gehört der App-/Design-Session; bei Bedarf eine präzise Bitte an Hanno formulieren.
-9. Melden statt raten: jede Stunde 5 Zeilen an Hanno (fertig / dran / blockiert / nächster Schritt / Uhrzeit), außerdem sofort bei rotem validate, Kosten > 5 USD oder einem medizinisch heiklen Fund (z. B. eine Krabbe-Zulassung taucht auf).
+9. Nach `main` geht nichts direkt, auch nicht mit Go von Hanno: Branch pushen, dem Orchestrator („Chef", lokale Session) Bescheid geben, er merged, testet und prüft live.
+10. Ohne OpenAI-Key (Stand 04.10.: das Team hat nur Anthropic-Credits): Modellantworten von Claude-Code-Subagents in dieselben Caches schreiben lassen und die Pipeline cache-only laufen lassen. Extract: `OPENAI_MODEL_EXTRACT=claude-sonnet-5-5 uv run --project pipeline python pipeline/05_openai_extract.py` (Cache `data/cache/openai/extract/<model>/<prompt_version>/<pmid>.json`; origin wird „Claude extract"). Review-Gate: `data/curated/extract_model_review.csv` (verdict wrong → nicht im Produkt). Reconcile: `06_openai_reconcile.py --method cache-judge --judge-model claude-sonnet-5-5 --pending <jsonl>` (fehlende Antworten landen in der JSONL). Explain: `cd app && npx tsx scripts/explain-from-answers.ts dump|ingest`. Nie „OpenAI" an Claude-Ergebnisse schreiben.
+11. Melden statt raten: jede Stunde 5 Zeilen an Hanno (fertig / dran / blockiert / nächster Schritt / Uhrzeit), außerdem sofort bei rotem validate, Kosten > 5 USD oder einem medizinisch heiklen Fund (z. B. eine Krabbe-Zulassung taucht auf).
 
 Ergänzend aus der Praxis: `pub.orcid.org` verbietet per robots.txt jeden automatischen Abruf; ORCID-Belege (z. B. für `data/curated/person_aliases.csv`) nur im Browser selbst öffnen. Der Git-Guardrail-Hook auf Hannos Mac blockt `git clean -f` und ähnliche Befehle. Nicht umgehen (auch nicht mit `rm`); meist reicht `git restore <pfad>`, sonst Hanno fragen.
 

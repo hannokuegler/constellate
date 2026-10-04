@@ -4,9 +4,10 @@
 // chapter blocks ([data-chapter]) scroll over it. The reading line at 60 % of the viewport decides the chapter and
 // the progress t inside it; both go to the shared story state (renderers) and to the glasses overlay.
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import World from "./World";
-import { STORY_CHAPTERS, captionVisible, lensGeometry, setStory, type ChapterId, type Lens } from "./story";
+import { forgetStarLabels, replaceStarLabels } from "./labels";
+import { STORY_CHAPTERS, activeCaption, lensGeometry, setStory, type ChapterId, type Lens } from "./story";
 import type { Sky } from "./sky";
 
 const READING_LINE = 0.6;
@@ -19,16 +20,19 @@ export interface StarLabel {
 
 export default function StoryStage({
   children,
-  captions,
-  labels,
+  captions = {},
+  labels = [],
   onSky,
+  underHeader = true,
 }: {
   children: ReactNode;
-  /** one caption per chapter; a single slot bottom-left shows the active one (crossfade) */
-  captions: Partial<Record<ChapterId, ReactNode>>;
+  /** one caption per chapter; a single sticky glass box bottom-left shows the active one (crossfade) */
+  captions?: Partial<Record<ChapterId, ReactNode>>;
   /** star names, placed on screen by the renderer, shown only in their chapters */
-  labels: StarLabel[];
+  labels?: StarLabel[];
   onSky?: (sky: Sky) => void;
+  /** pull the stage up under the site header (the story is the first thing on the page) */
+  underHeader?: boolean;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [position, setPosition] = useState({ chapter: 0, t: 0 });
@@ -74,44 +78,74 @@ export default function StoryStage({
       window.removeEventListener("resize", schedule);
       media.removeEventListener("change", onMotion);
       setStory({ active: false, chapter: 0, t: 0 });
+      forgetStarLabels();
     };
   }, []);
 
   const lens = viewport.width ? lensGeometry(position.chapter, position.t, viewport.width, viewport.height, staticLens) : null;
+  const chapterId = STORY_CHAPTERS[position.chapter];
+  const active = activeCaption(position.chapter, position.t, (id) => !!captions[id]);
+
+  // the box takes the height of the active caption (animated), so a short caption never sits in a tall empty box
+  const layerRefs = useRef<Partial<Record<ChapterId, HTMLDivElement | null>>>({});
+  const [boxHeight, setBoxHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const layer = active ? layerRefs.current[active] : null;
+    if (!layer) return;
+    const update = () => setBoxHeight(layer.offsetHeight);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(layer);
+    return () => observer.disconnect();
+  }, [active]);
+  // pills and caption changed in the DOM: the renderer's last projection places the pills again (2D draws only per chapter)
+  useEffect(() => {
+    replaceStarLabels();
+  }, [active, chapterId, position.t, boxHeight]);
 
   return (
-    <section ref={sectionRef} aria-label="The map of rare diseases, told in nine steps" className="relative left-1/2 -mt-16 w-screen -translate-x-1/2">
+    <section ref={sectionRef} aria-label="The map of rare diseases, told step by step" className={`relative left-1/2 w-screen -translate-x-1/2 ${underHeader ? "-mt-16" : ""}`}>
       <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
         <World onSky={onSky} onModeChange={(mode) => setStaticLens(mode !== "3d")} />
         {lens && lens.on && lens.frame > 0.01 && <Glasses lens={lens} />}
         {labels.map((label) => {
-          const on = label.chapters.includes(STORY_CHAPTERS[position.chapter]) && (STORY_CHAPTERS[position.chapter] !== "krabbe" || position.t >= 0.3);
+          const on = label.chapters.includes(chapterId) && (chapterId !== "krabbe" || position.t >= 0.3);
           return (
             <span
               key={label.id}
               data-star-label={label.id}
+              data-on={on ? "1" : "0"}
               aria-hidden="true"
-              className={`glass pointer-events-none absolute left-0 top-0 whitespace-nowrap rounded-full px-3 py-1 text-[15px] font-medium text-ink transition-opacity duration-300 ${on ? "opacity-100" : "opacity-0"}`}
+              className={`glass pointer-events-none absolute left-0 top-0 whitespace-nowrap rounded-full border border-line px-3 py-1 text-[15px] font-medium leading-6 text-ink shadow-[var(--shadow)] transition-opacity duration-300 ${on ? "opacity-100" : "opacity-0"}`}
               style={{ visibility: "hidden" }}
             >
               {label.text}
             </span>
           );
         })}
-        <div className="pointer-events-none absolute inset-x-0 bottom-[max(20px,5svh)] px-4 pl-[max(16px,env(safe-area-inset-left))] lg:px-10">
-          <div className="relative w-full max-w-[680px]">
+        <div className="pointer-events-none absolute inset-x-0 bottom-[max(16px,4svh,env(safe-area-inset-bottom))] px-4 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] lg:px-10">
+          <div
+            data-caption-box
+            data-open={active ? "" : undefined}
+            className={`glass relative w-full max-w-[640px] overflow-hidden rounded-[24px] shadow-[var(--shadow)] transition-[opacity,height,transform] duration-[250ms] ease-out ${
+              active ? "pointer-events-auto translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+            }`}
+            style={{ height: boxHeight ?? undefined }}
+          >
             {STORY_CHAPTERS.map((id) => {
               const caption = captions[id];
               if (!caption) return null;
-              const on = captionVisible(position.chapter, position.t, id);
+              const on = id === active;
               return (
                 <div
                   key={id}
+                  ref={(el) => {
+                    layerRefs.current[id] = el;
+                  }}
+                  data-caption={id}
                   aria-hidden={!on}
                   inert={!on}
-                  className={`glass absolute bottom-0 left-0 w-full rounded-[24px] px-5 py-5 shadow-[var(--shadow)] transition-[opacity,transform] ease-out md:px-8 md:py-7 ${
-                    on ? "pointer-events-auto translate-y-0 opacity-100 delay-150 duration-[250ms]" : "translate-y-2 opacity-0 duration-150"
-                  }`}
+                  className={`absolute inset-x-0 top-0 px-5 py-5 transition-opacity ease-out md:px-8 md:py-7 ${on ? "opacity-100 delay-100 duration-[250ms]" : "opacity-0 duration-150"}`}
                 >
                   {caption}
                 </div>

@@ -21,15 +21,6 @@ const STEPS = [
   { title: "Take an action card", text: "What transfers, what differs, what needs experts. Each sentence cites an edge." },
 ];
 
-/** star names in the story, only in the chapters that talk about them */
-const STAR_LABELS = [
-  { id: STORY_KRABBE, text: "Krabbe disease", chapters: ["krabbe", "constellation", "neighbour", "gap", "end"] as ChapterId[] },
-  { id: "GALC", text: "GALC", chapters: ["constellation"] as ChapterId[] },
-  { id: "PSAP", text: "PSAP", chapters: ["constellation"] as ChapterId[] },
-  { id: STORY_MLD, text: "metachromatic leukodystrophy", chapters: ["neighbour"] as ChapterId[] },
-  { id: STORY_GAP, text: "Krabbe disease due to saposin A deficiency", chapters: ["gap", "end"] as ChapterId[] },
-];
-
 const fmt = (n: number | null | undefined) => (typeof n === "number" ? n.toLocaleString("en") : null);
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 /** 2026-10-03 -> 3 Oct 2026 */
@@ -117,9 +108,17 @@ function TourFocus() {
   return null;
 }
 
-/** one story chapter: an empty block that scrolls over the sticky sky; its caption lives in the stage's single slot */
-function Chapter({ id, height }: { id: ChapterId; height: string }) {
-  return <div data-chapter={id} className="pointer-events-none relative" style={{ minHeight: height }} />;
+/** one story chapter: a block that scrolls over the sticky sky, with a glass caption bottom-left */
+function Chapter({ id, height, children }: { id: ChapterId; height: string; children?: ReactNode }) {
+  return (
+    <div data-chapter={id} className="pointer-events-none relative" style={{ minHeight: height }}>
+      {children && (
+        <div className="sticky top-[52svh] mt-[52svh] px-4 pb-6 pl-[max(16px,env(safe-area-inset-left))] lg:px-10">
+          <div className="glass pointer-events-auto w-full max-w-[640px] rounded-[24px] px-5 py-5 shadow-[var(--shadow)] md:px-8 md:py-7">{children}</div>
+        </div>
+      )}
+    </div>
+  );
 }
 
 function Caption({ title, children }: { title: ReactNode; children?: ReactNode }) {
@@ -128,7 +127,7 @@ function Caption({ title, children }: { title: ReactNode; children?: ReactNode }
       <h2 className="text-ink" style={{ fontFamily: "var(--font-display)", fontSize: "clamp(28px, 3.4vw, 44px)", lineHeight: 1.1, letterSpacing: "-0.01em" }}>
         {title}
       </h2>
-      {children && <div className="mt-3 text-[17px] leading-relaxed text-ink-2">{children}</div>}
+      {children && <div className="mt-3 text-[15px] leading-relaxed text-ink-2 md:text-[17px]">{children}</div>}
     </>
   );
 }
@@ -160,78 +159,13 @@ export default function StartView() {
       : null;
   const mldTherapy = facts.mld?.items[0];
 
-  const captions: Partial<Record<ChapterId, ReactNode>> = {
-    lights: (
-      <Caption title="Every light is a real rare disease, gene or symptom.">
-        <p className="zaehler">{counts.length ? counts.join(" · ") : "\u00a0"}</p>
-      </Caption>
-    ),
-    lens: (
-      <Caption title="Put on the lens.">
-        <p>Inside it the lights connect. Every line is a documented link: a shared gene, or an overlap of symptoms, each with its source.</p>
-      </Caption>
-    ),
-    wearing: (
-      <Caption title="You are wearing the lens.">
-        {sky && <p className="zaehler">{fmt(sky.file.counts.core_edges)} mapped links, each with its source, date and evidence level.</p>}
-      </Caption>
-    ),
-    krabbe: (
-      <Caption title="Krabbe disease">
-        {facts.krabbe && facts.krabbe.items.length === 0 && facts.krabbe.authorities && facts.krabbe.asOf ? (
-          <p>
-            No approved therapy found in {facts.krabbe.authorities} records, as of {facts.krabbe.asOf}.
-          </p>
-        ) : (
-          <p className="t-mono">MONDO:0009499</p>
-        )}
-      </Caption>
-    ),
-    constellation: (
-      <Caption title={facts.psapNames ? `PSAP: one gene, ${facts.psapNames} disease names.` : "Its genes: GALC and PSAP."}>
-        {krabbeNeighbours !== null && (
-          <p>Krabbe disease lights up with its genes GALC and PSAP and {krabbeNeighbours} related diseases that share a gene or symptoms.</p>
-        )}
-      </Caption>
-    ),
-    neighbour: mldTherapy ? (
-      <Caption title="Its neighbour, metachromatic leukodystrophy, has an approved gene therapy.">
-        <p className="text-[15px]">
-          {mldTherapy.label}
-          {mldTherapy.authority ? ` · ${mldTherapy.authority}` : ""}
-          {mldTherapy.approved ? ` · approved ${mldTherapy.approved}` : ""}
-          {mldTherapy.record ? ` · ${mldTherapy.record}` : ""} · link <span className="t-mono">e_e270315fe572</span>
-        </p>
-      </Caption>
-    ) : (
-      <Caption title="Its neighbour: metachromatic leukodystrophy.">
-        <p>
-          Linked by shared symptoms, <span className="t-mono">e_e270315fe572</span>.
-        </p>
-      </Caption>
-    ),
-    gap: (
-      <Caption title="Where there is no trail, we say so.">
-        <p>
-          Krabbe disease due to saposin A deficiency
-          {facts.gap && facts.gap.items.length === 0 && facts.gap.authorities && facts.gap.asOf
-            ? `: no approved therapy found in ${facts.gap.authorities} records, as of ${facts.gap.asOf}.`
-            : "."}{" "}
-          <Link href="/d/MONDO_0012720#patient-organisations" className="inline-flex min-h-11 items-center underline underline-offset-2">
-            See what was searched
-          </Link>
-        </p>
-      </Caption>
-    ),
-  };
-
   return (
     <div className="relative">
       <Suspense fallback={null}>
         <TourFocus />
       </Suspense>
 
-      <StoryStage onSky={setSky} captions={captions} labels={STAR_LABELS}>
+      <StoryStage onSky={setSky}>
         {/* 0 hero: the sky out of focus, search right away */}
         <div data-chapter="hero" className="pointer-events-none relative">
           <div className="mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-start px-4 pb-10 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] pt-[calc(64px+3svh)] md:px-6 md:pt-[calc(64px+8svh)] lg:justify-center lg:pt-20">
@@ -240,13 +174,76 @@ export default function StartView() {
         </div>
 
         <div id="story-lights" />
-        <Chapter id="lights" height="80svh" />
-        <Chapter id="lens" height="120svh" />
-        <Chapter id="wearing" height="100svh" />
-        <Chapter id="krabbe" height="90svh" />
-        <Chapter id="constellation" height="80svh" />
-        <Chapter id="neighbour" height="80svh" />
-        <Chapter id="gap" height="90svh" />
+        <Chapter id="lights" height="80svh">
+          <Caption title="Every light is a real rare disease, gene or symptom.">
+            <p className="zaehler">{counts.length ? counts.join(" · ") : " "}</p>
+          </Caption>
+        </Chapter>
+
+        <Chapter id="lens" height="120svh">
+          <Caption title="Put on the lens.">
+            <p>Inside it the lights connect. Every line is a documented link: a shared gene, or an overlap of symptoms, each with its source.</p>
+          </Caption>
+        </Chapter>
+
+        <Chapter id="wearing" height="100svh">
+          <Caption title="You are wearing the lens.">
+            {sky && <p className="zaehler">{fmt(sky.file.counts.core_edges)} mapped links, each with its source, date and evidence level.</p>}
+          </Caption>
+        </Chapter>
+
+        <Chapter id="krabbe" height="90svh">
+          <Caption title="Krabbe disease">
+            {facts.krabbe && facts.krabbe.items.length === 0 && facts.krabbe.authorities && facts.krabbe.asOf ? (
+              <p>
+                No approved therapy found in {facts.krabbe.authorities} records, as of {facts.krabbe.asOf}.
+              </p>
+            ) : (
+              <p className="t-mono">MONDO:0009499</p>
+            )}
+          </Caption>
+        </Chapter>
+
+        <Chapter id="constellation" height="80svh">
+          <Caption title={facts.psapNames ? `PSAP: one gene, ${facts.psapNames} disease names.` : "Its genes: GALC and PSAP."}>
+            {krabbeNeighbours !== null && (
+              <p>Krabbe disease lights up with its genes GALC and PSAP and {krabbeNeighbours} related diseases that share a gene or symptoms.</p>
+            )}
+          </Caption>
+        </Chapter>
+
+        <Chapter id="neighbour" height="80svh">
+          {mldTherapy ? (
+            <Caption title="Its neighbour, metachromatic leukodystrophy, has an approved gene therapy.">
+              <p className="text-[13px] md:text-[15px]">
+                {mldTherapy.label}
+                {mldTherapy.authority ? ` · ${mldTherapy.authority}` : ""}
+                {mldTherapy.approved ? ` · approved ${mldTherapy.approved}` : ""}
+                {mldTherapy.record ? ` · ${mldTherapy.record}` : ""} · link <span className="t-mono">e_e270315fe572</span>
+              </p>
+            </Caption>
+          ) : (
+            <Caption title="Its neighbour: metachromatic leukodystrophy.">
+              <p>
+                Linked by shared symptoms, <span className="t-mono">e_e270315fe572</span>.
+              </p>
+            </Caption>
+          )}
+        </Chapter>
+
+        <Chapter id="gap" height="90svh">
+          <Caption title="Where there is no trail, we say so.">
+            <p>
+              Krabbe disease due to saposin A deficiency
+              {facts.gap && facts.gap.items.length === 0 && facts.gap.authorities && facts.gap.asOf
+                ? `: no approved therapy found in ${facts.gap.authorities} records, as of ${facts.gap.asOf}.`
+                : "."}{" "}
+              <Link href="/d/MONDO_0012720#patient-organisations" className="inline-flex min-h-11 items-center underline underline-offset-2">
+                See what was searched
+              </Link>
+            </p>
+          </Caption>
+        </Chapter>
 
         {/* 8 end: search again, Krabbe, the guided tour */}
         <div data-chapter="end" className="pointer-events-none relative flex min-h-[110svh] items-end px-4 pb-[12svh] pl-[max(16px,env(safe-area-inset-left))] lg:px-10">

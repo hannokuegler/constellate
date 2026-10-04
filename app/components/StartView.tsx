@@ -8,6 +8,7 @@ import { diseaseHref } from "@/lib/ids";
 import { metaCount, v2Therapies } from "@/lib/normalize";
 import type { Meta } from "@/lib/types";
 import SearchBox from "./SearchBox";
+import StartHere from "./next/StartHere";
 import StoryStage from "./world/StoryStage";
 import { constellationOf, onSkyReady, skyBus, KIND, type Sky } from "./world/sky";
 import { STORY_GAP, STORY_KRABBE, STORY_MLD, type ChapterId } from "./world/story";
@@ -167,31 +168,8 @@ export default function StartView() {
       <StoryStage onSky={setSky}>
         {/* 0 hero: the sky out of focus, search right away */}
         <div data-chapter="hero" className="pointer-events-none relative">
-          <div className="mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-start px-4 pb-10 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] pt-[calc(64px+22svh)] md:px-6 lg:justify-center lg:pt-20">
-            <div className="glass pointer-events-auto w-full max-w-[580px] rounded-[28px] px-5 py-6 shadow-[var(--shadow)] md:px-9 md:py-9">
-              <p className="t-label flex items-center gap-2">
-                <span className="dot" data-state="lit" style={{ ["--dot-size" as string]: "6px" }} aria-hidden="true" />
-                Constellate · research navigation, not medical advice
-              </p>
-              <h1 id="hero-title" className="t-hero mt-4 text-ink">
-                Your family is not the first.
-              </h1>
-              <p className="t-body mt-4 text-ink-2">Search your diagnosis and see who shares its genes and symptoms, with a source for every link.</p>
-              <div className="mt-6">
-                <SearchBox />
-              </div>
-              <div className="mt-5 flex flex-wrap items-center gap-3">
-                <Link href={diseaseHref(heroId)} className="btn-primary">
-                  Start with Krabbe disease
-                </Link>
-                <a href="#story-lights" className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">
-                  Scroll to put on the lens
-                  <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden="true">
-                    <path d="M6 1v11M1.5 7.5L6 12l4.5-4.5" stroke="currentColor" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-                  </svg>
-                </a>
-              </div>
-            </div>
+          <div className="mx-auto flex min-h-[100svh] max-w-[1400px] flex-col justify-start px-4 pb-10 pl-[max(16px,env(safe-area-inset-left))] pr-[max(16px,env(safe-area-inset-right))] pt-[calc(64px+3svh)] md:px-6 md:pt-[calc(64px+8svh)] lg:justify-center lg:pt-20">
+            <StartHere />
           </div>
         </div>
 

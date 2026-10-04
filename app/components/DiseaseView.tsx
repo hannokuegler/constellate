@@ -17,11 +17,11 @@ import HonestGap, { coverageSearches, gapProps, type GapSearch } from "./HonestG
 import { OrgList } from "./Orgs";
 import TextMined from "./TextMined";
 import OpenStudies from "./OpenStudies";
-import MomentBar from "./MomentBar";
+import WhatNow from "./next/WhatNow";
 import ActionCard from "./ActionCard";
 import { pickDefaultVia } from "@/lib/actioncard";
 import { Skeleton } from "./Skeleton";
-import { allDiseaseEdges, enrichmentItems, enrichmentTotal, nodeLabels, openTrials, orgItems, paperRecords, trialPhase } from "@/lib/normalize";
+import { allDiseaseEdges, enrichmentItems, enrichmentTotal, nodeLabels, orgItems, paperRecords, trialPhase } from "@/lib/normalize";
 
 type State =
   | { status: "loading" }
@@ -169,7 +169,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const ownCommunity = persona.panelOrder.includes("community");
   const sections: Record<PanelSection, React.ReactNode> = {
     community: (
-      <Section key="community" title="Patient organisations" hint="Groups for this diagnosis, from a hand-checked list" count={orgs.length}>
+      <Section key="community" title="Patient organisations" hint="Groups for this diagnosis, each checked against the organisation's website" count={orgs.length}>
         <CommunityBlock file={file} onEdge={openEdge} builtAt={meta?.built_at} />
       </Section>
     ),
@@ -289,14 +289,14 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         )}
       </div>
 
-      <MomentBar
-        diseaseLabel={node.label}
-        orgs={orgs.length}
-        hasGap={Boolean(file.gap)}
-        openStudies={openTrials(file).length}
-        neighbours={file.neighbours.length}
-        onActionCard={noNeighbours ? undefined : () => openCard(via ?? defaultVia!)}
-      />
+      <WhatNow file={file} meta={meta} labels={labels} defaultVia={defaultVia} />
+
+      <div className="mt-8 border-t border-line pt-6" id="evidence">
+        <h2 className="t-h2 text-ink">The evidence behind this</h2>
+        <p className="mt-2 max-w-[760px] text-[17px] leading-relaxed text-ink-2">
+          The records behind the summary: genes, symptoms, related diseases, studies and groups, each with source, date and evidence level.
+        </p>
+      </div>
 
       {noNeighbours && (
         <div className="mt-6">
@@ -539,7 +539,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
         <EvidenceButton edge={n.edge} onEdge={onEdge} label="Why linked" />
         {n.mechanism_note && (
           <details className="min-w-0 basis-full">
-            <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">Why the mechanism call</summary>
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">How these two are linked</summary>
             <p className="rounded-[12px] bg-surface-2 px-3 py-2 text-[15px] leading-relaxed">{n.mechanism_note}</p>
           </details>
         )}
@@ -652,10 +652,10 @@ function CommunityBlock({ file, onEdge, builtAt }: { file: DiseaseFile; onEdge: 
             title="No patient organisation linked"
             reason={
               nearest.length
-                ? `The hand-checked organisation list has no entry for this exact diagnosis. ${nearest.length === 1 ? "A related diagnosis" : "Related diagnoses"} below share genes or symptoms with it, so their communities are the nearest place to ask.`
-                : "The hand-checked organisation list has no entry for this diagnosis in the current data."
+                ? `The checked organisation list has no entry for this exact diagnosis. ${nearest.length === 1 ? "A related diagnosis" : "Related diagnoses"} below share genes or symptoms with it, so their communities are the nearest place to ask.`
+                : "The checked organisation list has no entry for this diagnosis in the current data."
             }
-            searched={[{ source: "Curated organisation list (hand-checked)", query: `entries for ${file.node.label}`, hits: 0, fetched_at: builtAt }]}
+            searched={[{ source: "Curated organisation list (checked against each website)", query: `entries for ${file.node.label}`, hits: 0, fetched_at: builtAt }]}
             asOf={builtAt}
             nearest={nearest}
             onEdge={onEdge}

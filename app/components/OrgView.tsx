@@ -35,7 +35,7 @@ export default function OrgView({ slug }: { slug: string }) {
           variant="screen"
           title={`No organisation page for “${slug}”`}
           reason="This organisation is not in the curated list of the current data set."
-          searched={[{ source: "Curated organisation list (hand-checked)", query: `entry “${slug}”`, hits: 0 }]}
+          searched={[{ source: "Curated organisation list (checked against each website)", query: `entry “${slug}”`, hits: 0 }]}
           close={["An entry in the curated organisation list with URL and verification date"]}
         />
       </div>

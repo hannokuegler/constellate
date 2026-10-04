@@ -57,6 +57,8 @@ function overlay() {
     #story-card h1{font-size:46px;font-weight:700;letter-spacing:-.02em;margin:0}
     #story-card p{font-size:19px;color:#a9b0cc;margin:14px auto 0;max-width:640px;line-height:1.45}
     #story-cursor{position:absolute;left:0;top:0;width:26px;height:26px;transition:transform .05s linear}
+    #story-mark{position:absolute;border:3px solid #4b49c8;border-radius:16px;box-shadow:0 0 0 6px rgb(75 73 200/.16),0 0 40px rgb(75 73 200/.25);opacity:0;transition:opacity .35s,left .45s,top .45s,width .45s,height .45s}
+    #story-mark.in{opacity:1}
     #story-cursor.down circle{r:13}
   `;
   const consti = `<svg width="26" height="26" viewBox="0 0 28 28"><path d="M6 20 L12 8 L20 12 L23 22 Z M12 8 L23 22" fill="none" stroke="#2c3254" stroke-width="1.2"/><circle cx="6" cy="20" r="2.4" fill="#42d1b9"/><circle cx="12" cy="8" r="3.2" fill="#ffc94a"/><circle cx="20" cy="12" r="2.4" fill="#8f8dff"/><circle cx="23" cy="22" r="2" fill="#c48af0"/></svg>`;
@@ -69,7 +71,7 @@ function overlay() {
     document.head.appendChild(style);
     root = document.createElement("div");
     root.id = "story-root";
-    root.innerHTML = `<div id="story-chat"></div><div id="story-cursor">${pointer}</div>`;
+    root.innerHTML = `<div id="story-mark"></div><div id="story-chat"></div><div id="story-cursor">${pointer}</div>`;
     document.body.appendChild(root);
     const cur = root.querySelector<HTMLDivElement>("#story-cursor")!;
     const last = (w.__storyPos as [number, number] | undefined) ?? [640, 360];
@@ -111,6 +113,12 @@ function overlay() {
     requestAnimationFrame(() => requestAnimationFrame(() => msg.classList.add("in")));
   };
   w.__storyDock = (side: string) => ensure().querySelector("#story-chat")!.classList.toggle("right", side === "right");
+  w.__storyMark = (r: { x: number; y: number; w: number; h: number } | null) => {
+    const m = ensure().querySelector<HTMLDivElement>("#story-mark")!;
+    if (!r) return m.classList.remove("in");
+    Object.assign(m.style, { left: `${r.x - 8}px`, top: `${r.y - 8}px`, width: `${r.w + 16}px`, height: `${r.h + 16}px` });
+    m.classList.add("in");
+  };
   w.__storyClear = () => ensure().querySelector("#story-chat")!.replaceChildren();
   w.__storyCard = (title: string | null, text: string) => {
     const r = ensure();
@@ -163,6 +171,29 @@ async function until(page: Page, end: number) {
 
 async function say(page: Page, id: string, bubble = true) {
   await until(page, await show(page, id, bubble));
+}
+
+// a glowing frame around what Consti is talking about: the union of the given elements, clipped to the screen
+async function mark(page: Page, ...targets: Locator[]) {
+  // wait until the page has stopped moving (smooth scrolls of the app itself), so the frame lands once
+  let last = -1;
+  for (let i = 0; i < 15; i++) {
+    const y = (await targets[0].boundingBox())?.y ?? 0;
+    if (Math.abs(y - last) < 1) break;
+    last = y;
+    await page.waitForTimeout(100);
+  }
+  const present = [];
+  for (const t of targets) if (await t.count()) present.push(t);
+  const boxes = (await Promise.all(present.map((t) => t.boundingBox()))).filter((b): b is NonNullable<typeof b> => !!b);
+  if (!boxes.length) return;
+  const x = Math.min(...boxes.map((b) => b.x)), y = Math.max(64, Math.min(...boxes.map((b) => b.y)));
+  const right = Math.max(...boxes.map((b) => b.x + b.width)), bottom = Math.min(SIZE.height - 12, Math.max(...boxes.map((b) => b.y + b.height)));
+  await page.evaluate((r) => (window as unknown as { __storyMark: (r: unknown) => void }).__storyMark(r), { x, y, w: right - x, h: bottom - y });
+}
+
+async function unmark(page: Page) {
+  await page.evaluate(() => (window as unknown as { __storyMark: (r: null) => void }).__storyMark(null));
 }
 
 async function dock(page: Page, side: "left" | "right") {
@@ -268,16 +299,29 @@ test("record Maria's story", async ({ browser }) => {
   await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
   await expect(page.locator("canvas").first()).toBeVisible();
   await dock(page, "left");
-  await page.waitForTimeout(300);
 
-  // alone: the honest gap, then the open studies
+  // alone: Maria lands on the page, then the plain-language part answers her: families like yours, studies by country
+  // the innermost section around each heading (the outer "What you can do now" section contains both)
+  const families = page.getByRole("heading", { name: "Families like yours" }).locator("xpath=ancestor::section[1]");
+  const studies = page.getByRole("heading", { name: "Studies you could ask about" }).locator("xpath=ancestor::section[1]");
   end = await show(page, "m-alone");
-  await scrollTo(page, page.locator("#patient-organisations"));
+  await page.waitForTimeout(700);
+  await scrollTo(page, families.getByRole("heading", { name: "Families like yours" }), "start");
   await until(page, end);
-  await say(page, "c-gap");
+  end = await show(page, "c-gap");
+  const checked = families.getByText(/checked against the organisation's website/);
+  await mark(page, families.getByRole("heading", { name: "Families like yours" }), checked.nth(Math.min(2, (await checked.count()) - 1)));
+  for (const i of [0, 1, 2]) {
+    const name = families.getByRole("link").filter({ hasNotText: /Contact page|How we know/ }).nth(i);
+    if (await name.count()) await glideTo(page, name);
+    await page.waitForTimeout(250);
+  }
+  await until(page, end);
   end = await show(page, "c-studies");
-  await scrollTo(page, page.getByRole("heading", { name: /Studies looking for participants/ }), "start");
+  await mark(page, studies.getByRole("heading", { name: "Studies you could ask about" }), studies.getByText(/Contact the study team/).first());
+  await glideTo(page, studies.getByRole("combobox").first());
   await until(page, end);
+  await unmark(page);
 
   // trust: one line of the graph opens its evidence
   end = await show(page, "m-trust");
@@ -294,12 +338,16 @@ test("record Maria's story", async ({ browser }) => {
   end = await show(page, "c-related");
   await glideClick(page, page.getByRole("button", { name: /close evidence panel/i }));
   await scrollTo(page, page.locator("#related"), "start");
+  await mark(page, page.locator("#related").getByRole("heading").first(), page.locator("#related").getByText("shares PSAP").nth(1));
   await until(page, end);
+  await unmark(page);
   await glideClick(page, page.getByRole("link", { name: "PSAP", exact: true }).first());
+  await dock(page, "right"); // the small one-gene diagram sits bottom left on this page
   end = await show(page, "c-psap"); // the line starts with the click, the page arrives under it
   await expect(page).toHaveURL(/\/g\/PSAP/);
   await expect(page.getByText(/One gene, \d+ disease names/)).toBeVisible();
   await until(page, end);
+  await dock(page, "left");
 
   // the action card
   await page.goBack();
@@ -308,7 +356,9 @@ test("record Maria's story", async ({ browser }) => {
   await glideClick(page, page.getByRole("button", { name: "Action card" }).first());
   end = await show(page, "c-card");
   await expect(page.locator("#action-card")).toBeVisible();
+  await mark(page, page.locator("#action-card").getByText(/^At a glance$/i).first(), page.locator("#action-card").getByText(/not for Krabbe disease/).first());
   await until(page, end);
+  await unmark(page);
   await say(page, "m-end");
 
   // silence, then the last line over the closing card

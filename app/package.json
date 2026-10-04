@@ -11,6 +11,7 @@
     "fixture": "cd .. && uv run --project pipeline python app/scripts/make_fixture.py",
     "e2e": "npm run build && playwright test",
     "e2e:run": "playwright test",
+    "story:record": "playwright test -c playwright.story.config.ts",
     "explain": "tsx scripts/precompute-explain.ts"
   },
   "engines": {

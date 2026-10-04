@@ -51,6 +51,10 @@ export default function StartView() {
           <Link href="/g/PSAP" className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-5 text-[15px] font-medium">
             One gene, several names: PSAP
           </Link>
+          <Link href="/intro" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 text-[15px] font-medium">
+            <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" fill="currentColor" /></svg>
+            Watch Maria&apos;s story
+          </Link>
         </div>
       </section>
 

@@ -43,7 +43,7 @@ Getestet in der Cloud mit Platzhalter-Tönen auf dem echten Motion-Video: Ausgab
 | V2 | 0:04 | 5,5 s | 11 Quellen-Chips, ab 0:06 „19 open sources. Licensed, cached, reproducible." |
 | V3 | 0:10 | 6,5 s | Python 3.12 · uv · pandas · NetworkX, Licht durch 10 Stationen, ab 0:13 „make reproduce" |
 | V4 | 0:17 | 7,5 s | Graph, Zähler fertig bei 0:19, Kante 0:21, Evidenz-Karte und Legende 0:22 bis 0:24 |
-| V5 | 0:25,5 | 7,0 s | Extract 0:26, Reconcile 0:27, Explain 0:28, ab 0:30 „Code checks every answer." |
+| V5 | 0:25 | 7,5 s | Extract 0:26, Reconcile 0:27, Explain 0:28, ab 0:30 „Code checks every answer." |
 | V6 | 0:33 | 6,5 s | „6,802 static JSON files", Stack-Badges, ab 0:37 „No database. Nothing to crash." |
 | V7 | 0:40 | 5,5 s | Checkliste, eine Zeile je Sekunde bis 0:44 |
 | V8 | 0:46,5 | 3,5 s | Sternbild, „Constellate", URL |
@@ -72,7 +72,7 @@ A Python pipeline, ten steps, one command: make reproduce.
 Out comes the graph. Every edge carries its evidence: source, date, confidence, counter-evidence.
 ```
 
-**V5** („extract" soll um 0:26 fallen)
+**V5** (startet 0:25, „extract" fällt kurz nach dem Extract-Panel um 0:26)
 ```
 [calm, measured narration]
 OpenAI at three points: extract, reconcile, explain. Code checks every answer.

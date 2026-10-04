@@ -42,8 +42,8 @@
     },
     {
       "id": "V5",
-      "start": 25.5,
-      "max": 7.0,
+      "start": 25.0,
+      "max": 7.5,
       "scene": "OpenAI: Extract, Reconcile, Explain",
       "text": "[calm, measured narration]\nOpenAI at three points: extract, reconcile, explain. Code checks every answer.",
       "honest": "[calm, measured narration]\nOpenAI is wired in at three points. Code checks every answer."

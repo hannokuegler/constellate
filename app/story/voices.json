@@ -4,12 +4,12 @@
   "output_format": "mp3_44100_128",
   "seed": 404,
   "maria": {
-    "voice_id": "EXAVITQu4vr4xnSDxMaL",
-    "note": "Sarah (default voice) until a designed voice is saved; see VOICE.md 2.1",
-    "stability": 0.4,
+    "voice_id": "cgSgspJ2msm6clMCkdW9",
+    "note": "Jessica (default voice, expressive, ID unverified: check with --list); alternatives Aria 9BWtsMINqrJLrRacOk9x, Laura FGY2WhTYpPnrIDTdsKH5 (both unverified), or the design prompt below; Fassung 2, see VOICE.md",
+    "stability": 0.3,
     "similarity_boost": 0.75,
-    "design": "A woman in her mid-thirties, American English with a soft, unremarkable General American accent. Natural mid-to-high pitch, slightly breathy and a little hoarse, as if she has been crying and has not slept. She speaks very quietly and very close to the microphone, like someone at a kitchen table at two in the morning who does not want to wake anyone. Slow, hesitant pacing with small audible breaths between phrases; the voice wavers at the ends of sentences but never sobs and never sounds theatrical. Raw, intimate, real, not an actress performance. Dry, clean studio recording, no reverb, no background noise.",
-    "design_text": "Two a.m. The doctor said... Krabbe disease. I can't even spell it. Is there anyone else... like us? How do I know this is true? So we don't have to start from zero."
+    "design": "A woman in her mid-thirties, warm American English with a natural General American accent. Mid-range pitch with a little grit from a sleepless night, but fully alive: quick, restless and determined, a mother who refuses to wait until morning. Her voice moves from line to line: urgency and impatience, a sharp flash of suspicion, sudden wonder, then warm relief with a soft, breathy laugh. Conversational and close to the microphone, natural breaths, real rather than performed. Never weepy, never whispering, never monotone, never an announcer or audiobook narrator. Dry, clean studio recording, no reverb, no background noise.",
+    "design_text": "Two a.m. Krabbe disease. Can't even spell it. Other families? Anyone? Wait. Who says this is true? Okay. I can work with this."
   },
   "consti": {
     "voice_id": "pFZP5JQG7iQjIQuC4Bku",

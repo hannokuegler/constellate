@@ -32,17 +32,17 @@ export const STORY_SOURCES = [
 export const STORY_POSTER = "/story/maria.jpg";
 
 export const STORY: StoryLine[] = [
-  { id: "m-start", who: "maria", text: "2 a.m. The doctor said \u201cKrabbe disease\u201d. I can't even spell it.", tts: "[exhausted, close to the mic, barely above a whisper] Two a.m. The doctor said\u2026 Krabbe disease. [exhales] I can't even spell it." },
-  { id: "c-hello", who: "consti", text: "Maria, I'm Consti. I won't guess. I'll show you how we know.", tts: "[calm, warm, unhurried] Maria, I'm Consti. I won't guess. I'll show you how we know." },
-  { id: "m-alone", who: "maria", text: "Is there anyone else like us?", tts: "[softly, voice close to breaking] Is there anyone else\u2026 like us?" },
-  { id: "c-gap", who: "consti", text: "You're not alone. These groups are there for Krabbe, each one checked against its own website.", tts: "[warmly, gently] You're not alone. These groups are there for Krabbe\u2026 each one checked against its own website." },
-  { id: "c-studies", who: "consti", text: "But these studies are looking for participants.", tts: "[a little warmer] But these studies are looking for participants." },
-  { id: "m-trust", who: "maria", text: "How do I know this is true?", tts: "[quietly, wary] How do I know this is true?" },
-  { id: "c-evidence", who: "consti", text: "Click any line: its source\u2026 and what speaks against it.", tts: "[calm, steady] Click any line: its source\u2026 and what speaks against it." },
-  { id: "c-related", who: "consti", text: "MLD shares a gene with Krabbe: PSAP.", tts: "[softly, curious] M-L-D shares a gene with Krabbe: P-S-A-P." },
-  { id: "c-psap", who: "consti", text: "One gene. Four disease names.", tts: "[slowly, with weight] One gene. Four disease names." },
-  { id: "c-card", who: "consti", text: "Your action card: what may transfer, what differs, what needs an expert.", tts: "[calm, clear] Your action card: what may transfer, what differs, what needs an expert." },
-  { id: "m-end", who: "maria", text: "So we don't have to start from zero.", tts: "[quietly, almost to herself, a first trace of hope] So we don't have to start from zero." },
+  { id: "m-start", who: "maria", text: "2 a.m. \u201cKrabbe disease.\u201d Can't even spell it.", tts: "[wired and exhausted, low and quick, restless, a frustrated edge] Two a.m. Krabbe disease. [sharp exhale] Can't even spell it." },
+  { id: "c-hello", who: "consti", text: "I'm Consti. Just type it. Typos are fine.", tts: "[calm, warm, unhurried] I'm Consti. Just type it\u2026 typos are fine." },
+  { id: "m-alone", who: "maria", text: "Other families? Anyone?", tts: "[impatient, urgent, scanning the screen] Other families? [quieter, a flicker of raw hope] Anyone?" },
+  { id: "c-gap", who: "consti", text: "Yes. Patient groups for this diagnosis, each one checked.", tts: "[warmly, gently] Yes. Patient groups for this diagnosis\u2026 each one checked." },
+  { id: "c-studies", who: "consti", text: "Studies that need participants, by country.", tts: "[a little brighter] Studies that need participants, by country." },
+  { id: "m-trust", who: "maria", text: "Wait. Who says this is true?", tts: "[stops short, suspicious, a little sharp] Wait. Who says this is true?" },
+  { id: "c-evidence", who: "consti", text: "Each line shows its source, how sure we are\u2026 and what speaks against it.", tts: "[calm, steady, not offended] Each line shows its source, how sure we are\u2026 and what speaks against it." },
+  { id: "c-related", who: "consti", text: "Related by a gene or symptoms: their families may help.", tts: "[softly, curious] Related by a gene or symptoms: their families may help." },
+  { id: "c-psap", who: "consti", text: "Names hide what they share. One gene, four names.", tts: "[quietly, a touch of wonder] Names hide what they share. One gene\u2026 four names." },
+  { id: "c-card", who: "consti", text: "Your action card. No approved medicine for Krabbe in EU or US records yet\u2026 MLD has one.", tts: "[calm, clear, no drama] Your action card. No approved medicine for Krabbe in E-U or U-S records yet\u2026 M-L-D has one." },
+  { id: "m-end", who: "maria", text: "Okay. I can work with this.", tts: "[a beat of disbelief, then a soft laugh of relief, voice warming] Okay. I can work with this." },
   { id: "c-end", who: "consti", text: "Your family is not the first.", tts: "[softly, slowly, warm, close to the mic] Your family is not the first." },
 ];
 

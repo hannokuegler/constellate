@@ -5,6 +5,8 @@ import { useMemo } from "react";
 import type { DiseaseFile, Meta } from "@/lib/types";
 import { refOf, xrefUrl } from "@/lib/ids";
 import {
+  cardPartner,
+  coveredByRegulators,
   citedEdges,
   citedLabels,
   familyAssets,
@@ -21,7 +23,7 @@ import {
   sameCountry,
   type OrgRow,
 } from "@/lib/nextSteps";
-import { useCountry, useTrialDetails } from "@/lib/studies";
+import { ageRange, useCountry, useTrialDetails } from "@/lib/studies";
 import { useEdgePanel } from "../Providers";
 import RelatedHelp, { useRelated, type RelatedState } from "./RelatedHelp";
 import StudiesNow from "./StudiesNow";
@@ -43,7 +45,8 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
   const orgs = useMemo(() => ownOrgs(file), [file]);
   const studies = useMemo(() => ownStudies(file), [file]);
   const assets = useMemo(() => familyAssets(file), [file]);
-  const related = useRelated(file, therapy.kind !== "approved" || orgs.length === 0);
+  // always loaded: the action-card step needs a same-mechanism relative with something that exists (cardPartner)
+  const related = useRelated(file, true);
 
   // groups for related diseases when this diagnosis has none: the honest-gap block first, else the loaded relatives
   const relatedOrgs = useMemo<OrgRow[]>(() => {
@@ -54,12 +57,8 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
     return related.findings.flatMap((f) => f.orgs).filter((o) => !seen.has(o.key) && seen.add(o.key)).slice(0, 4);
   }, [orgs, file, related.findings]);
 
-  const viaNeighbour = useMemo(() => {
-    const precedent = related.findings.find((f) => f.therapies.length && f.candidate.neighbour)?.candidate;
-    if (precedent) return { id: precedent.id, label: precedent.label };
-    const n = file.neighbours.find((x) => x.id === defaultVia);
-    return n ? { id: n.id, label: n.label } : null;
-  }, [related.findings, file.neighbours, defaultVia]);
+  // never a relative linked only by symptoms or with a different / uncompared mechanism (Gaucher -> Lewy body dementia)
+  const viaNeighbour = useMemo(() => cardPartner(file, related.findings, defaultVia), [file, related.findings, defaultVia]);
 
   // the country picked in the studies block also orders the groups and the next steps (trial shards are cached in lib/data)
   const [country] = useCountry();
@@ -68,7 +67,8 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
     () => Object.fromEntries(Object.entries(studyDetails).map(([id, d]) => [id, d ? d.countries.map((c) => c.country) : null])),
     [studyDetails],
   );
-  const steps = nextSteps({ file, therapy, orgs: orgs.length ? orgs : relatedOrgs, studies, assets, related: related.findings, actionVia: viaNeighbour, country, studyCountries });
+  const studyAges = useMemo(() => Object.fromEntries(Object.entries(studyDetails).map(([id, d]) => [id, ageRange(d)])), [studyDetails]);
+  const steps = nextSteps({ file, therapy, orgs: orgs.length ? orgs : relatedOrgs, studies, assets, related: related.findings, actionVia: viaNeighbour, country, studyCountries, studyAges });
   const builtAt = plainDate(meta?.built_at);
   const parents = node.parents.slice(0, 2).map((p) => refOf(p, labels));
   const words = wordsIn(`${label} ${node.definition ?? ""} ${parents.map((p) => p.label).join(" ")}`);
@@ -79,7 +79,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
         What you can do now
       </h2>
       <p className="mt-2 max-w-[760px] text-[17px] leading-relaxed text-ink-2">
-        In short, with a source for each line. Research navigation, not medical advice: talk to your child&apos;s doctor before you act on it.
+        In short, with a source for each line. Research navigation, not medical advice: talk to your doctor before you act on it.
       </p>
 
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -100,7 +100,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
           <Source label={`MONDO disease ontology, ${node.id}`} href={xrefUrl(node.id)} date={builtAt ? `as of ${builtAt}` : null} about={`definition of ${label}`} />
         </NowCard>
 
-        <MedicineCard label={label} therapy={therapy} related={related} />
+        <MedicineCard label={label} therapy={therapy} related={related} country={country} />
 
         <FamiliesCard label={label} orgs={orgs} relatedOrgs={relatedOrgs} country={country} builtAt={builtAt} loading={!orgs.length && related.status === "loading" && !gapOrgs(file).length} />
 
@@ -111,7 +111,7 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
             <ol className="space-y-3">
               {steps.map((s, i) => (
                 <li key={s.key} className="flex gap-4">
-                  <span className="tabular mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-soft text-[15px] font-semibold text-accent" aria-hidden="true">
+                  <span className="tabular mt-0.5 flex h-8 w-8 flex-none items-center justify-center rounded-full bg-accent-soft text-[16px] font-semibold text-accent" aria-hidden="true">
                     {i + 1}
                   </span>
                   <div className="min-w-0">
@@ -166,19 +166,33 @@ function RelatedPrecedent({ label, related }: { label: string; related: RelatedS
         </span>{" "}
         {names.join(", ")}. Whether anything carries over needs expert review.
       </p>
-      <a href="#related-help" className="inline-flex min-h-11 items-center text-[15px] font-medium underline decoration-line-strong underline-offset-4 hover:decoration-current">
+      <a href="#related-help" className="inline-flex min-h-11 items-center text-[16px] font-medium underline decoration-line-strong underline-offset-4 hover:decoration-current">
         See what exists for related diseases
       </a>
     </div>
   );
 }
 
-function MedicineCard({ label, therapy, related }: { label: string; therapy: ReturnType<typeof therapyState>; related: RelatedState }) {
+/** "We checked EMA (EU) and FDA (US) records. Other regulators, such as the MHRA (UK), are not in our data yet." Highlighted when the chosen country is outside them. */
+function RegulatorsChecked({ regulators, country }: { regulators: string[]; country: string }) {
+  const names = regulators.length ? regulators : ["EMA (EU)", "FDA (US)"];
+  const list = names.length > 1 ? `${names.slice(0, -1).join(", ")} and ${names[names.length - 1]}` : names[0];
+  const outside = !coveredByRegulators(country, names);
+  const other = names.some((n) => n.startsWith("MHRA")) ? "Other regulators are" : "Other regulators, such as the MHRA (UK), are";
+  return (
+    <p className={outside ? "rounded-[12px] bg-warn-soft px-3 py-2 text-[16px] leading-relaxed text-warn" : "text-[16px] text-ink-2"} role={outside ? "note" : undefined}>
+      We checked {list} records. {other} not in our data yet.
+      {outside && ` For ${country}, ask your specialist or the national medicines agency whether a medicine is approved there.`}
+    </p>
+  );
+}
+
+function MedicineCard({ label, therapy, related, country }: { label: string; therapy: ReturnType<typeof therapyState>; related: RelatedState; country: string }) {
   if (therapy.kind === "unchecked")
     return (
       <NowCard id="now-medicine" title="Is there an approved medicine?" gap>
         <p>
-          <span className="mr-2 inline-flex rounded-full border border-dashed border-line-strong px-2.5 py-0.5 text-[13px] font-semibold uppercase tracking-wide text-ink-2">Not checked yet</span>
+          <span className="mr-2 inline-flex rounded-full border border-dashed border-line-strong px-2.5 py-0.5 text-[14px] font-semibold uppercase tracking-wide text-ink-2">Not checked yet</span>
           We have not searched the EMA and FDA medicine records for {label} yet, so we cannot say either way.
         </p>
         <RelatedPrecedent label={label} related={related} />
@@ -191,9 +205,7 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
         <p className="font-semibold">
           No approved medicine found in {therapy.authorities} records{therapy.asOf ? ` as of ${therapy.asOf}` : ""}.
         </p>
-        <p className="text-[16px] text-ink-2" title={therapy.sources.join("; ")}>
-          EMA: European Union medicines agency. FDA: United States.
-        </p>
+        <RegulatorsChecked regulators={therapy.regulators} country={country} />
         <RelatedPrecedent label={label} related={related} />
       </NowCard>
     );
@@ -210,8 +222,13 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
           </li>
         ))}
       </ul>
-      {therapy.items.length > 4 && <p className="text-[16px] text-ink-2">{therapy.items.length - 4} more in the action card below.</p>}
-      <p className="text-[16px] text-ink-2">Whether it fits your child is for your specialist to decide. EMA: European Union medicines agency. FDA: United States.</p>
+      {therapy.items.length > 4 && (
+        <p className="text-[16px] text-ink-2">
+          Also listed: {therapy.items.slice(4).map((t) => [t.name, t.authority].filter(Boolean).join(", ")).join("; ")}.
+        </p>
+      )}
+      <p className="text-[16px] text-ink-2">Whether it fits you or your family member is for your specialist to decide.</p>
+      <RegulatorsChecked regulators={therapy.regulators} country={country} />
     </NowCard>
   );
 }
@@ -221,14 +238,15 @@ function FamiliesCard({ label, orgs, relatedOrgs, country, builtAt, loading }: {
   // groups in the country picked under "Where do you live?" first
   const rows = inCountryFirst(orgs.length ? orgs : relatedOrgs, (o) => o.country, country).slice(0, 4);
   const noneHere = isCountry(country) && orgs.length > 0 && !orgs.some((o) => sameCountry(o.country, country));
-  const dates = [...new Set(rows.map((o) => o.verified).filter(Boolean))];
-  const oneDate = dates.length === 1 ? dates[0] : null;
+  // one "checked" date in the heading only when every listed group carries it; AI-matched groups never count as checked
+  const dates = [...new Set(rows.map((o) => o.verified))];
+  const oneDate = dates.length === 1 && dates[0] ? dates[0] : null;
   return (
     <NowCard id="now-families" title="Families like yours" gap={!orgs.length}>
       {orgs.length ? (
         <p>
           {orgs.length === 1 ? "A patient group" : `${orgs.length} patient groups`} for {label}
-          {oneDate ? `, checked against the organisation's website, ${oneDate}` : ", each checked against the organisation's website"}:
+          {oneDate ? `, checked against the organisation's website, ${oneDate}` : ""}:
           {noneHere && <span className="block">No patient group for {label} in {country} in our list; groups elsewhere:</span>}
         </p>
       ) : (
@@ -248,6 +266,7 @@ function FamiliesCard({ label, orgs, relatedOrgs, country, builtAt, loading }: {
                   o.forDisease ? <span key="for">for {o.forDisease.label}</span> : null,
                   o.country ? <span key="c">{countryName(o.country)}</span> : null,
                   o.verified && !oneDate ? <span key="v">checked against the organisation&apos;s website, {o.verified}</span> : null,
+                  o.aiMatched ? <span key="ai">Matched by AI, not yet confirmed</span> : null,
                   o.contact ? <Ext key="contact" href={o.contact}>Contact page</Ext> : null,
                   o.edge ? (
                     <button

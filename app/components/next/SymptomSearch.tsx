@@ -3,7 +3,7 @@
 import { useDeferredValue, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { loadIndex } from "@/lib/data";
-import { createSearcher, type SearchHit } from "@/lib/search";
+import { createSearcher, revealSuggestions, type SearchHit } from "@/lib/search";
 import { phenotypeHref } from "@/lib/ids";
 import { usePrefs } from "../Providers";
 
@@ -21,6 +21,7 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
   const router = useRouter();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(0);
@@ -34,6 +35,10 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
 
   const hits: SearchHit[] = useMemo(() => (searcher ? searcher(deferred, persona, 6) : []), [searcher, deferred, persona]);
   const showList = open && query.trim().length >= 2;
+  // phones: keep at least three suggestions on screen (the field may sit near the bottom or under the keyboard)
+  useEffect(() => {
+    if (showList) revealSuggestions(fieldRef.current);
+  }, [showList, hits.length]);
 
   const go = (hit: SearchHit | undefined) => {
     if (!hit) return;
@@ -43,7 +48,7 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
 
   return (
     <div className="relative w-full">
-      <div className="relative h-12 rounded-full border border-line bg-surface">
+      <div ref={fieldRef} className="relative h-12 rounded-full border border-line bg-surface">
         <input
           ref={inputRef}
           type="search"
@@ -58,7 +63,10 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
           autoComplete="off"
           spellCheck={false}
           value={query}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            revealSuggestions(fieldRef.current);
+          }}
           onBlur={() => setTimeout(() => setOpen(false), 150)}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -75,7 +83,13 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
             } else if (e.key === "Enter") {
               e.preventDefault();
               go(hits[active]);
-            } else if (e.key === "Escape") setOpen(false);
+            } else if (e.key === "Escape") {
+              // first Esc closes the list (the browser would clear a search field), a second Esc clears the text
+              if (showList) {
+                e.preventDefault();
+                setOpen(false);
+              } else setQuery("");
+            }
           }}
           style={{ borderRadius: 9999 }}
           className="absolute inset-0 h-full w-full bg-transparent px-5 text-[17px] placeholder:text-ink-2"
@@ -84,7 +98,7 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
       {showList && (
         <ul id={listId} role="listbox" className="absolute inset-x-0 top-full z-40 mt-2 max-h-[50vh] overflow-y-auto rounded-[20px] border border-line bg-surface p-2 shadow-[var(--shadow)]">
           {!searcher && !failed && <li className="px-3 py-3 text-[16px] text-ink-2">Loading the list of symptoms…</li>}
-          {failed && <li className="px-3 py-3 text-[15px] text-contra">The list of symptoms could not be loaded. Please try again.</li>}
+          {failed && <li className="px-3 py-3 text-[16px] text-contra">The list of symptoms could not be loaded. Please try again.</li>}
           {searcher && !hits.length && <li className="px-3 py-3 text-[16px] text-ink-2">No symptom matches “{query}”. Try another word or the term from the doctor&apos;s letter.</li>}
           {hits.map((hit, i) => (
             <li
@@ -97,8 +111,8 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
               onMouseEnter={() => setActive(i)}
               className={`flex min-h-11 cursor-pointer flex-col justify-center rounded-[12px] px-3 py-2 ${i === active ? "bg-surface-2" : ""}`}
             >
-              <span className="text-[15px] font-medium">{hit.entry.label}</span>
-              {hit.matched && <span className="text-[12px] text-ink-2">matches “{hit.matched}”</span>}
+              <span className="text-[16px] font-medium">{hit.entry.label}</span>
+              {hit.matched && <span className="text-[16px] text-ink-2">matches “{hit.matched}”</span>}
             </li>
           ))}
         </ul>

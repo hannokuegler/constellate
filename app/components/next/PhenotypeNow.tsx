@@ -6,7 +6,7 @@ import type { DiseaseFile, IndexEntry, PhenotypeFile } from "@/lib/types";
 import { loadDisease } from "@/lib/data";
 import { diseaseHref, xrefUrl } from "@/lib/ids";
 import { phenotypeDiseases } from "@/lib/normalize";
-import { ownStudies, PLAIN_WORDS, type StudyRow } from "@/lib/nextSteps";
+import { ownStudies, type StudyRow } from "@/lib/nextSteps";
 import { useEdgePanel } from "../Providers";
 import { Ext, Explain, NowCard, Source } from "./ui";
 
@@ -43,6 +43,8 @@ export default function PhenotypeNow({ file, index }: { file: PhenotypeFile; ind
           seen.add(s.key);
           studies.push({ study: s, disease: f!.node.label });
         }
+  // the shard's node carries the HPO definition (types.ts lists only id/label/ic)
+  const definition = (file.node as { definition?: string | null }).definition?.trim() || null;
   const nameOf = (id: string, fallback?: string) => fallback ?? index.get(id)?.label ?? id;
 
   return (
@@ -51,12 +53,20 @@ export default function PhenotypeNow({ file, index }: { file: PhenotypeFile; ind
         In plain words
       </h2>
       <p className="mt-2 text-[17px] leading-relaxed text-ink-2">
-        A single finding can belong to many diseases. Only a doctor can tell which one fits your child. This is research navigation, not medical advice.
+        A single finding can belong to many diseases. Only a doctor can tell which one fits. This is research navigation, not medical advice.
       </p>
       <div className="mt-4 grid grid-cols-1 gap-4">
+        <NowCard id="p-now-meaning" title={`What “${label}” means`} gap={!definition}>
+          {definition ? (
+            <p>{definition}</p>
+          ) : (
+            <p>The Human Phenotype Ontology gives no definition for {label} in our data. Ask your doctor what it means for you or your family member.</p>
+          )}
+          <Source label={`Human Phenotype Ontology, ${file.node.id}`} href={xrefUrl(file.node.id) ?? "https://hpo.jax.org"} about={`definition of ${label}`} />
+        </NowCard>
         <NowCard id="p-now-diseases" title="Diseases in our data with this finding">
           <p>
-            In our data, {total === 1 ? "one disease lists" : `${total} diseases list`} {label}.{rows.length > TOP ? ` The ${TOP} most clearly annotated:` : ""}
+            In our data, {total === 1 ? "one disease lists" : `${total} diseases list`} {label}.{rows.length > TOP ? ` The ${TOP} with the strongest records:` : ""}
           </p>
           <ul className="divide-y divide-line">
             {top.map((r) => {
@@ -71,13 +81,6 @@ export default function PhenotypeNow({ file, index }: { file: PhenotypeFile; ind
               );
             })}
           </ul>
-          <Explain>
-            {PLAIN_WORDS.finding} Source:{" "}
-            <a href={xrefUrl(file.node.id) ?? "https://hpo.jax.org"} target="_blank" rel="noreferrer" className="underline underline-offset-4">
-              {file.node.id}
-            </a>
-            .
-          </Explain>
         </NowCard>
 
         <NowCard id="p-now-studies" title="Studies for these diseases" gap={shards?.key === key && !studies.length}>
@@ -90,18 +93,18 @@ export default function PhenotypeNow({ file, index }: { file: PhenotypeFile; ind
               <ul className="divide-y divide-line">
                 {studies.slice(0, 5).map(({ study: s, disease }) => (
                   <li key={s.key} className="py-2">
-                    <p className="text-[15px]">
+                    <p className="text-[16px]">
                       <span className="font-semibold">{s.status}</span>
                       <span className="text-ink-2"> · {s.observational ? "observes, no treatment" : "tests a treatment"} · for {disease}</span>
                     </p>
                     <p className="leading-snug">{s.title}</p>
-                    <Ext href={s.href} className="text-[15px]">
+                    <Ext href={s.href} className="text-[16px]">
                       {s.key} on ClinicalTrials.gov
                     </Ext>
                   </li>
                 ))}
               </ul>
-              <Explain>Ask your doctor; the registry lists the contact. {PLAIN_WORDS.observational}</Explain>
+              <Explain>Ask your doctor; the registry entry lists the contact. Study type as recorded on ClinicalTrials.gov.</Explain>
             </>
           ) : (
             <p>No open study on ClinicalTrials.gov lists {top.length === 1 ? "this disease" : "these diseases"} right now.</p>

@@ -5,7 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { DiseaseFile } from "@/lib/types";
 import { loadDisease } from "@/lib/data";
 import { diseaseHref, toFileKey } from "@/lib/ids";
-import { hasFindings, rankFindings, relatedCandidates, relatedFinding, PLAIN_WORDS, type RelatedCandidate, type RelatedFinding } from "@/lib/nextSteps";
+import { hasFindings, rankFindings, relatedCandidates, relatedFinding, PLAIN_SOURCES, PLAIN_WORDS, type RelatedCandidate, type RelatedFinding } from "@/lib/nextSteps";
 import { useEdgePanel } from "../Providers";
 import { Explain, NowCard, Source } from "./ui";
 
@@ -123,7 +123,7 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
           </Link>
         </p>
         <Source label={`Related: it ${candidate.why}`} edge={candidate.edge} about={`why ${other} is related to ${label}`} prefix={false} />
-        <p className="text-[15px]">Has {has.join(", ")}.</p>
+        <p className="text-[16px]">Has {has.join(", ")}.</p>
         {therapies.length > 0 && <p className="text-[16px] text-ink-2">Whether anything carries over needs expert review.</p>}
       </li>
     );
@@ -170,9 +170,14 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
               </li>
             ))}
           </ul>
-          <Explain>
-            {kinds.has("natural_history_study") && PLAIN_WORDS.naturalHistory} {kinds.has("registry") && PLAIN_WORDS.registry}
-          </Explain>
+          {kinds.has("natural_history_study") && (
+            <Explain>
+              {PLAIN_WORDS.naturalHistory}{" "}
+              <a href={PLAIN_SOURCES.naturalHistory.href} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
+                Source: {PLAIN_SOURCES.naturalHistory.label}
+              </a>
+            </Explain>
+          )}
         </div>
       )}
 

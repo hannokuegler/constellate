@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { TrialDetail } from "./types";
 import { loadTrial } from "./data";
+import type { StudyAge } from "./nextSteps";
 
 /**
  * Shared by the two study blocks on a disease page ("Studies you could ask about" on top, "Open studies" below):
@@ -158,4 +159,37 @@ export function otherCountries(listed: string[]): string[] {
     if (!taken.has(f)) out.add(name);
   }
   return [...out].sort((a, b) => a.localeCompare(b));
+}
+
+// ---------------------------------------------------------------------------------------------------
+// ages, as the registry entry gives them ("2 Months", "18 Years")
+
+/** "2 Months" -> "2 months", "1 Year" -> "1 year"; null for missing or "N/A". */
+function plainAge(value: string | null | undefined): string | null {
+  const m = value?.trim().match(/^(\d+(?:\.\d+)?)\s*([A-Za-z]+)$/);
+  return m ? `${m[1]} ${m[2].toLowerCase()}` : null;
+}
+
+/** Age in years, for "does it include children" (under 18). */
+function years(value: string | null): number | null {
+  const m = value?.match(/^(\d+(?:\.\d+)?) (\w+)$/);
+  if (!m) return null;
+  const n = Number(m[1]);
+  const unit = m[2];
+  return unit.startsWith("year") ? n : unit.startsWith("month") ? n / 12 : unit.startsWith("week") ? n / 52 : unit.startsWith("day") ? n / 365 : unit.startsWith("hour") || unit.startsWith("minute") ? 0 : null;
+}
+
+/**
+ * "Ages 2 months to 55 years", "Ages 18 years and older", "Ages up to 17 years", "No age limits listed" (registry gives none),
+ * "Ages not listed" (no registry details loaded),
+ * plus whether children (under 18) can take part: from the age limits, else from the registry's standard age groups.
+ */
+export function ageRange(detail: TrialDetail | null | undefined): StudyAge {
+  const min = plainAge(detail?.eligibility?.min_age);
+  const max = plainAge(detail?.eligibility?.max_age);
+  const groups = detail?.eligibility?.std_ages ?? [];
+  const label = min && max ? `Ages ${min} to ${max}` : min ? `Ages ${min} and older` : max ? `Ages up to ${max}` : detail ? "No age limits listed" : "Ages not listed";
+  const minYears = years(min);
+  const children = minYears !== null ? minYears < 18 : groups.length ? groups.includes("CHILD") : max ? true : null;
+  return { label, children };
 }

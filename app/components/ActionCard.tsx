@@ -39,7 +39,7 @@ function Sentence({ s }: { s: CardSentence }) {
     <li className="text-[17px] leading-relaxed">
       {s.text}.
       {s.technical && (
-        <details className="mt-1 text-[15px] text-ink-2">
+        <details className="mt-1 text-[16px] text-ink-2">
           <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-ink underline decoration-line underline-offset-2 hover:decoration-current">How this link is computed</summary>
           <p className="break-words pb-1 leading-snug">{s.technical}</p>
         </details>
@@ -167,7 +167,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
               <select
                 value={viaId}
                 onChange={(e) => onViaChange(e.target.value)}
-                className="h-11 max-w-[260px] appearance-none truncate rounded-full border border-line bg-surface pl-4 pr-8 text-[15px] font-medium"
+                className="h-11 max-w-[260px] appearance-none truncate rounded-full border border-line bg-surface pl-4 pr-8 text-[16px] font-medium"
               >
                 {disease.neighbours.map((n) => (
                   <option key={n.id} value={n.id}>
@@ -214,7 +214,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
             <section key={section.key} className="border-b border-line px-5 py-5 md:border-b-0 md:border-r md:px-6 last:border-0">
               <SectionTitle className="flex items-center gap-2.5 text-[20px] font-bold tracking-tight">
                 {section.title}
-                <span className="grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-[15px] font-bold leading-none" style={{ borderColor: SECTION_ACCENT[section.key], color: SECTION_ACCENT[section.key] }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
+                <span className="grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-[16px] font-bold leading-none" style={{ borderColor: SECTION_ACCENT[section.key], color: SECTION_ACCENT[section.key] }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
               <p className="mt-0.5 text-[16px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (

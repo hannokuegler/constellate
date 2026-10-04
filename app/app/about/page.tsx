@@ -14,7 +14,7 @@ const MOMENTS = [
   {
     label: "Moment 1",
     title: "We just got the diagnosis",
-    text: "A mother has a name for her child's disease and nobody to ask. Constellate shows her the patient groups for that diagnosis, the studies that list it and, when there is nothing, exactly what was searched.",
+    text: "A family has a name for a rare disease and nobody to ask. Constellate shows them the patient groups for that diagnosis, the studies that list it and, when there is nothing, exactly what was searched.",
   },
   {
     label: "Moment 2",

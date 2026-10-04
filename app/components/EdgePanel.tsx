@@ -49,6 +49,9 @@ function aiLabel(ev: Evidence): { text: string; ai: boolean } | null {
 
 export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
+  // below 768 px the panel is a bottom sheet over a dimmed page: then it is modal (screen readers skip the rest, Tab stays inside)
+  const [modal, setModal] = useState(false);
   const [full, setFull] = useState<Edge | null>(null);
   const edge = full && given && full.id === given.id ? full : given;
   const loadingFull = Boolean(given?.evidence_omitted && edge === given);
@@ -73,11 +76,43 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
   }, [given]);
 
   useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const apply = () => setModal(media.matches);
+    apply();
+    media.addEventListener("change", apply);
+    return () => media.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
     closeRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+  }, [edge, missingId]);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") return onClose();
+      if (event.key !== "Tab" || !modal) return;
+      // focus trap while the panel covers the page
+      const panel = panelRef.current;
+      if (!panel) return;
+      const items = [...panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea, summary, [tabindex]:not([tabindex='-1'])")].filter((el) => el.getClientRects().length > 0);
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (!panel.contains(active)) {
+        event.preventDefault();
+        (event.shiftKey ? last : first).focus();
+      } else if (event.shiftKey && active === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && active === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [edge, missingId, onClose]);
+  }, [modal, onClose]);
 
   // the graph keeps the read edge amber while this panel is open
   const edgeId = edge?.id ?? null;
@@ -120,8 +155,9 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
     <>
       <div className="fixed inset-0 z-40 bg-black/25 md:bg-transparent md:pointer-events-none" onClick={onClose} aria-hidden="true" />
       <aside
+        ref={panelRef}
         role="dialog"
-        aria-modal="false"
+        aria-modal={modal ? "true" : "false"}
         aria-labelledby="edge-panel-title"
         className="@container drawer-enter fixed z-50 inset-x-0 bottom-0 max-h-[85vh] md:inset-x-auto md:right-4 md:top-20 md:bottom-4 md:max-h-none md:w-[440px] overflow-y-auto overscroll-contain rounded-t-[20px] md:rounded-[20px] border border-line bg-surface shadow-[var(--shadow,0_8px_32px_rgb(0_0_0/0.35))] pb-[env(safe-area-inset-bottom)]"
       >
@@ -176,7 +212,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                 <p className="text-[13px] text-ink-2">{similarity ? "similarity (simGIC)" : "confidence"}</p>
                 <p className="tabular font-mono text-[17px] font-semibold">
                   {formatConfidence(edge.confidence)}
-                  {similarity && similarityWords(edge.confidence) && <span className="ml-2 font-sans text-[15px] font-normal text-ink-2">{similarityWords(edge.confidence)}</span>}
+                  {similarity && similarityWords(edge.confidence) && <span className="ml-2 font-sans text-[16px] font-normal text-ink-2">{similarityWords(edge.confidence)}</span>}
                 </p>
               </div>
               <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" role="img" aria-label={`${similarity ? "similarity" : "confidence"} ${formatConfidence(edge.confidence)} of 1`}>
@@ -275,7 +311,7 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
   const computed = lead?.db === "computed" || edge.level === "inferred";
   const computedLabel = lead?.record ? computedRecordLabel(lead.record) : null;
   const steps: { key: string; value: React.ReactNode }[] = [
-    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db && !computedLabel ? <span className="block text-[15px] font-normal text-ink-2">via {originText(lead.origin)}</span> : null}</> : "none" },
+    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db && !computedLabel ? <span className="block text-[16px] font-normal text-ink-2">via {originText(lead.origin)}</span> : null}</> : "none" },
     {
       key: "Record",
       value: lead?.record ? (
@@ -329,7 +365,7 @@ function EdgeId({ id }: { id: string }) {
     <div className="flex items-center gap-2 border-t border-line pt-4">
       <p className="text-[12px] uppercase tracking-[0.08em] text-ink-2">Edge ID</p>
       <code className="ml-auto select-all font-mono text-[13px]">{id}</code>
-      <button onClick={copy} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-[13px] font-medium text-ink hover:bg-surface-2" aria-label={`Copy edge ID ${id}`}>
+      <button onClick={copy} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-3 text-[16px] font-medium text-ink hover:bg-surface-2" aria-label={`Copy edge ID ${id}`}>
         {copied ? "Copied" : "Copy"}
       </button>
     </div>
@@ -344,7 +380,7 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
     <li className={`rounded-[12px] border px-3 py-3 ${contra ? "border-contra/40 bg-contra-soft" : "border-line"}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-semibold">{ev.db}</span>
-        {ev.origin && ev.origin !== ev.db && ev.origin !== "computed" && <span className="text-[15px] text-ink-2">via {originText(ev.origin)}</span>}
+        {ev.origin && ev.origin !== ev.db && ev.origin !== "computed" && <span className="text-[16px] text-ink-2">via {originText(ev.origin)}</span>}
         <span className="ml-auto"><LevelBadge level={ev.level} small /></span>
       </div>
       {ev.record && (
@@ -364,11 +400,11 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
       {ai && (
         <div className="mt-2 rounded-[10px] border border-dashed border-line px-3 py-2 text-[16px]">
           <p className="font-semibold">{ai.text}</p>
-          <p className="text-[15px] text-ink-2">
+          <p className="text-[16px] text-ink-2">
             {ai.ai && (ev.model ? <>model <span className="font-mono">{ev.model}</span> · </> : "model not recorded · ")}
             {ai.ai && ev.prompt_version ? `prompt ${ev.prompt_version} · ` : ""}unverified until a person checks the source
           </p>
-          {typeof (ev as { note?: unknown }).note === "string" && <p className="mt-1 text-[15px] text-ink-2">{(ev as { note?: string }).note}</p>}
+          {typeof (ev as { note?: unknown }).note === "string" && <p className="mt-1 text-[16px] text-ink-2">{(ev as { note?: string }).note}</p>}
         </div>
       )}
       {ev.draft_input && <p className="mt-2 text-[12px] font-semibold text-ink-2">From an unverified draft list</p>}
@@ -379,7 +415,7 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
         </p>
       )}
       {ev.snippet && <p className="mt-2 break-words text-[16px] leading-relaxed text-ink-2">“{computedEvidence ? humanizeRank(ev.snippet, sourceLabel, targetLabel) : ev.snippet}”</p>}
-      {ev.reason && <p className="mt-1 text-[15px] text-ink-2">Reason given: {ev.reason}</p>}
+      {ev.reason && <p className="mt-1 text-[16px] text-ink-2">Reason given: {ev.reason}</p>}
       <p className="tabular mt-2 text-[12px] text-ink-2">
         {formatDate(ev.date)} · {computedEvidence ? "similarity" : "confidence"} {formatConfidence(ev.confidence)}
       </p>

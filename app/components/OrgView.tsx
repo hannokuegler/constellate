@@ -55,7 +55,7 @@ export default function OrgView({ slug }: { slug: string }) {
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> / patient organisation
       </nav>
       {org.draft_input && (
-        <p className="mb-4 rounded-[12px] border border-dashed border-line-strong px-4 py-3 text-[15px]" role="note">
+        <p className="mb-4 rounded-[12px] border border-dashed border-line-strong px-4 py-3 text-[16px]" role="note">
           <span className="font-semibold">Unverified draft.</span> This entry comes from a draft list and has not been checked against the organisation&apos;s own website yet. Do not contact on this basis alone.
         </p>
       )}
@@ -63,7 +63,7 @@ export default function OrgView({ slug }: { slug: string }) {
         <h1 className="text-[28px] font-bold tracking-tight">{org.label}</h1>
         {org.draft_input && <DraftBadge />}
       </div>
-      <p className="mt-1 text-[15px] text-ink-2">
+      <p className="mt-1 text-[16px] text-ink-2">
         {[org.country, org.verified_date ? `verified ${org.verified_date}` : "not verified"].filter(Boolean).join(" · ")}
       </p>
       <div className="mt-3"><OrgAssets org={org} /></div>
@@ -81,11 +81,11 @@ export default function OrgView({ slug }: { slug: string }) {
         <h2 className="text-[20px] font-semibold">
           Diseases it represents <span className="tabular text-[13px] font-normal text-ink-2">{file.diseases.length}</span>
         </h2>
-        <p className="text-[13px] text-ink-2">Matched from the disease names on the organisation&apos;s website; open “Evidence” to see how each name was matched.</p>
+        <p className="text-[16px] text-ink-2">Matched from the disease names on the organisation&apos;s website; open “Evidence” to see how each name was matched.</p>
         <ul className="mt-2 divide-y divide-line">
           {file.diseases.map((d) => (
             <li key={d.edge.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-              <Link href={diseaseHref(d.id)} className="flex min-h-11 min-w-0 basis-full items-center break-words text-[15px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
+              <Link href={diseaseHref(d.id)} className="flex min-h-11 min-w-0 basis-full items-center break-words text-[16px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                 {d.label}
               </Link>
               {d.in_core && <span className="rounded-full border border-line px-2 text-[12px] font-medium text-ink-2">core</span>}

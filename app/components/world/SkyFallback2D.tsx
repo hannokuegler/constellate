@@ -7,7 +7,7 @@
 
 import { useEffect, useRef } from "react";
 import { KIND, constellationOf, readPalette, registerSkyController, watchTheme, type Constellation, type Sky } from "./sky";
-import { NEIGHBOUR_SHIFT, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyEndFrame, storyFit, type CameraKey, type StoryFrame } from "./story";
+import { NEIGHBOUR_SHIFT, STORY_GAP, STORY_KRABBE, STORY_MLD, computeStoryFit, lensGeometry, story, storyEndFrame, type CameraKey, type StoryFrame } from "./story";
 import { placeStarLabels } from "./labels";
 import type { HoverInfo } from "./SkyCanvas";
 
@@ -53,16 +53,8 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
     const mld = sky.indexById.get(STORY_MLD);
     const at = (i: number | undefined): [number, number, number] =>
       i === undefined ? [0, 0, 0] : [sky.positions[i * 3], sky.positions[i * 3 + 1], sky.positions[i * 3 + 2]];
-    // same framing as the 3D story: Krabbe's constellation centred, ~55 % of the height
-    let centre: [number, number, number] = at(krabbe);
-    if (krabbe !== undefined) {
-      const members = [...constellationOf(sky, krabbe).stars.keys()];
-      centre = [0, 1, 2].map((k) => members.reduce((sum, i) => sum + at(i)[k], 0) / members.length) as [number, number, number];
-      const radii = members.map((i) => Math.hypot(at(i)[0] - centre[0], at(i)[1] - centre[1], at(i)[2] - centre[2])).sort((a, b) => a - b);
-      const radius = radii[Math.floor((radii.length - 1) * 0.85)] || 10;
-      storyFit.near = Math.max(28, radius / (0.55 * Math.tan((21 * Math.PI) / 180)));
-      storyFit.gap = storyFit.near * 0.8;
-    }
+    // same framing as the 3D story: Krabbe's constellation centred, sized by fitDistance()
+    const centre: [number, number, number] = computeStoryFit(sky) ?? at(krabbe);
     const keys: Record<CameraKey, [number, number, number]> = {
       home: [0, 0, 0],
       krabbe: centre,
@@ -112,9 +104,9 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
       }
     };
 
-    const drawPass = (constellation: Constellation | null, opts: { sharp: boolean; lines: boolean; centreOnly: boolean; amber: boolean }) => {
+    const drawPass = (constellation: Constellation | null, opts: { sharp: boolean; lines: boolean; centreOnly: boolean; amber: boolean; dim?: number; preview?: boolean }) => {
       const palette = readPalette();
-      const dimmed = constellation ? 0.32 : 1;
+      const dimmed = constellation ? 1 - 0.68 * (opts.dim ?? 1) : 1;
       context.lineWidth = 1;
       for (let e = 0; e < sky.edgeCount; e++) {
         const s = sky.edgeSource[e];
@@ -122,9 +114,11 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
         if (screen[s * 3] < -1e4 || screen[t * 3] < -1e4) continue;
         const lit = opts.centreOnly ? undefined : constellation?.edges.get(e);
         const level = sky.edgeCode[e] % 4;
-        if (opts.amber && amberEdges.has(e)) {
-          context.strokeStyle = rgba(palette.amber, 1);
-          context.lineWidth = 2;
+        if (opts.amber && amberEdges.has(e)) continue; // drawn last, on top, with its glow
+        else if (opts.centreOnly && opts.preview && constellation?.edges.get(e)?.hop === 1) {
+          // Krabbe chapter: its direct links as faint hairlines before they ignite
+          context.strokeStyle = rgba(palette.starDim, 0.5);
+          context.lineWidth = 1;
         } else if (lit) {
           const colour = lit.hop === 1 ? (level === 0 ? palette.lvlStrong : level === 1 ? palette.lvlText : palette.lvlInferred) : palette.starDim;
           context.strokeStyle = rgba(colour, lit.hop === 1 ? 0.9 : 0.45);
@@ -138,11 +132,31 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
         context.lineTo(screen[t * 3], screen[t * 3 + 1]);
         context.stroke();
       }
+      if (opts.amber) {
+        // the read edge: amber, thick, glowing
+        context.save();
+        context.strokeStyle = rgba(palette.amber, 1);
+        context.lineCap = "round";
+        context.shadowColor = rgba(palette.amber, palette.dark ? 0.9 : 0.6);
+        context.shadowBlur = 14;
+        context.lineWidth = 4;
+        for (const e of amberEdges) {
+          const s = sky.edgeSource[e];
+          const t = sky.edgeTarget[e];
+          if (screen[s * 3] < -1e4 || screen[t * 3] < -1e4) continue;
+          context.beginPath();
+          context.moveTo(screen[s * 3], screen[s * 3 + 1]);
+          context.lineTo(screen[t * 3], screen[t * 3 + 1]);
+          context.stroke();
+        }
+        context.restore();
+      }
       const order = [KIND.symptom, KIND.backgroundGene, KIND.lonely, KIND.gene, KIND.disease];
       for (const kind of order) {
         for (let i = 0; i < n; i++) {
           if (sky.kind[i] !== kind || screen[i * 3] < -1e4) continue;
           let lit = constellation?.stars.get(i);
+          const previewed = !!opts.preview && opts.centreOnly && lit?.hop === 1;
           if (lit && opts.centreOnly && lit.hop !== 0) lit = undefined;
           let radius: number;
           let colour = palette.star;
@@ -166,7 +180,7 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
             colour = lit.hop === 0 ? palette.amber : palette.star;
             radius *= lit.hop === 0 ? 2.4 : 1.4;
           } else {
-            a *= dimmed;
+            if (!previewed) a *= dimmed;
             if (!opts.sharp) {
               // out of focus: a larger, fainter disc
               radius *= kind >= KIND.backgroundGene ? 2.2 : 2.8;
@@ -197,7 +211,7 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
       const palette = readPalette();
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       if (manual && story.active && manual.chapter !== story.chapter) manual = null;
-      const frame = story.active ? storyEndFrame(story.chapter, width) : null;
+      const frame = story.active ? storyEndFrame(story.chapter, width, height) : null;
       project(frame);
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       context.fillStyle = palette.bg;
@@ -212,6 +226,8 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
         lines: !frame || frame.lines > 0.5,
         centreOnly,
         amber: !manual && !!frame && frame.amberEdge > 0.5,
+        dim: frame && !manual ? frame.dim : 1,
+        preview: !manual && !!frame && frame.preview > 0.5,
       });
 
       // glasses: inside the two lenses the sky is sharp and connected

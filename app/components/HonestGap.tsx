@@ -64,8 +64,8 @@ interface Props {
 /** One-line gap state inside a card section: "Not found in X as of D" or "Data pending". Never an empty box. */
 export function GapNote({ kind, children }: { kind: "gap" | "pending"; children: React.ReactNode }) {
   return (
-    <p className="rounded-[12px] border border-dashed border-line px-3 py-2 text-[13px] text-ink-2">
-      <span className="mr-2 text-[12px] font-semibold uppercase tracking-wide text-warn">{kind === "gap" ? "Honest gap" : "Pending"}</span>
+    <p className="rounded-[12px] border border-dashed border-line px-3 py-2 text-sm text-ink-2">
+      <span className="mr-2 text-sm font-semibold uppercase tracking-wide text-warn">{kind === "gap" ? "Honest gap" : "Pending"}</span>
       {children}
     </p>
   );
@@ -74,49 +74,51 @@ export function GapNote({ kind, children }: { kind: "gap" | "pending"; children:
 /** A first-class state: what we looked for, when, and what would change the answer. Never an error page. */
 export default function HonestGap({ variant, title, reason, searched, asOf, nearest = [], close, onEdge }: Props) {
   const Heading = variant === "screen" ? "h1" : "h3";
+  const searchedDate = asOf ?? searched.map((s) => s.fetched_at).filter((d): d is string => Boolean(d)).sort().at(-1);
   return (
-    <section className={`card border-dashed ${variant === "screen" ? "px-5 py-6 md:px-8 md:py-8" : "px-4 py-4"}`} aria-label={title}>
-      <p className="text-[12px] font-semibold uppercase tracking-wide text-warn">Honest gap</p>
+    <section className={`min-w-0 rounded-2xl border border-dashed border-line ${variant === "screen" ? "px-5 py-6 md:px-8 md:py-8" : "px-4 py-4"}`} aria-label={title}>
+      <p className="text-sm font-semibold uppercase tracking-wide text-warn">Honest gap</p>
       <Heading className={`mt-1 font-semibold leading-snug ${variant === "screen" ? "text-[22px] md:text-[28px]" : "text-[17px]"}`}>{title}</Heading>
-      <p className="mt-2 max-w-[68ch] text-[15px] text-ink-2">{reason}</p>
+      <p className="mt-2 max-w-[68ch] text-base text-ink-2">{reason}</p>
 
-      <div className={`mt-5 grid gap-5 ${variant === "screen" ? "md:grid-cols-3" : ""}`}>
+      <details className="mt-3 min-w-0"><summary className="min-h-11 cursor-pointer py-2 font-medium text-accent">What was searched{searchedDate ? `, as of ${formatDate(searchedDate)}` : " | Date not recorded"}</summary>
+      <div className={`mt-3 grid min-w-0 gap-5 ${variant === "screen" ? "md:grid-cols-3" : ""}`}>
         <div>
-          <h4 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">What was searched{asOf ? `, as of ${formatDate(asOf)}` : ""}</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-ink-2">Search records</h4>
           {searched.length ? (
-            <ul className="mt-2 space-y-1.5 text-[13px]">
+            <ul className="mt-2 space-y-1.5 text-sm">
               {searched.map((s, i) => (
-                <li key={`${s.source}-${i}`} className="flex flex-wrap gap-x-2">
+                <li key={`${s.source}-${i}`} className="flex min-w-0 flex-wrap gap-x-2 [overflow-wrap:anywhere]">
                   <span className="font-semibold">{s.source}</span>
                   {s.hits !== undefined && <span className="tabular text-ink-2">{s.hits} hits</span>}
                   {s.fetched_at && <span className="text-ink-2">{formatDate(s.fetched_at)}</span>}
-                  {s.draft && <span className="rounded-full bg-warn-soft px-2 text-[12px] font-semibold text-warn">draft list</span>}
-                  {s.query && <span className="w-full truncate text-[12px] text-ink-2" title={s.query}>{s.query}</span>}
-                  {s.note && <span className="w-full text-[12px] text-ink-2">{s.note}</span>}
+                  {s.draft && <span className="rounded-full bg-warn-soft px-2 text-sm font-semibold text-warn">draft list</span>}
+                  {s.query && <span className="min-w-0 w-full whitespace-normal [overflow-wrap:anywhere] text-sm text-ink-2" title={s.query}>{s.query}</span>}
+                  {s.note && <span className="w-full text-sm text-ink-2">{s.note}</span>}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-[13px] text-ink-2">No search log recorded for this item yet.</p>
+            <p className="mt-2 text-sm text-ink-2">No search log recorded for this item yet.</p>
           )}
         </div>
         <div>
-          <h4 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Nearest related communities</h4>
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-ink-2">Nearest related communities</h4>
           {nearest.length ? (
             <ul className="mt-2 space-y-1">
               {nearest.map((n) => n.tier !== undefined || n.orgs ? (
                 <li key={n.id} className="border-b border-line py-2 last:border-0">
-                  <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center text-[15px] font-medium text-accent underline-offset-2 hover:underline">
+                  <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center text-base font-medium text-accent underline-offset-2 hover:underline">
                     {n.label}
                   </Link>
-                  <p className="text-[12px] text-ink-2">
+                  <p className="text-sm text-ink-2">
                     {n.tier && <span className="font-semibold">{n.tier}: </span>}
                     {n.via}
                     {n.confidence !== undefined && n.confidence !== null && ` · simGIC ${formatConfidence(n.confidence)}`}
                   </p>
-                  {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full bg-warn-soft px-2 text-[12px] font-semibold text-warn">mechanism differs</span>}
+                  {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full bg-warn-soft px-2 text-sm font-semibold text-warn">mechanism differs</span>}
                   {!!n.orgs?.length && (
-                    <p className="mt-1 flex flex-wrap gap-x-2 text-[13px]">
+                    <p className="mt-1 flex flex-wrap gap-x-2 text-sm">
                       {n.orgs.map((o) => (
                         <Link key={o.id} href={orgHref(o.id)} className="inline-flex min-h-11 items-center underline underline-offset-2">
                           {o.label}
@@ -126,33 +128,34 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                   )}
                 </li>
               ) : (
-                <li key={n.id} className="flex min-h-11 items-center gap-2">
-                  <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center truncate text-[15px] font-medium text-accent underline-offset-2 hover:underline">
+                <li key={n.id} className="flex min-h-11 flex-wrap items-center gap-3">
+                  <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center break-words text-base font-medium text-accent underline-offset-2 hover:underline">
                     {n.label}
                   </Link>
                   {n.edge && onEdge ? (
-                    <button onClick={() => onEdge(n.edge!)} className="min-h-11 shrink-0 rounded-full px-2 text-[12px] text-ink-2 underline underline-offset-2">
+                    <button onClick={() => onEdge(n.edge!)} className="min-h-11 shrink-0 rounded-full px-2 text-sm text-ink-2 underline underline-offset-2">
                       {n.via} {n.confidence !== undefined && formatConfidence(n.confidence)}
                     </button>
                   ) : (
-                    <span className="shrink-0 text-[12px] text-ink-2">{n.via}</span>
+                    <span className="min-w-0 text-sm text-ink-2">{n.via}</span>
                   )}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-[13px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
+            <p className="mt-2 text-sm text-ink-2">None found with the current data. That is a finding, not a failure.</p>
           )}
         </div>
         <div>
-          <h4 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">What would close this gap</h4>
-          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13px]">
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-ink-2">What would close this gap</h4>
+          <ul className="mt-2 list-disc space-y-1.5 pl-5 text-sm">
             {close.map((c) => (
               <li key={c}>{c}</li>
             ))}
           </ul>
         </div>
       </div>
+      </details>
     </section>
   );
 }

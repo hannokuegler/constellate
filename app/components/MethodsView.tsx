@@ -152,7 +152,7 @@ export default function MethodsView() {
 
       <section aria-labelledby="quality">
         <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that has not been measured yet says “pending” and what it will measure.</p>
+        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
         <div className="mt-4 overflow-x-auto rounded-[16px] border border-line">
           <table className="w-full min-w-[560px] text-left text-[14px]">
             <caption className="sr-only">Quality metrics</caption>
@@ -170,7 +170,7 @@ export default function MethodsView() {
                   <tr key={row.key} className="border-t border-line align-top" data-metric={row.key}>
                     <th scope="row" className="px-4 py-3 font-semibold">{row.label}</th>
                     <td className="px-4 py-3">
-                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn">{state === "loading" ? "loading" : "pending"}</span>}
+                      {value ? <span className="tabular font-semibold">{value}</span> : <span className="rounded-full bg-warn-soft px-2 py-0.5 text-[12px] font-semibold text-warn">{state === "loading" ? "loading" : "not yet measured in this build"}</span>}
                     </td>
                     <td className="px-4 py-3 text-ink-2">{row.measures}</td>
                   </tr>

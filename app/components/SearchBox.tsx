@@ -8,6 +8,7 @@ import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
 import { usePrefs } from "./Providers";
 import { TypeBadge } from "./Badges";
+import { skyBus } from "./world/sky";
 
 type Searcher = ReturnType<typeof createSearcher>;
 let searcherPromise: Promise<Searcher> | null = null;
@@ -17,7 +18,16 @@ function getSearcher(): Promise<Searcher> {
   return searcherPromise;
 }
 
-export default function SearchBox({ compact = false, autoFocus = false }: { compact?: boolean; autoFocus?: boolean }) {
+export default function SearchBox({
+  compact = false,
+  autoFocus = false,
+  label = "Search diseases, genes, symptoms or IDs",
+}: {
+  compact?: boolean;
+  autoFocus?: boolean;
+  /** a second search box on the same page needs its own name */
+  label?: string;
+}) {
   const { persona } = usePrefs();
   const router = useRouter();
   const listId = useId();
@@ -28,6 +38,15 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
   const [searcher, setSearcher] = useState<Searcher | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const deferred = useDeferredValue(query);
+  // phones: the long placeholder would be cut off inside the pill
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 480px)");
+    const update = () => setNarrow(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   const warm = useCallback(() => {
     if (searcher) return;
@@ -41,13 +60,28 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   const hits: SearchHit[] = useMemo(() => (searcher ? searcher(deferred, persona) : []), [searcher, deferred, persona]);
 
+  const navigating = useRef(false);
   const go = (hit: SearchHit | undefined) => {
-    if (!hit) return;
+    if (!hit || navigating.current) return;
     setOpen(false);
     setQuery("");
     inputRef.current?.blur();
-    router.push(hrefFor(hit.entry.type, hit.entry.id));
+    const href = hrefFor(hit.entry.type, hit.entry.id);
+    // start page: the camera flies to the star first (<= 900 ms, capped), then the page opens
+    if (!compact && skyBus.hasRenderer()) {
+      navigating.current = true;
+      void skyBus.flyTo(hit.entry.id).then(() => {
+        navigating.current = false;
+        router.push(href);
+      });
+    } else router.push(href);
   };
+
+  // start page: the highlighted hit lights up in the sky (the renderer debounces, so arrowing through is calm)
+  const activeId = open && query.trim().length >= 2 ? hits[active]?.entry.id : undefined;
+  useEffect(() => {
+    if (!compact && activeId) skyBus.preview(activeId);
+  }, [compact, activeId]);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
@@ -69,8 +103,15 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   return (
     <div className="relative w-full">
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
-        <svg width={compact ? 16 : 20} height={compact ? 16 : 20} viewBox="0 0 20 20" className="shrink-0 text-ink-2" aria-hidden="true">
+      {/* the input fills the whole pill, so its own focus ring (global :focus-visible) follows the pill shape */}
+      <div className={`relative rounded-full border border-line bg-surface ${compact ? "h-12" : "h-14 shadow-[var(--shadow)] md:h-16"}`}>
+        <svg
+          width={compact ? 16 : 20}
+          height={compact ? 16 : 20}
+          viewBox="0 0 20 20"
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-2 ${compact ? "left-4" : "left-5"}`}
+          aria-hidden="true"
+        >
           <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -82,8 +123,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
-          aria-label="Search diseases, genes, symptoms or IDs"
-          placeholder={persona.placeholder}
+          aria-label={label}
+          placeholder={narrow ? "Search a disease or gene" : persona.placeholder}
           autoFocus={autoFocus}
           autoComplete="off"
           spellCheck={false}
@@ -99,7 +140,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
+          style={{ borderRadius: 9999 }}
+          className={`absolute inset-0 h-full w-full bg-transparent placeholder:text-ink-2 ${compact ? "pl-10 pr-4 text-[16px]" : "pl-[53px] pr-5 text-[17px] md:text-[22px]"}`}
         />
       </div>
       {showList && (

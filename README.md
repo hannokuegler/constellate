@@ -6,9 +6,18 @@ An evidence-graded knowledge graph for rare diseases, built in 24 h for the Hack
 
 Constellate organizes rare diseases by **mechanism and phenotype instead of name**, and walks a patient-group leader from her diagnosis to a mechanistically related community, a reusable asset (registry, natural-history study design) and a sourced proposal she can send this week. Every edge carries its source, date, evidence level and counter-evidence. When there is no supported lead, Constellate says so and shows what was searched.
 
-> Status (Sat 03.10.2026, 22:00): pipeline steps 1–7 and the validator are done, the dataset is exported (874 diseases, 1,066 genes, 4,717 phenotypes, hero path complete), the app v0 runs locally, live demo URL follows. Current state: [docs/STATUS.md](docs/STATUS.md) · map for every Claude session: [CLAUDE.md](CLAUDE.md) · build log: [docs/PLAN.md](docs/PLAN.md).
+> Status (Sun 04.10.2026): submitted to Hack-Nation. The app is live, the dataset is exported and validated, the hero-path end-to-end test is green, and all three videos are below. Build log of the 24 hours: [docs/hackathon-log/](docs/hackathon-log/).
 
 **Live demo:** https://constellate-vert.vercel.app (no login) · **Repository:** https://github.com/hannokuegler/constellate
+
+## Videos
+
+| Team introduction | Product demo | Technical walkthrough |
+|---|---|---|
+| [![Team introduction](videos/constellate_team.jpg)](videos/constellate_team.mp4) | [![Product demo](videos/constellate_demo.jpg)](videos/constellate_demo.mp4) | [![Technical walkthrough](videos/constellate_tech.jpg)](videos/constellate_tech.mp4) |
+| Who we are and why we built it (60 s) | A mother's path through the map, live app (53 s) | Pipeline, evidence model, OpenAI touchpoints, tests (50 s) |
+
+Story mode in the app: [constellate-vert.vercel.app/intro](https://constellate-vert.vercel.app/intro), "Maria's first night" (60 s, recorded from the live app). Disclosure: the demo, tech and story voice-overs are generated with ElevenLabs; the team video uses our real voices; the code was written with Claude Code.
 
 ## Why
 
@@ -110,7 +119,7 @@ The code is MIT-licensed (see [LICENSE](LICENSE)). The MIT license covers the co
 
 Every edge has a `contradicting` field, which may be empty but never missing. Edges have ids `e_<12 hex>` and carry `evidence[]` (database, record, URL, level, date, confidence, snippet), `confidence` and `independent_sources`. Inferred edges show their formula and inputs. Orphanet "not causal" and OMIM "susceptibility" statements make a gene edge `associated_gene` instead of `caused_by`, so causality is never overclaimed.
 
-Current export (`app/public/data/meta.json`, version 2026-10-03+397464a): 874 diseases (350 core), 1,066 genes, 4,717 phenotypes in the index; edges by level: 14,512 observed, 27,066 curated, 4,181 inferred, 488 contradicted; 17 mechanism clusters (Louvain, modularity 0.678); 251 counter-example pairs (similar symptoms, different mechanism class).
+Current export (`app/public/data/meta.json`, version 2026-10-04+36da1b9): 874 diseases (350 core), 1,066 genes, 4,716 phenotypes in the index; edges by level: 14,512 observed, 27,066 curated, 4,215 inferred, 61 text-mined, 488 contradicted; 17 mechanism clusters (Louvain, modularity 0.678); 251 counter-example pairs (similar symptoms, different mechanism class).
 
 ## Built with OpenAI
 
@@ -124,23 +133,34 @@ OpenAI is used at exactly three points, each visible in the product and in the t
 
 ## Metrics
 
-Not yet measured. Values are filled in after the evaluation runs; nothing below is an estimate.
+Measured on the current export; values and sources are stored in `meta.metrics` of `app/public/data/meta.json` (written by `make metrics`).
 
 | Metric | How it is measured | Result |
 |---|---|---|
-| Extract precision | share of sampled `text_mined` claims whose snippet and PMID support the claim, hand-checked | pending |
-| Reconcile accuracy | share of organisation names mapped to the correct MONDO id against a hand-made reference | pending |
-| Similarity vs. Monarch (Spearman) | rank correlation of our phenotype similarity with Monarch `semsim/compare` on disease pairs | pending |
-| Coverage | share of core diseases with at least one gene edge, one trial or paper, and one verified patient group | pending |
-| Hero regression | automated check that the hero path (Krabbe → GALC / PSAP → MLD → ARSA → Action Card, PMD counter-example) is present and cited | pending (`make validate` already checks that the hero path exists in the data) |
+| Extract precision | share of the 165 accepted `text_mined` claims whose snippet and PMID support the claim; independent model review against the abstract, not a hand review (`data/curated/extract_model_review.csv`) | 0.897 (n = 165) |
+| Reconcile accuracy | organisation-to-disease matches of 28 verified organisations against hand-entered ORPHA ids in `data/curated/orgs.csv` | 0.778 (n = 72) |
+| Similarity vs. Monarch (Spearman) | our simGIC vs. Monarch API v3 semsim on HPO profiles (ancestor information content), 2026-10-03 | ρ = 0.661 (n = 49, p = 2.4e-7); disease-disease variant ρ = 0.33 (n = 50) |
+| Coverage | core diseases (of 350) with at least one open or listed trial, paper, reusable asset, verified patient group | trial 126 · paper 233 · asset 114 · patient group 43 |
+| Hero regression | automated check that the hero path (Krabbe → GALC / PSAP → MLD → ARSA → Action Card, PMD counter-example) is present and cited | pass, 12 of 12 checks (2026-10-04) |
 
-## Team workflow
+## Repository layout
 
-[CLAUDE.md](CLAUDE.md) · [docs/STATUS.md](docs/STATUS.md) · [docs/DECISIONS.md](docs/DECISIONS.md) · [docs/WORKFLOW.md](docs/WORKFLOW.md) · [docs/ROLES-TASKS.md](docs/ROLES-TASKS.md) · [docs/RESOURCES.md](docs/RESOURCES.md) · bugs go to [BUGS.md](BUGS.md).
+| Path | What is in it |
+|---|---|
+| [`app/`](app/) | Next.js app (live site), static data shards in `app/public/data/`, Playwright E2E tests |
+| [`pipeline/`](pipeline/) | Python pipeline 01 to 09 plus `validate.py` |
+| [`data/`](data/) | source manifest and hand-curated inputs (raw downloads are not committed) |
+| [`docs/`](docs/) | architecture, data sources, data quality, medical background, decisions, security |
+| [`pitch/`](pitch/) | story, 60-second pitch, video strategy, voice scripts |
+| [`videos/`](videos/) | the three submission videos |
+| [`docs/hackathon-log/`](docs/hackathon-log/) | how the 24 hours ran: status, plan, roles, agent prompts, team board |
+| [`memes/`](memes/) | our entries for the Hack-Nation meme contest |
+
+Working with this repo as a Claude Code session: [CLAUDE.md](CLAUDE.md). Bugs go to [BUGS.md](BUGS.md).
 
 ## Limitations
 
-One cluster, not 10,000 diseases. OMIM only indirectly. Patient-organisation coverage is a curated list, not a census. Text-mined claims are hypotheses until a human checks the PMID. Extract and Explain with a live OpenAI key are not yet evaluated (see Metrics); without a key, Explain shows template text. Open studies come from ClinicalTrials.gov only; the app has no sign-up form and links to the study's official contact. Our similarity scores are computed by us and are cross-checked against Monarch only once the Spearman run is done. This is a research-navigation tool, not medical advice.
+One cluster, not 10,000 diseases. OMIM only indirectly. Patient-organisation coverage is a curated list, not a census. Text-mined claims are hypotheses until a human checks the PMID. Extract precision comes from an independent model review, not a hand review, and Explain is not evaluated yet (see Metrics); without a key, Explain shows template text. Open studies come from ClinicalTrials.gov only; the app has no sign-up form and links to the study's official contact. Our similarity scores are computed by us; against Monarch they correlate at ρ = 0.661 on 49 profile pairs. This is a research-navigation tool, not medical advice.
 
 ## Team
 

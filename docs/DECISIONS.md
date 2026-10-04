@@ -3,8 +3,8 @@
 **Letzte Aktualisierung: So 04.10.2026, 00:00 (Wien).** Entscheidungen trifft **Hanno**. Wer etwas baut, nutzt die vorläufigen Defaults unten und behauptet nichts davon als final. Wird eine Frage entschieden, wandert sie in „Erledigt" (mit Datum, Antwort, Begründung) und der Default-Eintrag wird gestrichen oder angepasst. Das Teamboard führt dieselben Fragen D1 bis D7 (Bereich Entscheidungen); beim Entscheiden beides nachziehen.
 
 Die ausführlichen Fragenkataloge mit Optionen, Vor- und Nachteilen, Empfehlung und Zeitschätzung:
-- Technik: T1 bis T30 in [briefing/TECHNIK.md](briefing/TECHNIK.md), Abschnitt 6. Heute Abend zwingend waren T27, T1, T12, T23, T17 (alle fünf haben unten einen Default).
-- Wirtschaft und Nutzer: W1 bis W30 in [briefing/WIRTSCHAFT-NUTZER.md](briefing/WIRTSCHAFT-NUTZER.md), Abschnitt 6.
+- Technik: T1 bis T30 in [briefing/TECHNIK.md](hackathon-log/briefing/TECHNIK.md), Abschnitt 6. Heute Abend zwingend waren T27, T1, T12, T23, T17 (alle fünf haben unten einen Default).
+- Wirtschaft und Nutzer: W1 bis W30 in [briefing/WIRTSCHAFT-NUTZER.md](hackathon-log/briefing/WIRTSCHAFT-NUTZER.md), Abschnitt 6.
 
 ## Produkt und Entwicklung (Grilling mit Hanno, So 04.10. ca. 00:00)
 
@@ -59,11 +59,11 @@ Jeder Default ist eine Entscheidung der Agents unter Zeitdruck, nicht von Hanno 
 
 | Datum | Was | Wo |
 |---|---|---|
-| Sa 03.10.2026 | Challenge C5 (AI Atlas for the World's Rare Diseases) gewählt, Name Constellate vorläufig | [PLAN.md](PLAN.md) |
+| Sa 03.10.2026 | Challenge C5 (AI Atlas for the World's Rare Diseases) gewählt, Name Constellate vorläufig | [PLAN.md](hackathon-log/PLAN.md) |
 | Sa 03.10.2026 20:30 | Cluster-Zuschnitt: LSD-Kern plus Leukodystrophie-Nachbarn, Hero-Journey Krabbe, PSAP, MLD | [SCOPE.md](SCOPE.md) |
-| Sa 03.10.2026 21:20 | Teamboard live unter https://constellate.flowary.at, temporär bis 11.10.2026 | [TEAMBOARD.md](TEAMBOARD.md) |
-| Sa 03.10.2026 21:30 | D1 bis D7 geparkt; Agents bauen den Kern mit umkehrbaren Defaults, Hanno nimmt ab | [PLAN.md](PLAN.md), Orchestrator-Log |
-| Sa 03.10.2026 21:30 | Befunde aus dem Technik-Briefing umgesetzt: Determinismus und 12-hex Edge-IDs (R10), 0-von-n als Gegenevidenz (T11), 217 `caused_by` zu `associated_gene` (T12, vorläufig), Provenienz je Beleg | Git-Log, [briefing/TECHNIK.md](briefing/TECHNIK.md) |
+| Sa 03.10.2026 21:20 | Teamboard live unter https://constellate.flowary.at, temporär bis 11.10.2026 | [TEAMBOARD.md](hackathon-log/TEAMBOARD.md) |
+| Sa 03.10.2026 21:30 | D1 bis D7 geparkt; Agents bauen den Kern mit umkehrbaren Defaults, Hanno nimmt ab | [PLAN.md](hackathon-log/PLAN.md), Orchestrator-Log |
+| Sa 03.10.2026 21:30 | Befunde aus dem Technik-Briefing umgesetzt: Determinismus und 12-hex Edge-IDs (R10), 0-von-n als Gegenevidenz (T11), 217 `caused_by` zu `associated_gene` (T12, vorläufig), Provenienz je Beleg | Git-Log, [briefing/TECHNIK.md](hackathon-log/briefing/TECHNIK.md) |
 | Sa 03.10.2026 21:30 | Medizin-Korrekturen: FBX-101 jetzt NCT05739643, HOME-Studie Sponsor NORD, Österreich ohne Krabbe-Neugeborenenscreening | [MEDICAL-BACKGROUND.md](MEDICAL-BACKGROUND.md) |
 | Sa 03.10.2026 22:00 | Dieses Repo ist die einzige Quelle der Wahrheit; Kopien außerhalb des Repos (lokal bei Hanno) sind veraltet | [../CLAUDE.md](../CLAUDE.md) |
 | Sa 03.10.2026 23:30 | **D2 entschieden.** Zielperson (W1, W2, W6): **eine Mutter in zwei Momenten**. Moment 1 „We just got the diagnosis" (Familie, erste Nächte: Gruppe oder Honest Gap, offene Studien), Moment 2 „I lead a patient group" (verwandte Communities, beitreten statt bauen, Action Card). Biohacker verworfen (nicht im Brief, Selbstexperiment-Risiko). Priya, Devon, Dr. Osei bleiben als Nebenlinsen | `app/lib/persona.ts`, `app/components/MomentBar.tsx`, Startseite |

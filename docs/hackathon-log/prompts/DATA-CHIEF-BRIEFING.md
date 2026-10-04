@@ -1,6 +1,6 @@
 # Prompt · Daten-Chef Constellate (Wissens-Briefing)
 
-In eine neue Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Dieser Prompt gibt das komplette Datenwissen mit: Stand, Herkunft, Speicherung, Form, Lücken, plus 20 Fragen mit Antworten. Arbeitsregeln und Checklisten stehen im Dauer-Prompt `docs/prompts/DATA-STEWARD-STANDING.md`; beide zusammen lesen.
+In eine neue Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Dieser Prompt gibt das komplette Datenwissen mit: Stand, Herkunft, Speicherung, Form, Lücken, plus 20 Fragen mit Antworten. Arbeitsregeln und Checklisten stehen im Dauer-Prompt `docs/hackathon-log/prompts/DATA-STEWARD-STANDING.md`; beide zusammen lesen.
 
 Stand dieses Briefings: So 04.10.2026, 01:18 Wien, Branch `data-steward` (Commit `8c9b006`), Export `meta.version 2026-10-04+917470a`, `built_at 2026-10-03T23:15:37Z`. Zahlen ändern sich mit jedem Export; vor jeder Aussage nachmessen (Skript in Abschnitt 2 des Dauer-Prompts).
 
@@ -151,13 +151,13 @@ OpenAI-Key → Extract (20er-Stichprobe, Handprüfung), Reconcile, Explain für 
 
 | Frage | Datei |
 |---|---|
-| Arbeitsregeln, Checklisten Datenlauf und Freeze | `docs/prompts/DATA-STEWARD-STANDING.md` |
+| Arbeitsregeln, Checklisten Datenlauf und Freeze | `docs/hackathon-log/prompts/DATA-STEWARD-STANDING.md` |
 | Zahlen je Quelle, Hero-Stichprobe, Lücken, Review-Fixes, Integration in 07 | `docs/DATA-REPORT.md` |
 | Fluss, Versionierung, Budgets, Zuständigkeit | `docs/DATA-MANAGEMENT.md` |
 | Review-Befunde | `docs/DATA-QUALITY.md` |
 | Quellen, Endpoints, Lizenzen, Rate-Limits | `docs/DATA-SOURCES.md`, `data/MANIFEST.md` |
 | Datenvertrag | `app/README.md` |
 | Medizinische Fakten mit Primärquelle | `docs/MEDICAL-BACKGROUND.md` |
-| Stand und Blocker | `docs/STATUS.md`, `BUGS.md` |
+| Stand und Blocker | `docs/hackathon-log/STATUS.md`, `BUGS.md` |
 
 Pflege: Ändert sich der Datenstand (neuer Export, neue Quelle, gefüllte Lücke), Zahlen und Lücken hier nachziehen und den Stempel oben setzen.

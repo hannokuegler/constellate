@@ -16,7 +16,7 @@ Review of 04.10.2026 (branch `security`, based on `integrate`) before the reposi
 |---|---|---|
 | Secrets in history | All 50 commits on all remote branches, scripted pattern scan of every diff line (OpenAI, ElevenLabs, GitHub, AWS keys, Bearer tokens, key/password assignments, private keys, credentials in URLs, phone numbers, IPs, server paths, tunnel ids, `.env` files) | No key, token, password or private key found. Only `.env.example` templates were ever committed, with empty values. Matches were placeholders, env-variable names, `127.0.0.1` in a comment and the Playwright browser path |
 | Personal data in history | e-mail addresses in content and in commit metadata | Content: only public organisation addresses in `data/curated/orgs_draft.csv` and `example.org` test fixtures. Commit metadata: two personal e-mail addresses as author addresses (besides `noreply@anthropic.com`), see open points |
-| Internal links | teamboard | The teamboard URL is in several docs and `tools/board.py`; the login is not. Access is described as "login in the team chat" |
+| Internal links | teamboard | The teamboard URL is in several docs and `tools/board.py`. **Correction (second review, 04.10. 09:30):** commit `9a7df9f` put the shared teamboard login in plain text into a `curl` example in the orchestrator prompt; it is removed from `main` and the shared password is changed before the repository goes public, so the old value in the history is void |
 | Pipeline keys | `pipeline/openai_config.py`, `pipeline/enrich/` | Keys only from the environment (`.env.local` via dotenv). NCBI key never enters cache keys, stored URLs or error messages. Committed `data/` holds only `MANIFEST.md` and `data/curated/`; caches are gitignored |
 | `tools/board.py` | credentials | Only from `TEAMBOARD_USER` / `TEAMBOARD_PASS`; no defaults; exits with a hint when missing |
 | `/api/explain` | input validation, size, cost, leaks | Before: no body size limit, client edges passed to the prompt with unbounded fields, `disease` used unchecked in a fetch path, no rate limit, no output token cap. **Fixed**, see below |
@@ -33,6 +33,10 @@ Review of 04.10.2026 (branch `security`, based on `integrate`) before the reposi
 - `.gitignore`: every `.env.*` except `.env.example`, `*.pem`, `*.key`, logs, `.pytest_cache/`.
 - Docs: `docs/ARCHITECTURE.md` brought to the real state (step 08, `validate.py`, shards instead of `graph.json`, no `/api/resolve`, model ids only via env, Playwright E2E, security); `app/README.md` documents the limits and new variables.
 - Verified: `npx tsc --noEmit`, `npm run lint` and `npm run e2e` (hero path at 1280 and 375 px, dark mode, no console errors, so no CSP violations) are green; the Explain button was exercised against a local mock of the OpenAI streaming API.
+
+## Second review (04.10.2026, 09:30)
+
+Full history of all 51 remote branches (211 commits) with gitleaks 8.30.1 (`--log-opts=--all`) plus a pattern scan of every blob. One real finding: the teamboard Basic-Auth login in `docs/hackathon-log/prompts/ORCHESTRATOR-STANDING.md` (since `9a7df9f`), now replaced by `$TEAMBOARD_USER:$TEAMBOARD_PASS`; the shared password is changed before the repository goes public. Everything else were false positives (JSON fields named `key`, cache hashes, version numbers that look like IPs, phone numbers in test fixtures). Two local absolute paths in an agent prompt were neutralised. No `.env` file with values was ever committed. Commit author e-mails: see open point 1.
 
 ## Open points for Hanno
 

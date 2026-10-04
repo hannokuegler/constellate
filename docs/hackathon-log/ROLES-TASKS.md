@@ -33,13 +33,13 @@ Datei: `03_Build/data/curated/orgs.csv`, UTF-8, Kopfzeile exakt:
 ```
 org_name,url,country,disease_names,orpha_ids,has_registry,registry_url,has_natural_history_study,nhs_url,has_biobank,contact_url,notes,verified_date
 ```
-- 25–35 Organisationen aus der Startliste in [DATA-SOURCES.md](DATA-SOURCES.md), Website **selbst aufrufen**, nichts aus dem Gedächtnis
+- 25–35 Organisationen aus der Startliste in [DATA-SOURCES.md](../DATA-SOURCES.md), Website **selbst aufrufen**, nichts aus dem Gedächtnis
 - `disease_names`: Freitext wie auf der Website (mehrere mit `;`), `orpha_ids` nur wenn auf der Seite oder bei Orphanet eindeutig gefunden, sonst leer (Reconcile macht den Rest)
 - `has_registry` / `has_natural_history_study` / `has_biobank`: `yes` / `no` / `unknown`, URL nur wenn gesehen
 - **Done:** ≥ 25 Zeilen, jede URL klickt (kurz `curl -I` oder im Browser), `verified_date=2026-10-03`
 
 ### O3 · README-Skelett + Lizenzen (23:30–02:00)
-Datei: `03_Build/README.md` mit Abschnitten: What · Why (Maria in 3 Sätzen) · Live Demo (Link) · Architecture (Diagramm aus [ARCHITECTURE.md](ARCHITECTURE.md), als Mermaid) · Reproduce the dataset (Platzhalter `make reproduce`, Hanno füllt Befehle) · Data sources & licenses (Tabelle aus 03_Datenquellen) · Evidence model (Tabelle Evidenzstufen) · Built with OpenAI (3 Stellen) · Limitations & honest gaps · Team.
+Datei: `03_Build/README.md` mit Abschnitten: What · Why (Maria in 3 Sätzen) · Live Demo (Link) · Architecture (Diagramm aus [ARCHITECTURE.md](../ARCHITECTURE.md), als Mermaid) · Reproduce the dataset (Platzhalter `make reproduce`, Hanno füllt Befehle) · Data sources & licenses (Tabelle aus 03_Datenquellen) · Evidence model (Tabelle Evidenzstufen) · Built with OpenAI (3 Stellen) · Limitations & honest gaps · Team.
 **Done:** Markdown rendert auf GitHub ohne kaputte Tabellen.
 
 ### O4 · QA als Devon (06:00–08:00)
@@ -56,7 +56,7 @@ Drei Gesichter, je 20 s: Name, Rolle, ein Satz „warum C5". Handy, Querformat, 
 ## Recep
 
 ### R1 · Hero-Pfad fact-checken (bis 23:30) · **wichtigster Recep-Task**
-Datei: `03_Build/data/curated/hero_path.yaml`. Für jede Zeile der Hero-Journey in [SCOPE.md](SCOPE.md) (Schritte 1–10) **eine Primärquelle mit Link**: PMID oder PMC-ID, OMIM-Eintrag, EMA-EPAR/FDA-Label, ClinicalTrials-NCT, Orphanet-Seite. Nichts aus ChatGPT-Gedächtnis übernehmen, jeden Link öffnen. Besonders prüfen:
+Datei: `03_Build/data/curated/hero_path.yaml`. Für jede Zeile der Hero-Journey in [SCOPE.md](../SCOPE.md) (Schritte 1–10) **eine Primärquelle mit Link**: PMID oder PMC-ID, OMIM-Eintrag, EMA-EPAR/FDA-Label, ClinicalTrials-NCT, Orphanet-Seite. Nichts aus ChatGPT-Gedächtnis übernehmen, jeden Link öffnen. Besonders prüfen:
 - PSAP: Saposin-A-Mangel ↔ Krabbe-Phänotyp, Saposin B ↔ MLD, Saposin C ↔ Gaucher (OMIM-Nummern)
 - Libmeldy/Lenmeldy-Zulassung: Natural-History-Kohorte als Vergleichsarm (EPAR / FDA Summary Basis of Approval / Publikation)
 - Krabbe: aktuell **keine** zugelassene medikamentöse Therapie? Gentherapie-Trial (NCT-Nummer)?

@@ -51,13 +51,13 @@ Zusätzlich je Krankheit und Abschnitt (assets, therapies, screening, kol) ein `
    - `Makefile`: nur das neue Target `enrich-extra`
    - `pipeline/pyproject.toml` und `uv.lock`: nur neue Pakete
 
-   Nicht anfassen: `app/`, `pipeline/01` bis `08`, `pipeline/validate.py`, `CLAUDE.md`, `docs/STATUS.md`, `docs/DECISIONS.md`, `docs/HANDOVER.md`.
+   Nicht anfassen: `app/`, `pipeline/01` bis `08`, `pipeline/validate.py`, `CLAUDE.md`, `docs/hackathon-log/STATUS.md`, `docs/DECISIONS.md`, `docs/hackathon-log/HANDOVER.md`.
 7. Keine Secrets, privaten Mailadressen oder Server-Interna ins Repo (ab So 11:00 public). Keys nur aus der Env. Von Personen keine Mailadressen speichern.
 8. Ausführen mit `uv run --project pipeline python ...`. `data/graph_base.json` (30 MB) und `data/slice.json` nie komplett in den Kontext laden, nur per Skript auswerten.
 
 ## Zuerst lesen
 
-`CLAUDE.md`, `docs/STATUS.md`, `docs/DATA-SOURCES.md`, `data/MANIFEST.md`, `docs/ARCHITECTURE.md`, `docs/briefing/TECHNIK.md` (Abschnitte 3 bis 5), `docs/MEDICAL-BACKGROUND.md`, `docs/SCOPE.md`, `app/README.md` (Datenvertrag), `pipeline/03_build_graph.py`, `pipeline/04_enrich_apis.py`, `pipeline/enrich/*.py`. Wiederverwenden: `http.py` (Retry, Rate-Limit, Cache), `diseases.py` (Scope, Suchbegriffe), `edges.py` (Draft, edge_id).
+`CLAUDE.md`, `docs/hackathon-log/STATUS.md`, `docs/DATA-SOURCES.md`, `data/MANIFEST.md`, `docs/ARCHITECTURE.md`, `docs/hackathon-log/briefing/TECHNIK.md` (Abschnitte 3 bis 5), `docs/MEDICAL-BACKGROUND.md`, `docs/SCOPE.md`, `app/README.md` (Datenvertrag), `pipeline/03_build_graph.py`, `pipeline/04_enrich_apis.py`, `pipeline/enrich/*.py`. Wiederverwenden: `http.py` (Retry, Rate-Limit, Cache), `diseases.py` (Scope, Suchbegriffe), `edges.py` (Draft, edge_id).
 
 ## Phase A: lokalen Stand rekonstruieren, Reproduzierbarkeit prüfen (ca. 40 min)
 

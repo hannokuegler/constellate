@@ -17,9 +17,9 @@ Das Teamboard ist die Ein-Seiten-Übersicht für Hanno, Osman und Recep: Countdo
 | Timeline | Zeitplan als Blöcke und Meilensteine (Freeze) |
 | Aufgaben | O1 bis O6 (Osman), R1 bis R5 (Recep), H1 bis H9 (Hanno) mit Status offen, dran, fertig, blockiert |
 | TODOs | kleine Sachen mit Person und Priorität P1 bis P3 |
-| Entscheidungen | D1 bis D7 (siehe [DECISIONS.md](DECISIONS.md)) mit Empfehlung, Alternativen, Antwort |
+| Entscheidungen | D1 bis D7 (siehe [DECISIONS.md](../DECISIONS.md)) mit Empfehlung, Alternativen, Antwort |
 | Notizen | freie Zeilen mit Autor, auch für Übergaben |
-| Docs | Leseansicht für `README.md`, `BUGS.md`, `docs/*.md` und `data/curated/` (nur `.md`, `.yaml`, `.yml`, `.csv`); Unterordner wie `docs/briefing/` sind nicht freigegeben, Mermaid erscheint als Code |
+| Docs | Leseansicht für `README.md`, `BUGS.md`, `docs/*.md` und `data/curated/` (nur `.md`, `.yaml`, `.yml`, `.csv`); Unterordner wie `docs/hackathon-log/briefing/` sind nicht freigegeben, Mermaid erscheint als Code |
 | Datei-Ablage | Upload und Download (max. 25 MB); `.md`, `.yaml`, `.csv`, `.txt` haben einen „Lesen"-Knopf |
 | Bugs | Priorität, Screen, Schritte, erwartet, gesehen |
 | Links | Repo, Live-Demo, Pitch-Deck, Briefing |
@@ -82,7 +82,7 @@ python3 tools/board.py docs                       # Docs-Liste des Boards
 python3 tools/board.py mark-sync                  # Zeitpunkt dieses Laufs merken (Datei ~/.constellate-board-last-sync)
 ```
 
-Der stündliche Lauf ist als Projekt-Skill hinterlegt: `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)). Er zieht das Lagebild aus Repo und Board, setzt Status-Karte und Task-Status, holt den Rückkanal von Osman und Recep ab und pflegt dabei [STATUS.md](STATUS.md) mit.
+Der stündliche Lauf ist als Projekt-Skill hinterlegt: `/constellate` ([.claude/skills/constellate/SKILL.md](../../.claude/skills/constellate/SKILL.md)). Er zieht das Lagebild aus Repo und Board, setzt Status-Karte und Task-Status, holt den Rückkanal von Osman und Recep ab und pflegt dabei [STATUS.md](STATUS.md) mit.
 
 Regeln:
 - **Keine Secrets ins Board**: keine API-Keys, Tokens, Passwörter, keine Inhalte aus `.env*`. Gilt für Status, Notizen, Uploads und Beschreibungen.

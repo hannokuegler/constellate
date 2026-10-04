@@ -3,7 +3,7 @@
 Lies VOR dem ersten Code:
 1. `<dein-worktree>/pitch/DESIGN.md` — verbindliches Konzept (Tokens, Markenmuster, Screens, Was nicht fallen darf). Token-NAMEN sind Vertrag.
 2. `<dein-worktree>/CLAUDE.md` (harte Regeln) und `<dein-worktree>/app/README.md` (Datenvertrag).
-3. Skill Design: `/Users/hannokuegler/Vaults/ai/skills/design/SKILL.md` (Abschnitt „Für ALLE Oberflächen" + Prüfliste) und `/Users/hannokuegler/Vaults/ai/skills/design/referenz/HIG-web.md` §2 + §4. Die Landa/GYM-Regeln (keine Webfonts, kein Build) gelten hier NICHT.
+3. Skill Design: `<design-skill>/SKILL.md` (Abschnitt „Für ALLE Oberflächen" + Prüfliste) und `<design-skill>/referenz/HIG-web.md` §2 + §4. Die Landa/GYM-Regeln (keine Webfonts, kein Build) gelten hier NICHT.
 4. `<dein-worktree>/app/e2e/hero.spec.ts` — Rollen/Texte, die bestehen bleiben müssen.
 
 Harte Regeln:
@@ -18,7 +18,7 @@ Harte Regeln:
 Dev & Prüfen (in `<dein-worktree>/app`):
 - Dev-Server auf DEINEM Port (im Auftrag) im Hintergrund: `npx next dev -p <port>` (run_in_background). Nicht Port 3000/3100.
 - Pflicht vor „fertig": `npx tsc --noEmit && npm run lint` grün. E2E: `npm run build && E2E_PORT=<port+100> CHROMIUM_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npx playwright test` grün (Dev-Server vorher stoppen, falls Port-Konflikt).
-- Design-Prüflauf (gegen deinen Server): `DESIGN_CHECK_PW=<dein-worktree>/app/node_modules node /Users/hannokuegler/Vaults/ai/skills/design/design_check.mjs http://127.0.0.1:<port> --pfade / /d/MONDO_0009499 /g/PSAP "/d/MONDO_0009499/action?via=MONDO_0018868" /d/MONDO_0012720 /methods /about --out <scratchpad>/check-<name>` → kein FEHLER.
+- Design-Prüflauf (gegen deinen Server): `DESIGN_CHECK_PW=<dein-worktree>/app/node_modules node <design-skill>/design_check.mjs http://127.0.0.1:<port> --pfade / /d/MONDO_0009499 /g/PSAP "/d/MONDO_0009499/action?via=MONDO_0018868" /d/MONDO_0012720 /methods /about --out <scratchpad>/check-<name>` → kein FEHLER.
 - Screenshots selbst ansehen (Playwright mit `channel:'chrome'`, colorScheme dark und light, 1920×1080 deviceScaleFactor 1.1 = Video-Ansicht, und 375×812). Kontrast über Canvas/Glühen misst kein Tool: selbst am Screenshot prüfen.
 - Ist-Stand vorher zum Vergleich: `<scratchpad>/ist/*.png`.
 

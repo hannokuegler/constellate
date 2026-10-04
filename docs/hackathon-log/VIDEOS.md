@@ -2,7 +2,7 @@
 
 Stand So 04.10.2026, 01:30. Verbindliche Vorgabe des Teams: **genau drei Videos, jedes höchstens 60 s, Dateiformat MP4 oder MOV.** (1) Team Introduction, (2) Product Demo, (3) Technical Walkthrough. Die früheren Formate (Demo 2 min, Tech 3 min, Team 60–90 s, separater 1-min-Walkthrough) gelten nicht mehr; die Brief-Vorgabe „1-minute walkthrough" (C5-Brief S. 6) erfüllt die Product Demo.
 
-Alle Shotlists, Voice-over-Texte Wort für Wort, Belege im Bild, Aufnahme-Checklisten, Schnitt- und Export-Hinweise stehen in [pitch/VIDEO-STRATEGY.md](../pitch/VIDEO-STRATEGY.md). Voice-over-Blöcke für ElevenLabs: [pitch/VOICE-ELEVENLABS.md](../pitch/VOICE-ELEVENLABS.md). Pitch-Text und Fachwort-Liste: [pitch/PITCH-60S.md](../pitch/PITCH-60S.md).
+Alle Shotlists, Voice-over-Texte Wort für Wort, Belege im Bild, Aufnahme-Checklisten, Schnitt- und Export-Hinweise stehen in [pitch/VIDEO-STRATEGY.md](../../pitch/VIDEO-STRATEGY.md). Voice-over-Blöcke für ElevenLabs: [pitch/VOICE-ELEVENLABS.md](../../pitch/VOICE-ELEVENLABS.md). Pitch-Text und Fachwort-Liste: [pitch/PITCH-60S.md](../../pitch/PITCH-60S.md).
 
 ## Übersicht
 
@@ -27,7 +27,7 @@ Ein Satz Architektur (offene Datenbanken → Pipeline → evidenzgestufter Graph
 - Erst aufnehmen, wenn Feature-Freeze (12:00) gilt. Vorher nur Skript und Probe-Takes. Upload bis 14:00, Links im Teamboard und in [STATUS.md](STATUS.md).
 - Englisch, Querformat, ruhige Stimme, keine Musik, keine Effekte, keine Motion-Clips in den Pflichtvideos.
 - Live-URL im Video sichtbar lassen (Browserleiste, Production-Domain), keine localhost-Demos, keine Fixture-Badges.
-- Jeder Claim im Voice-over existiert im Tool als Kante mit Quelle oder steht mit Primärquelle in [MEDICAL-BACKGROUND.md](MEDICAL-BACKGROUND.md) (ohne ⚠️). Was nicht belegt sichtbar ist, bekommt den markierten Ersatzsatz.
-- Fachwörter nur, wenn sie im selben Moment im Bild erklärt sind (Liste in [pitch/PITCH-60S.md](../pitch/PITCH-60S.md)). Kein „cure", keine Organisationsnamen, solange `data/curated/orgs.csv` leer ist, keine 10×-Zahl ohne `docs/MOONSHOT.md`.
+- Jeder Claim im Voice-over existiert im Tool als Kante mit Quelle oder steht mit Primärquelle in [MEDICAL-BACKGROUND.md](../MEDICAL-BACKGROUND.md) (ohne ⚠️). Was nicht belegt sichtbar ist, bekommt den markierten Ersatzsatz.
+- Fachwörter nur, wenn sie im selben Moment im Bild erklärt sind (Liste in [pitch/PITCH-60S.md](../../pitch/PITCH-60S.md)). Kein „cure", keine Organisationsnamen, solange `data/curated/orgs.csv` leer ist, keine 10×-Zahl ohne `docs/MOONSHOT.md`.
 - Offenlegung in Video-Beschreibung und README: Voice-over mit ElevenLabs (Eleven v4), Team-Video echte Stimmen, Code mit Claude Code.
 - Pitch 10.10. (falls Top 2): 3 min, Hauptfassung aus pitch/PITCH-60S.md als erste Minute, dann Demo-Pfad live, dann Moonshot.

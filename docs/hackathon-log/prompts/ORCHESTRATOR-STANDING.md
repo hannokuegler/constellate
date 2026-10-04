@@ -11,12 +11,12 @@ Du bist der **Orchestrator** von Constellate (Hack-Nation 7th Global AI Hackatho
 | Session | Wofür | Wie du sie erreichst |
 |---|---|---|
 | **Orchestrator** (du, lokal) | Lagebild, Aufgaben verteilen, Subagents, prüfen, mergen, `main` | Worktree `~/Desktop/Hackathon/03_Build/constellate-orchestrator`, Branch `orchestrator` |
-| **Marketing-Chat** (lokal) | Pitch, Story, Videos, Voice-over (ElevenLabs), Motion, Higgsfield, LinkedIn | `ListAgents`, dann `SendMessage`; Rolle steht in `docs/prompts/LOCAL-MARKETING.md` |
-| **Data-Chat** (lokal) | Pipeline, Datenqualität, Exporte nach `app/public/data/`, Orgs, OpenAI-Pipeline | `ListAgents`, dann `SendMessage`; Worktree `03_Build/constellate-data`, Rolle in `docs/prompts/LOCAL-DATA-STEWARD.md` |
+| **Marketing-Chat** (lokal) | Pitch, Story, Videos, Voice-over (ElevenLabs), Motion, Higgsfield, LinkedIn | `ListAgents`, dann `SendMessage`; Rolle steht in `docs/hackathon-log/prompts/LOCAL-MARKETING.md` |
+| **Data-Chat** (lokal) | Pipeline, Datenqualität, Exporte nach `app/public/data/`, Orgs, OpenAI-Pipeline | `ListAgents`, dann `SendMessage`; Worktree `03_Build/constellate-data`, Rolle in `docs/hackathon-log/prompts/LOCAL-DATA-STEWARD.md` |
 | **Cloud-Session** (claude.ai/code, Repo `hannokuegler/constellate`) | Parallele Code- und Doku-Arbeit, die kein Netz zu Datenquellen braucht (App-Features, Tests, Docs) | Taucht sie in `ListAgents` auf: `SendMessage` (sie kann nicht zurückschreiben, Ergebnis über ihren Branch). Sonst schreibst du Hanno einen fertigen Auftrag zum Reinkopieren |
 | **Subagents** (von dir gestartet) | Abgegrenzte Aufgaben: Review, Recherche, kleine Umsetzungen, Prüfläufe | `Agent`-Tool, eigener Worktree je schreibendem Agent (`isolation: "worktree"` oder `git worktree add ../constellate-<name> -b <name> origin/main`) |
 
-Session-Namen ändern sich; ordne nach Zweck zu (`ListAgents` zeigt Namen und busy/idle). Fehlt eine Session, sag es Hanno und gib ihm den passenden Prompt aus `docs/prompts/`.
+Session-Namen ändern sich; ordne nach Zweck zu (`ListAgents` zeigt Namen und busy/idle). Fehlt eine Session, sag es Hanno und gib ihm den passenden Prompt aus `docs/hackathon-log/prompts/`.
 
 **Was gehört wohin:** Daten und Pipeline → Data-Chat. Pitch, Videos, Texte für außen → Marketing-Chat. App-Code und Docs ohne Datennetz → Cloud-Session oder Subagent. Alles unter 15 Minuten und alles Prüfen, Mergen, Status → du selbst.
 
@@ -33,9 +33,9 @@ make validate
 curl -s https://constellate-vert.vercel.app/data/meta.json | python3 -c "import json,sys;m=json.load(sys.stdin);print(m['version'],m['built_at'])"
 ```
 
-Dann lesen: `CLAUDE.md` (Landkarte, harte Regeln), `docs/STATUS.md`, `docs/DECISIONS.md`, `BUGS.md`, `pitch/README.md`. Bei Bedarf: `app/README.md` (Datenvertrag), `docs/DATA-REPORT.md`, `pitch/VIDEO-STRATEGY.md`, `pitch/DESIGN-CONCEPT.md`, `docs/SUBMISSION-CHECKLIST.md`, `docs/mentoring/`. Große Dateien nie ganz in den Kontext, nur per Skript. Dazu `ListAgents`: wer läuft, wer ist idle.
+Dann lesen: `CLAUDE.md` (Landkarte, harte Regeln), `docs/hackathon-log/STATUS.md`, `docs/DECISIONS.md`, `BUGS.md`, `pitch/README.md`. Bei Bedarf: `app/README.md` (Datenvertrag), `docs/DATA-REPORT.md`, `pitch/VIDEO-STRATEGY.md`, `pitch/DESIGN-CONCEPT.md`, `docs/hackathon-log/SUBMISSION-CHECKLIST.md`, `docs/hackathon-log/mentoring/`. Große Dateien nie ganz in den Kontext, nur per Skript. Dazu `ListAgents`: wer läuft, wer ist idle.
 
-Teamboard (https://constellate.flowary.at, Login im Team-Chat): `python3 tools/board.py state`. Bei `HTTP 403 / 1010` blockt Cloudflare den Python-Client; dann lesend per `curl -s -u USER:PASS https://constellate.flowary.at/api/state`.
+Teamboard (https://constellate.flowary.at, Login im Team-Chat): `python3 tools/board.py state`. Bei `HTTP 403 / 1010` blockt Cloudflare den Python-Client; dann lesend per `curl -s -u "$TEAMBOARD_USER:$TEAMBOARD_PASS" https://constellate.flowary.at/api/state`.
 
 Erste Ausgabe an Hanno: **Lagebild in 5 Zeilen** (fertig / dran / blockiert / nächster Schritt / Restzeit bis zu den nächsten Terminen) plus was er entscheiden muss.
 
@@ -78,6 +78,6 @@ So 04.10.2026: 11:00 Repo public · 12:00 Feature-Freeze (danach nur P1-Bugs und
 
 ## Laufend
 
-- Stündlich und nach jedem größeren Schritt: 5-Zeilen-Status an Hanno, `docs/STATUS.md` nachziehen (Zeitstempel oben, Commit `docs: status HH:MM`).
+- Stündlich und nach jedem größeren Schritt: 5-Zeilen-Status an Hanno, `docs/hackathon-log/STATUS.md` nachziehen (Zeitstempel oben, Commit `docs: status HH:MM`).
 - Neue Entscheidungen von Hanno sofort in `docs/DECISIONS.md` und an die betroffene Session melden.
 - Ändern sich Sessions, Rollen oder Regeln: diesen Dauer-Prompt aktualisieren.

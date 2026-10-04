@@ -1,6 +1,6 @@
 # Übergabe · Design-Orchestrator design-v2
 
-Stand So 04.10.2026, 03:45 (Wien). Auf Hannos Wunsch angehalten, alle Agents und Server sind gestoppt. Diese Datei reicht, um in einer neuen Session weiterzumachen. Konzept: [DESIGN.md](DESIGN.md). Rahmen für jeden Bauer: [docs/prompts/DESIGN-BAUER-COMMON.md](../docs/prompts/DESIGN-BAUER-COMMON.md) (`<scratchpad>` durch den Scratchpad der neuen Session ersetzen). Ursprünglicher Auftrag: [docs/prompts/LOCAL-DESIGN-ORCHESTRATOR.md](../docs/prompts/LOCAL-DESIGN-ORCHESTRATOR.md).
+Stand So 04.10.2026, 03:45 (Wien). Auf Hannos Wunsch angehalten, alle Agents und Server sind gestoppt. Diese Datei reicht, um in einer neuen Session weiterzumachen. Konzept: [DESIGN.md](DESIGN.md). Rahmen für jeden Bauer: [docs/hackathon-log/prompts/DESIGN-BAUER-COMMON.md](../docs/hackathon-log/prompts/DESIGN-BAUER-COMMON.md) (`<scratchpad>` durch den Scratchpad der neuen Session ersetzen). Ursprünglicher Auftrag: [docs/hackathon-log/prompts/LOCAL-DESIGN-ORCHESTRATOR.md](../docs/hackathon-log/prompts/LOCAL-DESIGN-ORCHESTRATOR.md).
 
 ## 1. Entscheidungen von Hanno (gelten)
 
@@ -57,7 +57,7 @@ cd ~/Desktop/Hackathon/03_Build/constellate-design-v2/app && npm run build && np
 
 Dann http://localhost:3300 im echten Chrome (dunkel = Video-Ansicht). Startseite langsam scrollen; Tour: `/d/MONDO_0009499?tour=hero&step=2`; Testschalter `?sky=2d`, `?sky=off`. Sky-Daten neu rechnen: Befehl steht in `app/scripts/build-sky.*` (Output `app/public/world/sky.json`, committet).
 
-Prüflauf: siehe `docs/prompts/DESIGN-BAUER-COMMON.md` (tsc, lint, `E2E_PORT` + `CHROMIUM_PATH` auf Chrome, `design_check.mjs` mit `DESIGN_CHECK_PW=<worktree>/app/node_modules`).
+Prüflauf: siehe `docs/hackathon-log/prompts/DESIGN-BAUER-COMMON.md` (tsc, lint, `E2E_PORT` + `CHROMIUM_PATH` auf Chrome, `design_check.mjs` mit `DESIGN_CHECK_PW=<worktree>/app/node_modules`).
 
 ## 6. Neustart-Prompt (in eine neue Session kopieren)
 

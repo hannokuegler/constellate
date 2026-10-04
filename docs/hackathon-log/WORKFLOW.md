@@ -1,7 +1,7 @@
 # 🔁 Workflow · wie wir 19 Stunden zusammenarbeiten
 
 > Deadline **So 04.10.2026, 15:00 Wien** · **Feature-Freeze 12:00** · E2E live **06:00**.
-> Ressourcen und Keys: [RESOURCES.md](RESOURCES.md) · Tasks: [ROLES-TASKS.md](ROLES-TASKS.md)
+> Ressourcen und Keys: [RESOURCES.md](../RESOURCES.md) · Tasks: [ROLES-TASKS.md](ROLES-TASKS.md)
 
 ## Arbeitsprinzipien
 
@@ -50,7 +50,7 @@ Lieber alle 30–60 Minuten ein kleiner Commit als um 02:00 ein großer. Alles, 
 | **Patientenorganisationen** | **Osman** | Startliste → Bright Data holt Seite → OpenAI-Extract macht Entwurf (`orgs_draft.csv`) → Osman öffnet jede Seite, prüft, übernimmt | `data/curated/orgs.csv` | ≥ 25 Zeilen, jede URL klickt, `verified_date` gesetzt |
 | **Hero-Pfad-Evidenz** | **Recep** | je Schritt 1–10 der Maria-Journey eine Primärquelle, Link selbst geöffnet, wörtliches Zitat | `data/curated/hero_path.yaml` | alle 10 Schritte belegt oder `UNBELEGT` |
 | **Moonshot-Zahlen** | **Recep** | Dauer bis NHS-Start, NHS-Rekrutierungsdauer, NHS-als-Kontrollarm-Beispiel, Kosten, Anzahl LSD-Gruppen — je mit Quelle; Tabelle heute vs. Constellate; 4–6 Annahmen | `docs/MOONSHOT.md` | jede Zahl hat eine Quelle oder steht als Annahme |
-| Lizenzen + README | Osman | Lizenz-Zeile aus [DATA-SOURCES.md](DATA-SOURCES.md), Abschnitte laut Task O3 | `README.md` | rendert auf GitHub ohne kaputte Tabellen |
+| Lizenzen + README | Osman | Lizenz-Zeile aus [DATA-SOURCES.md](../DATA-SOURCES.md), Abschnitte laut Task O3 | `README.md` | rendert auf GitHub ohne kaputte Tabellen |
 
 ### `data/curated/orgs.csv` — Format exakt
 
@@ -128,7 +128,7 @@ Hanno liest die Datei in der Pipeline ein (`hero_path.yaml` → `evidence` der H
   `[P1|P2|P3] Screen · Schritte · erwartet · gesehen · (wer)`
   P1 = Demo-Killer (Hero-Pfad bricht, Seite lädt nicht, Login-Wand) · P2 = sichtbar, aber umgehbar · P3 = kosmetisch. Erledigt → `~~durchstreichen~~`, nicht löschen.
   Beispiel: `[P1] Suche · "Krabbe" tippen, Enter · Ego-Graph · leere Seite, Konsole: graph.json 404 · (Osman)`
-- Entscheidungen, die den Plan ändern (Pfad umlegen, Feature streichen), **trifft Hanno** nach kurzem Chat — und schreibt eine Zeile nach `docs/PLAN.md` unten.
+- Entscheidungen, die den Plan ändern (Pfad umlegen, Feature streichen), **trifft Hanno** nach kurzem Chat — und schreibt eine Zeile nach `docs/hackathon-log/PLAN.md` unten.
 
 ## Qualitäts-Gates vor dem Freeze (So 11:00–12:00, Osman prüft, Hanno fixt)
 

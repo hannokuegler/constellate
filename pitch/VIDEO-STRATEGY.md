@@ -124,4 +124,4 @@ Falls der E2E-Lauf länger als acht Sekunden braucht: vorher laufen lassen, im V
 4. Jede Zahl im Voice-over steht in MEDICAL-BACKGROUND mit Quelle oder im Export, oder sie fliegt raus. Aktuell werden keine Zahlen gesprochen.
 5. Production-Domain in der Browserleiste, nicht die Deployment-URL.
 6. Upload-Format in HackOS geprüft (Osman): Datei MP4/MOV direkt oder Link. Nach dem Upload jeden Link im privaten Fenster öffnen, Länge und Ton prüfen.
-7. Alle drei Links bis 13:45 im Teamboard (Bereich Links) und in `docs/STATUS.md`.
+7. Alle drei Links bis 13:45 im Teamboard (Bereich Links) und in `docs/hackathon-log/STATUS.md`.

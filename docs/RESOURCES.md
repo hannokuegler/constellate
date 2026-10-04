@@ -39,7 +39,7 @@ Grundregel: **ein Werkzeug pro Job.** Kern-App = Next.js, Daten = Python-Pipelin
 - Vercel: die Rollen „Osman Team-Owner, Hanno Collaborator" funktionieren auf Hobby nur für öffentliche Repos (§7). Deployment-URLs sind bei Standard Protection geschützt, nur die Production-Domain ist öffentlich.
 - Bright Data: Zahlen bestätigt; neu: ohne KYC beachtet Web Unlocker automatisch `robots.txt`; Cache-Dateiname im Skript auf stabilen Hash umgestellt (Pythons `hash()` ist bei jedem Lauf anders).
 - OpenAI: konkrete Modell-IDs und Preise ergänzt, Kostenrechnung neu.
-- Offener Widerspruch: [VIDEOS.md](VIDEOS.md) schreibt „Recep spricht" im Demo-Video, dieses Dokument empfiehlt ElevenLabs-Voice-over. Entscheidung Hanno (Empfehlung: ElevenLabs, Begründung unten).
+- Offener Widerspruch: [VIDEOS.md](hackathon-log/VIDEOS.md) schreibt „Recep spricht" im Demo-Video, dieses Dokument empfiehlt ElevenLabs-Voice-over. Entscheidung Hanno (Empfehlung: ElevenLabs, Begründung unten).
 
 ---
 
@@ -258,7 +258,7 @@ Eleven v4 und Eleven v4 Turbo wurden am **28.09.2026** veröffentlicht ([E1](htt
 
 | Funktion | Kosten | Entscheidung | Begründung |
 |---|---|---|---|
-| Sound Effects (`eleven_text_to_sound_v2`) | 40 Credits/Sekunde bei fester Dauer ([E14](https://elevenlabs.io/docs/overview/capabilities/sound-effects)); ca. 200 Credits je Erzeugung laut Pricing-FAQ ([E8](https://elevenlabs.io/pricing)) | **nein** | [VIDEOS.md](VIDEOS.md): „keine Musik, keine Effekte"; Medizinthema, ruhiger Ton |
+| Sound Effects (`eleven_text_to_sound_v2`) | 40 Credits/Sekunde bei fester Dauer ([E14](https://elevenlabs.io/docs/overview/capabilities/sound-effects)); ca. 200 Credits je Erzeugung laut Pricing-FAQ ([E8](https://elevenlabs.io/pricing)) | **nein** | [VIDEOS.md](hackathon-log/VIDEOS.md): „keine Musik, keine Effekte"; Medizinthema, ruhiger Ton |
 | Music (`music_v2_5`) | ca. 900 Credits/Minute ([E8](https://elevenlabs.io/pricing)) | **nein** | gleiche Regel; Musik lenkt vom Evidenz-Argument ab |
 | Dubbing | 2.000–10.000 Credits/Minute ([E8](https://elevenlabs.io/pricing)) | **nein** | Judges sprechen Englisch; Aufwand ohne Wertung |
 | Scribe v2 (Speech to Text) | 330 Credits/Minute ([E8](https://elevenlabs.io/pricing)) | **nein** für Untertitel | wir haben den exakten Text; YouTube „Auto-Sync" ist gratis und reicht ([Y1](https://support.google.com/youtube/answer/2734796)) |
@@ -312,13 +312,13 @@ Weitere Grenzen: Auf Free und Pro ist die veröffentlichte Seite **immer öffent
 | Idee | Aufwand | Urteil |
 |---|---|---|
 | **Story-/Landing-Page** (Problem, 4-Schritte-Erklärung, Evidenzstufen als Legende, Team, Button „Open the Atlas") | 60–90 min | **optional, ja bei Luft:** hilft der Kommunikationswertung, blockiert Hanno nicht |
-| **Moonshot-Seite** (Timeline heute vs. mit Constellate) | gehört in dieselbe Seite; braucht [MOONSHOT.md](MOONSHOT.md) von Recep (Task R2) | nur als Abschnitt der Story-Page; **das Moonshot-Panel in der App baut Hanno in Next.js** |
+| **Moonshot-Seite** (Timeline heute vs. mit Constellate) | gehört in dieselbe Seite; braucht MOONSHOT.md (nie geschrieben; der Moonshot steht in der App unter `/impact`) von Recep (Task R2) | nur als Abschnitt der Story-Page; **das Moonshot-Panel in der App baut Hanno in Next.js** |
 | **Pitch-Microsite** für den 10.10. | 1–2 h | **nein:** der Live-Pitch braucht Folien (Task R4); eine Microsite ist Zusatzrisiko |
 | **Klick-Prototyp** der App | 1–2 h | **nein:** anderer Stack, Hanno baut schneller direkt in Next.js, Übernahme kostet mehr als sie bringt |
 
 **Wofür NICHT: die Kern-App.** Die ist Next.js in `app/`, deployt über Vercel, mit API-Routes, Graph-Rendering und OpenAI-Streaming. Lovable daneben wäre ein zweiter Stack, ein zweites Deploy, eine zweite Fehlerquelle um 14:55. Auch kein Formular, keine E-Mail-Sammlung (DSGVO), keine Patientendaten, kein Cloud-Backend: unser Graph ist eine statische JSON-Datei, bewusst ohne Datenbank.
 
-**Entscheidung:** nur wenn R1–R3 erledigt sind und Hanno So 08:00 grünes Licht gibt. Timebox **90 Minuten, hartes Ende So 10:30**, danach wird nichts mehr daran gearbeitet. Nie vor dem Hero-Pfad-Fact-Check, und auf der Seite steht nur, was in [STORY.md](STORY.md)/[MOONSHOT.md](MOONSHOT.md) fact-gecheckt ist. Hack-Nation akzeptiert für die Live Demo zwar auch Lovable (Briefing, Regeln 2/2), unsere Live Demo bleibt aber die Vercel-App; das Submission-Feld „Live Demo" bekommt die Vercel-URL.
+**Entscheidung:** nur wenn R1–R3 erledigt sind und Hanno So 08:00 grünes Licht gibt. Timebox **90 Minuten, hartes Ende So 10:30**, danach wird nichts mehr daran gearbeitet. Nie vor dem Hero-Pfad-Fact-Check, und auf der Seite steht nur, was in [STORY.md](STORY.md)/MOONSHOT.md (nie geschrieben; der Moonshot steht in der App unter `/impact`) fact-gecheckt ist. Hack-Nation akzeptiert für die Live Demo zwar auch Lovable (Briefing, Regeln 2/2), unsere Live Demo bleibt aber die Vercel-App; das Submission-Feld „Live Demo" bekommt die Vercel-URL.
 
 **How-to für Recep/Osman (6 Schritte):**
 1. Eigenen Account auf lovable.dev anlegen (GitHub-Login), Free reicht zum Start.
@@ -354,7 +354,7 @@ Use only the text I provide. Do not invent statistics, names or quotes.
 
 **Regeln (3 Leute, 19 h — bewusst minimal):**
 - **Direkt auf `main`**, kein Branch-Schutz, keine PRs. Zu klein, zu kurz.
-- Kleine Commits mit Präfix `data:` · `docs:` · `app:` · `pipeline:` (siehe [WORKFLOW.md](WORKFLOW.md)).
+- Kleine Commits mit Präfix `data:` · `docs:` · `app:` · `pipeline:` (siehe [WORKFLOW.md](hackathon-log/WORKFLOW.md)).
 - `git pull --rebase` vor jedem Push. Konflikt → Hanno fragen, **nie `--force`**.
 - Keine Secrets, keine `data/raw/`, keine Videos (> 5 MB) im Repo. `.gitignore` steht.
 - **Keine `Co-Authored-By`-Trailer** oder sonstige KI-Attribution in Commits.
@@ -418,9 +418,9 @@ Nur dokumentiert, **nichts ausgeführt, nichts gekauft** (Prüfdatum 2026-10-03)
 
 **Was:** Claude-Skill, der aus dem Projektcode ein **ca. 20-Sekunden-Loop-Video** (MP4) mit eigenem Soundtrack und fertigem Share-Text erzeugt; optional KI-Stimme (Kokoro, standardmäßig aus). Er liest den Code, nicht die Live-URL. Technik dahinter: [Hyperframes](https://github.com/heygen-com/hyperframes), Open Source (Apache 2.0), rendert aus HTML per Chromium und FFmpeg zu MP4. Braucht Node.js 22+ und FFmpeg ([/brag-README](https://github.com/latent-spaces/brag), gelesen über jsDelivr). ⚠️ Ob beides auf Hannos Mac installiert ist, ist nicht geprüft.
 
-**Wofür:** Teaser für Discord-Post (14:30 laut [WORKFLOW.md](WORKFLOW.md)), LinkedIn oder README-Kopf. Ein Gewinn für die Reichweite, **nicht** für die Wertung.
+**Wofür:** Teaser für Discord-Post (14:30 laut [WORKFLOW.md](hackathon-log/WORKFLOW.md)), LinkedIn oder README-Kopf. Ein Gewinn für die Reichweite, **nicht** für die Wertung.
 
-**Wofür NICHT:** nicht als Demo-Video (stilisierter Nachbau statt echter Bildschirmaufnahme, eigene Musik widerspricht [VIDEOS.md](VIDEOS.md)). Nicht vor der Abgabe: Hanno hat von 12:00 bis 14:30 keine freie Minute. Schätzung 30–45 min.
+**Wofür NICHT:** nicht als Demo-Video (stilisierter Nachbau statt echter Bildschirmaufnahme, eigene Musik widerspricht [VIDEOS.md](hackathon-log/VIDEOS.md)). Nicht vor der Abgabe: Hanno hat von 12:00 bis 14:30 keine freie Minute. Schätzung 30–45 min.
 
 ---
 
@@ -432,7 +432,7 @@ Nur dokumentiert, **nichts ausgeführt, nichts gekauft** (Prüfdatum 2026-10-03)
 
 ## Video-Pipeline (4 Videos)
 
-**Was verlangt wird:** Die Hack-Nation-Regeln fordern Demo-, Tech- und Team-Video (Zweck laut Folie: „Show project", „Explain build", „Introduce team", `00_Briefing/slides/Regeln-2_Submission.jpg`). Der C5-Brief fordert zusätzlich den **1-min-Walkthrough** und nennt nur „A Team video and a 1-minute walkthrough" (`docs/C5-Challenge-Brief.pdf`, S. 6), **ohne** Vorgabe zu Gesichtern, Länge oder Format. Insgesamt also vier Videos (siehe [VIDEOS.md](VIDEOS.md)).
+**Was verlangt wird:** Die Hack-Nation-Regeln fordern Demo-, Tech- und Team-Video (Zweck laut Folie: „Show project", „Explain build", „Introduce team", `00_Briefing/slides/Regeln-2_Submission.jpg`). Der C5-Brief fordert zusätzlich den **1-min-Walkthrough** und nennt nur „A Team video and a 1-minute walkthrough" (`docs/C5-Challenge-Brief.pdf`, S. 6), **ohne** Vorgabe zu Gesichtern, Länge oder Format. Insgesamt also vier Videos (siehe [VIDEOS.md](hackathon-log/VIDEOS.md)).
 
 **Für alle:** 1920×1080, 16:9, Englisch, Live-URL mit Browserleiste sichtbar (keine localhost-Demos), keine Musik und keine Effekte, Upload als YouTube „nicht gelistet" oder Drive (⚠️ HackOS-Format klären, §10). Aufnahme erst nach dem Feature-Freeze (12:00), vorher nur Skript und Probe-Takes.
 
@@ -446,12 +446,12 @@ Nur dokumentiert, **nichts ausgeführt, nichts gekauft** (Prüfdatum 2026-10-03)
 **Zeitbedarf gesamt ca. 4 h Personenzeit** (Recep ca. 100 min, Hanno ca. 90 min, Osman ca. 45 min). Das Zeitfenster 12:00–14:00 ist eng. Deshalb:
 - **Skripte und TTS-Texte sind vor 12:00 fertig.** Hanno erzeugt die drei Voice-over-MP3s So 11:15–11:45 (je ca. 10 min inkl. Hörprobe). Bis dahin liegt eine Probe-Version vom Demo-Skript (So 08:00–09:00) zum Timing-Test.
 - **Demo und Walkthrough aus einer Aufnahme** (Recep spart ca. 30 min). Osman hilft nach seinem Team-Video (ab 13:00) bei Untertiteln und Upload der Demo-Videos.
-- Reihenfolge der Abgabe wie in [WORKFLOW.md](WORKFLOW.md): alle Links 13:30 in `04_Submission/LINKS.md`.
+- Reihenfolge der Abgabe wie in [WORKFLOW.md](hackathon-log/WORKFLOW.md): alle Links 13:30 in `04_Submission/LINKS.md`.
 - Nach dem Upload jeden Link im **privaten Fenster** öffnen; MP4s als Backup auf Drive (Google-Form-Backup).
 
 **Empfehlung zum Team-Video: ja, mit echten Gesichtern, alle drei.** Gründe: Der Zweck laut Hack-Nation-Folie ist „Introduce team", der Brief verbietet nichts, und „Communication" ist ein Hack-Nation-Kriterium. Authentische Gesichter sind das Gegenstück zum KI-Voice-over der Demo. Voraussetzung: alle drei sind einverstanden. Wer partout nicht ins Bild will: Stimme plus Handaufnahme des Arbeitsplatzes, aber kein KI-Avatar. Keine echten Patienten oder Kinder im Bild, die Hauptfigur bleibt eine **Komposit-Figur** und wird so benannt ([STORY.md](STORY.md)).
 
-**Warum KI-Voice-over statt Recep selbst (Widerspruch zu [VIDEOS.md](VIDEOS.md) „Recep spricht"):** gleiche Stimme in drei Videos, kein Take-Chaos nach einer Nacht ohne Schlaf, Text ist gleich Skript. Gegenargument: ein menschlicher Sprecher wirkt wärmer. **Empfehlung ElevenLabs, offengelegt**; Entscheidung bei Hanno. Falls Recep spricht, entfällt §4.4, Rest bleibt gleich.
+**Warum KI-Voice-over statt Recep selbst (Widerspruch zu [VIDEOS.md](hackathon-log/VIDEOS.md) „Recep spricht"):** gleiche Stimme in drei Videos, kein Take-Chaos nach einer Nacht ohne Schlaf, Text ist gleich Skript. Gegenargument: ein menschlicher Sprecher wirkt wärmer. **Empfehlung ElevenLabs, offengelegt**; Entscheidung bei Hanno. Falls Recep spricht, entfällt §4.4, Rest bleibt gleich.
 
 ---
 

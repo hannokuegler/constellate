@@ -2,7 +2,7 @@
 
 Stand: Sa 03.10.2026, 21:30 · **Deadline So 04.10., 15:00 Wien (9:00 ET)**
 
-**Quellenverweise.** `C5-Brief` = [C5-Challenge-Brief.pdf](C5-Challenge-Brief.pdf) im Repo. `Hackathon-Infos.md` und `Hackathon-Briefing.pdf` sind Organisator-Unterlagen, die nur lokal bei Hanno liegen (nicht im Repo, nicht öffentlich); die Seitenzahlen bleiben als Hinweis stehen. `PLAN.md`, `WORKFLOW.md`, `VIDEOS.md` liegen in `docs/`. Diese Datei ist ab Sa 03.10. 22:00 die gepflegte Fassung (Haken bitte hier setzen); Stand der Arbeit: [STATUS.md](STATUS.md).
+**Quellenverweise.** `C5-Brief` = [C5-Challenge-Brief.pdf](../C5-Challenge-Brief.pdf) im Repo. `Hackathon-Infos.md` und `Hackathon-Briefing.pdf` sind Organisator-Unterlagen, die nur lokal bei Hanno liegen (nicht im Repo, nicht öffentlich); die Seitenzahlen bleiben als Hinweis stehen. `PLAN.md`, `WORKFLOW.md`, `VIDEOS.md` liegen in `docs/`. Diese Datei ist ab Sa 03.10. 22:00 die gepflegte Fassung (Haken bitte hier setzen); Stand der Arbeit: [STATUS.md](STATUS.md).
 
 ## 1. Pflicht-Anforderungen aus den Briefs
 
@@ -60,7 +60,7 @@ Stand: Sa 03.10.2026, 21:30 · **Deadline So 04.10., 15:00 Wien (9:00 ET)**
 | **Feature-Freeze** | So 04.10., 12:00 (Mittag) | Nur P1-Bugs nach diesem Punkt | Hanno | ☐ |
 | **E2E live** | So 04.10., 06:00 (Früh) | Hero-Pfad klickbar (Krabbe → PSAP → MLD → Action Card) | Hanno | ☐ |
 | **Quality-Gates vor Freeze** | So 04.10., 11:00–12:00 | 7 Gates: Live-URL, Hero-Pfad, Honest Gap, Edge-Quellen, OpenAI 3×, Fallback-Sicherheit, README `make reproduce`, Lizenzen, Secrets | Osman (prüft), Hanno (fixt) | ☐ |
-| **Videos abgeschlossen** | So 04.10., 14:00 | Alle 3 hochgeladen (MP4/MOV, je ≤ 60 s), URLs im Teamboard (Bereich Links) und in `docs/STATUS.md` | Recep + Osman + Hanno | ☐ |
+| **Videos abgeschlossen** | So 04.10., 14:00 | Alle 3 hochgeladen (MP4/MOV, je ≤ 60 s), URLs im Teamboard (Bereich Links) und in `docs/hackathon-log/STATUS.md` | Recep + Osman + Hanno | ☐ |
 | **Abgabe HackOS + Google Form** | So 04.10., 14:00–14:30 | Alle Felder gefüllt, alle Video-Links verifiziert | Osman (HackOS), Osman (Form) | ☐ |
 | **Backup & Finale Checks** | So 04.10., 14:30–14:45 | Zip des Repos + Discord-Post, letzte Live-URL-Check | Hanno (Zip), Recep (Discord), Recep (URL) | ☐ |
 | **Submission-Ende** | So 04.10., 14:45 | **Nichts mehr pushen, kein Redeploy** | Alle | ☐ |

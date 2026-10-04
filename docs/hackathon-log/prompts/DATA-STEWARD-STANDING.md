@@ -31,7 +31,7 @@ git fetch origin && git log --oneline -15 origin/main
 git worktree list                         # welche Worktrees gibt es, wer arbeitet wo
 ```
 
-Dann lesen: `CLAUDE.md` · `docs/STATUS.md` · `docs/DECISIONS.md` · `docs/DATA-REPORT.md` (Zahlen je Quelle, Lücken, Integrations-Anleitung) · `docs/DATA-QUALITY.md` (offene Review-Punkte) · `docs/DATA-MANAGEMENT.md` (Fluss, Budgets, Freeze-Checkliste) · `BUGS.md` · `app/README.md` (Datenvertrag, „Upcoming fields (data-v2)", `meta.metrics`, Precomputed explanations) · `data/MANIFEST.md` · `docs/DATA-SOURCES.md` · `docs/MEDICAL-BACKGROUND.md`.
+Dann lesen: `CLAUDE.md` · `docs/hackathon-log/STATUS.md` · `docs/DECISIONS.md` · `docs/DATA-REPORT.md` (Zahlen je Quelle, Lücken, Integrations-Anleitung) · `docs/DATA-QUALITY.md` (offene Review-Punkte) · `docs/DATA-MANAGEMENT.md` (Fluss, Budgets, Freeze-Checkliste) · `BUGS.md` · `app/README.md` (Datenvertrag, „Upcoming fields (data-v2)", `meta.metrics`, Precomputed explanations) · `data/MANIFEST.md` · `docs/DATA-SOURCES.md` · `docs/MEDICAL-BACKGROUND.md`.
 
 Kennzahlen per Skript aus dem Export (nie die ganze Datei in den Kontext):
 
@@ -113,11 +113,11 @@ Ergänzend aus der Praxis: `pub.orcid.org` verbietet per robots.txt jeden automa
 - [ ] `cd app && npm ci && npx tsc --noEmit && npm run lint && npm run e2e`.
 - [ ] Commit nur betroffene Pfade, Identität prüfen (`git log --format='%an <%ae>' -1`), `git pull --rebase`, `git push -u origin data-steward`.
 - [ ] 5 Zeilen an Hanno, Go für `main` abwarten; mit Go erneut validate + E2E, `git push origin HEAD:main`, Live-URL `/methods` zeigt das neue `built_at`.
-- [ ] `docs/STATUS.md` (nur Daten-Zeilen) und `docs/DATA-REPORT.md` nachziehen.
+- [ ] `docs/hackathon-log/STATUS.md` (nur Daten-Zeilen) und `docs/DATA-REPORT.md` nachziehen.
 
 ## 7 · Checkliste „Datenstand einfrieren" (So 11:00, Details in `docs/DATA-MANAGEMENT.md`)
 
-- [ ] Letzter Re-Export auf `main`; `meta.json` `built_at` und `version` plus git sha in `docs/STATUS.md`.
+- [ ] Letzter Re-Export auf `main`; `meta.json` `built_at` und `version` plus git sha in `docs/hackathon-log/STATUS.md`.
 - [ ] `make validate` grün auf `main`; Größen- und Hero-Zeile in STATUS kopiert.
 - [ ] `npm run e2e` grün auf `main`; die Live-Seite zeigt auf `/methods` dasselbe `built_at`.
 - [ ] `meta.metrics` vorhanden oder ausdrücklich „pending" (keine erfundenen Zahlen).
@@ -130,4 +130,4 @@ Ergänzend aus der Praxis: `pub.orcid.org` verbietet per robots.txt jeden automa
 
 ## 8 · Diesen Prompt aktuell halten (Pflicht)
 
-Am Ende jeder Arbeitseinheit diese Datei prüfen und nachziehen: neue Branches oder Worktrees, neue Dateien und Make-Targets, neue Keys, geänderte Budgets, neue Regeln von Hanno, gemessene Laufzeiten. Zeitstempel oben setzen, Commit `docs: update data steward standing prompt`. Was nur den Moment beschreibt (Zahlen, offene Aufgaben), gehört nach `docs/STATUS.md` und `docs/DATA-REPORT.md`, nicht hierher.
+Am Ende jeder Arbeitseinheit diese Datei prüfen und nachziehen: neue Branches oder Worktrees, neue Dateien und Make-Targets, neue Keys, geänderte Budgets, neue Regeln von Hanno, gemessene Laufzeiten. Zeitstempel oben setzen, Commit `docs: update data steward standing prompt`. Was nur den Moment beschreibt (Zahlen, offene Aufgaben), gehört nach `docs/hackathon-log/STATUS.md` und `docs/DATA-REPORT.md`, nicht hierher.

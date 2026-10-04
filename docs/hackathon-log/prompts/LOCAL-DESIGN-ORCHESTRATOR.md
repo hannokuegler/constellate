@@ -23,7 +23,7 @@ cd ../constellate-design/app && npm ci
 ## Regeln
 
 - Git: nur Branch `design`, nie `main`, nie force-push, vor Push `git pull --rebase`. Commit-Präfixe `app:` / `docs:`, ein Satz, **keine Co-Authored-By-Trailer**, keine AI-Attribution. Nur eigene Dateien stagen, nie `git add .`. Kein PR; der Cloud-Orchestrator prüft und merged über `integrate`.
-- Nicht anfassen: `pipeline/`, `app/public/data/`, `data/`, `CLAUDE.md`, `docs/DECISIONS.md`, `docs/STATUS.md`. App-Logik (`app/lib/*`) nur, wenn es für die Darstellung zwingend ist.
+- Nicht anfassen: `pipeline/`, `app/public/data/`, `data/`, `CLAUDE.md`, `docs/DECISIONS.md`, `docs/hackathon-log/STATUS.md`. App-Logik (`app/lib/*`) nur, wenn es für die Darstellung zwingend ist.
 - Keine Keys oder Logins ins Repo; generierte Assets nur mit Lizenz, die öffentliche Nutzung erlaubt (Higgsfield/Motion-Nutzungsbedingungen im Account prüfen und in `pitch/ASSETS.md` notieren).
 - Keine medizinischen Aussagen und keine Zahlen in generierten Bildern oder Clips. Fakten stehen nur in der App, mit Quelle.
 

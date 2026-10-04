@@ -1,6 +1,6 @@
 # CLAUDE.md · Constellate (Landkarte für jede Claude-Session)
 
-Dieses Repo ist die **einzige Quelle der Wahrheit** für das Hackathon-Projekt. Wer hier arbeitet (lokal oder in der Cloud), findet alles Wichtige im Repo und braucht keinen Zugriff auf Hannos Mac. Stand der Arbeit: [docs/STATUS.md](docs/STATUS.md). Offene Entscheidungen: [docs/DECISIONS.md](docs/DECISIONS.md).
+Dieses Repo ist die **einzige Quelle der Wahrheit** für das Hackathon-Projekt. Wer hier arbeitet (lokal oder in der Cloud), findet alles Wichtige im Repo und braucht keinen Zugriff auf Hannos Mac. Stand der Arbeit: [docs/hackathon-log/STATUS.md](docs/hackathon-log/STATUS.md). Offene Entscheidungen: [docs/DECISIONS.md](docs/DECISIONS.md).
 
 ## Was Constellate ist
 
@@ -28,7 +28,7 @@ Ein evidenzgraduierter Wissensgraph für seltene Krankheiten: Krankheiten, Gene,
 | Osman | Ops und Kuration: `data/curated/orgs.csv`, README, Reproduce-Test, Team-Video, QA |
 | Recep | Story, Evidenz, Videos: `hero_path.yaml`, `docs/MOONSHOT.md`, Demo-Skript, Demo-Video, Pitch-Slides |
 
-Osman und Recep bekommen kleine Aufgaben mit Datei-Output (siehe [docs/ROLES-TASKS.md](docs/ROLES-TASKS.md)). Übergabe über Dateien im Repo oder über das Teamboard ([docs/TEAMBOARD.md](docs/TEAMBOARD.md)), nicht über Chat-Romane. Kontaktdaten stehen bewusst nicht im Repo.
+Osman und Recep bekommen kleine Aufgaben mit Datei-Output (siehe [docs/hackathon-log/ROLES-TASKS.md](docs/hackathon-log/ROLES-TASKS.md)). Übergabe über Dateien im Repo oder über das Teamboard ([docs/hackathon-log/TEAMBOARD.md](docs/hackathon-log/TEAMBOARD.md)), nicht über Chat-Romane. Kontaktdaten stehen bewusst nicht im Repo.
 
 ## Ordnerstruktur
 
@@ -42,7 +42,7 @@ Osman und Recep bekommen kleine Aufgaben mit Datei-Output (siehe [docs/ROLES-TAS
 | `docs/` | Konzept, Plan, Status, Entscheidungen, Briefing, Medizin-Hintergrund (Details unten) |
 | `memes/` | Memes für den Meme-Wettbewerb plus Discord-Oneliner (gepostet wird von Osman) |
 | `tools/board.py` | CLI fürs Teamboard (Login über Umgebungsvariablen) |
-| `.claude/skills/constellate/` | Projekt-Skill `/constellate`: Teamboard und `docs/STATUS.md` aktuell halten |
+| `.claude/skills/constellate/` | Projekt-Skill `/constellate`: Teamboard und `docs/hackathon-log/STATUS.md` aktuell halten |
 | `BUGS.md` | Bug-Liste, Format `[P1\|P2\|P3] Screen · Schritte · erwartet · gesehen · (wer)`, erledigt = durchstreichen |
 
 ## Befehle (Repo-Root)
@@ -89,26 +89,26 @@ Pipeline → `app/public/data/` → App. Format, Felder und Normalisierung: [app
 
 | Frage | Datei |
 |---|---|
-| Wie ist der Stand, was blockiert? | [docs/STATUS.md](docs/STATUS.md) |
+| Wie ist der Stand, was blockiert? | [docs/hackathon-log/STATUS.md](docs/hackathon-log/STATUS.md) |
 | Was ist offen, welche Defaults gelten? | [docs/DECISIONS.md](docs/DECISIONS.md) |
-| Zeitplan, Judging-Logik, Fallbacks, Planänderungen | [docs/PLAN.md](docs/PLAN.md) |
+| Zeitplan, Judging-Logik, Fallbacks, Planänderungen | [docs/hackathon-log/PLAN.md](docs/hackathon-log/PLAN.md) |
 | Cluster, Hero-Journey, Honest-Gap-Journey, Moonshot | [docs/SCOPE.md](docs/SCOPE.md) |
 | Stack, Datenmodell, Evidenzstufen, OpenAI-Stellen | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
 | Quellen, Endpunkte, Lizenzen | [docs/DATA-SOURCES.md](docs/DATA-SOURCES.md) |
-| Tasks O1–O6, R1–R5, Hannos Blöcke | [docs/ROLES-TASKS.md](docs/ROLES-TASKS.md) |
-| Arbeitsprinzipien, Git-Workflow, CSV- und YAML-Format, Qualitäts-Gates | [docs/WORKFLOW.md](docs/WORKFLOW.md) |
+| Tasks O1–O6, R1–R5, Hannos Blöcke | [docs/hackathon-log/ROLES-TASKS.md](docs/hackathon-log/ROLES-TASKS.md) |
+| Arbeitsprinzipien, Git-Workflow, CSV- und YAML-Format, Qualitäts-Gates | [docs/hackathon-log/WORKFLOW.md](docs/hackathon-log/WORKFLOW.md) |
 | Story (Nora vs. Maria) | [docs/STORY.md](docs/STORY.md) |
-| Videos (Demo, Tech, Team, 1-min-Walkthrough) | [docs/VIDEOS.md](docs/VIDEOS.md) |
+| Videos (Demo, Tech, Team, 1-min-Walkthrough) | [docs/hackathon-log/VIDEOS.md](docs/hackathon-log/VIDEOS.md) |
 | Medizin, geprüfte Fakten und Primärquellen | [docs/MEDICAL-BACKGROUND.md](docs/MEDICAL-BACKGROUND.md), [docs/GLOSSAR.md](docs/GLOSSAR.md) |
 | Tools, Accounts, Budgets (ohne Keys) | [docs/RESOURCES.md](docs/RESOURCES.md) |
-| Technik-Briefing mit Fragen T1–T30 | [docs/briefing/TECHNIK.md](docs/briefing/TECHNIK.md) |
-| Wirtschaft und Nutzersicht mit Fragen W1–W30 | [docs/briefing/WIRTSCHAFT-NUTZER.md](docs/briefing/WIRTSCHAFT-NUTZER.md) |
-| Abgabe-Checkliste aus den Original-Briefs | [docs/SUBMISSION-CHECKLIST.md](docs/SUBMISSION-CHECKLIST.md) |
-| Übergabe-Prompt für eine Orchestrator-Session | [docs/ORCHESTRATOR.md](docs/ORCHESTRATOR.md) |
-| Teamboard (Übersicht, API, Aktualisieren) | [docs/TEAMBOARD.md](docs/TEAMBOARD.md) |
+| Technik-Briefing mit Fragen T1–T30 | [docs/hackathon-log/briefing/TECHNIK.md](docs/hackathon-log/briefing/TECHNIK.md) |
+| Wirtschaft und Nutzersicht mit Fragen W1–W30 | [docs/hackathon-log/briefing/WIRTSCHAFT-NUTZER.md](docs/hackathon-log/briefing/WIRTSCHAFT-NUTZER.md) |
+| Abgabe-Checkliste aus den Original-Briefs | [docs/hackathon-log/SUBMISSION-CHECKLIST.md](docs/hackathon-log/SUBMISSION-CHECKLIST.md) |
+| Übergabe-Prompt für eine Orchestrator-Session | [docs/hackathon-log/ORCHESTRATOR.md](docs/hackathon-log/ORCHESTRATOR.md) |
+| Teamboard (Übersicht, API, Aktualisieren) | [docs/hackathon-log/TEAMBOARD.md](docs/hackathon-log/TEAMBOARD.md) |
 | Datenvertrag und App-Aufbau | [app/README.md](app/README.md) |
 | Datei-Herkunft der Rohdaten | [data/MANIFEST.md](data/MANIFEST.md) |
 
 ## Arbeitsstil in diesem Projekt
 
-Deutsch, knapp und direkt. Bei Entscheidungen 2 bis 3 Optionen mit Vor- und Nachteilen und einer klaren Empfehlung. Zahlen immer aus Skript oder Datei, nie aus dem Gedächtnis. Große Dateien (`graph_base.json` 26 MB, `slice.json` 1,5 MB) nie ganz in den Kontext laden, nur per Skript auswerten. Nach einer Arbeitseinheit `docs/STATUS.md` nachziehen (Skill `/constellate` macht das mit dem Teamboard zusammen).
+Deutsch, knapp und direkt. Bei Entscheidungen 2 bis 3 Optionen mit Vor- und Nachteilen und einer klaren Empfehlung. Zahlen immer aus Skript oder Datei, nie aus dem Gedächtnis. Große Dateien (`graph_base.json` 26 MB, `slice.json` 1,5 MB) nie ganz in den Kontext laden, nur per Skript auswerten. Nach einer Arbeitseinheit `docs/hackathon-log/STATUS.md` nachziehen (Skill `/constellate` macht das mit dem Teamboard zusammen).

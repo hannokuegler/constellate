@@ -10,10 +10,10 @@ Du bist der Orchestrator für **Constellate** (Hack-Nation 7th Global AI Hackath
 
 ## 1 · Zuerst lesen, in dieser Reihenfolge
 1. `CLAUDE.md`: Landkarte, Befehle, harte Regeln
-2. `docs/STATUS.md`: fertig / dran / blockiert / nächster Block, bekannte Polish-Punkte
+2. `docs/hackathon-log/STATUS.md`: fertig / dran / blockiert / nächster Block, bekannte Polish-Punkte
 3. `docs/DECISIONS.md`: offene Entscheidungen D1–D7 und die vorläufigen Defaults, mit denen gebaut wird
-4. `docs/PLAN.md` (Zeitplan, Orchestrator-Log unten), `docs/SCOPE.md` (Hero-Journey), `app/README.md` (Datenvertrag)
-5. Bei Bedarf: `docs/briefing/TECHNIK.md` und `WIRTSCHAFT-NUTZER.md` (je 30 Entscheidungsfragen), `docs/MEDICAL-BACKGROUND.md` (geprüfter Faktenstand), `docs/SUBMISSION-CHECKLIST.md`, `docs/TEAMBOARD.md`, `docs/RESOURCES.md`
+4. `docs/hackathon-log/PLAN.md` (Zeitplan, Orchestrator-Log unten), `docs/SCOPE.md` (Hero-Journey), `app/README.md` (Datenvertrag)
+5. Bei Bedarf: `docs/hackathon-log/briefing/TECHNIK.md` und `WIRTSCHAFT-NUTZER.md` (je 30 Entscheidungsfragen), `docs/MEDICAL-BACKGROUND.md` (geprüfter Faktenstand), `docs/hackathon-log/SUBMISSION-CHECKLIST.md`, `docs/hackathon-log/TEAMBOARD.md`, `docs/RESOURCES.md`
 
 ## 2 · Stand in 6 Zeilen
 - Die Pipeline 01–07 läuft deterministisch, `make validate` ist grün. Die App-Daten liegen committet in `app/public/data` (874 Krankheiten, 6.660 Dateien). Der Hero-Pfad Krabbe → GALC/PSAP → MLD → ARSA steht in den Daten, Pelizaeus-Merzbacher ist als Gegenbeispiel markiert.
@@ -24,7 +24,7 @@ Du bist der Orchestrator für **Constellate** (Hack-Nation 7th Global AI Hackath
 - Drei Funde für die Story, alle mit Primärquelle belegt: **Österreich screent Neugeborene nicht auf Krabbe, MLD aber seit 12/2024 als Forschungsprojekt.** Für Saposin-A-Defizienz gibt es keine Patientenorganisation. Krägeloh-Mann (Tübingen) ist Koautorin der deutschen Krabbe-Naturverlaufsstudie (PMID 32912261) und der GMFC-MLD-Skala (PMID 21707604).
 
 ## 3 · Nächste Schritte (Priorität)
-0. **Parallel läuft eine OpenAI-Daten-Session** auf Branch `data-v2`, Prompt in `docs/prompts/OPENAI-DATA-SESSION.md`. Sie liefert Assets (Natural-History-Studien, Register, NBS je Land), zugelassene Therapien (EMA/FDA), Prävalenz, KOL-Overlap, einen Monarch-Cross-Check und ein Coverage-Audit als `pipeline/04b_enrich_extra.py` und `data/curated/assets.csv`. Ihr PR muss geprüft werden (Stichproben öffnen, Tests, Determinismus). Danach die Integration in `07_analytics.py` nach `docs/DATA-REPORT.md` übernehmen. Sie fasst `app/` und `07` nicht an.
+0. **Parallel läuft eine OpenAI-Daten-Session** auf Branch `data-v2`, Prompt in `docs/hackathon-log/prompts/OPENAI-DATA-SESSION.md`. Sie liefert Assets (Natural-History-Studien, Register, NBS je Land), zugelassene Therapien (EMA/FDA), Prävalenz, KOL-Overlap, einen Monarch-Cross-Check und ein Coverage-Audit als `pipeline/04b_enrich_extra.py` und `data/curated/assets.csv`. Ihr PR muss geprüft werden (Stichproben öffnen, Tests, Determinismus). Danach die Integration in `07_analytics.py` nach `docs/DATA-REPORT.md` übernehmen. Sie fasst `app/` und `07` nicht an.
 1. **Vercel live** (macht Hanno: Repo importieren, Root Directory `app`). Danach die Live-URL in README, STATUS und Teamboard-Links eintragen.
 2. **OpenAI-Key** kommt als Env der Cloud-Umgebung bzw. in Vercel (nie committen). Dann:
    - `python pipeline/openai_config.py --list` laufen lassen und die Modell-IDs mit Hanno festlegen (D7). Modellnamen nie raten.
@@ -35,7 +35,7 @@ Du bist der Orchestrator für **Constellate** (Hack-Nation 7th Global AI Hackath
 4. **Hero-Pfad:** Recep prüft `data/curated/hero_path_CHECK.md` (Block A) und meldet das Ergebnis als Teamboard-Notiz. Du überträgst die VERIFIED-Einträge nach `hero_path.yaml`.
 5. **E2E-Check bis 06:00:** Suche Krabbe → GALC → PSAP → MLD → Edge-Panel mit Beleg → Action Card → Honest Gap → PMD als Gegenbeispiel, ohne Konsolenfehler. Bugs kommen nach `BUGS.md`.
 6. **Polish nach E2E** (Liste in STATUS.md): Graph-Labels und Subtyp-Bündelung, Persona-Linse, Moonshot-Panel (braucht `docs/MOONSHOT.md` von Recep, R2), README fertig (Osman, O3), `make reproduce` auf frischem Clone (Osman, O5).
-7. **Ab 11:00:** Qualitäts-Gates aus `docs/WORKFLOW.md`, Repo public, 12:00 Freeze, Videos nach `docs/VIDEOS.md` (eleven_v4-Voice-over laut RESOURCES), 14:00 Abgabe über HackOS **und** Google Form (`docs/SUBMISSION-CHECKLIST.md`).
+7. **Ab 11:00:** Qualitäts-Gates aus `docs/hackathon-log/WORKFLOW.md`, Repo public, 12:00 Freeze, Videos nach `docs/hackathon-log/VIDEOS.md` (eleven_v4-Voice-over laut RESOURCES), 14:00 Abgabe über HackOS **und** Google Form (`docs/hackathon-log/SUBMISSION-CHECKLIST.md`).
 
 ## 4 · Harte Regeln
 - Jede Zahl und jede medizinische Aussage in Produkt und Videos braucht eine Primärquelle (PMID, OMIM, EMA/FDA, NCT, ORPHA). Lücken werden gezeigt, nicht gefüllt. LLM-Gedächtnis ist keine Quelle.

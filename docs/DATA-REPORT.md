@@ -106,7 +106,7 @@ UNBELEGT-Zeilen (NBS ohne offizielles Zitat) erzeugen **keine** Kante; sie stehe
 
 ## Review-Fixes (Data Steward, So 04.10.2026, 01:16 Wien)
 
-Checks C1–C8 aus `docs/prompts/DATA-MANAGER.md` auf den lokalen `data/enrich/extra_*`, vorher und nachher. Code: `pipeline/enrich_extra/` (prevalence, nbs, assets, kol), `pipeline/04b_enrich_extra.py`, eine Regex in `pipeline/07_analytics.py`.
+Checks C1–C8 aus `docs/hackathon-log/prompts/DATA-MANAGER.md` auf den lokalen `data/enrich/extra_*`, vorher und nachher. Code: `pipeline/enrich_extra/` (prevalence, nbs, assets, kol), `pipeline/04b_enrich_extra.py`, eine Regex in `pipeline/07_analytics.py`.
 
 | Check | Vorher | Nachher |
 |---|---|---|

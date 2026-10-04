@@ -78,7 +78,7 @@ New node kinds (asset, drug, country, person) never go into `index.json` or `cor
 
 ## Checklist: freeze the dataset (Sunday 11:00, before the repo goes public)
 
-- [ ] Last re-export merged; `meta.json` `built_at` and `version` noted in `docs/STATUS.md`.
+- [ ] Last re-export merged; `meta.json` `built_at` and `version` noted in `docs/hackathon-log/STATUS.md`.
 - [ ] `make validate` green on `main`; size line and hero line copied into STATUS.
 - [ ] `npm run e2e` green on `main`; the live site shows the same `built_at` on `/methods`.
 - [ ] `meta.metrics` present or explicitly "pending" (no invented numbers).

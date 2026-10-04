@@ -1,7 +1,7 @@
 # 🧭 Masterplan · von jetzt (Sa 03.10., 19:45) bis Platz 1
 
 > Stand Sa 03.10.2026 19:45 · Deadline **So 04.10., 15:00 Wien** (9:00 ET) · verbleibend **~19 h**
-> Dateien hier: [SCOPE.md](SCOPE.md) · [ARCHITECTURE.md](ARCHITECTURE.md) · [DATA-SOURCES.md](DATA-SOURCES.md) · [ROLES-TASKS.md](ROLES-TASKS.md) · [VIDEOS.md](VIDEOS.md)
+> Dateien hier: [SCOPE.md](../SCOPE.md) · [ARCHITECTURE.md](../ARCHITECTURE.md) · [DATA-SOURCES.md](../DATA-SOURCES.md) · [ROLES-TASKS.md](ROLES-TASKS.md) · [VIDEOS.md](VIDEOS.md)
 
 ## Name & Pitch
 

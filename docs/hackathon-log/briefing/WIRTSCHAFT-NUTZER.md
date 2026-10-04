@@ -1,4 +1,4 @@
-**Hinweis, Stand Sa 03.10. 21:00 (Kopie aus dem Team-Briefing, Fragenkatalog inklusive).** Seither ist im Code und in den Daten gefixt, was unten noch als offen oder falsch steht. Aktuelle Zahlen und Stand: [STATUS.md](../STATUS.md), offene und vorläufig entschiedene Fragen: [DECISIONS.md](../DECISIONS.md).
+**Hinweis, Stand Sa 03.10. 21:00 (Kopie aus dem Team-Briefing, Fragenkatalog inklusive).** Seither ist im Code und in den Daten gefixt, was unten noch als offen oder falsch steht. Aktuelle Zahlen und Stand: [STATUS.md](../STATUS.md), offene und vorläufig entschiedene Fragen: [DECISIONS.md](../../DECISIONS.md).
 
 Seither gefixt:
 

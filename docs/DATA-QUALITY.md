@@ -1,6 +1,6 @@
 # Data-Quality-Review: PR #1 (data-v2) und Datenauslieferung
 
-Stand So 04.10.2026, ca. 00:45 Wien. Cloud-Session ohne Datenhosts: geprüft wurden Code, `data/curated/assets.csv`, Doku und der aktuelle Export in `app/public/data/` (Branch `integrate`). Die lokalen Ausgaben `data/enrich/extra_*` (gitignored, nur auf Hannos Mac) konnten **nicht** geprüft werden; was davon abhängt, steht als Skript-Check in [prompts/DATA-MANAGER.md](prompts/DATA-MANAGER.md). Alle Zahlen unten kommen aus Skripten über die genannten Dateien.
+Stand So 04.10.2026, ca. 00:45 Wien. Cloud-Session ohne Datenhosts: geprüft wurden Code, `data/curated/assets.csv`, Doku und der aktuelle Export in `app/public/data/` (Branch `integrate`). Die lokalen Ausgaben `data/enrich/extra_*` (gitignored, nur auf Hannos Mac) konnten **nicht** geprüft werden; was davon abhängt, steht als Skript-Check in [prompts/DATA-MANAGER.md](hackathon-log/prompts/DATA-MANAGER.md). Alle Zahlen unten kommen aus Skripten über die genannten Dateien.
 
 ## Urteil
 

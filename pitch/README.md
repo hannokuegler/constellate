@@ -38,7 +38,7 @@ Quellenregel wie im Repo: jede Zahl und jede medizinische Aussage mit Primärque
 
 ## Zeitplan bis 15:00 (Aufnahme ab Freeze 12:00, Upload bis 14:00)
 
-Quellen: [docs/SUBMISSION-CHECKLIST.md](../docs/SUBMISSION-CHECKLIST.md) §4, [docs/RESOURCES.md](../docs/RESOURCES.md) Video-Pipeline, [CLAUDE.md](../CLAUDE.md) Deadlines. Personenzeit für Videos ca. 3 h (Recep 80 min, Hanno 75 min, Osman 60 min).
+Quellen: [docs/hackathon-log/SUBMISSION-CHECKLIST.md](../docs/hackathon-log/SUBMISSION-CHECKLIST.md) §4, [docs/RESOURCES.md](../docs/RESOURCES.md) Video-Pipeline, [CLAUDE.md](../CLAUDE.md) Deadlines. Personenzeit für Videos ca. 3 h (Recep 80 min, Hanno 75 min, Osman 60 min).
 
 | Zeit (So) | Hanno | Recep | Osman |
 |---|---|---|---|
@@ -55,7 +55,7 @@ Quellen: [docs/SUBMISSION-CHECKLIST.md](../docs/SUBMISSION-CHECKLIST.md) §4, [d
 | 12:00–12:45 | Tech-Video aufnehmen (Terminal, Editor, Browser) | Demo-Pfad stumm aufnehmen, 2–3 Takes (12:00–12:30) | Team-Video filmen (alle drei, gleicher Ort, 12:00–12:30) |
 | 12:45–13:30 | Tech schneiden, Audio unterlegen, Untertitel, Export, Länge < 60 s prüfen | Demo schneiden, Audio D1–D7 unterlegen, Export, Länge prüfen | Team-Video schneiden, Namens-Einblendungen, Untertitel; ab 13:15 Untertitel Demo/Tech |
 | 13:30–14:00 | Upload Tech, Link im privaten Fenster prüfen | Upload Demo, Link prüfen | Upload Team, Link prüfen |
-| 13:45 | Alle drei Links im Teamboard (Bereich Links) und in `docs/STATUS.md` | | |
+| 13:45 | Alle drei Links im Teamboard (Bereich Links) und in `docs/hackathon-log/STATUS.md` | | |
 | **14:00** | **Alle drei Videos hochgeladen** | | |
 | 14:00–14:30 | | | HackOS-Abgabe und Google Form, alle Felder, alle Links verifiziert |
 | 14:30–14:45 | Zip des Repos als Backup | Discord-Post (Text aus PITCH-60S „Gesprochener Text am Stück"), letzter Live-URL-Check | MP4s als Backup auf Drive |
@@ -65,4 +65,4 @@ Quellen: [docs/SUBMISSION-CHECKLIST.md](../docs/SUBMISSION-CHECKLIST.md) §4, [d
 
 ## Was nach der Abgabe kommt (nur falls Top 2)
 
-Live-Pitch Sa 10.10., 3 Minuten: Hauptfassung aus PITCH-60S als erste Minute, dann Demo-Pfad live (Szenen 2 bis 6 der Product Demo, mit mehr Zeit auch das Gegenbeispiel Pelizaeus-Merzbacher), dann Moonshot aus `docs/MOONSHOT.md` mit Annahmen. Opener optional aus MOTION-PROMPTS Prompt 6. Slides: Gliederung in [docs/PITCH-OUTLINE_draft.md](../docs/PITCH-OUTLINE_draft.md).
+Live-Pitch Sa 10.10., 3 Minuten: Hauptfassung aus PITCH-60S als erste Minute, dann Demo-Pfad live (Szenen 2 bis 6 der Product Demo, mit mehr Zeit auch das Gegenbeispiel Pelizaeus-Merzbacher), dann Moonshot aus `docs/MOONSHOT.md` mit Annahmen. Opener optional aus MOTION-PROMPTS Prompt 6. Slides: Gliederung in docs/PITCH-OUTLINE_draft.md.

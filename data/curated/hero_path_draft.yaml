@@ -1,7 +1,7 @@
 # Hero path evidence DRAFT. Prepared 2026-10-03 for Recep (Task R1). Do NOT merge blindly into hero_path.yaml.
 # All sources were fetched by Claude where technically possible; snippets were machine-checked as verbatim substrings of the fetched text. Where the page itself blocks bots (OMIM, Orphanet, NCBI pages, HPO/Open Targets web UI) the text comes from a mirror/API and the note says so (confidence low or medium, tier A in hero_path_CHECK.md).
 # Recep: check the link, then set status: DRAFT -> VERIFIED and copy the entry (from its '# E..' comment line to the blank line) into hero_path.yaml. Details: hero_path_CHECK.md
-# Format as in docs/WORKFLOW.md; extra field 'status'. source_type URL is used for databases without own type (UniProt, Reactome, NCBI Gene/ClinVar, HPO, Open Targets, HHS, patient orgs, MedUni Wien).
+# Format as in docs/hackathon-log/WORKFLOW.md; extra field 'status'. source_type URL is used for databases without own type (UniProt, Reactome, NCBI Gene/ClinVar, HPO, Open Targets, HHS, patient orgs, MedUni Wien).
 # Snippets with ' | ' consist of several verbatim fragments from the same page (list rows / term labels). German snippets (Austria) are verbatim German.
 # Claims: English (may go into the product). Notes: German. UNBELEGT = no source found, see note.
 # Entries per step: S1=5, S2=3, S3=4, S4=8, S5=3, S6=6, S7=14, S8=12, S9=6, S10=5  (total 66)

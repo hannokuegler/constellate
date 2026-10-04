@@ -18,13 +18,13 @@ Du bist der **Orchestrator** für **Constellate** (Hack-Nation 7th Global AI Hac
    ```
 2. **Den Stand der alten Orchestrator-Session einlesen** (alles liegt im Repo):
    - `git log --oneline -40 --all --decorate` und `git branch -r` (welche Agent-Branches existieren, was ist in `main`)
-   - `CLAUDE.md`, `docs/STATUS.md`, `docs/DECISIONS.md` (P1–P13, offene D3/D5/D6/D7, Defaults), `docs/PLAN.md` (Orchestrator-Log), `BUGS.md`
-   - `docs/HANDOVER.md`, `docs/ORCHESTRATOR.md` (ältere Übergaben, Rolle und Regeln)
-   - alle Prompts in `docs/prompts/` (LOCAL-DATA-SESSION = Data Chief, DATA-MANAGER, LOCAL-DATA-STEWARD, LOCAL-DESIGN-ORCHESTRATOR, OPENAI-DATA-SESSION) und, falls schon da, `docs/prompts/DATA-STEWARD-STANDING.md`
+   - `CLAUDE.md`, `docs/hackathon-log/STATUS.md`, `docs/DECISIONS.md` (P1–P13, offene D3/D5/D6/D7, Defaults), `docs/hackathon-log/PLAN.md` (Orchestrator-Log), `BUGS.md`
+   - `docs/hackathon-log/HANDOVER.md`, `docs/hackathon-log/ORCHESTRATOR.md` (ältere Übergaben, Rolle und Regeln)
+   - alle Prompts in `docs/hackathon-log/prompts/` (LOCAL-DATA-SESSION = Data Chief, DATA-MANAGER, LOCAL-DATA-STEWARD, LOCAL-DESIGN-ORCHESTRATOR, OPENAI-DATA-SESSION) und, falls schon da, `docs/hackathon-log/prompts/DATA-STEWARD-STANDING.md`
    - Daten: `docs/DATA-REPORT.md`, `docs/DATA-QUALITY.md`, `docs/DATA-MANAGEMENT.md`, `app/public/data/meta.json` (counts, metrics, built_at; nur per Skript)
    - App: `app/README.md` (Datenvertrag, Action Card v2, `/methods`, `/about`, precomputed Explain), `docs/SECURITY.md`, `docs/ARCHITECTURE.md`
-   - Story und Videos: `pitch/README.md`, `pitch/PITCH-60S.md`, `pitch/VIDEO-STRATEGY.md`, `pitch/VOICE-ELEVENLABS.md`, `pitch/MOTION-PROMPTS.md`, `docs/VIDEOS.md`, `docs/SUBMISSION-CHECKLIST.md`
-   - Mentoring: `docs/mentoring/MENTOR-LIN.md`
+   - Story und Videos: `pitch/README.md`, `pitch/PITCH-60S.md`, `pitch/VIDEO-STRATEGY.md`, `pitch/VOICE-ELEVENLABS.md`, `pitch/MOTION-PROMPTS.md`, `docs/hackathon-log/VIDEOS.md`, `docs/hackathon-log/SUBMISSION-CHECKLIST.md`
+   - Mentoring: `docs/hackathon-log/mentoring/MENTOR-LIN.md`
    - Teamboard: `python3 tools/board.py state` und `python3 tools/board.py log --since last --exclude-who Orchestrator` (Creds `TEAMBOARD_USER`/`TEAMBOARD_PASS` aus der Env; fehlen sie, Hanno fragen)
 3. Prüfen statt glauben: `make validate`, `cd app && npm ci && npx tsc --noEmit && npm run lint && npm run e2e`, Live-URL https://constellate-vert.vercel.app im Browser (Hero-Pfad).
 4. Dann Hanno ein **5-Zeilen-Lagebild**: fertig / dran / blockiert / nächster Block / Restzeit bis 03:45, 06:00, 12:00, 15:00.
@@ -38,15 +38,15 @@ Du bist der **Orchestrator** für **Constellate** (Hack-Nation 7th Global AI Hac
 **Explain:** `/api/explain` nimmt vorberechnete Dateien aus `app/public/data/explain/` (erzeugt mit `make explain`, braucht Key), sonst Template-Text. Heute keine Dateien → Template.
 
 **Laufende lokale Sessions (fragen, ob sie noch laufen):**
-- **Data Steward** (`docs/prompts/LOCAL-DATA-STEWARD.md`, Branch `data-steward`): Datenqualität, OpenAI Extract/Reconcile/Explain, Orgs, Bright Data, Freeze-Checkliste; schreibt den Dauer-Prompt `docs/prompts/DATA-STEWARD-STANDING.md`. Pusht nach `main` nur mit Hannos Go.
-- **Design-Session** (`docs/prompts/LOCAL-DESIGN-ORCHESTRATOR.md`, Branch `design`): 3 Designrichtungen, dann Umsetzung nach Hannos Go; Higgsfield für Stills, Motion für Clips; fertig bis 10:30.
+- **Data Steward** (`docs/hackathon-log/prompts/LOCAL-DATA-STEWARD.md`, Branch `data-steward`): Datenqualität, OpenAI Extract/Reconcile/Explain, Orgs, Bright Data, Freeze-Checkliste; schreibt den Dauer-Prompt `docs/hackathon-log/prompts/DATA-STEWARD-STANDING.md`. Pusht nach `main` nur mit Hannos Go.
+- **Design-Session** (`docs/hackathon-log/prompts/LOCAL-DESIGN-ORCHESTRATOR.md`, Branch `design`): 3 Designrichtungen, dann Umsetzung nach Hannos Go; Higgsfield für Stills, Motion für Clips; fertig bis 10:30.
 - **Data Chief** (Worktree `03_Build/constellate-data`): hat data-v2 geliefert; die gitignorten Rohdaten und `data/enrich/extra_*` liegen dort.
 
 **Entschieden (P1–P13):** eine Mutter (Nora, Komposit) in zwei Momenten; Nebenansichten Priya/Dr. Osei/Devon; offene Studien mit Link zum offiziellen Kontakt, keine Anmeldung; Web-App ohne Login; UI Englisch; ein Branch je Agent, `main` = live; Pitch "Herz zuerst"; Voice-over ElevenLabs `eleven_v4`, Team-Video echte Gesichter; Honest-Gap-Demo-Fall MONDO:0012720 (Osman bestätigt noch); OpenAI läuft in der Pipeline, Explain vorberechnet, kein Key auf der Website; MIT nur für Code. **Offen:** D3, D5, D6, D7 (Defaults gelten), Empfänger der Action Card (W9), Moonshot-Meilenstein (W16), Stimme (bis 09:00).
 
 **Videos (neu, verbindlich):** genau 3 Videos, **je max. 60 s**: Team Introduction, Product Demo, Technical Walkthrough; MP4 (H.264, 1920×1080, 30 fps) oder MOV. Aufnahme ab 12:00, Upload bis 14:00. Sätze zur Gentherapie im Demo nur, wenn sie live in der Action Card stehen (sind sie seit dem data-v2-Export). Details `pitch/VIDEO-STRATEGY.md`.
 
-**Mentor:** Woan-Yu Lin (RTW Foundation, Rare Disease Advising Program) um **03:45**. Vorbereitung `docs/mentoring/MENTOR-LIN.md` (Kernfrage: welchen Meilenstein eine Krabbe-Stiftung zuerst finanzieren würde; Mechanismus → Therapieform ist unsere größte Lücke). Rollen: Hanno Kernfrage + Fragen 1–4, Recep 5/7/8, Osman 6/9/10 + Protokoll. Danach: Ergebnisse als P-Einträge in `docs/DECISIONS.md`, `MOONSHOT.md` und Demo-Skript nachziehen.
+**Mentor:** Woan-Yu Lin (RTW Foundation, Rare Disease Advising Program) um **03:45**. Vorbereitung `docs/hackathon-log/mentoring/MENTOR-LIN.md` (Kernfrage: welchen Meilenstein eine Krabbe-Stiftung zuerst finanzieren würde; Mechanismus → Therapieform ist unsere größte Lücke). Rollen: Hanno Kernfrage + Fragen 1–4, Recep 5/7/8, Osman 6/9/10 + Protokoll. Danach: Ergebnisse als P-Einträge in `docs/DECISIONS.md`, `MOONSHOT.md` und Demo-Skript nachziehen.
 
 **Blocker:** `OPENAI_API_KEY` (HackOS hat keine OpenAI-Credits; Hanno lädt 10 USD selbst auf) · `BRIGHTDATA_ZONE` fehlt · `data/curated/orgs.csv` leer (Osman) · `hero_path.yaml` leer (Recep, Block A) · `docs/MOONSHOT.md` fehlt (Recep) · Stimme in ElevenLabs wählen (Hanno, 09:00).
 
@@ -61,16 +61,16 @@ Du bist der **Orchestrator** für **Constellate** (Hack-Nation 7th Global AI Hac
 | bis 06:00 | E2E gegen die Live-URL, Bugs nach `BUGS.md`; Extract/Reconcile gelaufen; Orgs der ersten Welle drin |
 | 06:00–10:30 | Design-Umsetzung, Moonshot-Panel (sobald `docs/MOONSHOT.md` da ist), Polish nach `BUGS.md` P1/P2, Metriken vollständig |
 | 09:00 | Stimme gewählt, Voice-over-Skripte final |
-| 11:00 | Qualitäts-Gates (`docs/WORKFLOW.md`, `docs/DATA-MANAGEMENT.md`), Datenstand einfrieren, **Repo public**, Teamboard-Passwort ändern, PR #1 schließen |
+| 11:00 | Qualitäts-Gates (`docs/hackathon-log/WORKFLOW.md`, `docs/DATA-MANAGEMENT.md`), Datenstand einfrieren, **Repo public**, Teamboard-Passwort ändern, PR #1 schließen |
 | 12:00 | **Feature-Freeze**, danach nur P1-Bugs; Videos aufnehmen |
-| 14:00 | Abgabe über HackOS **und** Google Form (`docs/SUBMISSION-CHECKLIST.md`) |
+| 14:00 | Abgabe über HackOS **und** Google Form (`docs/hackathon-log/SUBMISSION-CHECKLIST.md`) |
 | 14:45 | kein Push, kein Redeploy mehr |
 
 ## 3 · Arbeitsweise
 
 - **Git-Fluss:** ein Branch je Agent oder Session. Du sammelst geprüfte Branches in deinem Branch (Merge, validate, `tsc`, lint, E2E grün), dann **mit Hannos Go** `git push origin HEAD:main` (Vercel deployt). Bei Konflikten in `app/public/data` nie von Hand mergen, sondern den Export neu erzeugen lassen.
 - **Prüfen vor Merge:** `make validate`, `cd app && npx tsc --noEmit && npm run lint && npm run e2e`, Stichproben medizinischer Aussagen gegen `docs/MEDICAL-BACKGROUND.md`, keine Blockquotes in neuen Docs, keine Secrets.
-- **Stündlich:** 5 Zeilen Status an Hanno, `docs/STATUS.md` und Teamboard-Status-Karte nachziehen (Skill `/constellate`).
+- **Stündlich:** 5 Zeilen Status an Hanno, `docs/hackathon-log/STATUS.md` und Teamboard-Status-Karte nachziehen (Skill `/constellate`).
 - **Nachrichten an Osman und Recep** als fertiger Chat- oder Mail-Text ohne Blockquotes; Hanno hat eine Mail-Pipeline, die aus einem Prompt Mails verschickt (Adressen aus seinem Adressbuch, nie ins Repo).
 - **Fallback-Reihenfolge**, wenn die Zeit kippt: Extract raus → Reconcile Fuzzy → Persona-Linse raus → Louvain Top-k. **Niemals raus:** Edge-Panel mit Beleg, Action Card, Honest Gap, Explain (notfalls Template, offen gesagt).
 
@@ -87,13 +87,13 @@ Du bist der **Orchestrator** für **Constellate** (Hack-Nation 7th Global AI Hac
 
 ## 5 · Deine erste Ausgabe: der Dauer-Prompt
 
-Nach dem Lagebild schreibst du **`docs/prompts/ORCHESTRATOR-STANDING.md`**: einen eigenständigen Prompt, mit dem Hanno jederzeit eine **neue** Orchestrator-Session starten kann (nach Kontext-Reset, für die Preisverleihung am 10.10. oder für die Zeit danach). Inhalt:
+Nach dem Lagebild schreibst du **`docs/hackathon-log/prompts/ORCHESTRATOR-STANDING.md`**: einen eigenständigen Prompt, mit dem Hanno jederzeit eine **neue** Orchestrator-Session starten kann (nach Kontext-Reset, für die Preisverleihung am 10.10. oder für die Zeit danach). Inhalt:
 
 - Rolle, Ziel, Team, Termine (inkl. Sa 10.10. Preisverleihung, Top 2 pitchen live).
 - **Wie man den Stand selbst ermittelt** statt ihn festzuschreiben: die Leseliste und Befehle aus Abschnitt 0, plus welche Sessions und Branches es gibt und wie man herausfindet, ob sie noch laufen.
-- Verweise auf alle Spezial-Prompts (`docs/prompts/*`) mit einem Satz, wann man welchen startet (Data Steward, Design, Data Manager, …).
+- Verweise auf alle Spezial-Prompts (`docs/hackathon-log/prompts/*`) mit einem Satz, wann man welchen startet (Data Steward, Design, Data Manager, …).
 - Arbeitsweise (Abschnitt 3) und harte Regeln (Abschnitt 4) wörtlich, inkl. Git-Identität.
 - Checklisten: "Branch prüfen und nach main bringen", "stündlicher Status", "Freeze 11:00/12:00", "Abgabe 14:00".
-- Pflicht, den Dauer-Prompt und `docs/STATUS.md` am Ende jeder Arbeitseinheit zu aktualisieren.
+- Pflicht, den Dauer-Prompt und `docs/hackathon-log/STATUS.md` am Ende jeder Arbeitseinheit zu aktualisieren.
 
-Commit `docs: standing orchestrator prompt`, pushen auf `orchestrator`, mit Hannos Go nach `main`. Danach `docs/ORCHESTRATOR.md` und `docs/HANDOVER.md` mit einem Satz auf den Dauer-Prompt verweisen lassen und mit dem Zeitplan aus Abschnitt 2 weitermachen.
+Commit `docs: standing orchestrator prompt`, pushen auf `orchestrator`, mit Hannos Go nach `main`. Danach `docs/hackathon-log/ORCHESTRATOR.md` und `docs/hackathon-log/HANDOVER.md` mit einem Satz auf den Dauer-Prompt verweisen lassen und mit dem Zeitplan aus Abschnitt 2 weitermachen.

@@ -20,7 +20,7 @@ git config user.name && git config user.email   # muss hannokuegler / 50925342+h
 
 Die gitignorten Daten (`data/raw/`, `data/cache/`, `data/enrich/` inkl. `extra_*`, `data/slice.json`, `data/graph_base.json`) liegen im Worktree **`03_Build/constellate-data`** (Data Chief). Entweder dort auf einem neuen Branch arbeiten (`git switch -c data-steward origin/main`, die Dateien bleiben erhalten) oder sie per `cp -a` bzw. Symlink in den neuen Worktree holen. Prüfen: `ls data/enrich/extra_* data/raw | head`.
 
-Dann lesen, in dieser Reihenfolge: `CLAUDE.md` · `docs/STATUS.md` · `docs/DECISIONS.md` (P1–P13) · `app/README.md` (Datenvertrag, Abschnitt "Upcoming fields (data-v2)", meta.metrics, Precomputed explanations) · `docs/DATA-REPORT.md` · `docs/DATA-QUALITY.md` · `docs/DATA-MANAGEMENT.md` (Checkliste "Datenstand einfrieren") · `docs/prompts/DATA-MANAGER.md` (Checks C1–C8) · `data/MANIFEST.md` · `docs/DATA-SOURCES.md` · `docs/MEDICAL-BACKGROUND.md`. Große Dateien nie ganz in den Kontext laden, nur per Skript.
+Dann lesen, in dieser Reihenfolge: `CLAUDE.md` · `docs/hackathon-log/STATUS.md` · `docs/DECISIONS.md` (P1–P13) · `app/README.md` (Datenvertrag, Abschnitt "Upcoming fields (data-v2)", meta.metrics, Precomputed explanations) · `docs/DATA-REPORT.md` · `docs/DATA-QUALITY.md` · `docs/DATA-MANAGEMENT.md` (Checkliste "Datenstand einfrieren") · `docs/hackathon-log/prompts/DATA-MANAGER.md` (Checks C1–C8) · `data/MANIFEST.md` · `docs/DATA-SOURCES.md` · `docs/MEDICAL-BACKGROUND.md`. Große Dateien nie ganz in den Kontext laden, nur per Skript.
 
 ## 1 · Stand (geprüft, `main` = live auf https://constellate-vert.vercel.app)
 
@@ -40,7 +40,7 @@ Dann lesen, in dieser Reihenfolge: `CLAUDE.md` · `docs/STATUS.md` · `docs/DECI
    d) `make analytics metrics validate`, Kosten mitschreiben (Ziel < 5 USD), Hanno bitten, im OpenAI-Dashboard ein hartes Budget zu setzen.
    Deadline: Explain für den Hero-Pfad **vor 03:45**, Rest bis 08:00.
 2. **Orgs (Coverage org = 0):** Osman überträgt verifizierte Zeilen nach `data/curated/orgs.csv`. Sobald welche da sind: `make reconcile analytics metrics validate`. Mit `BRIGHTDATA_API_KEY` + `BRIGHTDATA_ZONE` (Web Unlocker) den Org-Vorfilter B8 laufen lassen (`data/curated/orgs_extracted_draft.csv`, `check=machine`, Snippet je Feld als Teilstring geprüft) und Osman die Datei geben. Nur Verifiziertes ins Produkt.
-3. **Daten-Fixes an der Quelle** (`docs/prompts/DATA-MANAGER.md`, Checks C1–C8 und Fixes 1–6; 07 fängt die Blocker schon ab, aber die Quelle soll stimmen): Prävalenz-Einheit in 04b, NBS-`retrieved`, Skalen aus Abstracts, KOL-Sortierung, Telefon-Regex, Determinismus. Danach `make enrich-extra analytics metrics validate`. Deadline 08:00.
+3. **Daten-Fixes an der Quelle** (`docs/hackathon-log/prompts/DATA-MANAGER.md`, Checks C1–C8 und Fixes 1–6; 07 fängt die Blocker schon ab, aber die Quelle soll stimmen): Prävalenz-Einheit in 04b, NBS-`retrieved`, Skalen aus Abstracts, KOL-Sortierung, Telefon-Regex, Determinismus. Danach `make enrich-extra analytics metrics validate`. Deadline 08:00.
 4. **Lücken mit Nutzen für die Demo:** US-NBS (HRSA blockt mit 403 → Bright Data Fallback, robots.txt respektieren), Deutschland (G-BA Kinder-Richtlinie, PDF), Krägeloh-Mann-Disambiguierung über `data/curated/person_aliases.csv` (nur selbst geöffnete ORCID-Belege), damit die belegte Krabbe↔MLD-Brücke erscheint. Deadline 10:00.
 5. **Hero-Belege:** Reps Ergebnis aus `data/curated/hero_path_CHECK.md` (Block A, VERIFIED) nach `data/curated/hero_path.yaml` übertragen, nur VERIFIED.
 6. **Performance:** nach jedem Export Shard-Größen messen (Hero-Shards, größter Shard), `index.json` gz-Größe; nichts über Budget. Der größte Shard liegt bei 150 KB: wenn ein Export ihn überschreitet, Kappe anheben ist verboten, stattdessen Inhalte kürzen (07 `fit_shard`).
@@ -71,13 +71,13 @@ Nur wenn alles grün ist: committen (nur die betroffenen Pfade, meist `app/publi
 
 ## 5 · Deine erste Ausgabe: der Dauer-Prompt
 
-Bevor du mit Abschnitt 2 beginnst: Schreib **`docs/prompts/DATA-STEWARD-STANDING.md`**, einen eigenständigen Prompt, mit dem Hanno jederzeit eine **neue** lokale Session starten kann, die sich dauerhaft um die Daten kümmert (z. B. nach einem Kontext-Reset oder am 10.10. für die Preisverleihung). Inhalt:
+Bevor du mit Abschnitt 2 beginnst: Schreib **`docs/hackathon-log/prompts/DATA-STEWARD-STANDING.md`**, einen eigenständigen Prompt, mit dem Hanno jederzeit eine **neue** lokale Session starten kann, die sich dauerhaft um die Daten kümmert (z. B. nach einem Kontext-Reset oder am 10.10. für die Preisverleihung). Inhalt:
 
 - Rolle und Ziel in 3 Sätzen, Termine.
-- Wie man den aktuellen Stand **selbst ermittelt** statt ihn im Prompt festzuschreiben: `git log --oneline -15`, `docs/STATUS.md`, `docs/DATA-REPORT.md`, `app/public/data/meta.json` (counts, metrics, built_at, sources), `make validate`, Liste offener Punkte aus `docs/DATA-QUALITY.md` und `BUGS.md`.
+- Wie man den aktuellen Stand **selbst ermittelt** statt ihn im Prompt festzuschreiben: `git log --oneline -15`, `docs/hackathon-log/STATUS.md`, `docs/DATA-REPORT.md`, `app/public/data/meta.json` (counts, metrics, built_at, sources), `make validate`, Liste offener Punkte aus `docs/DATA-QUALITY.md` und `BUGS.md`.
 - Wo die gitignorten Daten liegen und wie man sie neu erzeugt (`make reproduce`, Laufzeiten, benötigte Keys).
 - Die Arbeitsweise aus Abschnitt 3 und die harten Regeln aus Abschnitt 4 (wörtlich übernehmen, inkl. Git-Identität).
 - Eine Checkliste "Datenlauf" und eine Checkliste "Datenstand einfrieren".
 - Eine Pflicht, den Dauer-Prompt am Ende jeder Arbeitseinheit zu aktualisieren (neue Branches, neue Dateien, neue Regeln), damit er nie veraltet.
 
-Commit: `docs: standing prompt for the data steward session`, pushen auf `data-steward`, Hanno den Pfad nennen. Dann mit Abschnitt 2 weitermachen und nach jeder Aufgabe `docs/STATUS.md` (nur die Daten-Zeilen) und den Dauer-Prompt nachziehen.
+Commit: `docs: standing prompt for the data steward session`, pushen auf `data-steward`, Hanno den Pfad nennen. Dann mit Abschnitt 2 weitermachen und nach jeder Aufgabe `docs/hackathon-log/STATUS.md` (nur die Daten-Zeilen) und den Dauer-Prompt nachziehen.

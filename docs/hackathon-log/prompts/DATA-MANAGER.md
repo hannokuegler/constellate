@@ -1,6 +1,6 @@
 # Prompt · Data Manager (lokale Session auf Hannos Mac, freies Netz)
 
-In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Grund: Die Prüfungen brauchen `data/enrich/extra_*` und `data/raw/`, die nur lokal liegen (gitignored). Der Review steht in [docs/DATA-QUALITY.md](../DATA-QUALITY.md) auf Branch `data-quality`. Stand So 04.10.2026, 00:45 Wien.
+In eine neue lokale Claude-Code-Session im Repo `constellate` kopieren (alles unter der Linie). Grund: Die Prüfungen brauchen `data/enrich/extra_*` und `data/raw/`, die nur lokal liegen (gitignored). Der Review steht in [docs/DATA-QUALITY.md](../../DATA-QUALITY.md) auf Branch `data-quality`. Stand So 04.10.2026, 00:45 Wien.
 
 ---
 

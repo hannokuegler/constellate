@@ -34,12 +34,12 @@ Du bist der **Daten-Orchestrator** für Constellate, einen evidenzgestuften Wiss
    - `data/MANIFEST.md`, `docs/DATA-SOURCES.md`, `docs/DATA-REPORT.md` (neu)
    - `Makefile`: nur das neue Target `enrich-extra`
    - `pipeline/pyproject.toml` / `uv.lock`: nur neue Pakete
-   **Nicht anfassen:** `app/`, `pipeline/01–07`, `pipeline/validate.py`, `CLAUDE.md`, `docs/STATUS.md`, `docs/DECISIONS.md`, `docs/HANDOVER.md`.
+   **Nicht anfassen:** `app/`, `pipeline/01–07`, `pipeline/validate.py`, `CLAUDE.md`, `docs/hackathon-log/STATUS.md`, `docs/DECISIONS.md`, `docs/hackathon-log/HANDOVER.md`.
 7. **Keine Secrets ins Repo.** Ab So 11:00 ist das Repo öffentlich. Keys nur aus der Env. Keine privaten Daten, keine Patientendaten.
 8. Ausführen immer mit `uv run --project pipeline python …`. Große JSONs (`data/graph_base.json` ~30 MB, `data/slice.json`) nie komplett in den Kontext laden, nur per Skript auswerten.
 
 ## 1 · Zuerst lesen
-`CLAUDE.md` · `docs/STATUS.md` · `docs/DATA-SOURCES.md` · `data/MANIFEST.md` · `docs/ARCHITECTURE.md` (Datenmodell, Evidenzstufen) · `docs/briefing/TECHNIK.md` (Abschnitte 3–5, „Die Lücke“) · `docs/MEDICAL-BACKGROUND.md` (geprüfter Faktenstand inkl. Quellen) · `docs/SCOPE.md` (Hero-Journey Krabbe → GALC/PSAP → MLD → Gentherapie/Natural-History-Studie → Action Card) · `app/README.md` (Datenvertrag) · `pipeline/03_build_graph.py`, `pipeline/04_enrich_apis.py`, `pipeline/enrich/*.py` (wiederverwenden: `http.py` mit Retry/Rate-Limit/Cache, `diseases.py` mit Scope und Suchbegriffen).
+`CLAUDE.md` · `docs/hackathon-log/STATUS.md` · `docs/DATA-SOURCES.md` · `data/MANIFEST.md` · `docs/ARCHITECTURE.md` (Datenmodell, Evidenzstufen) · `docs/hackathon-log/briefing/TECHNIK.md` (Abschnitte 3–5, „Die Lücke“) · `docs/MEDICAL-BACKGROUND.md` (geprüfter Faktenstand inkl. Quellen) · `docs/SCOPE.md` (Hero-Journey Krabbe → GALC/PSAP → MLD → Gentherapie/Natural-History-Studie → Action Card) · `app/README.md` (Datenvertrag) · `pipeline/03_build_graph.py`, `pipeline/04_enrich_apis.py`, `pipeline/enrich/*.py` (wiederverwenden: `http.py` mit Retry/Rate-Limit/Cache, `diseases.py` mit Scope und Suchbegriffen).
 
 ## 2 · Phase A: lokalen Stand rekonstruieren und Reproduzierbarkeit prüfen (ca. 30 min)
 Rohdaten und Caches sind gitignored und fehlen im frischen Clone.

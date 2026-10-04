@@ -50,6 +50,33 @@ export function useCountry(): [string, (value: string) => void] {
   return [country, pick];
 }
 
+// same set as pipeline/08_trial_details.py OPEN_STATUSES
+const OPEN_STATUSES = new Set(["RECRUITING", "NOT_YET_RECRUITING", "ENROLLING_BY_INVITATION", "AVAILABLE"]);
+
+/**
+ * Only sites that take participants count for the country filter, the counts and "where": a site marked COMPLETED,
+ * TERMINATED, WITHDRAWN or ACTIVE_NOT_RECRUITING is dropped. A site without its own status inherits the study's status
+ * (the registry often gives none for studies by invitation). A study left with no open site reads as "Country not listed".
+ */
+export function openSitesOnly(d: TrialDetail): TrialDetail {
+  const studyOpen = OPEN_STATUSES.has(d.status ?? "");
+  const isOpen = (status: string | null | undefined) => (status ? OPEN_STATUSES.has(status) : studyOpen);
+  const complete = d.sites.length >= d.sites_total;
+  const sites = d.sites.filter((s) => isOpen(s.status));
+  const perCountry = new Map<string, number>();
+  for (const s of sites) perCountry.set(s.country, (perCountry.get(s.country) ?? 0) + 1);
+  const countries = d.countries
+    .map((c) => {
+      // an incomplete site list (registry cut-off): fall back to the pipeline's open_sites count
+      const open = complete ? (perCountry.get(c.country) ?? 0) : Math.max(c.open_sites, perCountry.get(c.country) ?? 0);
+      return { country: c.country, sites: open, open_sites: open };
+    })
+    .filter((c) => c.sites > 0);
+  return { ...d, sites, countries, sites_total: countries.reduce((n, c) => n + c.sites, 0) };
+}
+
+export { countryName, sameCountry } from "./nextSteps";
+
 /**
  * Registry details per NCT id. Trial shards are optional (`make trials`): probe the first one, and if it is missing
  * do not request the rest (no wall of 404s). Missing entries resolve to null ("see the registry entry").
@@ -64,7 +91,7 @@ export function useTrialDetails(ids: string[]): Record<string, TrialDetail | nul
       const first = list.length ? await loadTrial(list[0]).catch(() => null) : null;
       const rest = first ? await Promise.all(list.slice(1).map((id) => loadTrial(id).catch(() => null))) : list.slice(1).map(() => null);
       const rows = [first, ...rest];
-      if (alive) setDetails(Object.fromEntries(list.map((id, i) => [id, rows[i]])));
+      if (alive) setDetails(Object.fromEntries(list.map((id, i) => [id, rows[i] ? openSitesOnly(rows[i]!) : null])));
     })();
     return () => {
       alive = false;

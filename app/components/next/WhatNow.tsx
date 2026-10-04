@@ -15,8 +15,13 @@ import {
   plainDate,
   therapyState,
   wordsIn,
+  countryName,
+  inCountryFirst,
+  isCountry,
+  sameCountry,
   type OrgRow,
 } from "@/lib/nextSteps";
+import { useCountry, useTrialDetails } from "@/lib/studies";
 import { useEdgePanel } from "../Providers";
 import RelatedHelp, { useRelated, type RelatedState } from "./RelatedHelp";
 import StudiesNow from "./StudiesNow";
@@ -56,7 +61,14 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
     return n ? { id: n.id, label: n.label } : null;
   }, [related.findings, file.neighbours, defaultVia]);
 
-  const steps = nextSteps({ file, therapy, orgs: orgs.length ? orgs : relatedOrgs, studies, assets, related: related.findings, actionVia: viaNeighbour });
+  // the country picked in the studies block also orders the groups and the next steps (trial shards are cached in lib/data)
+  const [country] = useCountry();
+  const studyDetails = useTrialDetails(useMemo(() => studies.map((s) => s.key), [studies]));
+  const studyCountries = useMemo(
+    () => Object.fromEntries(Object.entries(studyDetails).map(([id, d]) => [id, d ? d.countries.map((c) => c.country) : null])),
+    [studyDetails],
+  );
+  const steps = nextSteps({ file, therapy, orgs: orgs.length ? orgs : relatedOrgs, studies, assets, related: related.findings, actionVia: viaNeighbour, country, studyCountries });
   const builtAt = plainDate(meta?.built_at);
   const parents = node.parents.slice(0, 2).map((p) => refOf(p, labels));
   const words = wordsIn(`${label} ${node.definition ?? ""} ${parents.map((p) => p.label).join(" ")}`);
@@ -73,13 +85,24 @@ export default function WhatNow({ file, meta, labels, defaultVia }: { file: Dise
       <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         <NowCard id="now-what" title="What this is">
           {node.definition ? <p>{node.definition}</p> : <p>The disease ontology has no short description of {label} yet.</p>}
-          {words.length > 0 && <Explain>{words.join(" ")}</Explain>}
+          {words.length > 0 && (
+            <Explain>
+              {words.map((w) => (
+                <span key={w.text}>
+                  {w.text}{" "}
+                  <a href={w.source.href} target="_blank" rel="noreferrer" className="underline decoration-line-strong underline-offset-4 hover:decoration-current">
+                    Source: {w.source.label}
+                  </a>{" "}
+                </span>
+              ))}
+            </Explain>
+          )}
           <Source label={`MONDO disease ontology, ${node.id}`} href={xrefUrl(node.id)} date={builtAt ? `as of ${builtAt}` : null} about={`definition of ${label}`} />
         </NowCard>
 
         <MedicineCard label={label} therapy={therapy} related={related} />
 
-        <FamiliesCard label={label} orgs={orgs} relatedOrgs={relatedOrgs} builtAt={builtAt} loading={!orgs.length && related.status === "loading" && !gapOrgs(file).length} />
+        <FamiliesCard label={label} orgs={orgs} relatedOrgs={relatedOrgs} country={country} builtAt={builtAt} loading={!orgs.length && related.status === "loading" && !gapOrgs(file).length} />
 
         <StudiesNow file={file} studies={studies} assets={assets} />
 
@@ -177,7 +200,8 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
   return (
     <NowCard id="now-medicine" title="Is there an approved medicine?">
       <p className="font-semibold">
-        Yes. {therapy.items.length === 1 ? "One medicine is" : `${therapy.items.length} medicines are`} approved for {label}.
+        Yes. {therapy.total === 1 ? "One medicine is" : `${therapy.total} medicines are`} approved for {label}
+        {therapy.total > therapy.items.length ? ` (${therapy.items.length} shown of ${therapy.total})` : ""}.
       </p>
       <ul>
         {therapy.items.slice(0, 4).map((t) => (
@@ -192,9 +216,11 @@ function MedicineCard({ label, therapy, related }: { label: string; therapy: Ret
   );
 }
 
-function FamiliesCard({ label, orgs, relatedOrgs, builtAt, loading }: { label: string; orgs: OrgRow[]; relatedOrgs: OrgRow[]; builtAt: string | null; loading: boolean }) {
+function FamiliesCard({ label, orgs, relatedOrgs, country, builtAt, loading }: { label: string; orgs: OrgRow[]; relatedOrgs: OrgRow[]; country: string; builtAt: string | null; loading: boolean }) {
   const { openEdge } = useEdgePanel();
-  const rows = (orgs.length ? orgs : relatedOrgs).slice(0, 4);
+  // groups in the country picked under "Where do you live?" first
+  const rows = inCountryFirst(orgs.length ? orgs : relatedOrgs, (o) => o.country, country).slice(0, 4);
+  const noneHere = isCountry(country) && orgs.length > 0 && !orgs.some((o) => sameCountry(o.country, country));
   const dates = [...new Set(rows.map((o) => o.verified).filter(Boolean))];
   const oneDate = dates.length === 1 ? dates[0] : null;
   return (
@@ -203,6 +229,7 @@ function FamiliesCard({ label, orgs, relatedOrgs, builtAt, loading }: { label: s
         <p>
           {orgs.length === 1 ? "A patient group" : `${orgs.length} patient groups`} for {label}
           {oneDate ? `, checked against the organisation's website, ${oneDate}` : ", each checked against the organisation's website"}:
+          {noneHere && <span className="block">No patient group for {label} in {country} in our list; groups elsewhere:</span>}
         </p>
       ) : (
         <p>
@@ -219,7 +246,7 @@ function FamiliesCard({ label, orgs, relatedOrgs, builtAt, loading }: { label: s
               <p className="flex flex-wrap items-center gap-x-1.5 text-[15px] text-ink-2">
                 {[
                   o.forDisease ? <span key="for">for {o.forDisease.label}</span> : null,
-                  o.country ? <span key="c">{o.country}</span> : null,
+                  o.country ? <span key="c">{countryName(o.country)}</span> : null,
                   o.verified && !oneDate ? <span key="v">checked against the organisation&apos;s website, {o.verified}</span> : null,
                   o.contact ? <Ext key="contact" href={o.contact}>Contact page</Ext> : null,
                   o.edge ? (

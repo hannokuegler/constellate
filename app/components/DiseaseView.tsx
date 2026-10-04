@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Core, DiseaseFile, Edge, IndexEntry, Meta, Neighbour } from "@/lib/types";
 import { loadCore, loadDisease, loadIndexMap, loadMeta } from "@/lib/data";
-import { diseaseHref, geneHref, hrefFor, phenotypeHref, refOf, xrefUrl } from "@/lib/ids";
+import { diseaseHref, geneHref, toFileKey, hrefFor, phenotypeHref, refOf, xrefUrl } from "@/lib/ids";
 import { formatConfidence, hasCounterEvidence, RELATION_LABEL } from "@/lib/evidence";
 import { isSimilarityEdge, phaseText, similarityWords } from "@/lib/present";
 import type { PanelSection } from "@/lib/persona";
@@ -291,6 +291,14 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           >
             {cardOpen ? "Hide action card" : "Action card"}
           </button>
+        )}
+        {node.in_core && !node.is_group && (
+          <Link
+            href={`/impact?d=${toFileKey(node.id)}`}
+            className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-4 text-[15px] font-medium text-ink hover:bg-surface-2"
+          >
+            10× case
+          </Link>
         )}
       </div>
 

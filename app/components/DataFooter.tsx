@@ -61,6 +61,7 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
           <ul className="sep-list">
             <li><Link href="/about" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">About</Link></li>
             <li><Link href="/methods" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">How we know</Link></li>
+            <li><Link href="/impact" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">10× case</Link></li>
             <li><Link href="/share" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Share what you know</Link></li>
           </ul>
         </nav>

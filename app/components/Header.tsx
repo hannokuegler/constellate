@@ -31,6 +31,7 @@ export default function Header() {
         <nav aria-label="About" className={`hidden shrink-0 items-center gap-1 ${onStart ? "md:flex" : "lg:flex"}`}>
           <Link href="/about" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">About</Link>
           <Link href="/methods" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">How we know</Link>
+          <Link href="/impact" className="inline-flex min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-ink-2 hover:text-ink">10× case</Link>
         </nav>
         <button
           onClick={() => setTheme(nextTheme)}

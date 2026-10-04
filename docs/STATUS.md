@@ -33,6 +33,8 @@ Der Brief (S. 5) sagt: Track-Preise nur, wenn OpenAI-Modelle genutzt werden ("Bu
 
 Pflichtteil des Briefs ("Think Bigger: The 10× Moonshot", S. 6): einen Meilenstein auf dem Weg zur Therapie wählen (bei uns: eine gemeinsame Natural-History-Studie für Krabbe nach dem Vorbild MLD), die heutige Dauer mit unserer Route vergleichen und die Annahmen hinter "10× schneller" offenlegen. Lieferung: `docs/MOONSHOT.md` (Recep, R2) mit Quelle je Zahl und 4 bis 6 Annahmen; danach als Panel in der App und als Folie im Pitch.
 
+**In der App seit So 08:50 (Branch `claude/gallant-einstein-9l49uh`, wartet auf Merge):** `/impact?d=<id>`, Meilenstein = erste Familie in Natural-History-Daten. Für alle 350 Kernkrankheiten berechnet (`make tenx`): 91 können einer offenen Studie beitreten, die sie schon nennt, 103 über eine Studie mit gleichem Gen oder gleicher Mechanismusklasse, 156 Honest Gap (kein 10× behauptet). Krabbe: Krabbe Disease Global Patient Registry NCT02993796, 2,8× bis 31× (Mitte 8,2×); Saposin-A-Defizienz über PSAP: 1,1× bis 8,9×, 10× nicht erreicht. Jede Woche als Atlas / Annahme / Annahme auf Publikation markiert und live änderbar; die Studienstart-Dauer ist eine Annahme, weil kein Benchmark geprüft ist (PubMed in der Cloud gesperrt). E2E `e2e/impact.spec.ts` grün.
+
 ## Fertig, mit Zahlen
 
 | Baustein | Stand | Beleg |

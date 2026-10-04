@@ -1,4 +1,4 @@
-.PHONY: setup fetch slice build enrich enrich-extra extract reconcile analytics metrics trials validate reproduce dev explain
+.PHONY: setup fetch slice build enrich enrich-extra extract reconcile analytics metrics trials validate reproduce dev explain tenx
 PY=uv run --project pipeline python
 
 setup:          ## install python + node deps
@@ -28,7 +28,10 @@ trials:         ## ClinicalTrials.gov: countries, sites and eligibility of open 
 validate:       ## check app/public/data/ against the data contract (evidence, ids, budgets, hero path)
 	$(PY) pipeline/validate.py
 
-reproduce: fetch slice build enrich enrich-extra extract reconcile analytics trials metrics  ## full dataset from raw sources
+reproduce: fetch slice build enrich enrich-extra extract reconcile analytics trials metrics tenx  ## full dataset from raw sources
+
+tenx:           ## 10x case per core disease (join / extend / gap) from the exported data -> app/public/impact/tenx.json
+	cd app && node scripts/build-tenx.mjs
 
 dev:            ## run the app locally
 	cd app && npm run dev

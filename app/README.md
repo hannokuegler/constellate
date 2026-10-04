@@ -43,6 +43,7 @@ Copy `app/.env.example` to `app/.env.local`. Nothing is required; without keys e
 | `/g/[symbol]` | all disease names of a gene; "One gene, N disease names" when ≥ 2 names (PSAP: MLD, Krabbe, Gaucher, combined PSAP deficiency) |
 | `/p/[id]` (`HP_0002500`) | diseases with a phenotype |
 | `/methods` | "How we know": evidence levels, counter-evidence, OpenAI uses, metrics from `meta.metrics` (pending when absent), sources and licences from `meta.json` |
+| `/impact?d=<id>` | "The 10× case" (brief: 10× Moonshot): milestone = first family in natural-history data; usual route (build a registry) vs atlas route (join an open study that names the disease, or extend one at a disease with the same gene or mechanism class, or Honest Gap). Every week labelled atlas / published / assumption and editable; speed-up range, 10× break-even, generated "what to validate next", and the same calculation for all core diseases. Route data: `public/impact/tenx.json` from `node scripts/build-tenx.mjs` (`make tenx`), read-only over `public/data` |
 | `/about` | project page for the jury: problem, one mother in two moments (composite), what the app does, Honest Gap, team, repo |
 | `POST /api/explain` | edges → plain language, streamed, citation post-check |
 

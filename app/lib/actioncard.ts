@@ -43,6 +43,10 @@ export const studyCaveat = (neighbour: string, disease: string) =>
 export const therapyCaveat = (neighbour: string, disease: string) =>
   `Approved for ${neighbour}, not for ${disease}. What carries over and what differs needs expert review`;
 
+/** Capital letter at the start of every sentence; labels from MONDO ("metachromatic leukodystrophy") stay as they are inside a sentence. */
+export const sentenceCase = (text: string) => text.replace(/(^|[.!?]\s+)(\p{Ll})/gu, (_m, lead: string, ch: string) => lead + ch.toUpperCase());
+const capSentences = (items: CardSentence[]): CardSentence[] => items.map((x) => ({ ...x, text: sentenceCase(x.text) }));
+
 const list = (items: string[]) =>
   items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 
@@ -212,9 +216,9 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
     from: { id: disease.node.id, label: D },
     via: { id: neighbour.id, label: N },
     sections: [
-      { key: "transfers", title: "What transfers", hint: `Shared biology and existing work, not a treatment for ${D}`, sentences: transfers },
-      { key: "differs", title: "What differs", hint: "Where the two diseases part ways", sentences: differs },
-      { key: "review", title: "Needs expert review", hint: "Computed links and open questions", sentences: review },
+      { key: "transfers", title: "What transfers", hint: `Shared biology and existing work, not a treatment for ${D}`, sentences: capSentences(transfers) },
+      { key: "differs", title: "What differs", hint: "Where the two diseases part ways", sentences: capSentences(differs) },
+      { key: "review", title: "Needs expert review", hint: "Computed links and open questions", sentences: capSentences(review) },
     ],
     edges,
     labels: { ...labels, ...pathwayLabels, ...orgLabels(neighbourFile), ...labelsFrom(disease, neighbourFile) },
@@ -344,5 +348,5 @@ export function buildGlance(disease: DiseaseFile, neighbourFile: DiseaseFile | n
     sources: [{ label: `Constellate graph edges${built ? `, data built ${built}` : ""}`, href: "/methods" }],
     edgeIds: [],
   });
-  return lines;
+  return lines.map((l) => ({ ...l, text: sentenceCase(l.text) }));
 }

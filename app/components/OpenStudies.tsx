@@ -53,12 +53,12 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
       ) : (
         <>
           {hasDetails && (
-            <label className="mb-3 flex flex-wrap items-center gap-2 text-[13px]">
+            <label className="mb-3 flex flex-wrap items-center gap-2 text-[16px]">
               <span className="text-ink-2">Where do you live?</span>
               <select
                 value={country}
                 onChange={(e) => pickCountry(e.target.value)}
-                className="h-11 rounded-full border border-line bg-surface px-3 text-[13px] font-medium"
+                className="min-h-11 rounded-full border border-line bg-surface px-3 text-[16px] font-medium"
               >
                 <option value={ALL}>All countries</option>
                 {countries.map(([c, n]) => (
@@ -82,7 +82,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </p>
           )}
           {shown.length === 0 ? (
-            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[15px] text-warn">
+            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[16px] text-warn">
               None of these studies lists a site in {country}. Studies abroad sometimes accept international families: ask the study team.
             </p>
           ) : (
@@ -93,11 +93,11 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </ul>
           )}
           {shown.length > 5 && (
-            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
+            <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
               {showAll ? "Show fewer" : `Show all ${shown.length}`}
             </button>
           )}
-          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[15px] leading-relaxed">
+          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[16px] leading-relaxed">
             Whether a child can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
             not treat; studies that test a treatment have risks as well as possible benefits. Constellate only shows what the registry says.
           </p>
@@ -125,8 +125,8 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
         {!observational && phaseText(n, trialPhase(n)) && <span className="text-ink-2">{phaseText(n, trialPhase(n))}</span>}
         <span className="tabular text-ink-2">{n.id}</span>
       </div>
-      <p className="mt-1.5 text-[15px] font-semibold leading-snug">{n.label}</p>
-      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[15px]">
+      <p className="mt-1.5 text-[16px] font-semibold leading-snug">{n.label}</p>
+      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[16px]">
         {typeof n.sponsor === "string" && (
           <>
             <dt className="text-ink-2">Run by</dt>
@@ -155,9 +155,11 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
         <dd>
           {!detail
             ? "See the registry entry"
-            : here
-              ? `${here.sites} site${here.sites > 1 ? "s" : ""} in ${country}${sitesHere.length ? `: ${sitesHere.map((s) => [s.facility, s.city].filter(Boolean).join(", ")).join("; ")}` : ""}`
-              : `${detail.sites_total} site${detail.sites_total === 1 ? "" : "s"} in ${detail.countries.length} countr${detail.countries.length === 1 ? "y" : "ies"}${topCountries.length ? ` (${topCountries.join(", ")}${detail.countries.length > 4 ? ", …" : ""})` : ""}`}
+            : detail.sites_total === 0
+              ? "Sites not listed in the registry"
+              : here
+                ? `${here.sites} site${here.sites > 1 ? "s" : ""} in ${country}${sitesHere.length ? `: ${sitesHere.map((s) => [s.facility, s.city].filter(Boolean).join(", ")).join("; ")}` : ""}`
+                : `${detail.sites_total} site${detail.sites_total === 1 ? "" : "s"} in ${detail.countries.length} countr${detail.countries.length === 1 ? "y" : "ies"}${topCountries.length ? ` (${topCountries.join(", ")}${detail.countries.length > 4 ? ", …" : ""})` : ""}`}
         </dd>
       </dl>
       <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -165,12 +167,12 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
           href={contactUrl(detail, String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`))}
           target="_blank"
           rel="noreferrer"
-          className="btn-primary text-[13px]"
+          className="btn-primary text-[16px]"
         >
           Contact the study team
         </a>
         <LevelBadge level={item.edge.level} small />
-        <button onClick={() => onEdge(item.edge)} aria-label={`Why listed: ${n.id} ${n.label}`} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
+        <button onClick={() => onEdge(item.edge)} aria-label={`Why listed: ${n.id} ${n.label}`} className="inline-flex min-h-11 items-center rounded-full px-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
           Why listed
         </button>
         {detail && <span className="text-[12px] text-ink-2">Registry checked {formatDate(detail.retrieved)}</span>}

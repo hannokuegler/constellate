@@ -42,7 +42,7 @@ function NodeList({ nodes }: { nodes: GraphNode[] }) {
   const [open, setOpen] = useState(false);
   return (
     <details className="mt-2" onToggle={(event) => setOpen(event.currentTarget.open)}>
-      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] font-medium text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-current">
+      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[16px] font-medium text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-current">
         Show the graph as a list ({others.length})
       </summary>
       {open && <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
@@ -56,9 +56,9 @@ function NodeList({ nodes }: { nodes: GraphNode[] }) {
                 {items.map((n) => (
                   <li key={n.id}>
                     {n.kind === "family" ? (
-                      <span className="flex min-h-11 items-center text-[15px]">{n.label} ({n.members} subtypes, shown as one point)</span>
+                      <span className="flex min-h-11 items-center text-[16px]">{n.label} ({n.members} subtypes, shown as one point)</span>
                     ) : (
-                      <Link href={hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id)} className="flex min-h-11 items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current">
+                      <Link href={hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id)} className="flex min-h-11 items-center text-[16px] underline decoration-line underline-offset-2 hover:decoration-current">
                         {n.label}
                       </Link>
                     )}
@@ -88,11 +88,11 @@ export default function EgoGraph({ nodes, links, height, onLinkClick, onNodeClic
       <figcaption className="border-t border-line px-4 py-3">
         <Legend showCounter={showCounter} gene={centerShape === "ring"} />
         {families > 0 && onToggleFamilies && (
-          <button onClick={onToggleFamilies} aria-pressed={expanded} className="mt-2 inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[13px] font-medium text-accent hover:bg-accent-soft">
+          <button onClick={onToggleFamilies} aria-pressed={expanded} className="mt-2 inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[16px] font-medium text-accent hover:bg-accent-soft">
             {expanded ? "Group subtypes into families" : `Show all subtypes (${families} ${families === 1 ? "family" : "families"} grouped)`}
           </button>
         )}
-        <p className="mt-2 text-[13px] text-ink-2">Click a line for its evidence, a node to open it. Hover a node for its name. Drag to rearrange, scroll or pinch to zoom.</p>
+        <p className="mt-2 text-[16px] text-ink-2">Click a line for its evidence, a node to open it. Hover a node for its name. Drag to rearrange, scroll or pinch to zoom.</p>
         <NodeList nodes={nodes} />
       </figcaption>
     </figure>

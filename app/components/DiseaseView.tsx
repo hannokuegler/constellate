@@ -198,7 +198,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           <ul className="divide-y divide-line">
             {file.genes.map((e) => (
               <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                <Link href={geneHref(e.target)} className="inline-flex min-h-11 min-w-11 items-center text-[15px] font-semibold text-ink underline decoration-line underline-offset-2 hover:decoration-current">
+                <Link href={geneHref(e.target)} className="inline-flex min-h-11 min-w-11 items-center text-[16px] font-semibold text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                   {e.target}
                 </Link>
                 <span className="text-[13px] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}</span>
@@ -220,7 +220,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         <ul className="divide-y divide-line">
           {(showAllPhenotypes ? file.phenotypes : file.phenotypes.slice(0, 8)).map(({ edge, phenotype }) => (
             <li key={edge.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-              <Link href={phenotypeHref(phenotype.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
+              <Link href={phenotypeHref(phenotype.id)} className="flex min-h-11 min-w-0 basis-full items-center text-[16px] underline decoration-line underline-offset-2 hover:decoration-current sm:basis-0 sm:flex-1">
                 {phenotype.label}
               </Link>
               <span className="tabular text-[12px] text-ink-2" title="information content">IC {phenotype.ic.toFixed(1)}</span>
@@ -232,7 +232,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           ))}
         </ul>
         {file.phenotypes.length > 8 && (
-          <button onClick={() => setShowAllPhenotypes((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
+          <button onClick={() => setShowAllPhenotypes((v) => !v)} className="mt-2 min-h-11 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
             {showAllPhenotypes ? "Show fewer" : `Show all ${file.phenotypes.length}`}
           </button>
         )}
@@ -341,14 +341,14 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           {node.definition && (
             <section className="card px-4 py-4">
               <h2 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Definition</h2>
-              <p className="mt-1 text-[15px] leading-relaxed">{node.definition}</p>
+              <p className="mt-1 text-[16px] leading-relaxed">{node.definition}</p>
               <p className="mt-2 text-[12px] text-ink-2">Source: MONDO disease ontology</p>
               {node.children.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-2">
                   {node.children.map((c) => {
                     const ref = refOf(c, labels);
                     return (
-                      <Link key={ref.id} href={diseaseHref(ref.id)} className="inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[13px] hover:bg-surface-2">
+                      <Link key={ref.id} href={diseaseHref(ref.id)} className="inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[16px] hover:bg-surface-2">
                         {ref.label}
                       </Link>
                     );
@@ -460,7 +460,7 @@ function IdentifiersDetails({ children }: { children: React.ReactNode }) {
   }, []);
   return (
     <details ref={ref} className="mt-1">
-      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">Identifiers &amp; mechanism</summary>
+      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[16px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">Identifiers &amp; mechanism</summary>
       {children}
     </details>
   );
@@ -536,7 +536,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
       <div className="mt-1 flex flex-wrap items-center gap-x-2">
         <button
           onClick={() => onCard(n.id)}
-          className="btn-primary !min-h-11 !px-4 text-[13px]"
+          className="btn-primary !min-h-11 !px-4 text-[16px]"
           aria-label={`Action card: compare with ${n.label}`}
         >
           Action card
@@ -544,8 +544,8 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
         <EvidenceButton edge={n.edge} onEdge={onEdge} label="Why linked" />
         {n.mechanism_note && (
           <details className="min-w-0 basis-full">
-            <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">How these two are linked</summary>
-            <p className="rounded-[12px] bg-surface-2 px-3 py-2 text-[15px] leading-relaxed">{n.mechanism_note}</p>
+            <summary className="inline-flex min-h-11 cursor-pointer items-center text-[16px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink">How these two are linked</summary>
+            <p className="rounded-[12px] bg-surface-2 px-3 py-2 text-[16px] leading-relaxed">{n.mechanism_note}</p>
           </details>
         )}
       </div>
@@ -585,8 +585,8 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity, builtAt }: 
                   {g.items.slice(0, 4).map((item) => (
                     <li key={item.edge.id} className="flex min-h-11 items-center gap-2 py-1.5">
                       <span className="min-w-0 flex-1">
-                        <span className="line-clamp-2 text-[15px]">{String(item.node.label)}</span>
-                        <span className="text-[12px] text-ink-2">{[item.node.id, g.key === "trials" ? phaseText(item.node, trialPhase(item.node)) : null, typeof item.node.status === "string" ? item.node.status.toLowerCase().replaceAll("_", " ") : null].filter(Boolean).join(" · ")}</span>
+                        <span className="line-clamp-2 text-[16px]">{String(item.node.label)}</span>
+                        <span className="text-[13px] text-ink-2">{[item.node.id, g.key === "trials" ? phaseText(item.node, trialPhase(item.node)) : null, typeof item.node.status === "string" ? item.node.status.toLowerCase().replaceAll("_", " ") : null].filter(Boolean).join(" · ")}</span>
                       </span>
                       <LevelBadge level={item.edge.level} small />
                       <EvidenceButton edge={item.edge} onEdge={onEdge} />
@@ -601,17 +601,17 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity, builtAt }: 
               <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">
                 Papers mentioning it <span className="tabular">({enrichmentTotal(file, "papers_mentioning", papers.length)})</span>
               </h3>
-              <p className="text-[13px] text-ink-2">Mentions found by a literature search. A mention is not a fact and carries no evidence level.</p>
+              <p className="text-[16px] text-ink-2">Mentions found by a literature search. A mention is not a fact and carries no evidence level.</p>
               <ul className="mt-1 divide-y divide-line">
                 {papers.slice(0, 4).map((p) => (
                   <li key={p.id} className="flex min-h-11 items-center gap-2 py-1.5">
                     <span className="min-w-0 flex-1">
                       {p.url ? (
-                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[15px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">{p.title ?? p.id}</a>
+                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[16px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">{p.title ?? p.id}</a>
                       ) : (
-                        <span className="line-clamp-2 text-[15px]">{p.title ?? p.id}</span>
+                        <span className="line-clamp-2 text-[16px]">{p.title ?? p.id}</span>
                       )}
-                      <span className="text-[12px] text-ink-2">{[p.journal, p.year, p.id].filter(Boolean).join(" · ")}</span>
+                      <span className="text-[13px] text-ink-2">{[p.journal, p.year, p.id].filter(Boolean).join(" · ")}</span>
                     </span>
                     <span className="shrink-0 rounded-full border border-line px-2 text-[12px] text-ink-2">mention</span>
                   </li>

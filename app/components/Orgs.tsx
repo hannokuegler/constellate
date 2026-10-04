@@ -48,12 +48,12 @@ export function OrgList({ orgs, onEdge }: { orgs: { org: OrgCard; edge: Edge }[]
       {orgs.map(({ org, edge }) => (
         <li key={org.id} className="py-3">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-            <Link href={orgHref(org.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[15px] font-semibold underline decoration-line underline-offset-2 hover:decoration-current">
+            <Link href={orgHref(org.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[16px] font-semibold underline decoration-line underline-offset-2 hover:decoration-current">
               {org.label}
             </Link>
             {org.draft_input && <DraftBadge />}
             <LevelBadge level={edge.level} small />
-            <button onClick={() => onEdge(edge)} aria-label={`Evidence: patient organisation ${org.label}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
+            <button onClick={() => onEdge(edge)} aria-label={`Evidence: patient organisation ${org.label}`} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[16px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
               Evidence
             </button>
           </div>

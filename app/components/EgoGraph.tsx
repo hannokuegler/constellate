@@ -1,8 +1,10 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
+import Link from "next/link";
 import type { Edge } from "@/lib/types";
+import { hrefFor } from "@/lib/ids";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 
 const ForceGraphClient = dynamic(() => import("./ForceGraphClient"), {
@@ -58,12 +60,58 @@ export const SKY_BACKGROUND = [
   "radial-gradient(ellipse 70% 60% at 50% 46%, #141b38 0%, #0B1020 75%)",
 ].join(", ");
 
+const KIND_GROUPS: { kinds: GraphNode["kind"][]; title: string }[] = [
+  { kinds: ["gene"], title: "Genes" },
+  { kinds: ["neighbour", "disease", "counter", "family"], title: "Diseases" },
+  { kinds: ["phenotype"], title: "Symptoms" },
+];
+
+/** Text alternative to the canvas: every node as a link, grouped by kind. Collapsed by default so it costs the page nothing. */
+function NodeList({ nodes }: { nodes: GraphNode[] }) {
+  const others = nodes.filter((n) => n.kind !== "center");
+  // the entries are only in the DOM while the list is open: a closed list would otherwise answer every text query on the page twice
+  const [open, setOpen] = useState(false);
+  return (
+    <details className="mt-2" onToggle={(event) => setOpen(event.currentTarget.open)}>
+      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
+        Show the graph as a list ({others.length})
+      </summary>
+      {open && <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
+        {KIND_GROUPS.map((group) => {
+          const items = others.filter((n) => group.kinds.includes(n.kind));
+          if (!items.length) return null;
+          return (
+            <div key={group.title} className="min-w-0">
+              <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">{group.title} ({items.length})</h3>
+              <ul>
+                {items.map((n) => (
+                  <li key={n.id}>
+                    {n.kind === "family" ? (
+                      <span className="flex min-h-11 items-center text-[15px]">{n.label} ({n.members} subtypes, shown as one point)</span>
+                    ) : (
+                      <Link href={hrefFor(n.kind === "gene" ? "gene" : n.kind === "phenotype" ? "phenotype" : "disease", n.id)} className="flex min-h-11 items-center text-[15px] underline decoration-line underline-offset-2 hover:decoration-current">
+                        {n.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>}
+    </details>
+  );
+}
+
 export default function EgoGraph({ nodes, links, height, onLinkClick, onNodeClick, caption, showCounter = true, families = 0, expanded = false, onToggleFamilies, centerShape = "point" }: Props) {
+  const center = nodes.find((n) => n.kind === "center");
+  const neighbourCount = nodes.length - (center ? 1 : 0);
   return (
     <figure className="card overflow-hidden text-ink" style={{ ...SKY_VARS, background: "var(--bg)", borderColor: "var(--line)" }}>
       <div
         role="img"
-        aria-label={`${caption}. ${nodes.length} nodes and ${links.length} links. Every link is also listed with its evidence in the panel.`}
+        aria-label={`${caption}. Centre: ${center?.label ?? "none"}, with ${neighbourCount} connected points and ${links.length} links. Every link has an evidence button in the lists on this page; a list of all points is below the graph.`}
         style={{ height, background: SKY_BACKGROUND }}
       >
         <ForceGraphClient nodes={nodes} links={links} height={height} onLinkClick={onLinkClick} onNodeClick={onNodeClick} centerShape={centerShape} />
@@ -76,6 +124,7 @@ export default function EgoGraph({ nodes, links, height, onLinkClick, onNodeClic
           </button>
         )}
         <p className="mt-2 text-[13px] text-ink-2">Click a line for its evidence, a node to open it. Hover a node for its name. Drag to rearrange, scroll or pinch to zoom.</p>
+        <NodeList nodes={nodes} />
       </figcaption>
     </figure>
   );

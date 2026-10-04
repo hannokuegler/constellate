@@ -8,7 +8,6 @@ import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
 import { usePrefs } from "./Providers";
 import { TypeBadge } from "./Badges";
-import { skyBus } from "./world/sky";
 
 type Searcher = ReturnType<typeof createSearcher>;
 let searcherPromise: Promise<Searcher> | null = null;
@@ -60,28 +59,13 @@ export default function SearchBox({
 
   const hits: SearchHit[] = useMemo(() => (searcher ? searcher(deferred, persona) : []), [searcher, deferred, persona]);
 
-  const navigating = useRef(false);
   const go = (hit: SearchHit | undefined) => {
-    if (!hit || navigating.current) return;
+    if (!hit) return;
     setOpen(false);
     setQuery("");
     inputRef.current?.blur();
-    const href = hrefFor(hit.entry.type, hit.entry.id);
-    // start page: the camera flies to the star first (<= 900 ms, capped), then the page opens
-    if (!compact && skyBus.hasRenderer()) {
-      navigating.current = true;
-      void skyBus.flyTo(hit.entry.id).then(() => {
-        navigating.current = false;
-        router.push(href);
-      });
-    } else router.push(href);
+    router.push(hrefFor(hit.entry.type, hit.entry.id));
   };
-
-  // start page: the highlighted hit lights up in the sky (the renderer debounces, so arrowing through is calm)
-  const activeId = open && query.trim().length >= 2 ? hits[active]?.entry.id : undefined;
-  useEffect(() => {
-    if (!compact && activeId) skyBus.preview(activeId);
-  }, [compact, activeId]);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {

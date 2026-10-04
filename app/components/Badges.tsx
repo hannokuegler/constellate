@@ -2,11 +2,11 @@ import type { EdgeLevel, NodeType } from "@/lib/types";
 import { LEVEL_INFO } from "@/lib/evidence";
 
 const LEVEL_STYLE: Record<EdgeLevel, string> = {
-  observed: "bg-surface-2 text-ink",
+  observed: "bg-ok-soft text-ok",
   curated: "bg-surface-2 text-ink",
-  text_mined: "bg-[color-mix(in_srgb,var(--lvl-text)_14%,transparent)] text-lvl-text",
-  search_hit: "bg-[color-mix(in_srgb,var(--lvl-text)_14%,transparent)] text-lvl-text",
-  inferred: "bg-[color-mix(in_srgb,var(--lvl-inferred)_14%,transparent)] text-lvl-inferred",
+  text_mined: "bg-accent-soft text-accent",
+  search_hit: "bg-accent-soft text-accent",
+  inferred: "bg-[color-mix(in_srgb,var(--n-neighbour)_16%,transparent)] text-[color-mix(in_srgb,var(--n-neighbour)_70%,var(--ink))]",
   contradicted: "bg-contra-soft text-contra",
 };
 
@@ -32,21 +32,19 @@ export function LevelLine({ level, color = "currentColor" }: { level: EdgeLevel;
   );
 }
 
-/** Node type is carried by shape and brightness, never by hue: disease filled, gene hollow ring, symptom small dim point, patient group rounded square. */
-const TYPE_LABEL: Record<NodeType, string> = { disease: "Disease", gene: "Gene", phenotype: "Symptom", org: "Patient group" };
-
-function TypeShape({ type }: { type: NodeType }) {
-  if (type === "gene") return <span className="h-2.5 w-2.5 rounded-full border-[1.5px] border-star" aria-hidden="true" />;
-  if (type === "phenotype") return <span className="h-1.5 w-1.5 rounded-full bg-star-dim" aria-hidden="true" />;
-  if (type === "org") return <span className="h-2.5 w-2.5 rounded-[3px] border-[1.5px] border-ink-2" aria-hidden="true" />;
-  return <span className="h-2.5 w-2.5 rounded-full bg-star" aria-hidden="true" />;
-}
+const TYPE_STYLE: Record<NodeType, { label: string; dot: string }> = {
+  disease: { label: "Disease", dot: "var(--n-disease)" },
+  gene: { label: "Gene", dot: "var(--n-gene)" },
+  phenotype: { label: "Symptom", dot: "var(--n-phenotype)" },
+  org: { label: "Patient group", dot: "var(--n-pathway)" },
+};
 
 export function TypeBadge({ type }: { type: NodeType }) {
+  const style = TYPE_STYLE[type];
   return (
     <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line px-2 py-0.5 text-[12px] font-medium text-ink-2">
-      <span className="grid h-3 w-3 place-items-center"><TypeShape type={type} /></span>
-      {TYPE_LABEL[type]}
+      <span className="h-2 w-2 rounded-full" style={{ background: style.dot }} aria-hidden="true" />
+      {style.label}
     </span>
   );
 }

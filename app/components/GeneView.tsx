@@ -8,7 +8,7 @@ import { loadGene, loadIndexMap } from "@/lib/data";
 import { diseaseHref } from "@/lib/ids";
 import { RELATION_LABEL } from "@/lib/evidence";
 import { useEdgePanel } from "./Providers";
-import EgoGraph, { SKY_BACKGROUND, SKY_VARS } from "./EgoGraph";
+import EgoGraph from "./EgoGraph";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 import { LevelBadge } from "./Badges";
 import { EvidenceButton } from "./DiseaseView";
@@ -222,7 +222,7 @@ function SourceMarker({ edge, onEdge, labelOf }: { edge: Edge; onEdge: (e: Edge)
 
 const shortName = (name: string, max = 14) => (name.length > max ? `${name.slice(0, max - 1).trimEnd()}…` : name);
 
-/** The gene as a ring in the middle of the sky, its disease names as points around it, named at the point (full name on hover; numbers match the list). */
+/** The gene as a ring in the middle, its disease names as points around it, named at the point (full name on hover; numbers match the list). */
 function NamesOrbit({ gene, names, annotations }: { gene: string; names: string[]; annotations: number }) {
   const cx = 272;
   const cy = 200;
@@ -237,22 +237,19 @@ function NamesOrbit({ gene, names, annotations }: { gene: string; names: string[
     return { name, n: i + 1, x: cx + radius * cos, y: cy + radius * sin, side, labelX, labelY };
   });
   return (
-    <div className="flex flex-col items-center justify-center border-b border-line p-4 md:border-b-0 md:border-r" style={{ ...SKY_VARS, background: SKY_BACKGROUND }}>
+    <div className="flex flex-col items-center justify-center border-b border-line p-4 md:border-b-0 md:border-r">
       <svg viewBox="0 0 544 400" className="h-auto w-full max-w-[544px]" role="img" aria-label={`${gene} in the middle, ${names.length} disease names around it: ${names.join(", ")}`}>
         <circle cx={cx} cy={cy} r={radius} fill="none" stroke="var(--line)" strokeWidth="1" strokeDasharray="2 5" strokeLinecap="round" />
         {points.map((p) => (
-          <line key={p.n} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--star-dim)" strokeWidth="1.2" opacity="0.7" />
+          <line key={p.n} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--lvl-strong)" strokeWidth="1.2" opacity="0.5" />
         ))}
-        <circle cx={cx} cy={cy} r="50" fill="var(--amber)" opacity="0.08" />
-        <circle cx={cx} cy={cy} r="37" fill="var(--amber)" opacity="0.13" />
-        <circle cx={cx} cy={cy} r="24" fill="var(--bg)" stroke="var(--amber)" strokeWidth="3" />
+        <circle cx={cx} cy={cy} r="24" fill="var(--surface)" stroke="var(--n-gene)" strokeWidth="3" />
         <text x={cx} y={cy + 4} textAnchor="middle" fontSize="14" fontWeight="600" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{gene}</text>
         {points.map((p) => (
           <g key={p.n}>
             <title>{p.name}</title>
-            <circle cx={p.x} cy={p.y} r="17" fill="var(--star)" opacity="0.14" />
-            <circle cx={p.x} cy={p.y} r="12.5" fill="var(--star)" />
-            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize="14" fontWeight="700" fill="var(--bg)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{p.n}</text>
+            <circle cx={p.x} cy={p.y} r="12.5" fill="var(--n-disease)" />
+            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize="14" fontWeight="700" fill="var(--surface)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{p.n}</text>
             <text x={p.labelX} y={p.labelY} textAnchor={p.side} fontSize="17" fontWeight="500" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{shortName(p.name)}</text>
           </g>
         ))}

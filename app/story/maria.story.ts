@@ -2,7 +2,7 @@ import { test, expect, type Locator, type Page } from "@playwright/test";
 import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
+import { SPEAKERS, STORY_TITLE, storyLine } from "../lib/story";
 
 // Records Maria's walkthrough through the live app with Consti's speech bubbles and a visible cursor,
 // then encodes it to public/story/maria.mp4 and maria.webm plus a poster frame. Run: npm run story:record (needs ffmpeg).
@@ -56,7 +56,7 @@ function overlay() {
     #story-card.in{opacity:1}
     #story-card h1{font-size:46px;font-weight:700;letter-spacing:-.02em;margin:0}
     #story-card p{font-size:19px;color:#a9b0cc;margin:14px auto 0;max-width:640px;line-height:1.45}
-    #story-cursor{position:absolute;left:0;top:0;width:26px;height:26px;transition:transform .08s linear}
+    #story-cursor{position:absolute;left:0;top:0;width:26px;height:26px;transition:transform .05s linear}
     #story-cursor.down circle{r:13}
   `;
   const consti = `<svg width="26" height="26" viewBox="0 0 28 28"><path d="M6 20 L12 8 L20 12 L23 22 Z M12 8 L23 22" fill="none" stroke="#2c3254" stroke-width="1.2"/><circle cx="6" cy="20" r="2.4" fill="#42d1b9"/><circle cx="12" cy="8" r="3.2" fill="#ffc94a"/><circle cx="20" cy="12" r="2.4" fill="#8f8dff"/><circle cx="23" cy="22" r="2" fill="#c48af0"/></svg>`;
@@ -141,14 +141,19 @@ const readMs = (text: string) => Math.max(2400, Math.round((text.split(/\s+/).le
 
 // shows the bubble and returns when the line ends: the voice clip plus a breath, or reading time without a clip;
 // actions between show() and until() run while the line is spoken
-async function show(page: Page, id: string, bubble = true): Promise<number> {
+async function bubble(page: Page, id: string) {
   const line = storyLine(id);
   const sp = SPEAKERS[line.who];
-  if (bubble) await page.evaluate(([who, name, role, text]) => (window as unknown as { __storySay: (...a: string[]) => void }).__storySay(who, name, role, text), [line.who, sp.name, sp.role, line.text]);
+  await page.evaluate(([who, name, role, text]) => (window as unknown as { __storySay: (...a: string[]) => void }).__storySay(who, name, role, text), [line.who, sp.name, sp.role, line.text]);
+}
+
+async function show(page: Page, id: string, withBubble = true): Promise<number> {
+  const line = storyLine(id);
+  if (withBubble) await bubble(page, id);
   const clip = join(VOICE, `${id}.mp3`);
   if (!existsSync(clip)) return Date.now() + readMs(line.text);
   cues.push({ file: clip, at: Date.now() - t0 });
-  return Date.now() + Math.round(speechEnd(clip) * 1000) + 180;
+  return Date.now() + Math.round(speechEnd(clip) * 1000) + 150;
 }
 
 async function until(page: Page, end: number) {
@@ -168,17 +173,49 @@ async function card(page: Page, title: string | null, text = "") {
   await page.evaluate(([t, x]) => (window as unknown as { __storyCard: (a: string | null, b: string) => void }).__storyCard(t, x), [title, text] as const);
 }
 
-async function scrollTo(page: Page, target: Locator, block: "start" | "center" = "center") {
-  await target.evaluate((el, b) => el.scrollIntoView({ behavior: "smooth", block: b }), block);
-  await page.waitForTimeout(750);
+// eased scroll (cubic in-out) instead of the browser's abrupt smooth scroll; "start" leaves room for the sticky header
+async function scrollTo(page: Page, target: Locator, block: "start" | "center" | "top" = "center") {
+  await target.evaluate(async (el, b) => {
+    const r = el.getBoundingClientRect();
+    const from = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const goal = b === "top" ? 0 : b === "start" ? from + r.top - 76 : from + r.top + r.height / 2 - window.innerHeight / 2;
+    const to = Math.max(0, Math.min(max, goal));
+    const ms = Math.min(950, 420 + Math.abs(to - from) * 0.3);
+    const t0 = performance.now();
+    await new Promise<void>((done) => {
+      const step = (t: number) => {
+        const k = Math.min(1, (t - t0) / ms);
+        const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;
+        window.scrollTo({ top: from + (to - from) * e, behavior: "instant" });
+        if (k < 1) requestAnimationFrame(step);
+        else done();
+      };
+      requestAnimationFrame(step);
+    });
+  }, block);
+  await page.waitForTimeout(120);
 }
 
 // glide the cursor to the element (and click it)
+// the cursor travels on an eased path at a hand's pace; off-screen targets are scrolled into view first
+let cursor = { x: 900, y: 300 };
 async function glideTo(page: Page, target: Locator) {
-  await target.scrollIntoViewIfNeeded();
-  const box = await target.boundingBox();
+  let box = await target.boundingBox();
+  if (!box || box.y < 70 || box.y + box.height > SIZE.height - 10) {
+    await scrollTo(page, target);
+    box = await target.boundingBox();
+  }
   if (!box) throw new Error("target not visible");
-  await page.mouse.move(box.x + Math.min(box.width / 2, 60), box.y + box.height / 2, { steps: 16 });
+  const to = { x: box.x + Math.min(box.width / 2, 60), y: box.y + box.height / 2 };
+  const steps = Math.round(Math.min(30, Math.max(12, Math.hypot(to.x - cursor.x, to.y - cursor.y) / 22)));
+  for (let i = 1; i <= steps; i++) {
+    const k = i / steps;
+    const e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    await page.mouse.move(cursor.x + (to.x - cursor.x) * e, cursor.y + (to.y - cursor.y) * e);
+    await page.waitForTimeout(10);
+  }
+  cursor = to;
 }
 
 async function glideClick(page: Page, target: Locator) {
@@ -200,22 +237,30 @@ test("record Maria's story", async ({ browser }) => {
   // title card over the start page
   await page.goto("/");
   await expect(page.getByRole("combobox", { name: /search diseases/i })).toBeVisible();
-  await card(page, STORY_TITLE, STORY_NOTE);
+  await card(page, STORY_TITLE, "A composite story, filmed in the live app."); // the full note stands on /intro, not twice
   const lead = Date.now() - t0;
-  await page.mouse.move(900, 300);
+  cursor = { x: 900, y: 300 };
+  await page.mouse.move(cursor.x, cursor.y);
+  // warm the data the story opens, so no page shows its loading state on camera
+  await page.evaluate(() => Promise.all(["/data/disease/MONDO_0009499.json", "/data/gene/PSAP.json"].map((u) => fetch(u))));
+  await page.evaluate(() => {
+    const router = (window as unknown as { next?: { router?: { prefetch: (href: string) => void } } }).next?.router;
+    ["/d/MONDO_0009499", "/g/PSAP"].forEach((href) => router?.prefetch(href));
+  });
   await page.waitForTimeout(1000);
 
   // the first night: Maria's voice starts in the dark, the start page fades in under her line;
   // Consti introduces herself while Maria types (bubbles right, clear of the search list)
   await dock(page, "right");
-  let end = await show(page, "m-start");
+  let end = await show(page, "m-start", false); // the voice starts in the dark, the bubble comes with the page
   await page.waitForTimeout(1600);
   await card(page, null);
+  await bubble(page, "m-start");
   await until(page, end);
   end = await show(page, "c-hello");
   const box = page.getByRole("combobox", { name: /search diseases/i });
   await glideClick(page, box);
-  await box.pressSequentially("krabe", { delay: 120 });
+  for (const [ch, ms] of [["k", 140], ["r", 95], ["a", 170], ["b", 120], ["e", 210]] as const) await box.press(ch, { delay: 30 }).then(() => page.waitForTimeout(ms));
   const hit = page.getByRole("listbox").getByRole("option", { name: /Krabbe disease/ }).first();
   await expect(hit).toBeVisible();
   await until(page, end);
@@ -259,8 +304,7 @@ test("record Maria's story", async ({ browser }) => {
   // the action card
   await page.goBack();
   await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-  await page.waitForTimeout(400);
+  await scrollTo(page, page.locator("body"), "top");
   await glideClick(page, page.getByRole("button", { name: "Action card" }).first());
   end = await show(page, "c-card");
   await expect(page.locator("#action-card")).toBeVisible();
@@ -270,7 +314,7 @@ test("record Maria's story", async ({ browser }) => {
   // silence, then the last line over the closing card
   await page.waitForTimeout(700);
   await page.evaluate(() => (window as unknown as { __storyClear: () => void }).__storyClear());
-  await card(page, "Your family is not the first.", "Now try it yourself: search your diagnosis, open any line, take your action card.");
+  await card(page, "Constellate", ""); // the last line is spoken once, the card only signs off
   await page.waitForTimeout(300);
   await say(page, "c-end", false); // the card carries the words
   await page.waitForTimeout(700);
@@ -280,7 +324,7 @@ test("record Maria's story", async ({ browser }) => {
   const raw = await video!.path();
 
   // trim the blank lead-in, lay the voice clips on the video clock, encode H.264/AAC for every browser and VP9/Opus as fallback
-  const cut = Math.max(0, lead - 200);
+  const cut = lead + 650; // start once the title card has faded in
   const audioIn = cues.flatMap((c) => ["-i", c.file]);
   // the story must stay under a minute: if it runs long, play everything up to 5 % faster (atempo keeps the pitch)
   const length = seconds(raw) - cut / 1000;
@@ -293,6 +337,6 @@ test("record Maria's story", async ({ browser }) => {
   const mp4 = join(OUT, "maria.mp4");
   execFileSync("ffmpeg", [...input, "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-tune", "stillimage", "-pix_fmt", "yuv420p", "-r", "25", ...(cues.length ? ["-c:a", "aac", "-b:a", "128k"] : []), "-movflags", "+faststart", mp4]);
   execFileSync("ffmpeg", [...input, "-c:v", "libvpx-vp9", "-crf", "42", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", "-r", "25", ...(cues.length ? ["-c:a", "libopus", "-b:a", "96k"] : []), join(OUT, "maria.webm")]);
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", "1.5", "-i", mp4, "-frames:v", "1", "-q:v", "4", join(OUT, "maria.jpg")]);
+  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", "0.6", "-i", mp4, "-frames:v", "1", "-q:v", "4", join(OUT, "maria.jpg")]);
   rmSync(RAW, { recursive: true, force: true });
 });

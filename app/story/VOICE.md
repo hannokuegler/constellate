@@ -1,5 +1,123 @@
 # Stimmen für „Maria's first night“ (In-App-Intro /intro)
 
+## Fassung 2 (04.10., nach Hannos Kritik)
+
+Stand So 04.10.2026, vormittags (Wien). Entwurf für Hanno, nichts davon ist final (Regel 6). Ersetzt Skript und Maria-Stimme aus Fassung 1 (unten); Consti bleibt Lily `pFZP5JQG7iQjIQuC4Bku` mit unveränderten Settings. Texte stehen in `app/lib/story.ts` (`STORY`), Stimme und Settings in `app/story/voices.json`.
+
+### Warum eine Fassung 2
+
+| Kritik (Hanno, wörtlich) | Was sich ändert |
+|---|---|
+| „schau dass sich die sachen ned doppelt wiederholen (2 am und so, zum schluss der satz is a doppelt)“ | Jede Info und jede Phrase kommt genau einmal vor (Prüfliste unten). „2 a.m.“ nur in m-start. Der Schlusssatz wird nur noch gesprochen (c-end); Schlusskarte und /intro-Endbildschirm sagen etwas anderes (Vorschlag unten). Das Echo „how we know“ / „How do I know“ ist raus. |
+| „dass die section bissi allgemeiner erklärt wird“ | Consti sagt je Bereich zuerst, was er für jede Familie ist (Suche verzeiht Tippfehler, geprüfte Gruppen, Studien nach Land, Beleg je Linie, verwandte Krankheiten, Namen verbergen Gemeinsames), der konkrete Krabbe-Bezug kommt aus dem Bild oder in zwei bis vier Wörtern. |
+| „stimme von maria zu eintönig depressiv … einfach gut“ | Neue Stimme (Jessica statt Sarah), stability 0,30 statt 0,40, neue Regie je Zeile mit klarem Bogen: unruhig und kämpferisch, ungeduldig, misstrauisch, dann Staunen und warme Erleichterung mit Atem-Lachen. Kein Flüstern, kein Brechen der Stimme mehr. |
+| Referenzvideo (pitch/VOICE-ELEVENLABS.md §5, D2, D3, D5, D7) | Übernommen, soweit im Bild belegt: „how sure we are … what speaks against it“ (c-evidence, Panel zeigt Konfidenz und Counter-evidence), „Names hide what they share“ (c-psap, Seite zeigt „Names hide mechanisms“), Zulassungs-Kontrast (c-card, Action Card zeigt „No approved medicine for Krabbe disease found in EMA or FDA records as of 3 Oct 2026“ und die EMA- und FDA-Zulassungen für MLD; Markennamen werden nicht gesprochen). „Don't rebuild what a neighbouring disease already built.“ wird Endbildschirm-Überschrift auf /intro, nicht c-end (Begründung unten). |
+
+### Maria, neu
+
+| Merkmal | Fassung 1 | Fassung 2 |
+|---|---|---|
+| Grundhaltung | erschöpft, taub, kurz vor dem Weinen | übermüdet, aber hellwach und kämpferisch: sie wartet nicht bis morgen |
+| Lautstärke, Nähe | fast geflüstert | normale Sprechstimme, nah am Mikro, natürliche Atmer |
+| Tempo | langsam, stockend (gemessen 2,0 bis 2,3 Silben/s) | zügig und ungleichmäßig; schnell bei Ungeduld und Misstrauen, kurz langsamer nur beim Staunen am Schluss |
+| Bewegung | eine Farbe über alle Zeilen | jede Zeile eine andere Farbe (Bogen unten) |
+| Was sie nie sein darf | Opferton | weinerlich, flüsternd, monoton, Hörbuch, Werbestimme |
+
+Bogen über die vier Zeilen:
+
+| Zeile | Gefühl | Stimme | Regie-Idee |
+|---|---|---|---|
+| m-start | übermüdet, gereizt, will sofort handeln | tief, schnell, etwas rau; scharfes Ausatmen vor dem Eingeständnis | Sie läuft in der Küche auf und ab, nicht am Tisch zusammengesunken |
+| m-alone | Ungeduld, dann ein Funken Hoffnung | „Other families?“ schnell und fordernd, „Anyone?“ leiser, offen | Sie scrollt und sucht, die Frage ist ein Ruf, keine Klage |
+| m-trust | Misstrauen | stoppt, kurz und scharf | Sie lässt sich nichts verkaufen; das macht Consti glaubwürdig |
+| m-end | Staunen, dann echte Erleichterung | ein Takt Stille, weiches Atem-Lachen, Stimme wird warm und fest | Kein Triumph, kein Weinen: ein Plan statt Ohnmacht |
+
+### Stimmwahl Maria
+
+Alle IDs vor dem Take mit `npm run story:voice -- --list` im eigenen Account prüfen; ⚠️ heißt: ID nur aus Drittquelle oder Erinnerung, nicht gegen die ElevenLabs-Doku verifiziert.
+
+| Rang | Stimme | Voice-ID | Warum | Status |
+|---|---|---|---|---|
+| 1 (in voices.json) | Jessica (Default) | `cgSgspJ2msm6clMCkdW9` | laut Default-Voice-Liste „young, American, expressive, conversational“ (Fassung 1, S7); Standardstimme, die jeder Account hat; trägt Ungeduld und Lachen besser als die „soft“ Sarah | ⚠️ ID nur aus Drittquelle (Fassung 1, S8) |
+| 2 | Aria (Default) | `9BWtsMINqrJLrRacOk9x` | „middle-aged, American, expressive“, etwas rauer und älter als Jessica, passt zu „übermüdet, Mitte 30“ | ⚠️ ID und Beschreibung aus Erinnerung; evtl. nicht mehr in der Default-Liste |
+| 3 | Laura (Default) | `FGY2WhTYpPnrIDTdsKH5` | jung, amerikanisch, lebhaft; Reserve, falls Jessica zu glatt klingt | ⚠️ ID und Beschreibung aus Erinnerung; Risiko zu fröhlich |
+| Design | Voice Design v2 (Prompt unten) | entsteht beim Speichern | maßgeschneidert, wenn keine Default-Stimme den Bogen trägt | `npm run story:voice -- --design maria`, dann `--save maria <id>` |
+| raus | Sarah (bisher) | `EXAVITQu4vr4xnSDxMaL` | „soft“, wirkt mit der Flüster-Regie flach und depressiv | verifiziert, aber ersetzt |
+
+Settings Maria (in `voices.json`): `stability` **0,30** (vorher 0,40; niedriger = mehr Ausdruck, Fassung 1, S2), `similarity_boost` 0,75, `seed` 404 wie bisher. Wenn einzelne Zeilen ins Theatralische kippen: 0,35. ⚠️ Falls `eleven_v4` stability wie v3 nur in Stufen annimmt (0 Creative, 0,5 Natural, 1 Robust) und 0,30 ablehnt oder rundet: 0,0 testen, sonst 0,5.
+
+Voice-Design-Prompt v2 (`voice_description`, `model_id: "eleven_ttv_v3"`, `should_enhance: false`, `seed: 404`):
+
+```
+A woman in her mid-thirties, warm American English with a natural General American accent. Mid-range pitch with a little grit from a sleepless night, but fully alive: quick, restless and determined, a mother who refuses to wait until morning. Her voice moves from line to line: urgency and impatience, a sharp flash of suspicion, sudden wonder, then warm relief with a soft, breathy laugh. Conversational and close to the microphone, natural breaths, real rather than performed. Never weepy, never whispering, never monotone, never an announcer or audiobook narrator. Dry, clean studio recording, no reverb, no background noise.
+```
+
+Vorschau-Text (`text`, 126 Zeichen): `Two a.m. Krabbe disease. Can't even spell it. Other families? Anyone? Wait. Who says this is true? Okay. I can work with this.`
+
+### Skript Fassung 2
+
+`Bubble` geht nach `text` (Sprechblase und Transkript), `TTS` nach `tts`. Die Sprechblase ist der Untertitel der Zeile, das ist gewollt. IDs und Reihenfolge sind unverändert, der Recorder bindet sie an dieselben Bilder.
+
+| id | wer | Bubble | TTS | Bild | Dauer (s) |
+|---|---|---|---|---|---|
+| m-start | Maria | 2 a.m. “Krabbe disease.” Can't even spell it. | `[wired and exhausted, low and quick, restless, a frustrated edge] Two a.m. Krabbe disease. [sharp exhale] Can't even spell it.` | Titelkarte blendet aus, Startseite „Just received a rare diagnosis? Start here.“ | 5,4 |
+| c-hello | Consti | Start typing. Typos are fine. | `[calm, warm, unhurried] Start typing. Typos are fine.` | Maria tippt „krabe“, Treffer „Krabbe disease“ | 2,6 |
+| m-alone | Maria | Other families? Anyone? | `[impatient, urgent, scanning the screen] Other families? [quieter, a flicker of raw hope] Anyone?` | Krabbe-Seite (oben „What you can do now“, Graph), Scroll zu den Patientengruppen | 2,4 |
+| c-gap | Consti | Yes. Checked patient groups. | `[warmly, gently] Yes. Checked patient groups.` | „Patient organisations 4: Groups for this diagnosis, each checked against the organisation's website“ | 2,0 |
+| c-studies | Consti | Studies that need participants, by country. | `[a little brighter] Studies that need participants, by country.` | „Studies looking for participants with Krabbe disease“, Länderfilter, „Contact the study team“ | 3,4 |
+| m-trust | Maria | Wait. Who says this is true? | `[stops short, suspicious, a little sharp] Wait. Who says this is true?` | Graph, Cursor auf einer Linie | 2,4 |
+| c-evidence | Consti | Each line shows its source, how sure we are… and what speaks against it. | `[calm, steady, not offended] Each line shows its source, how sure we are… and what speaks against it.` | Evidenz-Panel: Source, Record, Date, Level, confidence, independent sources, Counter-evidence | 5,2 |
+| c-related | Consti | Related by a gene or symptoms: their families may help. | `[softly, curious] Related by a gene or symptoms: their families may help.` | „Related communities“, MLD „shares PSAP“ | 4,5 |
+| c-psap | Consti | Names hide what they share. Here, four. | `[quietly, a touch of wonder] Names hide what they share. Here, four.` | `/g/PSAP` „Names hide mechanisms. One gene, 4 disease names“ | 3,4 |
+| c-card | Consti | Action card: Krabbe has no approved medicine in EU or US records… MLD does. | `[calm, clear, no drama] Action card: Krabbe has no approved medicine in E-U or U-S records… M-L-D does.` | Action Card „What Krabbe disease can learn from metachromatic leukodystrophy“, „At a glance“ mit den EMA- und FDA-Zeilen | 7,7 |
+| m-end | Maria | Okay. I can work with this. | `[a beat of disbelief, then a soft laugh of relief, voice warming] Okay. I can work with this.` | Action Card, Cursor steht | 3,8 |
+| c-end | Consti | Your family is not the first. | unverändert: `[softly, slowly, warm, close to the mic] Your family is not the first.` | Schlusskarte (ohne Satz, siehe unten), keine Sprechblase | 2,8 (echter Clip) |
+| | | | | **Summe Sprechzeit** | **45,6** |
+
+Rechenweg (Skript, nicht geschätzt aus dem Kopf): Netto-Sprechrate und Pausen aus den zwölf echten Clips vom 04.10. gemessen (`ffprobe` und `silencedetect -45 dB, 0,2 s`). Maria: 2,0 bis 2,3 Silben/s bei langsamer Regie (m-start, m-end), 2,9 bei m-alone, 3,4 bei m-trust; Consti: 3,5 bis 4,2 bei ruhiger Regie (c-hello, c-gap, c-studies, c-end), 3,2 bis 3,3 bei betonter (c-evidence, c-card), 1,8 bei „slowly, with weight“ (c-psap). Pause je Satzzeichen-Bruch im Mittel 0,40 s, Rand-Stille 0,25 s je Clip, Lachen 0,6 s, Ausatmen 0,4 s. Angesetzt: Maria zügig 3,4, gemischt 2,8; Consti ruhig 3,6, betont 3,0 Silben/s. Gegenprobe: Dasselbe Modell schätzt Fassung 1 auf 57,4 s, die echten Clips sind 56,0 s lang; es liegt also etwa 2,5 % zu hoch. Regie mit „slowly“ wurde bewusst vermieden, außer in c-end (dessen Clip bleibt).
+
+Länge des Videos: Fassung 1 hatte 56,0 s Sprechzeit und ergab 59,6 s Video nach 5 % Beschleunigung, also rund 6,6 s Bild ohne Stimme (Titelkarte, Tippen, Scrolls, Stille vor c-end). Mit 45,6 s Sprechzeit sind das etwa 52 s ohne Beschleunigung ⚠️ (der Recorder `maria.story.ts` wird gerade parallel überarbeitet; die festen Wartezeiten können sich ändern).
+
+Neu erzeugen: c-end bleibt wortgleich, sein Clip bleibt. Weil die übrigen MP3s schon existieren, erzeugt `npm run story:voice` ohne Argumente nichts neu; deshalb explizit:
+
+```
+npm run story:voice -- m-start c-hello m-alone c-gap c-studies m-trust c-evidence c-related c-psap c-card m-end
+```
+
+### Keine Doppelung (Prüfliste)
+
+| Element | kommt vor in | sonst nirgends |
+|---|---|---|
+| „2 a.m.“ | m-start | Titelkarte sagt „Maria's first night“, nicht die Uhrzeit |
+| „Your family is not the first.“ | c-end (nur gesprochen) | Schlusskarte und /intro-Endbildschirm sagen es nicht mehr (Vorschlag unten); ⚠️ `/about` hat den Satz als H1, das ist eine andere Seite außerhalb des Videos |
+| Beleg, Konfidenz, Gegenevidenz | c-evidence | „how we know“ in c-hello ist gestrichen |
+| „share“ | c-psap | c-related sagt „Related by“ |
+| „four“ | c-psap | c-gap nennt keine Zahl, die 4 steht im Bild |
+| „action card“ | c-card | Schlusskarten-Unterzeile „take your action card“ entfällt |
+| „Try it yourself“ | Button auf /intro | Schlusskarten-Unterzeile „Now try it yourself …“ entfällt |
+| „Krabbe“ | m-start (Maria), c-card (Kontrast zu MLD) | Consti sagt es sonst nicht, der Name steht im Bild |
+| „families“ / „family“ | m-alone, c-related, c-end | gewollt als Leitwort: Frage, Antwort, Schluss; jeweils andere Info |
+
+### Schlusskarte und /intro-Endbildschirm (Vorschlag, Hanno entscheidet)
+
+| Ort | heute | Vorschlag | Wo ändern |
+|---|---|---|---|
+| Schlusskarte im Video | „Your family is not the first.“ plus „Now try it yourself: search your diagnosis, open any line, take your action card.“ | nur das Constellate-Zeichen und der Name „Constellate“, keine Unterzeile; c-end wird darüber gesprochen und steht allein | `maria.story.ts`: `card(page, "Constellate", "")` |
+| /intro-Endbildschirm | „Your family is not the first.“ plus Buttons | Überschrift „Don't rebuild what a neighbouring disease already built.“, Buttons unverändert („Try it yourself“, „Open Krabbe disease“, „Watch again“) | `components/StoryPlayer.tsx`, Zeile mit dem `<p>` über den Buttons; e2e-Test prüft nur die Buttons |
+| Titelkarte (optional) | „Maria's first night“ plus STORY_NOTE; derselbe STORY_NOTE steht auf /intro direkt über dem Player | Karte behält den Hinweis (das Video muss die Komposit-Figur selbst offenlegen); auf /intro unter der Überschrift nur noch `STORY_VOICE_NOTE` | `app/intro/page.tsx` |
+
+Warum c-end „Your family is not the first.“ bleibt und „Don't rebuild …“ auf den Endbildschirm geht: c-end antwortet einer Mutter um 2 Uhr nachts; ein Trostsatz an sie trägt dort mehr als ein Imperativ, der nach Strategie für Gruppenleitungen klingt. Nach „Okay. I can work with this.“ wäre „Don't rebuild …“ eine zweite Handlungsanweisung, „not the first“ schließt dagegen den Bogen von „Other families? Anyone?“. Der Endbildschirm spricht dagegen den Zuschauer an (Jury, Gruppenleitung), der gleich selbst sucht; dort ist der allgemeine Leitsatz richtig und doppelt nichts. Nebeneffekt: Der c-end-Clip bleibt gültig.
+
+### Grenzen und offene Punkte
+
+- Consti sagt nur, was im Bild steht: Tippfehler („typos allowed“ auf der Startseite), geprüfte Gruppen, Studien mit Länderfilter, Beleg und Gegenevidenz im Panel, „Related communities“, „Names hide mechanisms. One gene, 4 disease names“, die EMA- und FDA-Zeilen der Action Card. Keine Organisationsnamen, keine Markennamen, kein „cure“, keine Zahl außer „four“ (im Bild) und Marias „2 a.m.“.
+- ⚠️ c-card setzt voraus, dass „At a glance“ beim Take die Zeilen „No approved medicine for Krabbe disease found in EMA or FDA records as of 3 Oct 2026“ und die MLD-Zulassungen zeigt (Frame bei 46 s des heutigen Videos: ja). Fehlen sie, Ersatz: `Action card: what transfers, what differs, what needs an expert.` (ca. 5,0 s).
+- ⚠️ c-psap „Here, four.“ setzt voraus, dass `/g/PSAP` weiter „One gene, 4 disease names“ zeigt (die Zahl kommt aus den Daten).
+- c-card spricht nicht mehr „what transfers, what differs, what needs an expert“; das steht im Bild unter „At a glance“. Wer die allgemeine Erklärung lieber will, nimmt den Ersatzsatz oben; dann fällt der Zulassungs-Kontrast weg.
+- Vorschlag für eine zusätzliche Zeile zur Krabbe-Seite oben (nicht eingefügt): id `c-page`, Consti, Bubble „Every diagnosis gets one page: what you can do now, and its map.“, TTS `[calm, warm] Every diagnosis gets one page: what you can do now, and its map.`, Bild direkt nach dem Klick auf „Krabbe disease“, vor m-alone, ca. 6,0 s. Sie passt nur in die 46 s, wenn dafür c-studies (3,4 s) und c-gap auf „Yes.“ (ca. 0,9 s) gekürzt werden; Empfehlung: weglassen, der Graph ist im Bild, während Maria m-alone spricht.
+
+## Fassung 1 (04.10., ca. 04:30, überholt durch Fassung 2)
+
 Stand So 04.10.2026, ca. 04:30 (Wien). Entwurf für Hanno, nichts davon ist final (Regel 6). Gilt nur für das In-App-Intro, nicht für die drei Pflichtvideos (dort gilt [pitch/VOICE-ELEVENLABS.md](../../pitch/VOICE-ELEVENLABS.md)). Grundlage: aktuelles Drehbuch in `app/lib/story.ts`, Video `app/public/story/maria.mp4` (95 s, Bildfolge gesichtet), [docs/RESOURCES.md](../../docs/RESOURCES.md) §4, [docs/STORY.md](../../docs/STORY.md), [pitch/PITCH-60S.md](../../pitch/PITCH-60S.md).
 
 Prüfweg: elevenlabs.io war aus dieser Umgebung gesperrt (auch per Web-Fetch). Verifiziert wurde deshalb gegen die **öffentlichen GitHub-Repos von ElevenLabs** (Python-SDK Commit `963b4a5` vom 28.09.2026, Skills-Repo Commit `81f1eaf` vom 01.10.2026) und gegen Suchergebnis-Auszüge der ElevenLabs-Doku. Was nur aus Drittquellen oder Suchauszügen stammt, trägt ⚠️. Quellen am Ende (S1 bis S8).

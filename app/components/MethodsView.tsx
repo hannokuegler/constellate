@@ -134,7 +134,7 @@ export default function MethodsView() {
 
       <section aria-labelledby="ai">
         <h2 id="ai" className="text-[22px] font-semibold">Where AI is used</h2>
-        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product, with the model named in the evidence. This run uses Claude (Anthropic); the OpenAI paths are built and switch on with a key. Without any key the app still runs and Explain falls back to template text.</p>
+        <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Three places, each marked in the product: Extract, Reconcile and Explain. All three are built on the OpenAI API, with the model for each step set by an environment variable (OPENAI_MODEL_EXTRACT, OPENAI_MODEL_JUDGE, OPENAI_MODEL_EMBED) and checked against the available models before a run. The current data export ran these steps on Claude (Anthropic); every evidence item names the model that produced it. Without any key the app still runs and Explain falls back to template text.</p>
         <ol className="mt-4 grid gap-3 md:grid-cols-3">
           {[
             ["Extract", "Pipeline step 05", "Reads PubMed abstracts and returns structured claims (subject, predicate, object, polarity, PMID, quoted sentence). Claims without a quote are dropped. Result level: text-mined."],

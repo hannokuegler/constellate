@@ -99,7 +99,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-[24px] font-semibold">AI inside</h2>
           <p className="mt-3 text-[15px] text-ink-2">
-            Language models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. This run uses Claude (Anthropic); the OpenAI paths are built and switch on with a key. Each use is marked in the product, and every explanation sentence must cite an evidence edge. Details on <Link href="/methods" className="text-accent underline underline-offset-2">How we know</Link>.
+            Language models extract claims from abstracts, match organisation names to diseases and explain an action card in plain language. The pipeline is built on the OpenAI API (Extract, Reconcile, Explain); the current data export ran these steps on Claude (Anthropic), and every evidence item names its model. Each use is marked in the product, and every explanation sentence must cite an evidence edge. Details on <Link href="/methods" className="text-accent underline underline-offset-2">How we know</Link>.
           </p>
           <p className="mt-4 text-[15px]">
             <a href={REPO} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-current">

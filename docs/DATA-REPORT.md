@@ -122,7 +122,7 @@ Checks C1–C8 aus `docs/prompts/DATA-MANAGER.md` auf den lokalen `data/enrich/e
 
 Folgen im Export (`make analytics metrics validate`, grün): coverage asset 117 → 114 (3 Krankheiten hatten nur eine falsch zugeordnete Abstract-Skala). Hero-Shards: Krabbe 140 KB (v2 22,2 KB), MLD 144 KB (21,1), PMD 134 KB (22,7), Gaucher 136 KB (23,2); größter Shard MONDO_0019249 149 KB; `core.json` + `index.json` 2,92 MB, `index.json` gz 206 KB. Tests: `pytest pipeline/tests` 91 passed. E2E 3/3, tsc und lint grün.
 
-## KI-Schritte mit Claude: Extract, Reconcile, Explain (Data Steward, So 04.10.2026, ca. 02:45 Wien)
+## KI-Schritte mit Claude: Extract, Reconcile, Explain (Data Steward, So 04.10.2026, 02:00 Wien)
 
 Ausgangslage: Das Team hat keine OpenAI-Credits bekommen, nur Anthropic-Credits. Die OpenAI-Pfade (05, 06, `npm run explain`) bleiben im Code und werden mit einem Key wieder aktiv. In diesem Lauf haben Claude-Code-Subagents die Modellantworten geliefert. Sie liegen im selben Cache-Format, das die Pipeline auch für OpenAI-Antworten nutzt, und die Pipeline prüft sie mit denselben deterministischen Regeln. Jede Kante nennt das tatsächlich verwendete Modell: `origin` „Claude extract“ bzw. „Claude judge“, `model` „claude-sonnet-5-5“. Es wird nirgends „OpenAI“ behauptet. Es gab keine API-Abrechnung; die Subagents haben zusammen rund 1,5 Mio. Tokens im Claude-Code-Kontingent verbraucht.
 

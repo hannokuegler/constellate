@@ -8,6 +8,7 @@ import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
 import { usePrefs } from "./Providers";
 import { TypeBadge } from "./Badges";
+import { skyBus } from "./world/sky";
 
 type Searcher = ReturnType<typeof createSearcher>;
 let searcherPromise: Promise<Searcher> | null = null;
@@ -41,13 +42,28 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   const hits: SearchHit[] = useMemo(() => (searcher ? searcher(deferred, persona) : []), [searcher, deferred, persona]);
 
+  const navigating = useRef(false);
   const go = (hit: SearchHit | undefined) => {
-    if (!hit) return;
+    if (!hit || navigating.current) return;
     setOpen(false);
     setQuery("");
     inputRef.current?.blur();
-    router.push(hrefFor(hit.entry.type, hit.entry.id));
+    const href = hrefFor(hit.entry.type, hit.entry.id);
+    // start page: the camera flies to the star first (<= 900 ms, capped), then the page opens
+    if (!compact && skyBus.hasRenderer()) {
+      navigating.current = true;
+      void skyBus.flyTo(hit.entry.id).then(() => {
+        navigating.current = false;
+        router.push(href);
+      });
+    } else router.push(href);
   };
+
+  // start page: the highlighted hit lights up in the sky (the renderer debounces, so arrowing through is calm)
+  const activeId = open && query.trim().length >= 2 ? hits[active]?.entry.id : undefined;
+  useEffect(() => {
+    if (!compact && activeId) skyBus.preview(activeId);
+  }, [compact, activeId]);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "ArrowDown") {
@@ -69,7 +85,7 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   return (
     <div className="relative w-full">
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
+      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--amber)] ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
         <svg width={compact ? 16 : 20} height={compact ? 16 : 20} viewBox="0 0 20 20" className="shrink-0 text-ink-2" aria-hidden="true">
           <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -99,7 +115,7 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
+          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 focus-visible:outline-none ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
         />
       </div>
       {showList && (

@@ -8,8 +8,9 @@
 data/raw/
 data/cache/
 data/enrich/
-data/extract/     # 05 intermediates, rebuilt from data/cache/openai/extract (edges + snippets ship in the export)
-data/reconcile/   # 06 intermediates, rebuilt from data/curated/orgs.csv + judge cache
+# 05/06 intermediates, rebuilt from the caches; edges with snippets ship in the export
+data/extract/
+data/reconcile/
 *.xml
 *.hpoa
 # python

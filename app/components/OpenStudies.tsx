@@ -56,7 +56,7 @@ export default function OpenStudies({ file, onEdge }: { file: DiseaseFile; onEdg
   const hasDetails = countries.length > 0;
 
   const shown = trials.filter((t) => !hasDetails || !country || details[t.node.id]?.countries.some((c) => c.country === country));
-  const visible = showAll ? shown : shown.slice(0, 5);
+  const visible = showAll ? shown : shown.slice(0, 2);
   const ctgov = coverageRows(file.coverage).filter((c) => /ctgov|clinicaltrials/i.test(c.source));
   const searchedAt = ctgov.map((c) => c.fetched_at).filter((d): d is string => Boolean(d)).sort().at(-1);
 
@@ -114,9 +114,9 @@ export default function OpenStudies({ file, onEdge }: { file: DiseaseFile; onEdg
               ))}
             </ul>
           )}
-          {shown.length > 5 && (
+          {shown.length > 2 && (
             <button onClick={() => setShowAll((v) => !v)} className="mt-2 min-h-11 text-base font-medium text-accent">
-              {showAll ? "Show fewer" : `Show all ${shown.length}`}
+              {showAll ? "Show fewer" : `Show all studies (${shown.length - 2} more)`}
             </button>
           )}
           <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-base leading-relaxed">

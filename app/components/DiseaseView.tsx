@@ -111,10 +111,22 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const router = useRouter();
   const node = file.node;
   const cardRef = useRef<HTMLDivElement>(null);
+  const evidenceRef = useRef<HTMLDetailsElement>(null);
   const defaultVia = pickDefaultVia(file.neighbours);
   const [via, setVia] = useState<string | null>(defaultVia);
   const [cardOpen, setCardOpen] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [showAllNeighbours, setShowAllNeighbours] = useState(false);
+  const representativeNeighbours = useMemo(() => {
+    const families = new Map<string, Neighbour>();
+    for (const neighbour of file.neighbours) {
+      const key = familyKey(neighbour.label);
+      const previous = families.get(key);
+      if (!previous || neighbour.label.length < previous.label.length) families.set(key, neighbour);
+    }
+    return [...families.values()].slice(0, 3);
+  }, [file]);
+  const shownNeighbours = showAllNeighbours ? file.neighbours : representativeNeighbours;
   const [showAllPhenotypes, setShowAllPhenotypes] = useState(false);
   const [expandFamilies, setExpandFamilies] = useState(false);
   const [indexLabels, setIndexLabels] = useState<Record<string, string>>({});
@@ -145,6 +157,17 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
       <header className="mb-8 max-w-[48rem]">
         <p className="eyebrow">Understanding a diagnosis</p>
         <h1 className="page-heading">{node.label}</h1>
+        <nav aria-label="On this page" className="mt-2 flex flex-wrap gap-x-6 gap-y-3 text-sm">
+          <a className="inline-flex min-h-11 items-center text-accent underline underline-offset-4" href="#treatment">Review treatment</a>
+          <a className="inline-flex min-h-11 items-center text-accent underline underline-offset-4" href="#disease-evidence" onClick={(event) => {
+            event.preventDefault();
+            setEvidenceOpen(true);
+            requestAnimationFrame(() => {
+              evidenceRef.current?.scrollIntoView({ behavior: "instant", block: "start" });
+              evidenceRef.current?.querySelector("summary")?.focus({ preventScroll: true });
+            });
+          }}>Explore evidence</a>
+        </nav>
         <p className="subtle mt-3">A place to start. Take one question at a time.</p>
       </header>
       <div className="stack">
@@ -163,7 +186,8 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         <section id="related" className="answer-card scroll-mt-24" aria-labelledby="related-heading">
           <h2 id="related-heading" className="section-heading">Your nearest neighbours</h2>
           <p className="subtle mt-2">Related diseases may have research or community resources to learn from. A connection does not mean a treatment will work for this diagnosis.</p>
-          {file.neighbours.length ? <ul className="mt-4 divide-y divide-line">{file.neighbours.map((n) => <NeighbourRow key={n.id} n={n} onEdge={openEdge} onCard={openCard} />)}</ul> : <HonestGap variant="section" title={`No related community found for ${node.label}`} reason="No related disease passed the current similarity threshold." searched={gapSearched} asOf={meta?.built_at} close={["More source-backed gene, pathway or phenotype annotations for this diagnosis"]} />}
+          {file.neighbours.length ? <ul className="mt-4 divide-y divide-line">{shownNeighbours.map((n) => <NeighbourRow key={n.id} n={n} onEdge={openEdge} onCard={openCard} />)}</ul> : <HonestGap variant="section" title={`No related community found for ${node.label}`} reason="No related disease passed the current similarity threshold." searched={gapSearched} asOf={meta?.built_at} close={["More source-backed gene, pathway or phenotype annotations for this diagnosis"]} />}
+          {file.neighbours.length > representativeNeighbours.length && <button className="button mt-4" onClick={() => setShowAllNeighbours((value) => !value)} aria-expanded={showAllNeighbours}>{showAllNeighbours ? "Show fewer neighbours" : `Show all neighbours (${file.neighbours.length - representativeNeighbours.length} more)`}</button>}
         </section>
         {!!file.neighbours.length && <section className="answer-card">
           <p className="eyebrow">A next step</p><h2 className="section-heading">Bring the questions with you</h2>
@@ -171,7 +195,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           <button className="button button-primary mt-5" onClick={() => cardOpen ? setCardOpen(false) : openCard(via ?? defaultVia!)} aria-expanded={cardOpen} aria-controls="action-card">{cardOpen ? "Hide action card" : "Action card"}</button>
         </section>}
         {cardOpen && via && <div ref={cardRef} id="action-card" className="scroll-mt-24"><ActionCard disease={file} viaId={via} onViaChange={setVia} meta={meta} /></div>}
-        <details className="answer-card" onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}>
+        <details ref={evidenceRef} id="disease-evidence" open={evidenceOpen} className="answer-card scroll-mt-24" onToggle={(event) => setEvidenceOpen(event.currentTarget.open)}>
           <summary className="min-h-11 cursor-pointer py-2 text-lg font-semibold">Show the evidence</summary>
           <p className="subtle mb-6 mt-2">Explore genes, symptoms and research. Every connection opens its sources, confidence and counter-evidence.</p>
           {evidenceOpen && <div className="stack">

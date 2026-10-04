@@ -1,0 +1,22 @@
+{
+  "model": "eleven_v4",
+  "fallback_model": "eleven_multilingual_v2",
+  "output_format": "mp3_44100_128",
+  "seed": 404,
+  "maria": {
+    "voice_id": "EXAVITQu4vr4xnSDxMaL",
+    "note": "Sarah (default voice) until a designed voice is saved; see VOICE.md 2.1",
+    "stability": 0.4,
+    "similarity_boost": 0.75,
+    "design": "A woman in her mid-thirties, American English with a soft, unremarkable General American accent. Natural mid-to-high pitch, slightly breathy and a little hoarse, as if she has been crying and has not slept. She speaks very quietly and very close to the microphone, like someone at a kitchen table at two in the morning who does not want to wake anyone. Slow, hesitant pacing with small audible breaths between phrases; the voice wavers at the ends of sentences but never sobs and never sounds theatrical. Raw, intimate, real, not an actress performance. Dry, clean studio recording, no reverb, no background noise.",
+    "design_text": "Two a.m. The doctor said... Krabbe disease. I can't even spell it. Is there anyone else... like us? How do I know this is true? So we don't have to start from zero."
+  },
+  "consti": {
+    "voice_id": "pFZP5JQG7iQjIQuC4Bku",
+    "note": "Lily (default voice, ID unverified: check with --list); alternatives Matilda XrExE9yKIg1WjnnlVkGX, George JBFqnCBsd6RMkjVDRZzb",
+    "stability": 0.55,
+    "similarity_boost": 0.75,
+    "design": "A woman in her early fifties with a warm, low alto voice and a calm, grounded presence, like an experienced night-shift nurse who has sat with many families on the worst night of their lives. Neutral mid-Atlantic English, clear but soft diction. Slow, unhurried, even pacing with short sentences and gentle pauses; soft but never whispery, reassuring but never sugary. Not a narrator, not an announcer, not a sales voice, no upbeat inflection, nothing robotic. Close, warm microphone, dry studio recording, no reverb, no background noise.",
+    "design_text": "Maria, I'm Consti. I won't guess. I'll show you how we know. No checked patient group yet. Here's what I searched. One gene. Four disease names. Your family is not the first."
+  }
+}

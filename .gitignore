@@ -41,5 +41,7 @@ app/next-env.d.ts
 .claude/launch.json
 .claude/settings.local.json
 app/e2e-shots/
+app/story-raw/
+app/story/voice/design/
 app/test-results/
 app/playwright-report/

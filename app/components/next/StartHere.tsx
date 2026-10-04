@@ -36,6 +36,12 @@ export default function StartHere() {
           </Link>
         ))}
       </div>
+      <p className="mt-2 text-center">
+        <Link href="/intro" className="inline-flex min-h-11 items-center gap-2 rounded-full px-3 text-[16px] font-medium text-accent hover:underline">
+          <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 1.5v9l7.5-4.5z" fill="currentColor" /></svg>
+          Watch Maria&apos;s story, one minute
+        </Link>
+      </p>
       <div className="card mt-6 px-5 py-4">
         <button
           type="button"

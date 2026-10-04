@@ -1,6 +1,7 @@
 import type { Edge, EdgeLevel, Evidence } from "@/lib/types";
 import { EXPLAIN_SYSTEM_PROMPT, buildExplainUserPrompt } from "@/lib/prompts/explain";
-import { checkSentence, splitSentences, templateSentences, type ExplainEvent } from "@/lib/explain";
+import { checkSentence, plainSentences, splitSentences, type ExplainEvent, type PlainContext } from "@/lib/explain";
+import { therapyState } from "@/lib/nextSteps";
 import { allDiseaseEdges, nodeLabels } from "@/lib/normalize";
 import { FixedWindowLimiter, clientKey } from "@/lib/ratelimit";
 import { explainKey, type PrecomputedExplain } from "@/lib/explaincache";
@@ -30,6 +31,9 @@ interface ExplainRequest {
   disease?: unknown;
   labels?: unknown;
   audience?: unknown;
+  /** the card's disease and the related disease (MONDO ids): used for the approval status and the shared symptoms */
+  from?: unknown;
+  via?: unknown;
 }
 
 const str = (value: unknown, max: number): string | undefined =>
@@ -109,6 +113,40 @@ async function edgesFromIds(request: Request, ids: string[], disease: string): P
   return { edges: allDiseaseEdges(file).filter((e) => wanted.has(e.id)), labels: nodeLabels(file) };
 }
 
+async function diseaseFile(request: Request, id: string): Promise<DiseaseFile | null> {
+  const response = await fetch(new URL(`/data/disease/${id.replace(":", "_")}.json`, request.url)).catch(() => null);
+  return response?.ok ? ((await response.json().catch(() => null)) as DiseaseFile | null) : null;
+}
+
+/** Approval status of the card's disease (searched EMA/FDA records in its data file) and the symptoms it shares with the related disease. */
+async function cardContext(request: Request, from: string | undefined, via: string | undefined): Promise<{ status: Extract<ExplainEvent, { type: "status" }> | null; ctx: PlainContext }> {
+  const fromId = from && DISEASE_ID.test(from) ? from.replace("_", ":") : null;
+  const viaId = via && DISEASE_ID.test(via) ? via.replace("_", ":") : null;
+  const file = fromId ? await diseaseFile(request, fromId) : null;
+  if (!file) return { status: null, ctx: { fromId, viaId } };
+  const D = file.node.label;
+  const sharedSymptoms = (file.neighbours.find((n) => n.id === viaId)?.shared_phenotypes ?? []).map((p) => p.label);
+  const state = therapyState(file);
+  let status: Extract<ExplainEvent, { type: "status" }> | null = null;
+  if (state.kind === "none") {
+    status = {
+      type: "status",
+      text: `No approved medicine for ${D} was found in ${state.authorities} records${state.asOf ? ` as of ${state.asOf}` : ""}.`,
+      source: state.sources.length ? `searched ${state.sources.join("; ")}` : `searched ${state.authorities} records`,
+    };
+  } else if (state.kind === "approved") {
+    const names = [...new Set(state.items.map((t) => t.name))].slice(0, 3);
+    status = {
+      type: "status",
+      text: `${D} has ${names.length > 1 ? "approved medicines" : "an approved medicine"} in EMA or FDA records: ${names.join(", ")}. Whether it fits is for your specialist to decide.`,
+      source: state.items.slice(0, 3).map((t) => [t.authority, t.record].filter(Boolean).join(" ") || t.name).join("; "),
+    };
+  } else {
+    status = { type: "status", text: `The EMA and FDA medicine records have not been searched for ${D} yet, so this summary cannot say whether a medicine is approved.`, source: "no search recorded in the data" };
+  }
+  return { status, ctx: { fromId, viaId, sharedSymptoms } };
+}
+
 /** Explanation generated ahead of time for exactly this edge set (same origin, static file), or null. */
 async function precomputed(request: Request, ids: Set<string>): Promise<PrecomputedExplain | null> {
   if (process.env.EXPLAIN_PRECOMPUTED === "0") return null;
@@ -148,7 +186,7 @@ export async function POST(request: Request) {
   const validIds = new Set(edges.map((e) => e.id));
   const audience = str(body.audience, 80)?.trim() || "a patient-group leader without medical training";
 
-  const stored = await precomputed(request, validIds);
+  const [stored, context] = await Promise.all([precomputed(request, validIds), cardContext(request, str(body.from, 20), str(body.via, 20))]);
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL_EXPLAIN;
   const encoder = new TextEncoder();
@@ -165,24 +203,28 @@ export async function POST(request: Request) {
         else dropped++;
         send(checked);
       };
-      const template = (note: string) => {
-        send({ type: "meta", mode: "template", note });
-        templateSentences(edges, labels).forEach(emit);
+      // the reason for a fallback stays in the server log; the reader sees a neutral label (components/ExplainStream.tsx)
+      const template = (reason: string) => {
+        if (reason) console.info(`explain: plain-language fallback (${reason})`);
+        send({ type: "meta", mode: "template", note: "Plain-language summary built from the sources on this card" });
+        plainSentences(edges, labels, context.ctx).forEach(emit);
       };
+      // approval status first, in every mode: it is the sentence a parent must not miss
+      if (context.status) send(context.status);
 
       try {
         if (stored) {
           // generated offline with the same prompt; re-checked here so a stale file can never cite an edge outside this card
-          send({ type: "meta", mode: "llm", model: stored.model, note: `${stored.model} · generated ${stored.generated_at.slice(0, 10)} for this exact set of edges · sentences without a valid edge citation are removed` });
+          send({ type: "meta", mode: "llm", model: stored.model, note: `AI-written summary, every sentence checked against the sources (${stored.model}, generated ${stored.generated_at.slice(0, 10)})` });
           stored.sentences.forEach((s) => emit(s.text));
           stored.dropped.forEach((d) => {
             dropped++;
             send(d);
           });
         } else if (!apiKey || !model) {
-          template(`template, no LLM (${!apiKey ? "OPENAI_API_KEY" : "OPENAI_MODEL_EXPLAIN"} not set)`);
+          template("no model configured");
         } else if (llmBudget.hit("llm")) {
-          template("template, no LLM (hourly LLM budget of this server reached)");
+          template("hourly model budget reached");
         } else {
           const baseUrl = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/$/, "");
           const upstream = await fetch(`${baseUrl}/responses`, {
@@ -198,10 +240,9 @@ export async function POST(request: Request) {
             signal: AbortSignal.any([request.signal, AbortSignal.timeout(UPSTREAM_TIMEOUT_MS)]),
           });
           if (!upstream.ok || !upstream.body) {
-            send({ type: "error", message: `OpenAI returned HTTP ${upstream.status}` });
-            template("template, no LLM (OpenAI request failed)");
+            template(`OpenAI returned HTTP ${upstream.status}`);
           } else {
-            send({ type: "meta", mode: "llm", model, note: `${model} · sentences without a valid edge citation are removed` });
+            send({ type: "meta", mode: "llm", model, note: "AI-written summary, every sentence checked against the sources" });
             const reader = upstream.body.getReader();
             const decoder = new TextDecoder();
             let sse = "";

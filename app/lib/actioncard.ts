@@ -283,6 +283,9 @@ export function actionCardMarkdown(card: ActionCardModel, builtAt?: string, glan
 // ---------------------------------------------------------------------------------------------------
 // "At a glance": the two or three plain lines a parent reads first, each with its source
 
+/** Height kept free for "At a glance" while the card loads: the smallest real box (235 px at 1280, measured 4 Oct), so nothing below jumps into view. */
+export const GLANCE_RESERVE_PX = 236;
+
 export interface GlanceLine {
   key: "own" | "neighbour" | "purpose";
   text: string;

@@ -6,11 +6,6 @@ export type PanelSection = "community" | "studies" | "neighbours" | "genes" | "p
 
 export interface Persona {
   id: PersonaId;
-  /** @deprecated StartView still reads these until the lens UI is gone there; delete with it */
-  moment?: { step: string; title: string; text: string };
-  name?: string;
-  role?: string;
-  goal?: string;
   placeholder: string;
   /** subtracted from the Fuse score (lower is better) for matching result types */
   typeBoost: Partial<Record<NodeType, number>>;

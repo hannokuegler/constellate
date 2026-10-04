@@ -18,7 +18,16 @@ function getSearcher(): Promise<Searcher> {
   return searcherPromise;
 }
 
-export default function SearchBox({ compact = false, autoFocus = false }: { compact?: boolean; autoFocus?: boolean }) {
+export default function SearchBox({
+  compact = false,
+  autoFocus = false,
+  label = "Search diseases, genes, symptoms or IDs",
+}: {
+  compact?: boolean;
+  autoFocus?: boolean;
+  /** a second search box on the same page needs its own name */
+  label?: string;
+}) {
   const { persona } = usePrefs();
   const router = useRouter();
   const listId = useId();
@@ -105,7 +114,7 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
           aria-controls={listId}
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
-          aria-label="Search diseases, genes, symptoms or IDs"
+          aria-label={label}
           placeholder={persona.placeholder}
           autoFocus={autoFocus}
           autoComplete="off"

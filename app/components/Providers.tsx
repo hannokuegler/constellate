@@ -13,8 +13,6 @@ type ThemeChoice = "auto" | "light" | "dark";
 interface Prefs {
   /** the one fixed view; lib/search.ts still ranks with a persona object */
   persona: Persona;
-  /** @deprecated no-op, only until StartView stops calling it */
-  setPersona: (id: string) => void;
   theme: ThemeChoice;
   setTheme: (t: ThemeChoice) => void;
 }
@@ -57,8 +55,6 @@ export function Providers({ children }: { children: ReactNode }) {
     if (storedTheme === "light" || storedTheme === "dark") setThemeState(storedTheme);
   }, []);
 
-  const setPersona = useCallback(() => undefined, []);
-
   const setTheme = useCallback((t: ThemeChoice) => {
     setThemeState(t);
     writeStorage("constellate.theme", t);
@@ -66,7 +62,7 @@ export function Providers({ children }: { children: ReactNode }) {
     else document.documentElement.setAttribute("data-theme", t);
   }, []);
 
-  const prefs = useMemo(() => ({ persona: DEFAULT_PERSONA_VIEW, setPersona, theme, setTheme }), [setPersona, theme, setTheme]);
+  const prefs = useMemo(() => ({ persona: DEFAULT_PERSONA_VIEW, theme, setTheme }), [theme, setTheme]);
 
   // edge registry
   const edgesRef = useRef(new Map<string, Edge>());

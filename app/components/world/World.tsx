@@ -14,7 +14,7 @@ import type { HoverInfo } from "./SkyCanvas";
 const SkyCanvas = dynamic(() => import("./SkyCanvas"), { ssr: false });
 const SkyFallback2D = dynamic(() => import("./SkyFallback2D"), { ssr: false });
 
-type Phase = "static" | SkyMode;
+export type Phase = "static" | SkyMode;
 
 function afterFirstPaint(fn: () => void): () => void {
   let cancelled = false;
@@ -32,7 +32,15 @@ function afterFirstPaint(fn: () => void): () => void {
   };
 }
 
-export default function World({ initialFocus, onSky }: { initialFocus?: string | null; onSky?: (sky: Sky) => void }) {
+export default function World({
+  initialFocus,
+  onSky,
+  onModeChange,
+}: {
+  initialFocus?: string | null;
+  onSky?: (sky: Sky) => void;
+  onModeChange?: (mode: Phase) => void;
+}) {
   const router = useRouter();
   const [phase, setPhase] = useState<Phase>("static");
   const [reason, setReason] = useState("");
@@ -58,6 +66,12 @@ export default function World({ initialFocus, onSky }: { initialFocus?: string |
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
+
+  useEffect(() => {
+    onModeChange?.(phase);
+    // report each renderer switch (3d -> 2d after a failure, too)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   const onReady = useCallback(() => setVisible(true), []);
   const onFail = useCallback((why: string) => {

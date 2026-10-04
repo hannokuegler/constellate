@@ -63,6 +63,8 @@ const STAR_VERTEX = /* glsl */ `
   attribute float aSeed;
   attribute float aHop;
   attribute float aDelay;
+  attribute float aGap;
+  uniform float uRing;
   uniform float uPixelRatio;
   uniform float uTime;
   uniform float uClock;
@@ -100,9 +102,9 @@ const STAR_VERTEX = /* glsl */ `
     float sharp = max(max(1.0 - uBlur, lensInside(px, 3.0 * uPixelRatio)), lit);
     vSharp = sharp;
     vec3 litColor = center ? uAmber : uStar;
-    vColor = mix(base, litColor, lit);
-    vAlpha = mix(alpha, 1.0, lit) * mix(aKind > 2.5 ? 0.22 : 0.34, 1.0, sharp);
-    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix(aKind > 2.5 ? 2.2 : 3.0, 1.0, sharp);
+    vColor = mix(mix(base, litColor, lit), uStarDim, aGap * uRing);
+    vAlpha = mix(alpha, 1.0, lit) * mix(aKind > 2.5 ? 0.3 : 0.5, 1.0, sharp) * mix(1.0, 0.3, aGap * uRing);
+    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix(aKind > 2.5 ? 2.4 : 3.4, 1.0, sharp);
     float attenuation = min(pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75), 2.2);
     gl_PointSize = max(size * attenuation, 2.2) * uPixelRatio;
     gl_Position = clip;
@@ -135,7 +137,7 @@ const LINE_VERTEX = /* glsl */ `
   attribute float aHop;
   attribute float aDelay;
   attribute float aLevel;
-  attribute float aEdge;
+  attribute float aAmber;
   uniform float uClock;
   uniform float uNeighbourShift;
   uniform vec3 uStrong;
@@ -143,7 +145,6 @@ const LINE_VERTEX = /* glsl */ `
   uniform vec3 uInferred;
   uniform vec3 uStarDim;
   uniform vec3 uAmber;
-  uniform float uAmberEdge;
   uniform float uAmberAmount;
   uniform float uBase;
   uniform float uDim;
@@ -159,7 +160,7 @@ const LINE_VERTEX = /* glsl */ `
     vColor = mix(uStarDim, litColor, lit);
     vAlpha = mix(uBase * mix(1.0, 0.4, uDim), litAlpha, lit);
     // the one edge the story reads aloud turns amber
-    float amber = abs(aEdge - uAmberEdge) < 0.5 ? uAmberAmount : 0.0;
+    float amber = aAmber * uAmberAmount;
     vColor = mix(vColor, uAmber, amber);
     vAlpha = mix(vAlpha, 1.0, amber);
     vLit = max(lit, amber);
@@ -169,15 +170,19 @@ const LINE_VERTEX = /* glsl */ `
 
 const LINE_FRAGMENT = /* glsl */ `
   uniform float uLineOutside;
+  uniform float uLensLine;
   uniform float uPixelRatio;
   varying vec3 vColor;
   varying float vAlpha;
   varying float vLit;
   ${LENS_GLSL}
   void main() {
-    float visible = max(max(uLineOutside, lensInside(gl_FragCoord.xy, 1.5 * uPixelRatio)), vLit);
+    float inLens = lensInside(gl_FragCoord.xy, 1.5 * uPixelRatio);
+    float visible = max(max(uLineOutside, inLens), vLit);
     if (visible < 0.004) discard;
-    gl_FragColor = vec4(vColor, vAlpha * visible);
+    // through the lens the links read clearly
+    float alpha = max(vAlpha, uLensLine * inLens * (1.0 - vLit));
+    gl_FragColor = vec4(vColor, alpha * visible);
   }
 `;
 
@@ -298,6 +303,9 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const delayAttribute = new BufferAttribute(delays, 1);
     starGeometry.setAttribute("aHop", hopAttribute);
     starGeometry.setAttribute("aDelay", delayAttribute);
+    const gapFlags = new Float32Array(n);
+    const gapAttribute = new BufferAttribute(gapFlags, 1);
+    starGeometry.setAttribute("aGap", gapAttribute);
 
     const shared = {
       uPixelRatio: { value: 1 },
@@ -313,6 +321,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const starUniforms = {
       ...shared,
       uBlur: { value: 0 },
+      uRing: { value: 0 },
       uViewport: { value: new Vector2(1, 1) },
       uTwinkle: { value: motion ? 1 : 0 },
       uStar: { value: new Color() },
@@ -336,14 +345,14 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const lineHops = new Float32Array(m * 2);
     const lineDelays = new Float32Array(m * 2);
     const lineLevels = new Float32Array(m * 2);
-    const lineEdges = new Float32Array(m * 2);
+    const lineAmber = new Float32Array(m * 2);
     for (let e = 0; e < m; e++) {
       const s = sky.edgeSource[e] * 3;
       const t = sky.edgeTarget[e] * 3;
       linePositions.set([sky.positions[s], sky.positions[s + 1], sky.positions[s + 2], sky.positions[t], sky.positions[t + 1], sky.positions[t + 2]], e * 6);
       const level = sky.edgeCode[e] % 4;
       lineLevels[e * 2] = lineLevels[e * 2 + 1] = level;
-      lineEdges[e * 2] = lineEdges[e * 2 + 1] = e;
+
     }
     const lineGeometry = new BufferGeometry();
     lineGeometry.setAttribute("position", new BufferAttribute(linePositions, 3));
@@ -352,7 +361,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     lineGeometry.setAttribute("aHop", lineHopAttribute);
     lineGeometry.setAttribute("aDelay", lineDelayAttribute);
     lineGeometry.setAttribute("aLevel", new BufferAttribute(lineLevels, 1));
-    lineGeometry.setAttribute("aEdge", new BufferAttribute(lineEdges, 1));
+    lineGeometry.setAttribute("aAmber", new BufferAttribute(lineAmber, 1));
     const lineUniforms = {
       uClock: shared.uClock,
       uNeighbourShift: shared.uNeighbourShift,
@@ -362,8 +371,8 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       uLensB: shared.uLensB,
       uLensOn: shared.uLensOn,
       uLineOutside: { value: 1 },
+      uLensLine: { value: 0.2 },
       uAmber: { value: new Color() },
-      uAmberEdge: { value: -1 },
       uAmberAmount: { value: 0 },
       uBase: { value: 0.05 },
       uStrong: { value: new Color() },
@@ -411,7 +420,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     };
     const halo = makeHalo(54);
     const hoverRing = makeHalo(26);
-    const gapRing = makeHalo(40);
+    const gapRing = makeHalo(58);
     gapRing.material.uniforms.uDashed.value = 1;
 
     // story anchors: Krabbe, the MLD edge, the gap disease
@@ -426,15 +435,19 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       gap: starPosition(gapIndex),
       between: starPosition(krabbeIndex).add(starPosition(gapIndex)).multiplyScalar(0.5),
     };
-    let amberEdgeIndex = -1;
+    // every edge between Krabbe and MLD turns amber together (they share one line on screen)
     if (krabbeIndex !== undefined && mldIndex !== undefined) {
       for (const e of sky.adjacency[krabbeIndex]) {
         const other = sky.edgeSource[e] === krabbeIndex ? sky.edgeTarget[e] : sky.edgeSource[e];
-        // the similar-phenotype link (type code 1) is the one the tour explains ("Why linked")
-        if (other === mldIndex && (amberEdgeIndex < 0 || Math.floor(sky.edgeCode[e] / 4) === 1)) amberEdgeIndex = e;
+        if (other === mldIndex) lineAmber[e * 2] = lineAmber[e * 2 + 1] = 1;
       }
     }
-    lineUniforms.uAmberEdge.value = amberEdgeIndex;
+    const mldHalo = makeHalo(30);
+    if (mldIndex !== undefined) {
+      mldHalo.geometry.attributes.position.array.set(sky.positions.subarray(mldIndex * 3, mldIndex * 3 + 3));
+      mldHalo.geometry.attributes.position.needsUpdate = true;
+    }
+    if (gapIndex !== undefined) gapFlags[gapIndex] = 1;
     if (gapIndex !== undefined) {
       gapRing.geometry.attributes.position.array.set(sky.positions.subarray(gapIndex * 3, gapIndex * 3 + 3));
       gapRing.geometry.attributes.position.needsUpdate = true;
@@ -454,13 +467,15 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       lineUniforms.uText.value.set(palette.lvlText);
       lineUniforms.uInferred.value.set(palette.lvlInferred);
       lineUniforms.uStarDim.value.set(palette.starDim);
-      lineUniforms.uBase.value = palette.dark ? 0.06 : 0.07;
+      lineUniforms.uBase.value = palette.dark ? 0.085 : 0.09;
+      lineUniforms.uLensLine.value = palette.dark ? 0.22 : 0.2;
       halo.material.uniforms.uColor.value.set(palette.amber);
+      mldHalo.material.uniforms.uColor.value.set(palette.amber);
       hoverRing.material.uniforms.uColor.value.set(palette.star);
       gapRing.material.uniforms.uColor.value.set(palette.star);
       lineUniforms.uAmber.value.set(palette.amber);
       const blending = palette.dark ? AdditiveBlending : NormalBlending;
-      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material]) {
+      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material, mldHalo.material]) {
         material.blending = blending;
         material.needsUpdate = true;
       }
@@ -608,6 +623,17 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       }
       projectedValid = true;
     };
+    // test hook: where a star sits on screen (used by the screenshot checks)
+    (window as Window & { __constellateSky?: unknown }).__constellateSky = {
+      mode: "3d",
+      screenOf: (id: string) => {
+        const i = sky.indexById.get(id);
+        if (i === undefined) return null;
+        projectAll();
+        return [projected[i * 2], projected[i * 2 + 1]];
+      },
+    };
+
     const pick = (x: number, y: number): number | null => {
       if (!projectedValid) projectAll();
       let best: number | null = null;
@@ -779,6 +805,8 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
         projectedValid = false;
       }
       gapRing.material.uniforms.uOpacity.value = ringOpacity;
+      starUniforms.uRing.value = ringOpacity;
+      mldHalo.material.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value * 0.9;
 
       if (storyCamera) {
         // camera already placed by the story
@@ -887,6 +915,8 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       hoverRing.material.dispose();
       gapRing.geometry.dispose();
       gapRing.material.dispose();
+      mldHalo.geometry.dispose();
+      mldHalo.material.dispose();
       renderer.dispose();
       canvas.remove();
     };

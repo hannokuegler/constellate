@@ -57,7 +57,7 @@ export function lensGeometry(chapter: number, t: number, width: number, height: 
     return { on: true, ...base, ay: cy + dy, by: cy + dy, frame: 1, full: 0 };
   }
   if (id === "wearing") {
-    if (staticMode) return { on: true, ...base, frame: 1, full: 0 };
+    if (staticMode) return { ...off, full: 1 }; // fallback: the end state, the whole sky sharp
     const grow = ease(span(t, 0, 0.75));
     const big = Math.hypot(width, height);
     return { on: true, ...base, r: r0 + (big - r0) * grow, frame: 1 - span(t, 0.45, 0.75), full: grow };
@@ -83,6 +83,7 @@ export interface StoryFrame {
 /** neighbours ignite after the centre: their delays are shifted by this many ms in story mode */
 export const NEIGHBOUR_SHIFT = 400;
 const HOME = 235;
+const LENS = 175; // closer while the glasses are on: the sky fills both lenses
 const NEAR = 88;
 
 export function storyFrame(chapter: number, t: number, width: number): StoryFrame {
@@ -104,19 +105,26 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "hero":
       return { ...frame, blur: 1, lines: 0, shift: wide ? 0.16 : 0, lift: narrow ? 0.28 : 0 };
     case "lights":
-      return { ...frame, blur: 1 - 0.4 * span(t, 0, 0.8), lines: 0, shift: wide ? 0.16 * (1 - span(t, 0.2, 1)) : 0, lift: narrow ? 0.28 * (1 - span(t, 0.2, 1)) : 0 };
+      return {
+        ...frame,
+        blur: 1 - 0.4 * span(t, 0, 0.8),
+        lines: 0,
+        shift: wide ? 0.16 * (1 - span(t, 0.2, 1)) : 0,
+        lift: narrow ? 0.28 * (1 - span(t, 0.2, 1)) : 0,
+        camera: { from: "home", to: "home", k: ease(span(t, 0.2, 1)), fromDistance: HOME, toDistance: LENS },
+      };
     case "lens":
-      return { ...frame, blur: 0.6, lines: 0, shift: 0, lift: 0 };
+      return { ...frame, blur: 0.6, lines: 0, shift: 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
     case "wearing": {
       const sharp = span(t, 0.6, 0.85);
-      return { ...frame, blur: 0.6 * (1 - sharp), lines: sharp, shift: 0, lift: 0 };
+      return { ...frame, blur: 0.6 * (1 - sharp), lines: sharp, shift: 0, lift: 0, camera: { from: "home", to: "home", k: 1, fromDistance: LENS, toDistance: LENS } };
     }
     case "krabbe":
       return {
         ...frame,
         shift: wide ? 0.1 * span(t, 0, 0.6) : 0,
         lift: narrow ? 0.16 * span(t, 0, 0.6) : 0,
-        camera: { from: "home", to: "krabbe", k: ease(span(t, 0, 0.6)), fromDistance: HOME, toDistance: NEAR },
+        camera: { from: "home", to: "krabbe", k: ease(span(t, 0, 0.6)), fromDistance: LENS, toDistance: NEAR },
         focus: t >= 0.3,
         clock: span(t, 0.3, 0.65) * 300,
       };

@@ -89,3 +89,40 @@ Sonst: Übergänge ≤ 250 ms über `--anim`. Leichtes Funkeln der Sterne nur im
 - HIG: 44 px Tippflächen, 17 px Fließtext, 4,5:1 / 3:1, kein seitliches Scrollen bei 375, `:focus-visible`, Safe Areas.
 - „research navigation, not medical advice" sichtbar. Keine Zahl ohne Quelle. Maria nie als echte Person. KI-Labels neutral (P15).
 - `app/public/data/` und `pipeline/` tabu.
+
+## 9. Marias Weg (Konzept-Check, Stand 05:15)
+
+Maria ist eine Persona aus dem Brief und taucht im Produkt nie mit Namen auf. Ihr Kind hat gestern die Diagnose bekommen. Es ist 2 Uhr nachts, sie sitzt am Handy (375 px, dunkel), ist geschockt und hat kein Fachwissen. Jeder Schritt beantwortet genau eine ihrer Fragen, mit Quelle und Datum. Die Tiefe ist einen Klick weiter, nie im Weg.
+
+| # | Ihre Frage | Was sie sieht | Wer baut |
+|---|---|---|---|
+| 0 | Wo fange ich an? | Startseite: ein Satz, ein Suchfeld, 2 bis 3 Beispiele, zweiter Einstieg „I have a finding or symptom". Kein Graph, keine Zahlenwand. Die Scroll-Story folgt erst darunter und blockiert das erste Bild nie. | A (`StartView`), Story: Welt (`world/ScrollStory`) |
+| 1 | Was ist das? | Sie tippt „Krabbe", wählt „Krabbe disease", landet auf der Krankheitsseite: H1, ein Satz Definition (MONDO, Quelle sichtbar). | A |
+| 2 | Gibt es eine Behandlung? | Block „What you can do now". Erste Zeile ehrlich: „Not found in EMA or FDA records as of <Datum>". Direkt darunter die Alternativen bei Nachbarn: „Approved for metachromatic leukodystrophy, not for Krabbe disease", Libmeldy (EMA 17.12.2020) und Lenmeldy (FDA 18.03.2024) mit Link. Nie andeuten, dass das bei Krabbe wirkt. | A |
+| 3 | Wo melde ich mich? | Patientengruppen (Hunter's Hope, Krabbe UK, KrabbeConnect, ELA Deutschland) mit Land und Knopf zur offiziellen Seite. | A (nutzt `Orgs`) |
+| 4 | Gibt es eine Studie? | Offene Studien mit Länderfilter, Status in Klartext („Recruiting now", „Observes, no treatment"), „Contact the study team" zum Registereintrag, dazu der Hinweis, dass Arzt und Studienteam über die Teilnahme entscheiden. | A (nutzt `OpenStudies`) |
+| 5 | Was gibt es bei MLD? | Höchstens drei nächste Nachbarn mit dem, was dort schon existiert (Zulassung, Natural-History-Studie, Register), der Rest hinter „Show all N". Von dort führt der Weg zur Action Card. | A |
+| 6 | Was nehme ich zum Arzt mit? | Action Card, oben „In plain language" (Explain), dann What transfers, What differs, Needs expert review, jeder Satz mit Kanten-ID. Drucken und teilen. | Integrator (`ActionCardPage`) |
+| 7 | Kann ich helfen? | Knopf „Share what you know" auf der Krankheitsseite und der Action Card → `/share` in drei Schritten, die Krankheit ist vorausgefüllt, mit Datenschutz-Sperre, am Ende ein GitHub-Issue oder Text kopieren. | B |
+| 8 | Ich habe nur einen Befund | Zweiter Einstieg → Symptom-Seite `/p/<HP>`: welche Krankheiten passen (mit Quelle, ohne Diagnose-Anspruch), welche Studien es gibt. | A (`PhenotypeView`) |
+
+Die Detail-Ebene liegt unter den Klartext-Blöcken: Graph, Evidence-Panel mit Gegenevidenz-Slot, Formel und Forschende. Forschende erreichen sie mit einem Klick, Maria muss nicht durch sie hindurch.
+
+**Ist-Befund `maria` (d382620, 375 dunkel, 0 Konsolenfehler, kein seitliches Scrollen):**
+
+- Die Krankheitsseite ist bei 375 px 12.175 px hoch. Oben stehen gute Zahlen (4 patient groups, 8 open studies, 13 related diagnoses, „What now?").
+- Die Antwort auf „Gibt es eine Behandlung?" fehlt oben.
+- Der Graph kommt schon an zweiter Stelle.
+- Die 13 Nachbarn hängen alle offen, jeder mit eigenem Action-Card-Knopf.
+- Bei den Patientengruppen steht als Label „inferred", das versteht Maria nicht.
+- Der Linktext „Why the mechanism call" ist unklar.
+- Auf der Action Card ist „Explain in plain language" ganz unten.
+- Auf der Startseite fehlt der zweite Einstieg (Befund oder Symptom).
+
+**Nachaufträge an A und B (über Chef):**
+
+1. A · `DiseaseView.tsx`: Bei 375 px stehen „What you can do now" (Behandlung ja/nein plus Alternativen), Patientengruppen und Studien vor dem Graphen. Kriterium: In den ersten 2 Bildschirmhöhen (1.624 px) stehen die Behandlungsantwort und mindestens eine Patientengruppe.
+2. A · `DiseaseView.tsx` / `components/next/*`: Nachbarn im einfachen Block höchstens 3, der Rest hinter „Show all N related diagnoses". Kriterium: Seitenhöhe bis zum Graphen bei 375 px ≤ 5.000 px.
+3. A · Linktext „Why the mechanism call" → „How these two are linked". Kriterium: kein „mechanism call" mehr im sichtbaren Text (der E2E-Button „Why linked" bleibt).
+4. A und B · „Share what you know" verlinkt `/share?d=<MONDO_id>`, und `/share` füllt die Krankheit daraus vor. Kriterium: `/share?d=MONDO_0009499` zeigt „Krabbe disease" im ersten Schritt.
+5. A · Patientengruppen: Auf der einfachen Ebene steht „hand-checked list, verified <Datum>" statt des Level-Badges „inferred". Das Badge bleibt im Evidence-Panel.

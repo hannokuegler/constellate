@@ -1,5 +1,5 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
@@ -18,6 +18,17 @@ let t0 = 0;
 
 const seconds = (file: string) =>
   Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file]).toString().trim());
+
+// where the speech in a clip ends: trailing silence does not count, pauses inside the line do
+function speechEnd(file: string): number {
+  const total = seconds(file);
+  const log = spawnSync("ffmpeg", ["-nostdin", "-i", file, "-af", "silencedetect=n=-45dB:d=0.2", "-f", "null", "-"], { encoding: "utf8" }).stderr;
+  const starts = [...log.matchAll(/silence_start: ([0-9.]+)/g)].map((m) => Number(m[1]));
+  const ends = [...log.matchAll(/silence_end: ([0-9.]+)/g)].map((m) => Number(m[1]));
+  const last = starts.at(-1);
+  if (last === undefined) return total;
+  return ends.length < starts.length || (ends.at(-1) ?? 0) >= total - 0.1 ? last : total;
+}
 
 // injected into every document: speech bubbles, title cards and a cursor, appended lazily so hydration never sees them
 function overlay() {
@@ -137,7 +148,7 @@ async function show(page: Page, id: string, bubble = true): Promise<number> {
   const clip = join(VOICE, `${id}.mp3`);
   if (!existsSync(clip)) return Date.now() + readMs(line.text);
   cues.push({ file: clip, at: Date.now() - t0 });
-  return Date.now() + Math.round(seconds(clip) * 1000) + 250;
+  return Date.now() + Math.round(speechEnd(clip) * 1000) + 180;
 }
 
 async function until(page: Page, end: number) {
@@ -192,17 +203,19 @@ test("record Maria's story", async ({ browser }) => {
   await card(page, STORY_TITLE, STORY_NOTE);
   const lead = Date.now() - t0;
   await page.mouse.move(900, 300);
-  await page.waitForTimeout(1900);
-  await card(page, null);
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(1000);
 
-  // the first night: Maria cannot spell it, Consti introduces herself while Maria types (bubbles right, clear of the search list)
+  // the first night: Maria's voice starts in the dark, the start page fades in under her line;
+  // Consti introduces herself while Maria types (bubbles right, clear of the search list)
   await dock(page, "right");
-  await say(page, "m-start");
-  let end = await show(page, "c-hello");
+  let end = await show(page, "m-start");
+  await page.waitForTimeout(1600);
+  await card(page, null);
+  await until(page, end);
+  end = await show(page, "c-hello");
   const box = page.getByRole("combobox", { name: /search diseases/i });
   await glideClick(page, box);
-  await box.pressSequentially("krabe", { delay: 150 });
+  await box.pressSequentially("krabe", { delay: 120 });
   const hit = page.getByRole("listbox").getByRole("option", { name: /Krabbe disease/ }).first();
   await expect(hit).toBeVisible();
   await until(page, end);
@@ -210,7 +223,7 @@ test("record Maria's story", async ({ browser }) => {
   await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
   await expect(page.locator("canvas").first()).toBeVisible();
   await dock(page, "left");
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(300);
 
   // alone: the honest gap, then the open studies
   end = await show(page, "m-alone");
@@ -228,9 +241,9 @@ test("record Maria's story", async ({ browser }) => {
   await glideTo(page, line);
   await until(page, end);
   await line.click();
+  end = await show(page, "c-evidence");
   await expect(page.getByRole("dialog")).toBeVisible();
-  await page.waitForTimeout(250);
-  await say(page, "c-evidence");
+  await until(page, end);
 
   // next door: MLD shares PSAP, then the PSAP page
   end = await show(page, "c-related");
@@ -238,10 +251,10 @@ test("record Maria's story", async ({ browser }) => {
   await scrollTo(page, page.locator("#related"), "start");
   await until(page, end);
   await glideClick(page, page.getByRole("link", { name: "PSAP", exact: true }).first());
+  end = await show(page, "c-psap"); // the line starts with the click, the page arrives under it
   await expect(page).toHaveURL(/\/g\/PSAP/);
   await expect(page.getByText(/One gene, \d+ disease names/)).toBeVisible();
-  await page.waitForTimeout(300);
-  await say(page, "c-psap");
+  await until(page, end);
 
   // the action card
   await page.goBack();
@@ -249,18 +262,18 @@ test("record Maria's story", async ({ browser }) => {
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
   await page.waitForTimeout(400);
   await glideClick(page, page.getByRole("button", { name: "Action card" }).first());
+  end = await show(page, "c-card");
   await expect(page.locator("#action-card")).toBeVisible();
-  await page.waitForTimeout(500);
-  await say(page, "c-card");
+  await until(page, end);
   await say(page, "m-end");
 
   // silence, then the last line over the closing card
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(700);
   await page.evaluate(() => (window as unknown as { __storyClear: () => void }).__storyClear());
   await card(page, "Your family is not the first.", "Now try it yourself: search your diagnosis, open any line, take your action card.");
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(300);
   await say(page, "c-end", false); // the card carries the words
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(700);
 
   const video = page.video();
   await ctx.close();
@@ -274,7 +287,7 @@ test("record Maria's story", async ({ browser }) => {
   const tempo = Math.min(1.05, Math.max(1, length / MAX_SECONDS));
   if (length / tempo > MAX_SECONDS) console.warn(`story is ${(length / tempo).toFixed(1)} s even at +5 %: shorten a line or a pause`);
   const mix = cues.length
-    ? ["-filter_complex", cues.map((c, i) => `[${i + 1}:a]adelay=${c.at - cut}:all=1[a${i}]`).join(";") + `;${cues.map((_, i) => `[a${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:dropout_transition=0,atempo=${tempo.toFixed(4)}[voice];[0:v]setpts=PTS/${tempo.toFixed(4)}[v]`, "-map", "[v]", "-map", "[voice]"]
+    ? ["-filter_complex", cues.map((c, i) => `[${i + 1}:a]adelay=${c.at - cut}:all=1[a${i}]`).join(";") + `;${cues.map((_, i) => `[a${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:dropout_transition=0,atempo=${tempo.toFixed(4)},loudnorm=I=-16:TP=-1.5:LRA=11,aresample=48000[voice];[0:v]setpts=PTS/${tempo.toFixed(4)}[v]`, "-map", "[v]", "-map", "[voice]"]
     : ["-vf", `setpts=PTS/${tempo.toFixed(4)}`, "-an"];
   const input = ["-y", "-loglevel", "error", "-ss", (cut / 1000).toFixed(3), "-i", raw, ...audioIn, ...mix];
   const mp4 = join(OUT, "maria.mp4");

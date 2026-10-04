@@ -23,6 +23,12 @@ test("intro story leads into the app", async ({ page }) => {
   await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.duration), { timeout: 15_000 }).toBeGreaterThan(30);
   expect(await video.evaluate((v: HTMLVideoElement) => v.currentSrc)).toMatch(/\/story\/maria\.(mp4|webm)$/);
 
+  // the voice is opt-in: autoplay is muted, one click restarts the story with sound
+  await expect(page.getByText("Voices generated with ElevenLabs")).toBeVisible();
+  await page.getByRole("button", { name: "Play with sound" }).click();
+  await expect.poll(() => video.evaluate((v: HTMLVideoElement) => v.muted)).toBe(false);
+  await expect(page.getByRole("button", { name: "Play with sound" })).toHaveCount(0);
+
   await page.getByText("Read the transcript").click();
   await expect(page.getByText(/Consti:/).first()).toBeVisible();
 

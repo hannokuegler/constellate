@@ -21,7 +21,7 @@ export const SPEAKERS: Record<Speaker, { name: string; role: string }> = {
 export const STORY_TITLE = "Maria's first night";
 export const STORY_NOTE = "Maria is a composite character. Every screen is the live app; Consti only points at what the data shows.";
 /** true once the recorded video carries the ElevenLabs voice track (story/voice/*.mp3) */
-export const STORY_HAS_VOICE = false;
+export const STORY_HAS_VOICE = true;
 export const STORY_VOICE_NOTE = "Voices generated with ElevenLabs (Eleven v4).";
 
 /** H.264 first (Safari, Chrome, Edge, Firefox), VP9 for browsers without H.264 */

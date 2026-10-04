@@ -52,7 +52,8 @@ export function Providers({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // restoring the stored preference after hydration is intentional (server render has no localStorage)
-    setPersonaId(personaById(readStorage("constellate.persona")).id);
+    // A single reading order for everyone; legacy lens preferences no longer affect the product.
+    setPersonaId(DEFAULT_PERSONA);
     const storedTheme = readStorage("constellate.theme");
     if (storedTheme === "light" || storedTheme === "dark") setThemeState(storedTheme);
   }, []);
@@ -99,7 +100,7 @@ export function Providers({ children }: { children: ReactNode }) {
   const close = useCallback(() => {
     setOpenId(null);
     setMissingId(null);
-    returnFocus.current?.focus?.();
+    requestAnimationFrame(() => returnFocus.current?.focus?.());
   }, []);
 
   const api = useMemo<EdgePanelApi>(

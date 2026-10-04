@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useEffect, useMemo, useState } from "react";
 import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types";
 import { loadTrial } from "@/lib/data";
@@ -183,6 +185,7 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
         </dd>
       </dl>
       <div className="mt-3 flex flex-wrap items-center gap-3">
+        <Link className="button" href={`/t/${n.id.replace(/^NCT:/, "")}`}>View study</Link>
         <a
           href={detail?.contact_url ?? `${String(n.url ?? `https://clinicaltrials.gov/study/${n.id}`)}#contacts-and-locations`}
           target="_blank"

@@ -16,6 +16,7 @@ interface Props {
 
 export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLElement>(null);
   const [full, setFull] = useState<Edge | null>(null);
   const edge = full && given && full.id === given.id ? full : given;
   const loadingFull = Boolean(given?.evidence_omitted && edge === given);
@@ -41,9 +42,20 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
 
   useEffect(() => {
     closeRef.current?.focus();
-    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const main = document.querySelector("main");
+    main?.setAttribute("inert", "");
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+      if (event.key !== "Tab") return;
+      const controls = Array.from(panelRef.current?.querySelectorAll<HTMLElement>("a[href],button:not([disabled]),input,select,[tabindex='0']") ?? []).filter((el) => el.getClientRects().length);
+      const first = controls[0]; const last = controls.at(-1);
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = previousOverflow; main?.removeAttribute("inert"); };
   }, [edge, missingId, onClose]);
 
   const sourcesChecked = edge
@@ -52,10 +64,11 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
 
   return (
     <>
-      <div className="fixed inset-0 z-40 bg-black/25 md:bg-transparent md:pointer-events-none" onClick={onClose} aria-hidden="true" />
+      <div className="fixed inset-0 z-40 bg-black/25" onClick={onClose} aria-hidden="true" />
       <aside
         role="dialog"
-        aria-modal="false"
+        ref={panelRef}
+        aria-modal="true"
         aria-labelledby="edge-panel-title"
         className="drawer-enter fixed z-50 inset-x-0 bottom-0 max-h-[85vh] md:inset-x-auto md:right-4 md:top-20 md:bottom-4 md:max-h-none md:w-[440px] overflow-y-auto overscroll-contain rounded-t-[20px] md:rounded-[20px] border border-line bg-surface shadow-[var(--shadow)] pb-[env(safe-area-inset-bottom)]"
       >
@@ -168,7 +181,7 @@ function EvidenceItem({ ev, contra = false }: { ev: Evidence; contra?: boolean }
     <li className={`rounded-[12px] border px-3 py-3 ${contra ? "border-contra/40 bg-contra-soft" : "border-line"}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-semibold">{ev.db}</span>
-        {ev.origin && ev.origin !== ev.db && <span className="text-[13px] text-ink-2">via {ev.origin}</span>}
+        {ev.origin && ev.origin !== ev.db && <span className="text-[13px] text-ink-2">via {aiOrigin(ev) ? "AI-extracted" : ev.origin}</span>}
         <span className="ml-auto"><LevelBadge level={ev.level} small /></span>
       </div>
       {ev.record && (

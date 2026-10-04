@@ -6,7 +6,7 @@ import { loadIndex } from "@/lib/data";
 import { createSearcher, type SearchHit } from "@/lib/search";
 import { hrefFor } from "@/lib/ids";
 import type { IndexEntry } from "@/lib/types";
-import { usePrefs } from "./Providers";
+import { personaById, DEFAULT_PERSONA } from "@/lib/persona";
 import { TypeBadge } from "./Badges";
 
 type Searcher = ReturnType<typeof createSearcher>;
@@ -18,7 +18,7 @@ function getSearcher(): Promise<Searcher> {
 }
 
 export default function SearchBox({ compact = false, autoFocus = false }: { compact?: boolean; autoFocus?: boolean }) {
-  const { persona } = usePrefs();
+  const persona = personaById(DEFAULT_PERSONA);
   const router = useRouter();
   const listId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -69,13 +69,15 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   return (
     <div className="relative w-full">
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
+      <label className={compact ? "sr-only" : "search-label"} htmlFor={`${listId}-input`}>Type the diagnosis your family received.</label>
+      <div className="search-field">
         <svg width={compact ? 16 : 20} height={compact ? 16 : 20} viewBox="0 0 20 20" className="shrink-0 text-ink-2" aria-hidden="true">
           <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
         <input
           ref={inputRef}
+          id={`${listId}-input`}
           type="search"
           role="combobox"
           aria-expanded={showList}
@@ -83,7 +85,7 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
           aria-label="Search diseases, genes, symptoms or IDs"
-          placeholder={persona.placeholder}
+          placeholder="Search a disease or diagnosis"
           autoFocus={autoFocus}
           autoComplete="off"
           spellCheck={false}
@@ -99,17 +101,17 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
+          className="min-w-0 flex-1 bg-transparent"
         />
       </div>
       {showList && (
         <ul
           id={listId}
           role="listbox"
-          className="absolute inset-x-0 top-full z-40 mt-2 max-h-[60vh] overflow-y-auto rounded-[20px] border border-line bg-surface p-2 shadow-[var(--shadow)]"
+          className="search-results"
         >
           {!searcher && !loadError && <li className="px-3 py-3 text-[15px] text-ink-2">Loading the index…</li>}
-          {loadError && <li className="px-3 py-3 text-[15px] text-contra">Search index unavailable: {loadError}</li>}
+          {loadError && <li className="px-3 py-3 text-[15px] text-contra">Search could not load. <button className="button mt-3" onClick={() => { setLoadError(null); warm(); }}>Retry search</button></li>}
           {searcher && !hits.length && (
             <li className="px-3 py-3 text-[15px] text-ink-2">
               No match for “{query}”. Try a synonym, a gene symbol or an ID such as ORPHA:487.
@@ -128,8 +130,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             >
               <TypeBadge type={hit.entry.type} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[15px] font-medium">{hit.entry.label}</span>
-                {hit.matched && <span className="block truncate text-[12px] text-ink-2">matches “{hit.matched}”</span>}
+                <span className="block text-[17px] font-medium">{hit.entry.label}</span>
+                {hit.matched && <span className="block text-[12px] text-ink-2">matches “{hit.matched}”</span>}
               </span>
               <span className="hidden shrink-0 text-[12px] text-ink-2 sm:inline">{hit.entry.id}</span>
             </li>

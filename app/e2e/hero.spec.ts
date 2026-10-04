@@ -48,6 +48,8 @@ for (const vp of [
     await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
     await expect(page.getByRole("heading", { level: 1, name: "Krabbe disease" })).toBeVisible();
     await expect(page.getByText("MONDO:0009499").first()).toBeVisible();
+    // The family view starts with answers. Research depth is one explicit action away.
+    await page.getByRole("link", { name: "Explore evidence", exact: true }).click();
     await expect(page.locator("canvas").first()).toBeVisible();
     await page.waitForTimeout(2500); // let the force layout settle
     await s("2-krabbe");
@@ -70,6 +72,9 @@ for (const vp of [
 
     // 4 PSAP via the gene page
     await page.goBack();
+    if (!(await page.locator("#disease-evidence").getAttribute("open"))) {
+      await page.getByRole("link", { name: "Explore evidence", exact: true }).click();
+    }
     await page.getByRole("link", { name: "PSAP", exact: true }).first().click();
     await expect(page).toHaveURL(/\/g\/PSAP/);
     await expect(page.getByText(/One gene, \d+ disease names/)).toBeVisible();
@@ -83,6 +88,7 @@ for (const vp of [
 
     // 6 back to Krabbe: edge panel with evidence, counter-evidence slot
     await page.goto("/d/MONDO_0009499");
+    await page.getByRole("link", { name: "Explore evidence", exact: true }).click();
     await page.getByRole("button", { name: /Evidence: (caused by|associated gene|disease gene)/i }).first().click();
     const panel = page.getByRole("dialog");
     await expect(panel).toBeVisible();
@@ -110,6 +116,7 @@ for (const vp of [
     await s("8-honest-gap");
 
     // 9 Pelizaeus-Merzbacher as counter-example
+    await page.getByRole("button", { name: /Show all neighbours/ }).click();
     await expect(page.getByText("Pelizaeus-Merzbacher spectrum disorder").first()).toBeVisible();
     await expect(page.getByText("mechanism differs").first()).toBeVisible();
     const pmd = page.locator("li", { hasText: "Pelizaeus-Merzbacher spectrum disorder" }).first();
@@ -134,6 +141,7 @@ test("dark mode renders the disease page", async ({ browser }) => {
   await expect(page.getByRole("heading", { level: 1, name: "Krabbe disease" })).toBeVisible();
   await page.waitForTimeout(2500);
   await shot(page, "375-dark-krabbe");
+  await page.getByRole("link", { name: "Explore evidence", exact: true }).click();
   await page.locator("canvas").first().scrollIntoViewIfNeeded();
   await page.waitForTimeout(800);
   await shot(page, "375-dark-graph");

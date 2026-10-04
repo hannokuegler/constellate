@@ -23,7 +23,7 @@ export function OrgAssets({ org }: { org: OrgCard }) {
   ].filter((i) => i.value !== null);
   if (!items.length) return <span className="text-[12px] text-ink-2">assets not recorded</span>;
   return (
-    <span className="flex flex-wrap gap-1.5">
+    <span className="flex flex-wrap gap-3">
       {items.map((i) => {
         const chip = (
           <span className={`rounded-full px-2 py-0.5 text-[12px] font-medium ${i.value ? "bg-ok-soft text-ok" : "border border-line text-ink-2"}`}>
@@ -31,7 +31,7 @@ export function OrgAssets({ org }: { org: OrgCard }) {
           </span>
         );
         return i.value && i.url ? (
-          <a key={i.label} href={i.url} target="_blank" rel="noreferrer" className="-my-2.5 inline-flex min-h-11 items-center" aria-label={`${org.label}: ${i.label}`}>
+          <a key={i.label} href={i.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center" aria-label={`${org.label}: ${i.label}`}>
             {chip}
           </a>
         ) : (

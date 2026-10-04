@@ -12,6 +12,7 @@ import CiteLink from "./CiteLink";
 import ExplainStream from "./ExplainStream";
 import ActionCardV2 from "./ActionCardV2";
 import { buildV2, v2Markdown } from "@/lib/actionv2";
+import { v2Assets, v2Therapies, v2Screening, v2Kol } from "@/lib/normalize";
 
 interface Props {
   disease: DiseaseFile;
@@ -53,7 +54,20 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
   }, [card, register]);
 
   const v2 = useMemo(
-    () => (neighbour && ready ? buildV2(disease, loaded!.file, { id: neighbour.id, label: neighbour.label }, meta) : null),
+    () => {
+      if (!neighbour || !ready) return null;
+      const model = buildV2(disease, loaded!.file, { id: neighbour.id, label: neighbour.label }, meta);
+      // The presentation requires a recorded search before claiming a negative finding.
+      // Keep the shared data/model contract intact, including the Markdown export below.
+      for (const section of model.sections) for (const group of section.groups) {
+        if (group.state !== "gap") continue;
+        const file = group.role === "own" ? disease : loaded!.file;
+        const read = section.key === "assets" ? v2Assets : section.key === "therapies" ? v2Therapies : section.key === "screening" ? v2Screening : v2Kol;
+        const searched = section.key === "researchers" ? [...v2Kol(disease).searched, ...(loaded!.file ? v2Kol(loaded!.file).searched : [])] : section.key === "prevalence" ? [] : file ? read(file).searched : [];
+        if (!searched.length) { group.state = "pending"; group.note = "Data pending: no source and date for a completed search are recorded here. An empty record is not evidence that nothing exists."; }
+      }
+      return model;
+    },
     [neighbour, ready, disease, loaded, meta],
   );
 

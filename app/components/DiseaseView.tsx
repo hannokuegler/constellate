@@ -150,6 +150,12 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
   const coverage = coverageRows(file.coverage);
   const gapSearched: CoverageRow[] = coverage.length ? coverage : (meta?.sources ?? []).map((s) => ({ source: s.db }));
   const definitionSource = meta?.sources.find((s) => /mondo/i.test(s.db));
+  // These summaries paraphrase only the supplied MONDO definition; keep its exact wording available.
+  const plainDefinition = node.id === "MONDO:0009499" && node.definition?.includes("white matter")
+    ? "Krabbe disease affects white matter in the nervous system. The source describes forms that begin in infancy, childhood or adulthood."
+    : node.id === "MONDO:0018868" && node.definition?.includes("accumulation of sulfatides")
+      ? "In metachromatic leukodystrophy, substances called sulfatides build up in the body's tissues."
+      : node.definition;
 
   return (
     <div className="page-shell min-w-0">
@@ -173,7 +179,8 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
       <div className="stack">
         <section className="answer-card" aria-labelledby="definition-heading">
           <h2 id="definition-heading" className="section-heading">What this is</h2>
-          <p className="mt-3 max-w-[70ch] leading-relaxed">{node.definition || "Data pending: a source definition has not been included for this diagnosis yet."}</p>
+          <p className="mt-3 max-w-[70ch] leading-relaxed">{plainDefinition || "Data pending: a source definition has not been included for this diagnosis yet."}</p>
+          {plainDefinition !== node.definition && <details className="mt-3"><summary>Read the source definition</summary><p>{node.definition}</p></details>}
           <p className="source-line mt-3">Source: {definitionSource?.url ? <a href={definitionSource.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center underline">MONDO disease ontology</a> : "MONDO disease ontology"}{meta?.built_at ? ` | Dataset updated ${formatDate(meta.built_at)}` : " | Update date not recorded"}</p>
         </section>
         <DiseaseAnswers file={file} meta={meta} onEdge={openEdge} onCard={openCard} />

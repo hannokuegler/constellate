@@ -32,7 +32,7 @@ Getestet in der Cloud mit Platzhalter-Tönen auf dem echten Motion-Video: Ausgab
 | Stimme | die Consti-Stimme aus `app/story/voices.json` (gleiche Stimme wie im In-App-Intro), überschreibbar |
 | Regler | Stability 0,5 (bei schwankender Betonung 0,65), Similarity 0,75, Seed 404; kein Speed, kein Style, kein SSML |
 | Requests | acht, einer je Block, damit jeder Block exakt auf seiner Szene startet |
-| Pausen | nur über Absätze und „…" |
+| Pausen | nur über Absätze und Satzzeichen; keine „…", die Stimme macht daraus lange Pausen |
 | Quelle der Texte | [tech_voice.json](tech_voice.json); das Skript liest nur diese Datei. Textänderungen dort und hier nachziehen |
 
 ## Szenen und Blöcke
@@ -51,49 +51,49 @@ Getestet in der Cloud mit Platzhalter-Tönen auf dem echten Motion-Video: Ausgab
 **V1**
 ```
 [calm, measured narration]
-This is Constellate... and this is the stack underneath.
+This is Constellate. Here's the stack.
 ```
 
-**V2** (kurz: „It starts with nineteen open sources. Licensed, cached, reproducible.")
+**V2**
 ```
 [calm, measured narration]
-It starts with nineteen open sources, from H-P-O and MONDO to Clinical Trials dot gov. Licensed, cached, reproducible.
+Nineteen open sources: licensed, cached, reproducible.
 ```
 
-**V3**
+**V3** (kurz: „A Python pipeline. One command: make reproduce.")
 ```
 [calm, measured narration]
-A Python pipeline, run with U-V, takes them through ten steps... all with one command: make reproduce.
+A Python pipeline, ten steps, one command: make reproduce.
 ```
 
-**V4** (kurz: „… every edge carries its evidence: source, date, confidence, counter-evidence.")
+**V4** (kurz: „Out comes the graph. Every edge carries its source, and its counter-evidence.")
 ```
 [calm, measured narration]
-Out comes the graph... and every single edge carries its evidence: source, date, confidence, and counter-evidence.
+Out comes the graph. Every edge carries its evidence: source, date, confidence, counter-evidence.
 ```
 
 **V5** („extract" soll um 0:26 fallen)
 ```
 [calm, measured narration]
-OpenAI works at three points: extract, reconcile, explain. OpenAI does the language... code checks every answer.
+OpenAI at three points: extract, reconcile, explain. Code checks every answer.
 ```
 
-V5 ehrlich, solange Extract, Reconcile und Explain nicht mit echtem Key gelaufen sind (heute: 0 `text_mined`-Kanten, kein `explain/`-Ordner):
+V5 ehrlich, solange Extract, Reconcile und Explain nicht mit echtem Key gelaufen sind (heute: 0 `text_mined`-Kanten, kein `explain/`-Ordner), Schalter `--honest-v5`:
 ```
 [calm, measured narration]
-OpenAI is wired in at three points: extract, reconcile, explain. Code checks every answer.
+OpenAI is wired in at three points. Code checks every answer.
 ```
 
-**V6**
+**V6** (kurz: „Static files on Vercel. Nothing to crash.")
 ```
 [calm, measured narration]
-Everything ships as static jay-son to a Next J-S app on Vercel. No database... nothing to crash.
+Static jay-son, served on Vercel. No database, nothing to crash.
 ```
 
-**V7** (kurz: ohne „end-to-end runs,")
+**V7** (kurz: „Then the gates: tests, and a check against Monarch.")
 ```
 [calm, measured narration]
-Then the gates: the validator, seventy-six tests, end-to-end runs, and a cross-check against Monarch.
+Then the gates: validator, tests, and a cross-check against Monarch.
 ```
 
 **V8**
@@ -114,7 +114,7 @@ Constellate. Every edge has a source.
 | MONDO, Monarch, Python | wie geschrieben | |
 | Vercel | `Vercel` | falls falsch: `ver-SELL` |
 
-Zahlen sind ausgeschrieben. Kürzen geht vor Tempo: erst die Kurzfassung, dann höchstens +5 % (macht das Skript selbst).
+Gemessenes Tempo der Consti-Stimme im ersten Lauf (04.10.): rund 1,95 Wörter je Sekunde, bei Pausen mit „…" nur 1,6. Die Blöcke sind darauf gekürzt (erster Entwurf mit 105 Wörtern war 40 bis 60 % zu lang). Zahlen sind ausgeschrieben. Kürzen geht vor Tempo: erst die Kurzfassung, dann höchstens +5 % (macht das Skript selbst).
 
 ## Belege für jede Aussage
 

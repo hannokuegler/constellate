@@ -251,7 +251,7 @@ function ComputedRecord({ record, codeUrl }: { record: string; codeUrl?: string 
   );
 }
 
-/** Source → record (link) → date → level, as four connected points; the last one is lit. A vertical chain on narrow sheets, horizontal when the panel is wide. */
+/** Source → record (link) → date → level, as four connected points; the last one is lit. A vertical chain: long record names need the width. */
 function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefined }) {
   const computed = lead?.db === "computed" || edge.level === "inferred";
   const computedLabel = lead?.record ? computedRecordLabel(lead.record) : null;
@@ -276,17 +276,16 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
     { key: "Level", value: LEVEL_INFO[edge.level]?.label ?? edge.level },
   ];
   return (
-    <ol className="@sm:grid @sm:grid-cols-4 @sm:gap-x-1" aria-label="Provenance of this link">
+    <ol aria-label="Provenance of this link">
       {steps.map((step, i) => {
         const last = i === steps.length - 1;
         return (
-          <li key={step.key} className="relative min-w-0 pb-4 pl-7 last:pb-0 @sm:pb-0 @sm:pl-0 @sm:pr-1">
-            {!last && <span className="absolute left-[3.5px] top-3 bottom-[-4px] w-px bg-line-strong @sm:hidden" aria-hidden="true" />}
-            <div className="absolute left-0 top-[7px] flex items-center @sm:static" aria-hidden="true">
+          <li key={step.key} className="relative min-w-0 pb-4 pl-7 last:pb-0">
+            {!last && <span className="absolute left-[3.5px] top-3 bottom-[-4px] w-px bg-line-strong" aria-hidden="true" />}
+            <div className="absolute left-0 top-[7px] flex items-center" aria-hidden="true">
               <span className="dot" data-state={last ? "lit" : undefined} />
-              {!last && <span className="ml-1 mr-1 hidden h-px flex-1 bg-line-strong @sm:block" />}
             </div>
-            <p className="text-[12px] uppercase tracking-[0.08em] text-ink-2 @sm:mt-2">{step.key}</p>
+            <p className="text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
             <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>
           </li>
         );

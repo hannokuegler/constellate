@@ -498,18 +498,18 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
         <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center text-[17px] font-semibold leading-snug underline decoration-line underline-offset-2 hover:decoration-current">
           {n.label}
         </Link>
-        <span
-          className="tabular flex items-center gap-2 text-[13px] text-ink-2"
-          title={similarity ? "Phenotype similarity (simGIC), 0 to 1. Not a probability." : "Edge confidence, 0 to 1"}
-        >
-          <span className="relative h-1.5 w-16 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
-            <span className="absolute inset-y-0 left-0 rounded-full bg-neighbour" style={{ width: `${Math.min(100, Math.round(n.edge.confidence * 100 * 2.5))}%` }} />
-          </span>
-          {formatConfidence(n.edge.confidence)}
-          {/* words next to the number: the thresholds sit in lib/present.ts (similarityWords) */}
-          <span>{similarity ? words ?? "similarity" : "confidence"}</span>
-        </span>
       </div>
+      <p
+        className="tabular mt-0.5 flex items-center gap-2 text-[13px] text-ink-2"
+        title={similarity ? "Phenotype similarity (simGIC), 0 to 1. Not a probability." : "Edge confidence, 0 to 1"}
+      >
+        <span className="relative h-1.5 w-16 overflow-hidden rounded-full bg-surface-2" aria-hidden="true">
+          <span className="absolute inset-y-0 left-0 rounded-full bg-neighbour" style={{ width: `${Math.min(100, Math.round(n.edge.confidence * 100 * 2.5))}%` }} />
+        </span>
+        {formatConfidence(n.edge.confidence)}
+        {/* words next to the number: the thresholds sit in lib/present.ts (similarityWords) */}
+        <span>{similarity ? words ?? "similarity" : "confidence"}</span>
+      </p>
       <div className="mt-1.5 flex flex-wrap items-center gap-2 text-[13px]">
         {genes.map((g) => (
           <Link key={g} href={geneHref(g)} className="-my-2.5 inline-flex min-h-11 items-center">
@@ -580,7 +580,7 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity, builtAt }: 
                   {g.items.slice(0, 4).map((item) => (
                     <li key={item.edge.id} className="flex min-h-11 items-center gap-2 py-1.5">
                       <span className="min-w-0 flex-1">
-                        <span className="line-clamp-2 text-[13px]">{String(item.node.label)}</span>
+                        <span className="line-clamp-2 text-[15px]">{String(item.node.label)}</span>
                         <span className="text-[12px] text-ink-2">{[item.node.id, g.key === "trials" ? phaseText(item.node, trialPhase(item.node)) : null, typeof item.node.status === "string" ? item.node.status.toLowerCase().replaceAll("_", " ") : null].filter(Boolean).join(" · ")}</span>
                       </span>
                       <LevelBadge level={item.edge.level} small />
@@ -596,15 +596,15 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity, builtAt }: 
               <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">
                 Papers mentioning it <span className="tabular">({enrichmentTotal(file, "papers_mentioning", papers.length)})</span>
               </h3>
-              <p className="text-[12px] text-ink-2">Mentions found by a literature search. A mention is not a fact and carries no evidence level.</p>
+              <p className="text-[13px] text-ink-2">Mentions found by a literature search. A mention is not a fact and carries no evidence level.</p>
               <ul className="mt-1 divide-y divide-line">
                 {papers.slice(0, 4).map((p) => (
                   <li key={p.id} className="flex min-h-11 items-center gap-2 py-1.5">
                     <span className="min-w-0 flex-1">
                       {p.url ? (
-                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[13px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">{p.title ?? p.id}</a>
+                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[15px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">{p.title ?? p.id}</a>
                       ) : (
-                        <span className="line-clamp-2 text-[13px]">{p.title ?? p.id}</span>
+                        <span className="line-clamp-2 text-[15px]">{p.title ?? p.id}</span>
                       )}
                       <span className="text-[12px] text-ink-2">{[p.journal, p.year, p.id].filter(Boolean).join(" · ")}</span>
                     </span>

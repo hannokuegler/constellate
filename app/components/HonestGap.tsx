@@ -241,7 +241,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
           )}
           <div>
             <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">What would close this gap</h4>
-            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13px] leading-relaxed">
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed">
               {close.map((c) => (
                 <li key={c} className="break-words">{c}</li>
               ))}

@@ -1,7 +1,7 @@
 // Action Card = template sentences built only from edges. Every sentence carries the edge ids it rests on.
 import type { DiseaseFile, Edge, GeneFile, Neighbour } from "./types";
 import { refOf } from "./ids";
-import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase } from "./normalize";
+import { enrichmentItems, flag, nodeLabels, orgItems, paperRecords, pathwayRefs, trialPhase, v2Therapies } from "./normalize";
 import { RELATION_LABEL, formatConfidence, formatDate } from "./evidence";
 import { humanizeRank, phaseText } from "./present";
 
@@ -31,6 +31,14 @@ interface CardInput {
   neighbourFile: DiseaseFile | null;
   geneFiles: GeneFile[];
 }
+
+/** Said next to every study of the neighbour: it belongs to the neighbour, fit is for experts to judge. */
+export const studyCaveat = (neighbour: string, disease: string) =>
+  `This study is for ${neighbour}; whether its design fits ${disease} is a question for clinical experts`;
+
+/** Said next to every approved therapy of the neighbour: approval does not travel. */
+export const therapyCaveat = (neighbour: string, disease: string) =>
+  `Approved for ${neighbour}, not for ${disease}. What carries over and what differs needs expert review`;
 
 const list = (items: string[]) =>
   items.length <= 1 ? items.join("") : `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
@@ -100,7 +108,11 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
   for (const trial of trials.slice(0, 2)) {
     const status = typeof trial.node.status === "string" ? trial.node.status.toLowerCase().replaceAll("_", " ") : "status not recorded";
     const phase = phaseText(trial.node, trialPhase(trial.node));
-    transfers.push({ text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected`, edgeIds: cite(trial.edge) });
+    // a trial of the neighbour is never evidence that anything works for this disease: say so in the same sentence
+    transfers.push({
+      text: `${N} has the trial record ${trial.node.id}, “${trial.node.label}” (${phase ? `${phase}, ` : ""}${status}), whose design can be inspected. ${studyCaveat(N, D)}`,
+      edgeIds: cite(trial.edge),
+    });
   }
   for (const { org, edge } of (neighbourFile ? orgItems(neighbourFile) : []).slice(0, 2)) {
     const assets = [flag(org.has_registry) && "a patient registry", flag(org.has_natural_history_study) && "a natural history study", flag(org.has_biobank) && "a biobank"].filter(Boolean) as string[];
@@ -178,6 +190,13 @@ export function buildActionCard({ disease, neighbour, neighbourFile, geneFiles }
     review.push({ text: `Literature links for ${N} are ${papers[0].edge.level === "search_hit" ? "search hits" : papers[0].edge.level} and need reading before they support a claim`, edgeIds: cite(papers[0].edge) });
   } else if (neighbourFile && paperRecords(neighbourFile).length && trials[0]) {
     review.push({ text: `Papers found for ${N} are literature search matches, not extracted claims, so they need reading before they support a statement`, edgeIds: cite(trials[0].edge) });
+  }
+  // approved therapies of the neighbour: named with their record, and never as if they applied to this disease
+  const ownTherapies = new Set(v2Therapies(disease).items.map((t) => t.node.id));
+  const theirTherapies = (neighbourFile ? v2Therapies(neighbourFile).items : []).filter((t) => !ownTherapies.has(t.node.id));
+  if (theirTherapies.length) {
+    const names = [...new Set(theirTherapies.map((t) => t.node.label))];
+    review.push({ text: `${N} has approved therapies in EMA or FDA records (${list(names)}). ${therapyCaveat(N, D)}`, edgeIds: cite(...theirTherapies.map((t) => t.edge)) });
   }
   review.push(...reviewFromNote);
   review.push({ text: `Whether endpoints, registries or study designs from ${N} fit ${D} is a question for clinical experts in both diseases`, edgeIds: cite(similarity) });

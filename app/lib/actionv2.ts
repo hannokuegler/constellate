@@ -3,6 +3,7 @@
 import type { DiseaseFile, Edge, EdgeLevel, Meta, SearchLog, V2Item } from "./types";
 import { sourceHref, v2Assets, v2Kol, v2Prevalence, v2Screening, v2Therapies } from "./normalize";
 import { formatDate } from "./evidence";
+import { studyCaveat, therapyCaveat } from "./actioncard";
 
 export interface V2Source {
   label: string;
@@ -14,6 +15,8 @@ export interface V2Row {
   title: string;
   chips: string[];
   detail?: string;
+  /** what this row does NOT say, shown next to it: a neighbour's therapy or study never transfers on its own */
+  caveat?: string;
   /** verbatim snippet from the source, as stored on the evidence */
   snippet?: string;
   sources: V2Source[];
@@ -107,6 +110,13 @@ function itemRow<N extends { id: string; label: string }>(item: V2Item<N>, chips
   };
 }
 
+/** Studies and registries are "studies"; scales and biobanks get the same caveat in their own words. */
+function assetCaveat(row: V2Row, neighbour: string, disease: string): string {
+  return /^(Natural history study|Registry)$/.test(row.chips[0] ?? "")
+    ? `${studyCaveat(neighbour, disease)}.`
+    : `Recorded for ${neighbour}; whether it fits ${disease} is a question for clinical experts.`;
+}
+
 type Side = { file: DiseaseFile | null; label: string; role: "own" | "via" };
 
 function twoSides<T>(
@@ -114,14 +124,15 @@ function twoSides<T>(
   read: (file: DiseaseFile) => { present: boolean; items: T[]; searched: SearchLog[] },
   key: keyof typeof DEFAULT_SOURCES,
   noun: string,
-  toRows: (items: T[]) => V2Row[],
+  toRows: (items: T[], side: Side) => V2Row[],
   builtAt?: string,
 ): V2Group[] {
-  return sides.map(({ file, label, role }) => {
+  return sides.map((side) => {
+    const { file, label, role } = side;
     if (!file) return { role, diseaseLabel: label, state: "pending", rows: [], note: pendingNote(noun, label) };
     const r = read(file);
     if (!r.present) return { role, diseaseLabel: label, state: "pending", rows: [], note: pendingNote(noun, label) };
-    const rows = toRows(r.items);
+    const rows = toRows(r.items, side);
     if (!rows.length) return { role, diseaseLabel: label, state: "gap", rows: [], note: gapNote(key, r.searched, builtAt) };
     return { role, diseaseLabel: label, state: "items", rows };
   });
@@ -140,7 +151,7 @@ export function buildV2(disease: DiseaseFile, viaFile: DiseaseFile | null, via: 
     (f) => v2Assets(f),
     "assets",
     "registries, natural history studies or outcome scales",
-    (items) =>
+    (items, side) =>
       items
         .filter((i) => ASSET_ORDER.includes(i.node.asset_type))
         .sort((a, b) => ASSET_ORDER.indexOf(a.node.asset_type) - ASSET_ORDER.indexOf(b.node.asset_type))
@@ -148,7 +159,8 @@ export function buildV2(disease: DiseaseFile, viaFile: DiseaseFile | null, via: 
           itemRow(i, [ASSET_LABEL[i.node.asset_type], i.node.country, i.node.status, i.node.check === "UNBELEGT" ? "UNBELEGT" : null], [
             ...(i.node.source_id || i.node.url ? [{ label: `${i.node.source_type ?? "Source"}${i.node.source_id ? ` ${i.node.source_id}` : ""}`, href: sourceHref(i.node.source_type, i.node.source_id, i.node.url) }] : []),
           ]),
-        ),
+        )
+        .map((row) => (side.role === "via" ? { ...row, caveat: assetCaveat(row, via.label, D) } : row)),
     builtAt,
   );
 
@@ -157,11 +169,12 @@ export function buildV2(disease: DiseaseFile, viaFile: DiseaseFile | null, via: 
     (f) => v2Therapies(f),
     "therapies",
     "approved therapies",
-    (items) =>
+    (items, side) =>
       items.map((i) => {
         const ev = i.edge.evidence[0];
         const date = i.node.approved ?? ev?.date;
-        return itemRow(i, [i.node.authority ?? ev?.db, date ? `approved ${formatDate(date)}` : "approval date not recorded", i.node.holder]);
+        const row = itemRow(i, [i.node.authority ?? ev?.db, date ? `approved ${formatDate(date)}` : "approval date not recorded", i.node.holder]);
+        return side.role === "via" ? { ...row, caveat: `${therapyCaveat(via.label, D)}.` } : row;
       }),
     builtAt,
   );
@@ -269,7 +282,7 @@ export function v2Markdown(model: V2Model): string {
       }
       for (const row of group.rows) {
         const src = row.sources.map((s) => (s.href ? `[${s.label}](${s.href})` : s.label)).join(", ");
-        lines.push(`- ${row.title}${row.chips.length ? ` (${row.chips.join("; ")})` : ""}. Evidence level: ${row.level}.${src ? ` Source: ${src}.` : ""}${row.edgeId ? ` [${row.edgeId}]` : ""}`);
+        lines.push(`- ${row.title}${row.chips.length ? ` (${row.chips.join("; ")})` : ""}. Evidence level: ${row.level}.${src ? ` Source: ${src}.` : ""}${row.edgeId ? ` [${row.edgeId}]` : ""}${row.caveat ? ` ${row.caveat}` : ""}`);
       }
       lines.push("");
     }

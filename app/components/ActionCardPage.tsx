@@ -8,7 +8,7 @@ import { diseaseHref, toFileKey } from "@/lib/ids";
 import { useRouter } from "next/navigation";
 import ActionCard from "./ActionCard";
 import { pickDefaultVia } from "@/lib/actioncard";
-import { Skeleton } from "./Skeleton";
+import { ActionCardSkeleton } from "./Skeleton";
 
 export default function ActionCardPage({ id, via }: { id: string; via: string | null }) {
   const router = useRouter();
@@ -19,7 +19,7 @@ export default function ActionCardPage({ id, via }: { id: string; via: string | 
     loadMeta().then(setMeta, () => undefined);
   }, [id]);
 
-  if (file === undefined) return <Skeleton />;
+  if (file === undefined) return <ActionCardSkeleton />;
   if (file === null)
     return (
       <div className="card mx-auto mt-8 max-w-[720px] px-5 py-5">
@@ -31,7 +31,7 @@ export default function ActionCardPage({ id, via }: { id: string; via: string | 
   const viaId = via ?? pickDefaultVia(file.neighbours);
   return (
     <div className="mx-auto mt-6 max-w-[1200px]">
-      <nav className="no-print mb-4 text-[13px] text-ink-2" aria-label="Breadcrumb">
+      <nav className="no-print mb-4 text-[15px] text-ink-2" aria-label="Breadcrumb">
         <Link href="/" className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">Search</Link> /{" "}
         <Link href={diseaseHref(id)} className="inline-flex min-h-11 min-w-11 items-center justify-center underline underline-offset-2">{file.node.label}</Link> / Action card
       </nav>

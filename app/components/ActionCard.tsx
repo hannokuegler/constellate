@@ -11,6 +11,7 @@ import CiteLink from "./CiteLink";
 import ExplainStream from "./ExplainStream";
 import ActionCardV2 from "./ActionCardV2";
 import { buildV2, v2Markdown } from "@/lib/actionv2";
+import { ActionCardBodySkeleton, ExplainPlaceholder } from "./Skeleton";
 
 interface Props {
   disease: DiseaseFile;
@@ -60,7 +61,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
     return (
       <div className="card px-5 py-5">
         <p className="font-semibold">No link between {disease.node.label} and {viaId} in the data.</p>
-        <p className="mt-1 text-[15px] text-ink-2">An action card needs an edge to stand on. Pick a related disease from the list.</p>
+        <p className="mt-1 text-[16px] text-ink-2">An action card needs an edge to stand on. Pick a related disease from the list.</p>
       </div>
     );
   }
@@ -86,7 +87,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
         <Title id="action-card-title" className="t-h2 mt-1 text-[24px] font-semibold leading-snug md:text-[28px]">
           What {disease.node.label} can learn from {neighbour.label}
         </Title>
-        <p className="mt-1 text-[15px] text-ink-2">Template text built only from graph edges. Every sentence ends with a small source marker (an edge ID); click one to see the evidence.</p>
+        <p className="mt-1 text-[16px] text-ink-2">Template text built only from graph edges. Every sentence ends with a small source marker (an edge ID); click one to see the evidence.</p>
         <div className="mt-4 flex flex-wrap items-center gap-2">
           {onViaChange && (
             <label className="relative flex items-center">
@@ -94,7 +95,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
               <select
                 value={viaId}
                 onChange={(e) => onViaChange(e.target.value)}
-                className="h-11 max-w-[260px] appearance-none truncate rounded-full border border-line bg-surface pl-4 pr-8 text-[13px] font-medium"
+                className="h-11 max-w-[260px] appearance-none truncate rounded-full border border-line bg-surface pl-4 pr-8 text-[15px] font-medium"
               >
                 {disease.neighbours.map((n) => (
                   <option key={n.id} value={n.id}>
@@ -119,15 +120,20 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
               Print
             </button>
           )}
+          {/* plain anchor: no prefetch, so the card stays error-free on builds where /share is not deployed yet */}
+          <a href={`/share?d=${toFileKey(disease.node.id)}`} className="btn-secondary no-print">
+            Share what you know
+          </a>
         </div>
       </header>
 
+      {/* plain language first: the explanation a parent takes to the doctor sits above the detail columns */}
+      <div className="border-b border-line px-5 py-5 md:px-6">
+        {card ? <ExplainStream edges={[...card.edges.values()]} labels={card.labels} /> : <ExplainPlaceholder />}
+      </div>
+
       {!card ? (
-        <div className="space-y-3 px-6 py-6" aria-busy="true">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-16 animate-pulse rounded-[12px] bg-surface-2" />
-          ))}
-        </div>
+        <ActionCardBodySkeleton />
       ) : (
         <div className="grid grid-cols-1 gap-0 md:grid-cols-3">
           {card.sections.map((section) => (
@@ -136,7 +142,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
                 {section.title}
                 <span className="grid h-7 w-7 place-items-center rounded-full border border-line-strong text-[14px] font-semibold leading-none" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
-              <p className="mt-0.5 text-[15px] text-ink-2">{section.hint}</p>
+              <p className="mt-0.5 text-[16px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (
                 <ul className="mt-4 space-y-3.5">
                   {section.sentences.map((s, i) => (
@@ -150,7 +156,7 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
                   ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-[15px] text-ink-2">No supported statement in the graph for this section.</p>
+                <p className="mt-3 text-[16px] text-ink-2">No supported statement in the graph for this section.</p>
               )}
             </section>
           ))}
@@ -158,12 +164,6 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
       )}
 
       {card && v2 && <ActionCardV2 model={v2} level={standalone ? "h2" : "h3"} />}
-
-      {card && (
-        <div className="border-t border-line px-5 py-5 md:px-6">
-          <ExplainStream edges={[...card.edges.values()]} labels={card.labels} />
-        </div>
-      )}
     </article>
   );
 }

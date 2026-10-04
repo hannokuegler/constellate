@@ -130,7 +130,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Evidence for one link</p>
-              <h2 id="edge-panel-title" className="mt-1 text-[19px] font-semibold leading-snug" style={{ fontFamily: "var(--font-display, inherit)" }}>
+              <h2 id="edge-panel-title" className="mt-1 text-[20px] font-semibold leading-snug">
                 {edge ? (
                   <>
                     {labelOf(edge.source)} <span className="font-normal text-ink-2">→ {RELATION_LABEL[edge.type] ?? edge.type} →</span> {labelOf(edge.target)}
@@ -180,7 +180,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                 </p>
               </div>
               <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" role="img" aria-label={`${similarity ? "similarity" : "confidence"} ${formatConfidence(edge.confidence)} of 1`}>
-                <div className="h-full rounded-full" style={{ width: `${Math.round(Math.min(1, Math.max(0, edge.confidence ?? 0)) * 100)}%`, background: "var(--star, var(--ink))" }} />
+                <div className="h-full rounded-full" style={{ width: `${Math.round(Math.min(1, Math.max(0, edge.confidence ?? 0)) * 100)}%`, background: "var(--accent)" }} />
               </div>
               <dl className="mt-4 grid grid-cols-2 gap-3 text-[13px]">
                 <div className="rounded-[12px] bg-surface-2 px-3 py-2">
@@ -257,11 +257,11 @@ function ComputedRecord({ record, codeUrl }: { record: string; codeUrl?: string 
   if (!label) return <span className="break-all">{record}</span>;
   return (
     <span>
-      <Link href="/methods" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">{label}</Link>
+      <Link href="/methods" className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-current">{label}</Link>
       {codeUrl && (
         <>
           {" · "}
-          <a href={codeUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink-2 underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
+          <a href={codeUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-current">
             pipeline code<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </>
@@ -282,7 +282,7 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
         computedLabel ? (
           <ComputedRecord record={lead.record} codeUrl={lead.url} />
         ) : lead.url ? (
-          <a href={lead.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
+          <a href={lead.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all text-accent underline decoration-accent/40 underline-offset-2 hover:decoration-current">
             {lead.record}
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
@@ -352,7 +352,7 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
           {computedLabel ? (
             <ComputedRecord record={ev.record} codeUrl={ev.url} />
           ) : ev.url ? (
-            <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all underline underline-offset-2">
+            <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all text-accent underline decoration-accent/40 underline-offset-2">
               {ev.record}
               <span className="sr-only"> (opens in a new tab)</span>
             </a>

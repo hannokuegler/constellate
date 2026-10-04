@@ -92,7 +92,7 @@ export default function RelatedHelp({ file, related }: { file: DiseaseFile; rela
         </a>
       )}
       {related.status === "ready" && related.empty.length > 0 && (
-        <p className="text-[15px] text-ink-2">
+        <p className="text-[16px] text-ink-2">
           Also checked, nothing found: {related.empty.map((c) => c.label).join(", ")}.
         </p>
       )}
@@ -124,7 +124,7 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
         </p>
         <Source label={`Related: it ${candidate.why}`} edge={candidate.edge} about={`why ${other} is related to ${label}`} prefix={false} />
         <p className="text-[15px]">Has {has.join(", ")}.</p>
-        {therapies.length > 0 && <p className="text-[15px] text-ink-2">Whether anything carries over needs expert review.</p>}
+        {therapies.length > 0 && <p className="text-[16px] text-ink-2">Whether anything carries over needs expert review.</p>}
       </li>
     );
   }
@@ -132,7 +132,7 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
   const kinds = new Set(shownAssets.map((a) => a.kind));
   return (
     <li className="rounded-[16px] border border-line px-4 py-3">
-      <p className="text-[19px] font-semibold leading-snug">
+      <p className="text-[20px] font-semibold leading-snug">
         <Link href={diseaseHref(candidate.id)} className="inline-flex min-h-11 items-center underline decoration-line-strong underline-offset-4 hover:decoration-current">
           {other}
         </Link>
@@ -177,7 +177,7 @@ function RelatedBlock({ file, finding, compact }: { file: DiseaseFile; finding: 
       )}
 
       {(studies.length > 0 || orgs.length > 0) && (
-        <p className="mt-2 text-[15px] text-ink-2">
+        <p className="mt-2 text-[16px] text-ink-2">
           {studies.length > 0 && (
             <>
               <Link href={`${diseaseHref(candidate.id)}#open-studies`} className="inline-flex min-h-11 items-center text-ink underline decoration-line-strong underline-offset-4 hover:decoration-current">

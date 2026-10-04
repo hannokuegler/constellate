@@ -60,7 +60,7 @@ export default function OrgView({ slug }: { slug: string }) {
         </p>
       )}
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="t-h1 text-[28px] font-semibold tracking-tight md:text-[40px]">{org.label}</h1>
+        <h1 className="text-[28px] font-bold tracking-tight">{org.label}</h1>
         {org.draft_input && <DraftBadge />}
       </div>
       <p className="mt-1 text-[15px] text-ink-2">

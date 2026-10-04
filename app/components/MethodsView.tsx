@@ -93,7 +93,7 @@ export default function MethodsView() {
     <div className="mx-auto mt-8 max-w-[960px] space-y-10">
       <header>
         <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Methods</p>
-        <h1 className="t-h1 mt-1 text-[28px] font-semibold leading-tight md:text-[40px]">How we know</h1>
+        <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight">How we know</h1>
         <p className="mt-2 max-w-[68ch] text-[16px] text-ink-2">
           Every line in the graph carries a source, a date, an evidence level, a confidence and a slot for counter-evidence. Where we have no source, we say so instead of guessing.
         </p>
@@ -144,7 +144,7 @@ export default function MethodsView() {
             <li key={name} className="card px-4 py-4">
               <p className="text-[12px] font-semibold uppercase tracking-wide text-ink-2">{where}</p>
               <h3 className="mt-0.5 text-[17px] font-semibold">{name}</h3>
-              <p className="mt-1 text-[14px] text-ink-2">{text}</p>
+              <p className="mt-1 text-[16px] text-ink-2">{text}</p>
             </li>
           ))}
         </ol>
@@ -154,7 +154,7 @@ export default function MethodsView() {
         <h2 id="quality" className="text-[22px] font-semibold">How well it works</h2>
         <p className="mt-1 max-w-[68ch] text-[15px] text-ink-2">Measured numbers only. A value that is not yet measured in this build says so, and what it will measure.</p>
         <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
-          <table className="block w-full text-left text-[14px] sm:table sm:min-w-[560px]">
+          <table className="block w-full text-left text-[15px] sm:table sm:min-w-[560px]">
             <caption className="sr-only">Quality metrics</caption>
             <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
               <tr>
@@ -180,7 +180,7 @@ export default function MethodsView() {
           </table>
         </div>
         {!!nodes.length && (
-          <p className="mt-4 text-[14px] text-ink-2" data-testid="graph-counts">
+          <p className="mt-4 text-[16px] text-ink-2" data-testid="graph-counts">
             Current build{meta ? ` (${meta.version}, ${formatDate(meta.built_at)})` : ""}:{" "}
             {nodes.filter(([k]) => ["disease", "core_disease", "gene", "phenotype"].includes(k)).map(([k, v]) => `${v.toLocaleString("en")} ${k.replace("_", " ")}`).join(", ")}
             {edges.length ? `; edges by type: ${edges.map(([k, v]) => `${k.replaceAll("_", " ")} ${v.toLocaleString("en")}`).join(", ")}` : ""}.
@@ -193,7 +193,7 @@ export default function MethodsView() {
         {state === "missing" && <p className="mt-2 text-[15px] text-ink-2">Data status could not be loaded.</p>}
         {!!meta?.sources.length && (
           <div className="mt-4 rounded-[16px] border border-line sm:overflow-x-auto">
-            <table className="block w-full text-left text-[14px] sm:table sm:min-w-[560px]">
+            <table className="block w-full text-left text-[15px] sm:table sm:min-w-[560px]">
               <caption className="sr-only">Data sources</caption>
               <thead className="sr-only bg-surface-2 text-[12px] uppercase tracking-wide text-ink-2 sm:not-sr-only sm:table-header-group">
                 <tr>

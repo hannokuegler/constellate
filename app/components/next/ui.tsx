@@ -54,7 +54,7 @@ export function Source({ label, href, date, edge, about, prefix = true }: { labe
       </button>,
     );
   return (
-    <p className="text-[15px] leading-relaxed text-ink-2">
+    <p className="text-[16px] leading-relaxed text-ink-2">
       {prefix && label && "Source: "}
       {parts.map((part, i) => (
         <span key={i}>
@@ -67,5 +67,5 @@ export function Source({ label, href, date, edge, about, prefix = true }: { labe
 }
 
 export function Explain({ children }: { children: ReactNode }) {
-  return <p className="rounded-[14px] bg-surface-2 px-4 py-3 text-[15px] leading-relaxed text-ink-2">{children}</p>;
+  return <p className="rounded-[14px] bg-surface-2 px-4 py-3 text-[16px] leading-relaxed text-ink-2">{children}</p>;
 }

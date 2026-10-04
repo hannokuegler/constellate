@@ -1,11 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import type { Edge } from "@/lib/types";
 import { hrefFor } from "@/lib/ids";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
+import { LevelLine } from "./Badges";
 
 const ForceGraphClient = dynamic(() => import("./ForceGraphClient"), {
   ssr: false,
@@ -24,41 +25,9 @@ interface Props {
   families?: number;
   expanded?: boolean;
   onToggleFamilies?: () => void;
-  /** gene page: the centre is a gene (amber ring) */
+  /** gene page: the centre is a gene (drawn as a ring) */
   centerShape?: "point" | "ring";
 }
-
-/** The graph window is the night sky in both themes: it carries its own dark tokens, the canvas reads them from here. */
-export const SKY_VARS = {
-  "--bg": "#0B1020",
-  "--surface": "#121831",
-  "--surface-2": "#1A2142",
-  "--ink": "#ECEEF6",
-  "--ink-2": "#A3AAC4",
-  "--line": "#262E52",
-  "--accent": "#ECEEF6",
-  "--accent-ink": "#0B1020",
-  "--accent-soft": "rgb(236 238 246 / 0.10)",
-  "--amber": "#F5C46B",
-  "--star": "#D7DBEA",
-  "--star-dim": "#8D94B0",
-  "--lvl-strong": "#D7DBEA",
-  "--lvl-text": "#7CB4FF",
-  "--lvl-inferred": "#B8A2FF",
-  "--contra": "#FF7B7B",
-  colorScheme: "dark",
-} as CSSProperties;
-
-export const SKY_BACKGROUND = [
-  "radial-gradient(1.2px 1.2px at 9% 14%, rgb(236 238 246 / 0.55) 50%, transparent 51%)",
-  "radial-gradient(1px 1px at 27% 83%, rgb(236 238 246 / 0.4) 50%, transparent 51%)",
-  "radial-gradient(1.2px 1.2px at 71% 9%, rgb(236 238 246 / 0.5) 50%, transparent 51%)",
-  "radial-gradient(1px 1px at 91% 66%, rgb(236 238 246 / 0.45) 50%, transparent 51%)",
-  "radial-gradient(1px 1px at 56% 93%, rgb(236 238 246 / 0.35) 50%, transparent 51%)",
-  "radial-gradient(1.2px 1.2px at 4% 58%, rgb(236 238 246 / 0.4) 50%, transparent 51%)",
-  "radial-gradient(1px 1px at 84% 31%, rgb(236 238 246 / 0.35) 50%, transparent 51%)",
-  "radial-gradient(ellipse 70% 60% at 50% 46%, #141b38 0%, #0B1020 75%)",
-].join(", ");
 
 const KIND_GROUPS: { kinds: GraphNode["kind"][]; title: string }[] = [
   { kinds: ["gene"], title: "Genes" },
@@ -73,7 +42,7 @@ function NodeList({ nodes }: { nodes: GraphNode[] }) {
   const [open, setOpen] = useState(false);
   return (
     <details className="mt-2" onToggle={(event) => setOpen(event.currentTarget.open)}>
-      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
+      <summary className="inline-flex min-h-11 cursor-pointer items-center text-[13px] font-medium text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-current">
         Show the graph as a list ({others.length})
       </summary>
       {open && <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-3">
@@ -108,18 +77,18 @@ export default function EgoGraph({ nodes, links, height, onLinkClick, onNodeClic
   const center = nodes.find((n) => n.kind === "center");
   const neighbourCount = nodes.length - (center ? 1 : 0);
   return (
-    <figure className="card overflow-hidden text-ink" style={{ ...SKY_VARS, background: "var(--bg)", borderColor: "var(--line)" }}>
+    <figure className="card overflow-hidden">
       <div
         role="img"
         aria-label={`${caption}. Centre: ${center?.label ?? "none"}, with ${neighbourCount} connected points and ${links.length} links. Every link has an evidence button in the lists on this page; a list of all points is below the graph.`}
-        style={{ height, background: SKY_BACKGROUND }}
+        style={{ height }}
       >
         <ForceGraphClient nodes={nodes} links={links} height={height} onLinkClick={onLinkClick} onNodeClick={onNodeClick} centerShape={centerShape} />
       </div>
       <figcaption className="border-t border-line px-4 py-3">
         <Legend showCounter={showCounter} gene={centerShape === "ring"} />
         {families > 0 && onToggleFamilies && (
-          <button onClick={onToggleFamilies} aria-pressed={expanded} className="mt-3 inline-flex min-h-11 items-center rounded-full border border-line px-4 text-[13px] font-medium text-ink hover:bg-surface-2">
+          <button onClick={onToggleFamilies} aria-pressed={expanded} className="mt-2 inline-flex min-h-11 items-center rounded-full border border-line px-3 text-[13px] font-medium text-accent hover:bg-accent-soft">
             {expanded ? "Group subtypes into families" : `Show all subtypes (${families} ${families === 1 ? "family" : "families"} grouped)`}
           </button>
         )}
@@ -130,89 +99,42 @@ export default function EgoGraph({ nodes, links, height, onLinkClick, onNodeClic
   );
 }
 
-const STAR = "var(--star, #D7DBEA)";
-const DIM = "var(--star-dim, #8D94B0)";
-const AMBER = "var(--amber, #F5C46B)";
-const CONTRA = "var(--contra, #FF7B7B)";
+const NODE_KEYS = [
+  { label: "this disease", color: "var(--n-center)" },
+  { label: "gene", color: "var(--n-gene)" },
+  { label: "phenotype", color: "var(--n-phenotype)" },
+  { label: "related disease", color: "var(--n-neighbour)" },
+];
 
-function Shape({ children, size = 18 }: { children: React.ReactNode; size?: number }) {
+function FamilyKey() {
   return (
-    <svg width={size} height={size} viewBox="0 0 18 18" aria-hidden="true" className="shrink-0">
-      {children}
-    </svg>
-  );
-}
-
-/** Line sample in the exact style the graph draws. */
-function Line({ kind }: { kind: "solid" | "dashed" | "dotted" | "counter" }) {
-  const color = kind === "dashed" ? "var(--lvl-text, #7CB4FF)" : kind === "dotted" ? "var(--lvl-inferred, #B8A2FF)" : kind === "counter" ? CONTRA : STAR;
-  return (
-    <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden="true" className="shrink-0">
-      <line
-        x1="2"
-        y1="4"
-        x2="20"
-        y2="4"
-        stroke={color}
-        strokeWidth={kind === "counter" ? 2 : kind === "dotted" ? 1.6 : 1.4}
-        strokeLinecap="round"
-        strokeDasharray={kind === "dashed" ? "6 4" : kind === "dotted" ? "1 3.5" : undefined}
-      />
-    </svg>
+    <span className="inline-flex items-center gap-1.5">
+      <span className="relative inline-grid h-3.5 w-3.5 place-items-center rounded-full outline-1 outline-offset-1" style={{ background: "var(--n-neighbour)", outlineColor: "var(--n-neighbour)" }} aria-hidden="true" />
+      subtype family (click to open)
+    </span>
   );
 }
 
 export function Legend({ showCounter = true, gene = false }: { showCounter?: boolean; gene?: boolean }) {
-  const item = "inline-flex items-center gap-1.5";
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-ink-2">
-      <span className={item}>
-        <Shape>
-          <circle cx="9" cy="9" r="7.5" fill={AMBER} opacity=".16" />
-          {gene ? <circle cx="9" cy="9" r="4" fill="none" stroke={AMBER} strokeWidth="2" /> : <circle cx="9" cy="9" r="4" fill={AMBER} />}
-        </Shape>
-        {gene ? "this gene" : "this disease"}
-      </span>
-      <span className={item}>
-        <Shape>
-          <circle cx="9" cy="9" r="4.4" fill="none" stroke={STAR} strokeWidth="1.8" />
-        </Shape>
-        gene
-      </span>
-      <span className={item}>
-        <Shape>
-          <circle cx="9" cy="9" r="2.4" fill={DIM} />
-        </Shape>
-        phenotype
-      </span>
-      <span className={item}>
-        <Shape>
-          <circle cx="9" cy="9" r="7" fill={STAR} opacity=".14" />
-          <circle cx="9" cy="9" r="4.2" fill={STAR} />
-        </Shape>
-        related disease
-      </span>
-      <span className={item}>
-        <Shape>
-          <circle cx="9" cy="9" r="8.4" fill="none" stroke={STAR} strokeWidth="1" opacity=".4" />
-          <circle cx="9" cy="9" r="6.4" fill="none" stroke={STAR} strokeWidth="1" opacity=".7" />
-          <circle cx="9" cy="9" r="4" fill={STAR} />
-        </Shape>
-        subtype family (click to open)
-      </span>
+      {NODE_KEYS.map((k) => (
+        <span key={k.label} className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full" style={{ background: k.color }} aria-hidden="true" />
+          {gene && k.label === "this disease" ? "this gene" : k.label}
+        </span>
+      ))}
+      <FamilyKey />
       {showCounter && (
-        <span className={item}>
-          <Shape>
-            <circle cx="9" cy="9" r="3.8" fill={STAR} />
-            <circle cx="9" cy="9" r="7" fill="none" stroke={CONTRA} strokeWidth="1.6" strokeDasharray="3 2.4" strokeLinecap="round" />
-          </Shape>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full outline-2 outline-dashed outline-offset-1" style={{ background: "var(--n-neighbour)", outlineColor: "var(--warn)" }} aria-hidden="true" />
           mechanism differs
         </span>
       )}
-      <span className={item}><Line kind="solid" />observed / curated (solid)</span>
-      <span className={item}><Line kind="dashed" />text-mined (dashed)</span>
-      <span className={item}><Line kind="dotted" />inferred (dotted)</span>
-      <span className={item}><Line kind="counter" />counter-evidence / counter-example</span>
+      <span className="inline-flex items-center gap-1.5"><LevelLine level="curated" color="var(--lvl-strong)" />observed / curated (solid)</span>
+      <span className="inline-flex items-center gap-1.5"><LevelLine level="text_mined" color="var(--lvl-text)" />text-mined (dashed)</span>
+      <span className="inline-flex items-center gap-1.5"><LevelLine level="inferred" color="var(--lvl-inferred)" />inferred (dotted)</span>
+      <span className="inline-flex items-center gap-1.5"><LevelLine level="curated" color="var(--contra)" />counter-evidence / counter-example</span>
     </div>
   );
 }

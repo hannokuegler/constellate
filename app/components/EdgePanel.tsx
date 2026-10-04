@@ -23,13 +23,28 @@ const PANEL_WIDTH = 440;
 const PAGE_MAX = 1400; // layout max width of <main>
 const GUTTER = 20;
 
-/** Neutral wording for model-made evidence (never names a vendor in the present tense). */
-function aiLabel(ev: Evidence): string | null {
+/** Methods that find a term by rule, without a model: they are labelled as such, never as AI. */
+const RULE_ORIGIN = /^(regex|pattern|keyword|fuzzy|string|exact)/i;
+
+function isRuleBased(ev: Evidence): boolean {
+  return !ev.model && RULE_ORIGIN.test(ev.origin ?? "");
+}
+
+/** How a rule-based origin reads in the panel ("regex" is a method, not a source a reader knows). */
+function originText(origin: string): string {
+  if (/^regex|^pattern/i.test(origin)) return "text pattern match";
+  if (/^fuzzy/i.test(origin)) return "name match";
+  return origin;
+}
+
+/** Neutral wording for how text-derived evidence was made (never names a vendor in the present tense). */
+function aiLabel(ev: Evidence): { text: string; ai: boolean } | null {
   if (!ev.model && ev.level !== "text_mined") return null;
+  if (isRuleBased(ev)) return { text: /^fuzzy/i.test(ev.origin ?? "") ? "Name match on the organisation website (not AI)" : "Pattern match in the abstract (not AI)", ai: false };
   const origin = (ev.origin ?? "").toLowerCase();
-  if (ev.db === "PubMed" || origin.includes("extract")) return "AI-extracted from a PubMed abstract";
-  if (origin.includes("judge")) return "AI-matched from the organisation website";
-  return "AI-produced";
+  if (ev.db === "PubMed" || origin.includes("extract")) return { text: "AI-extracted from a PubMed abstract", ai: true };
+  if (origin.includes("judge")) return { text: "AI-matched from the organisation website", ai: true };
+  return { text: "AI-extracted", ai: true };
 }
 
 export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: Props) {
@@ -137,9 +152,9 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
         </div>
 
         {!edge ? (
-          <p className="px-5 py-6 text-[15px] text-ink-2">This edge is not part of the data loaded on this page, so its evidence cannot be shown here.</p>
+          <p className="px-5 py-6 text-[16px] text-ink-2">This edge is not part of the data loaded on this page, so its evidence cannot be shown here.</p>
         ) : (
-          <div className="space-y-6 px-5 py-5 text-[15px]">
+          <div className="space-y-6 px-5 py-5 text-[16px]">
             <ProvenanceChain edge={edge} lead={lead} />
 
             <div className="space-y-3">
@@ -148,7 +163,11 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                   <span className="rounded-full bg-contra-soft px-2.5 py-0.5 text-[12px] font-semibold text-contra">counter-evidence</span>
                 </div>
               )}
-              <p className="text-[15px] leading-relaxed text-ink-2">{LEVEL_INFO[edge.level]?.meaning}</p>
+              <p className="text-[16px] leading-relaxed text-ink-2">
+                {edge.level === "text_mined" && edge.evidence.length && edge.evidence.every(isRuleBased)
+                  ? "Found by a text pattern in a paper abstract, not by AI. It shows that the term appears there, not that the statement holds; read the source before relying on it."
+                  : LEVEL_INFO[edge.level]?.meaning}
+              </p>
               {loadingFull && <p className="text-[13px] text-ink-2" aria-live="polite">Summary from the overview map; loading the full evidence…</p>}
             </div>
 
@@ -174,11 +193,11 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                 </div>
               </dl>
               {similarity && (
-                <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
+                <p className="mt-3 text-[16px] leading-relaxed text-ink-2">
                   Similarity is how much the two symptom profiles overlap, from 0 to 1. It is not the probability that the link is true, and it says nothing about whether the cause is shared.
                 </p>
               )}
-              {!!edge.independent_sources?.length && <p className="mt-2 text-[13px] text-ink-2">Independent sources: {edge.independent_sources.join(", ")}</p>}
+              {!!edge.independent_sources?.length && <p className="mt-2 text-[16px] text-ink-2">Independent sources: {edge.independent_sources.map(originText).join(", ")}</p>}
             </div>
 
             {edge.formula && (
@@ -189,7 +208,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
             )}
 
             {!!edge.rolled_up_from?.length && (
-              <p className="rounded-[12px] border border-line px-3 py-2 text-[13px] text-ink-2">
+              <p className="rounded-[12px] border border-line px-3 py-2 text-[16px] text-ink-2">
                 Rolled up from subtype{edge.rolled_up_from.length > 1 ? "s" : ""}: {edge.rolled_up_from.map(labelOf).join(", ")}
               </p>
             )}
@@ -216,7 +235,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                   ))}
                 </ul>
               ) : (
-                <p className="mt-2 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[13px] leading-relaxed text-ink-2">
+                <p className="mt-2 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[16px] leading-relaxed text-ink-2">
                   No contradicting evidence recorded in: {sourcesChecked.length ? sourcesChecked.join(", ") : "the sources of this edge"}.
                   <br />
                   Absence of a record is not proof that none exists.
@@ -238,11 +257,11 @@ function ComputedRecord({ record, codeUrl }: { record: string; codeUrl?: string 
   if (!label) return <span className="break-all">{record}</span>;
   return (
     <span>
-      <Link href="/methods" className="text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">{label}</Link>
+      <Link href="/methods" className="inline-flex min-h-11 items-center text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">{label}</Link>
       {codeUrl && (
         <>
           {" · "}
-          <a href={codeUrl} target="_blank" rel="noreferrer" className="text-ink-2 underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
+          <a href={codeUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center text-ink-2 underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
             pipeline code<span className="sr-only"> (opens in a new tab)</span>
           </a>
         </>
@@ -256,14 +275,14 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
   const computed = lead?.db === "computed" || edge.level === "inferred";
   const computedLabel = lead?.record ? computedRecordLabel(lead.record) : null;
   const steps: { key: string; value: React.ReactNode }[] = [
-    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db && !computedLabel ? <span className="block text-[12px] font-normal text-ink-2">via {lead.origin}</span> : null}</> : "none" },
+    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db && !computedLabel ? <span className="block text-[15px] font-normal text-ink-2">via {originText(lead.origin)}</span> : null}</> : "none" },
     {
       key: "Record",
       value: lead?.record ? (
         computedLabel ? (
           <ComputedRecord record={lead.record} codeUrl={lead.url} />
         ) : lead.url ? (
-          <a href={lead.url} target="_blank" rel="noreferrer" className="break-all text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
+          <a href={lead.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
             {lead.record}
             <span className="sr-only"> (opens in a new tab)</span>
           </a>
@@ -286,7 +305,7 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
               <span className="dot" data-state={last ? "lit" : undefined} />
             </div>
             <p className="text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
-            <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>
+            <div className="mt-0.5 break-words text-[16px] font-medium leading-snug">{step.value}</div>
           </li>
         );
       })}
@@ -325,15 +344,15 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
     <li className={`rounded-[12px] border px-3 py-3 ${contra ? "border-contra/40 bg-contra-soft" : "border-line"}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-semibold">{ev.db}</span>
-        {ev.origin && ev.origin !== ev.db && ev.origin !== "computed" && <span className="text-[13px] text-ink-2">via {ev.origin}</span>}
+        {ev.origin && ev.origin !== ev.db && ev.origin !== "computed" && <span className="text-[15px] text-ink-2">via {originText(ev.origin)}</span>}
         <span className="ml-auto"><LevelBadge level={ev.level} small /></span>
       </div>
       {ev.record && (
-        <p className="mt-1 text-[13px]">
+        <p className="mt-1 text-[16px]">
           {computedLabel ? (
             <ComputedRecord record={ev.record} codeUrl={ev.url} />
           ) : ev.url ? (
-            <a href={ev.url} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
+            <a href={ev.url} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-0 items-center break-all underline underline-offset-2">
               {ev.record}
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
@@ -343,23 +362,24 @@ function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = ""
         </p>
       )}
       {ai && (
-        <div className="mt-2 rounded-[10px] border border-dashed border-line px-3 py-2 text-[13px]">
-          <p className="font-semibold">{ai}</p>
-          <p className="text-[12px] text-ink-2">
-            {ev.model ? <>model <span className="font-mono">{ev.model}</span></> : "model not recorded"}
-            {ev.prompt_version ? ` · prompt ${ev.prompt_version}` : ""} · unverified until a person checks the source
+        <div className="mt-2 rounded-[10px] border border-dashed border-line px-3 py-2 text-[16px]">
+          <p className="font-semibold">{ai.text}</p>
+          <p className="text-[15px] text-ink-2">
+            {ai.ai && (ev.model ? <>model <span className="font-mono">{ev.model}</span> · </> : "model not recorded · ")}
+            {ai.ai && ev.prompt_version ? `prompt ${ev.prompt_version} · ` : ""}unverified until a person checks the source
           </p>
+          {typeof (ev as { note?: unknown }).note === "string" && <p className="mt-1 text-[15px] text-ink-2">{(ev as { note?: string }).note}</p>}
         </div>
       )}
       {ev.draft_input && <p className="mt-2 text-[12px] font-semibold text-ink-2">From an unverified draft list</p>}
       {ev.claim && (
-        <p className="mt-2 text-[13px]">
+        <p className="mt-2 text-[16px]">
           Claim: <span className="font-medium">{ev.claim}</span>
           {ev.study_context && ev.study_context !== "not_stated" ? ` (${ev.study_context.replaceAll("_", " ")})` : ""}
         </p>
       )}
-      {ev.snippet && <p className="mt-2 text-[13px] leading-relaxed text-ink-2">“{computedEvidence ? humanizeRank(ev.snippet, sourceLabel, targetLabel) : ev.snippet}”</p>}
-      {ev.reason && <p className="mt-1 text-[12px] text-ink-2">Reason given: {ev.reason}</p>}
+      {ev.snippet && <p className="mt-2 break-words text-[16px] leading-relaxed text-ink-2">“{computedEvidence ? humanizeRank(ev.snippet, sourceLabel, targetLabel) : ev.snippet}”</p>}
+      {ev.reason && <p className="mt-1 text-[15px] text-ink-2">Reason given: {ev.reason}</p>}
       <p className="tabular mt-2 text-[12px] text-ink-2">
         {formatDate(ev.date)} · {computedEvidence ? "similarity" : "confidence"} {formatConfidence(ev.confidence)}
       </p>

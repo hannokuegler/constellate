@@ -16,7 +16,13 @@ export interface GapSearch {
   draft?: boolean;
 }
 
+/** What the organisation list is, in words a family can check: an agent compared each entry with the organisation's own website. */
+export const ORG_LIST_NAME = "Organisation list, checked against each organisation's website";
+
 const SOURCE_NAME: Record<string, string> = {
+  "curated org list": ORG_LIST_NAME,
+  "Curated organisation list (hand-checked)": ORG_LIST_NAME,
+  "04_enrich_apis": "Public research databases",
   ctgov: "ClinicalTrials.gov",
   clinvar: "ClinVar",
   europepmc: "Europe PMC",
@@ -57,17 +63,40 @@ export interface GapNeighbour {
   orgs?: { id: string; label: string }[];
 }
 
-/** Adapter: the pipeline's `gap` block → HonestGap props (built-in texts stay the fallback). */
-export function gapProps(gap: Gap): Pick<Props, "searched" | "nearest" | "close" | "asOf"> {
-  const dates = gap.searched.map((s) => s.retrieved ?? s.verified).filter((d): d is string => Boolean(d)).sort();
+const ORG_SOURCE = /\borg/i;
+const REPO_PATH = /\b(data|app|pipeline)\/[\w./-]+|\b[\w-]+\.(csv|ya?ml|json)\b/i;
+const HAND_CHECKED = /\bhand[- ](checked|verified)\b/i;
+
+/** "What would close this gap" in plain words: no repository paths, no claim that a person checked something an agent checked. */
+/** Older callers still say "hand-checked"; an agent compared the list with the organisations' websites, so the text says that. */
+function plainReason(text: string): string {
+  return text.replace(/\bhand[- ]checked organisation list\b/gi, "organisation list (checked against each organisation's website)");
+}
+
+export function plainClose(text: string): string {
+  if (REPO_PATH.test(text) && /org/i.test(text)) return "A patient organisation for this diagnosis, confirmed on its own website";
+  if (REPO_PATH.test(text)) return text.replace(REPO_PATH, "the public data set");
+  if (HAND_CHECKED.test(text)) return "A patient organisation for this diagnosis, confirmed on its own website, with the date it was checked";
+  return text;
+}
+
+/** Adapter: the pipeline's `gap` block → HonestGap props (built-in texts stay the fallback).
+ *  The gap is about patient organisations, so the table shows only the organisation search: what was looked for, not unrelated database hits. */
+export function gapProps(gap: Gap, diseaseLabel?: string): Pick<Props, "searched" | "nearest" | "close" | "asOf"> {
+  const orgSearches = gap.searched.filter((s) => ORG_SOURCE.test(s.source));
+  const dates = orgSearches.map((s) => s.retrieved ?? s.verified).filter((d): d is string => Boolean(d)).sort();
   return {
-    searched: gap.searched.map((s) => ({
-      source: s.source,
-      hits: s.hits_raw ?? undefined,
-      fetched_at: s.retrieved ?? s.verified ?? undefined,
-      note: s.note ?? (s.hits_kept !== undefined && s.hits_kept !== null && s.hits_raw !== s.hits_kept ? `${s.hits_kept} kept` : null),
-      draft: s.draft,
-    })),
+    searched: orgSearches.map((s) => {
+      const size = s.n_orgs;
+      return {
+        source: sourceName(s.source),
+        query: diseaseLabel ? `organisations naming ${diseaseLabel}` : "organisations naming this diagnosis",
+        hits: gap.orgs === "none_in_curated_list" ? 0 : undefined,
+        fetched_at: s.retrieved ?? s.verified ?? undefined,
+        note: typeof size === "number" ? `${size.toLocaleString("en")} organisations in the list` : null,
+        draft: s.draft,
+      };
+    }),
     nearest: gap.nearest_communities.map((n) => ({
       id: n.id,
       label: n.label,
@@ -77,7 +106,7 @@ export function gapProps(gap: Gap): Pick<Props, "searched" | "nearest" | "close"
       mechanismDiffers: n.mechanism_differs,
       orgs: n.orgs,
     })),
-    close: closingList(gap),
+    close: closingList(gap).map(plainClose),
     asOf: dates[dates.length - 1],
   };
 }
@@ -97,7 +126,7 @@ interface Props {
 /** One-line gap state inside a card section: "Not found in X as of D" or "Data pending". Never an empty box. */
 export function GapNote({ kind, children }: { kind: "gap" | "pending"; children: React.ReactNode }) {
   return (
-    <p className="flex items-start gap-3 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[15px] leading-relaxed text-ink-2">
+    <p className="flex items-start gap-3 rounded-[12px] border border-dashed border-line px-3 py-2.5 text-[16px] leading-relaxed text-ink-2">
       <GapDot size={16} />
       <span className="min-w-0 break-words">
         <span className="mr-2 text-[12px] font-semibold uppercase tracking-[0.08em]">{kind === "gap" ? "Honest gap" : "Pending"}</span>
@@ -124,20 +153,20 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
       : [{ key: `${s.source}-0`, first: true, source: s.source, query: s.query, url: null as string | null | undefined, hits: s.hits, date: s.fetched_at, note: s.note, draft: s.draft }],
   );
   return (
-    <div className="@container"><table className="mt-3 w-full border-collapse text-[13px] @lg:table-fixed">
+    <div className="@container min-w-0"><table className="mt-3 w-full border-collapse text-[16px] @lg:table-fixed">
       <thead className="sr-only @lg:table-header-group @lg:not-sr-only">
         <tr className="border-b border-line text-left text-[12px] uppercase tracking-[0.08em] text-ink-2">
           <th scope="col" className="w-[30%] py-2 pr-3 font-medium @lg:w-[26%]">Source</th>
           <th scope="col" className="py-2 pr-3 font-medium">Query</th>
-          <th scope="col" className="w-16 py-2 pr-3 text-right font-medium">Hits</th>
-          <th scope="col" className="w-[6.5rem] py-2 text-right font-medium">Date</th>
+          <th scope="col" className="w-24 py-2 pr-3 text-right font-medium">Hits</th>
+          <th scope="col" className="w-[7rem] py-2 text-right font-medium">Date</th>
         </tr>
       </thead>
       <tbody>
         {rows.map((r) => (
           <tr key={r.key} className="block border-b border-line py-2.5 last:border-0 @lg:table-row @lg:py-0">
-            <td className="block min-w-0 font-semibold @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
-              {r.first ? r.source : <span className="sr-only">{r.source}</span>}
+            <td className="block min-w-0 break-words font-semibold @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
+              {r.first ? sourceName(r.source) : <span className="sr-only">{sourceName(r.source)}</span>}
               {r.first && r.draft && <span className="ml-2 rounded-full border border-line px-2 text-[12px] font-medium text-ink-2">draft list</span>}
             </td>
             <td className="block min-w-0 text-ink-2 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
@@ -153,7 +182,7 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
               ) : (
                 <span>list checked as a whole</span>
               )}
-              {r.note && <span className="mt-0.5 block text-[12px]">{r.note}</span>}
+              {r.note && <span className="mt-0.5 block break-words text-[15px]">{r.note}</span>}
             </td>
             <td className="tabular mt-1 inline-block pr-4 text-ink-2 @lg:mt-0 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:text-right @lg:align-top">
               {r.hits !== undefined ? <><span className="text-ink">{r.hits.toLocaleString("en")}</span> {r.hits === 1 ? "hit" : "hits"}</> : <span aria-label="no hit count recorded">n/a</span>}
@@ -179,7 +208,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
           <Heading className={`mt-1 break-words font-semibold leading-snug ${screen ? "text-[22px] md:text-[28px]" : "text-[19px]"}`} style={{ fontFamily: "var(--font-display, inherit)" }}>
             {title}
           </Heading>
-          <p className="mt-2 max-w-[68ch] text-[15px] leading-relaxed text-ink-2">{reason}</p>
+          <p className="mt-2 max-w-[68ch] break-words text-[17px] leading-relaxed text-ink-2">{plainReason(reason)}</p>
         </div>
       </div>
 
@@ -189,7 +218,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
           {searched.length ? (
             <SearchedTable searched={searched} />
           ) : (
-            <p className="mt-2 text-[13px] text-ink-2">No search log recorded for this item yet.</p>
+            <p className="mt-2 text-[16px] text-ink-2">No search log recorded for this item yet.</p>
           )}
         </div>
         <div className="min-w-0 space-y-6">
@@ -200,17 +229,17 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
               <ul className="mt-2">
                 {nearest.map((n) => n.tier !== undefined || n.orgs ? (
                   <li key={n.id} className="border-b border-line py-2 last:border-0">
-                    <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center break-words text-[15px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
+                    <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center break-words text-[16px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
                       {n.label}
                     </Link>
-                    <p className="text-[12px] text-ink-2">
+                    <p className="text-[15px] text-ink-2">
                       {n.tier && <span className="font-semibold">{n.tier}: </span>}
                       {n.via}
                       {n.confidence !== undefined && n.confidence !== null && ` · similarity ${formatConfidence(n.confidence)}`}
                     </p>
                     {n.mechanismDiffers === true && <span className="mt-1 inline-block rounded-full border border-dashed border-line px-2 text-[12px] font-medium text-ink-2">mechanism differs</span>}
                     {!!n.orgs?.length && (
-                      <p className="mt-1 flex flex-wrap gap-x-3 text-[13px]">
+                      <p className="mt-1 flex flex-wrap gap-x-3 text-[15px]">
                         {n.orgs.map((o) => (
                           <Link key={o.id} href={orgHref(o.id)} className="inline-flex min-h-11 items-center underline underline-offset-2">
                             {o.label}
@@ -221,7 +250,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                   </li>
                 ) : (
                   <li key={n.id} className="flex flex-wrap items-center gap-x-3 border-b border-line last:border-0">
-                    <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 grow basis-[13rem] items-center break-words py-1 text-[15px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
+                    <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 grow basis-[13rem] items-center break-words py-1 text-[16px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
                       {n.label}
                     </Link>
                     {n.edge && onEdge ? (
@@ -235,14 +264,14 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                 ))}
               </ul>
             ) : (
-              <p className="mt-2 text-[15px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
+              <p className="mt-2 text-[16px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
             )}
           </div>
           )}
           <div>
             <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">What would close this gap</h4>
-            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[15px] leading-relaxed">
-              {close.map((c) => (
+            <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[17px] leading-relaxed">
+              {[...new Set(close.map(plainClose))].map((c) => (
                 <li key={c} className="break-words">{c}</li>
               ))}
             </ul>

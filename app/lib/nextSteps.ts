@@ -20,6 +20,7 @@ const foldName = (s: string) => s.toLowerCase().normalize("NFD").replace(/\p{M}/
 /** English country name for a two-letter code ("DE" -> "Germany", "GB" -> "United Kingdom"); a name is returned as it is. */
 export function countryName(value: string | null | undefined): string {
   const v = (value ?? "").trim();
+  if (v === "INT") return "International";
   if (!/^[A-Z]{2}$/.test(v)) return v;
   try {
     return new Intl.DisplayNames(["en"], { type: "region" }).of(v === "UK" ? "GB" : v) ?? v;
@@ -499,7 +500,7 @@ export function nextSteps({
     const age = ageOf(study)?.label;
     const ages = `${age ? ` ${age}${adultsOnly(study) ? ", so it is for adults only" : ""}.` : ""}${!localStudy && localAdult && localAdult !== study ? ` The study with a site in ${chosen}, ${localAdult.key}, takes adults only (${ageOf(localAdult)?.label.toLowerCase()}).` : ""}`;
     const what = `“${study.title}” (${study.status.toLowerCase()}; ${study.observational ? "observes, no treatment" : "tests a treatment"}; ${lowerFirst(studyFocus(study, label).text)}${localStudy && chosen ? `; open site in ${chosen}` : ""})`;
-    const elsewhere = sitesOf(study)?.length ? ` (open sites: ${sitesOf(study)!.slice(0, 3).join(", ")}${sitesOf(study)!.length > 3 ? " and more" : ""})` : "";
+    const elsewhere = sitesOf(study)?.length ? `, with open sites in ${sitesOf(study)!.slice(0, 3).join(", ")}${sitesOf(study)!.length > 3 ? " and more" : ""}` : "";
     const text =
       chosen && !localStudy
         ? `${localAdult ? `No study for ${label} that takes children lists an open site in ${chosen}` : `No study for ${label} lists an open site in ${chosen}`}; studies elsewhere: ask your specialist about ${study.key}, ${what}${elsewhere}, and ask the study team whether they accept participants from other countries.${ages}`

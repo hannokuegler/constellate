@@ -9,7 +9,7 @@ Blocks, start times and voice settings: pitch/tech_voice.json (docs: pitch/TECH-
   python3 pitch/tech_video.py VIDEO --short V2,V7 --force V2,V7            # shorter wording for blocks that run long
   python3 pitch/tech_video.py VIDEO --mix-only                             # MP3s already there (e.g. from the web app)
 
-Key: ELEVENLABS_API_KEY from the environment or .env.local (repo root), never from this repo. Voice: ELEVENLABS_VOICE_TECH,
+Key: ELEVENLABS_API_KEY from the environment, .env.local or app/.env.local, never from this repo. Voice: ELEVENLABS_VOICE_TECH,
 else voice_id in tech_voice.json, else the Consti voice in app/story/voices.json. MP3s land in <video folder>/tech_voice/
 as V1.mp3 ... V8.mp3 (web-app downloads with these names work too). Output: <video folder>/constellate_tech.mp4 + .srt.
 """
@@ -39,11 +39,11 @@ SUBS = [("H-P-O", "HPO"), ("U-V", "uv"), ("jay-son", "JSON"), ("Next J-S", "Next
 def env(name: str) -> str | None:
     if os.environ.get(name):
         return os.environ[name].strip()
-    f = ROOT / ".env.local"
-    if f.exists():
-        m = re.search(rf"^{name}=(.*)$", f.read_text(encoding="utf-8"), re.M)
-        if m:
-            return re.sub(r"\s+#.*$", "", m.group(1)).strip().strip("'\"") or None
+    for f in (ROOT / ".env.local", ROOT / "app" / ".env.local"):
+        if f.exists():
+            m = re.search(rf"^{name}=(.*)$", f.read_text(encoding="utf-8"), re.M)
+            if m and re.sub(r"\s+#.*$", "", m.group(1)).strip().strip("'\""):
+                return re.sub(r"\s+#.*$", "", m.group(1)).strip().strip("'\"")
     return None
 
 

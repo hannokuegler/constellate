@@ -1,0 +1,11 @@
+{
+  "started": "04/10/2026, 04:40:51",
+  "errors": [],
+  "steps": [
+    {
+      "name": "Search diagnosis to disease",
+      "ms": 1131,
+      "url": "http://localhost:3100/d/MONDO_0009499"
+    }
+  ]
+}

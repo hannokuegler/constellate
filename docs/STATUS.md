@@ -1,5 +1,9 @@
 # Status · Constellate
 
+## Web-neu Zwischenstand · 04.10.2026
+
+Auf Nutzerwunsch zur Fortsetzung gesichert: neues Designsystem und alle Seiten auf Branch web-neu, Basis integrate-claude. Datenvertrag, Produktionsbuild/TypeScript, Lint und drei Hero-E2E-Tests grün. Erste Review-Fixes integriert; vollständige HIG-Nachmessung, frischer Blind-/Persona-Review und zweite volle PDCA-Runde offen. main/Live nicht geändert. Fortsetzung und Belege: [WEB-NEU-HANDOFF.md](WEB-NEU-HANDOFF.md), [Design](../pitch/DESIGN-NEU.md). Die folgenden Projektangaben sind der übernommene ältere Stand.
+
 **Letzte Aktualisierung: So 04.10.2026, 01:00 (Wien)**. Freeze So 12:00 (in 11 h), Abgabe So 15:00 (in 14 h). Mentor-Gespräch Woan-Yu Lin 03:45. **Orchestrierung ab jetzt lokal:** [prompts/LOCAL-ORCHESTRATOR.md](prompts/LOCAL-ORCHESTRATOR.md), Daten: [prompts/LOCAL-DATA-STEWARD.md](prompts/LOCAL-DATA-STEWARD.md). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
 
 Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).

@@ -1,0 +1,2084 @@
+[
+  {
+    "route": "/",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "48px",
+        "17px",
+        "16px"
+      ],
+      "spacing": [],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "48px",
+        "17px",
+        "16px"
+      ],
+      "spacing": [],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/d/MONDO_0009499",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "registry",
+          "b": "natural history study",
+          "gap": 6
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "registry",
+          "b": "natural history study",
+          "gap": 6
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/d/MONDO_0018868",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "16px",
+        "14px",
+        "18px"
+      ],
+      "spacing": [
+        {
+          "a": "EMA | EMEA/H/C/005321 | 2026-10-03",
+          "b": "Review approval evidence",
+          "gap": 8
+        },
+        {
+          "a": "FDA | BLA125758 | 2026-10-03",
+          "b": "Review approval evidence",
+          "gap": 8
+        },
+        {
+          "a": "registry",
+          "b": "natural history study",
+          "gap": 6
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "16px",
+        "14px",
+        "18px"
+      ],
+      "spacing": [
+        {
+          "a": "EMA | EMEA/H/C/005321 | 2026-10-03",
+          "b": "Review approval evidence",
+          "gap": 8
+        },
+        {
+          "a": "FDA | BLA125758 | 2026-10-03",
+          "b": "Review approval evidence",
+          "gap": 8
+        },
+        {
+          "a": "registry",
+          "b": "natural history study",
+          "gap": 6
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/g/PSAP",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "16px",
+        "32px",
+        "17px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "metachromatic leukodystrophy, juven",
+          "b": "metachromatic leukodystrophy, late ",
+          "gap": 4
+        },
+        {
+          "a": "metachromatic leukodystrophy, late ",
+          "b": "metachromatic leukodystrophy, adult",
+          "gap": 4
+        },
+        {
+          "a": "metachromatic leukodystrophy, adult",
+          "b": "metachromatic leukodystrophy due to",
+          "gap": 4
+        },
+        {
+          "a": "infantile Krabbe disease",
+          "b": "Krabbe disease due to saposin A def",
+          "gap": 4
+        },
+        {
+          "a": "Evidence",
+          "b": "Evidence",
+          "gap": 9.59375
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "16px",
+        "32px",
+        "17px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "metachromatic leukodystrophy, juven",
+          "b": "metachromatic leukodystrophy, late ",
+          "gap": 4
+        },
+        {
+          "a": "metachromatic leukodystrophy, late ",
+          "b": "metachromatic leukodystrophy, adult",
+          "gap": 4
+        },
+        {
+          "a": "metachromatic leukodystrophy, adult",
+          "b": "metachromatic leukodystrophy due to",
+          "gap": 4
+        },
+        {
+          "a": "infantile Krabbe disease",
+          "b": "Krabbe disease due to saposin A def",
+          "gap": 4
+        },
+        {
+          "a": "Evidence",
+          "b": "Evidence",
+          "gap": 9.59375
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/d/MONDO_0012720",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/d/MONDO_0008215",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px",
+        "18px",
+        "16px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Why linked",
+          "gap": 8
+        },
+        {
+          "a": "Why the mechanism call",
+          "b": "Action card",
+          "gap": 8
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/d/MONDO_0009499/action?via=MONDO_0018868",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "16px",
+        "17px",
+        "32px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "[e_993c3f6ead03]",
+          "b": "[e_8f8f3574e614]",
+          "gap": 11.5
+        },
+        {
+          "a": "ClinicalTrials.gov NCT04628364 (ope",
+          "b": "Europe PMC PMID:41807041 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "Europe PMC PMID:41807041 (opens in ",
+          "b": "Europe PMC PMID:42606959 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT02699190 (ope",
+          "b": "ClinicalTrials.gov NCT03047369 (ope",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT00654433 (ope",
+          "b": "ClinicalTrials.gov NCT01003912 (ope",
+          "gap": 0
+        },
+        {
+          "a": "NIH RePORTER R01NS079655 (opens in ",
+          "b": "NIH RePORTER R01NS137638 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "NIH RePORTER R01NS019321 (opens in ",
+          "b": "NIH RePORTER R01NS024289 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "Europe PMC PMID:32912261 (opens in ",
+          "b": "Europe PMC PMID:38613540 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT01372228 (ope",
+          "b": "ClinicalTrials.gov NCT02021266 (ope",
+          "gap": 0
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "16px",
+        "17px",
+        "32px",
+        "14px"
+      ],
+      "spacing": [
+        {
+          "a": "[e_993c3f6ead03]",
+          "b": "[e_8f8f3574e614]",
+          "gap": 11.5
+        },
+        {
+          "a": "ClinicalTrials.gov NCT04628364 (ope",
+          "b": "Europe PMC PMID:41807041 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "Europe PMC PMID:41807041 (opens in ",
+          "b": "Europe PMC PMID:42606959 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT02699190 (ope",
+          "b": "ClinicalTrials.gov NCT03047369 (ope",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT00654433 (ope",
+          "b": "ClinicalTrials.gov NCT01003912 (ope",
+          "gap": 0
+        },
+        {
+          "a": "NIH RePORTER R01NS079655 (opens in ",
+          "b": "NIH RePORTER R01NS137638 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "NIH RePORTER R01NS019321 (opens in ",
+          "b": "NIH RePORTER R01NS024289 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "Europe PMC PMID:32912261 (opens in ",
+          "b": "Europe PMC PMID:38613540 (opens in ",
+          "gap": 0
+        },
+        {
+          "a": "ClinicalTrials.gov NCT01372228 (ope",
+          "b": "ClinicalTrials.gov NCT02021266 (ope",
+          "gap": 0
+        }
+      ],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/methods",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px"
+      ],
+      "spacing": [],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [],
+      "contrasts": [
+        {
+          "text": ".",
+          "ratio": 3.05,
+          "size": "20px",
+          "weight": "600",
+          "fg": "rgb(181, 130, 55)",
+          "bg": [
+            245,
+            243,
+            237
+          ]
+        }
+      ],
+      "narrow": [],
+      "sizes": [
+        "20px",
+        "13px",
+        "32px",
+        "17px",
+        "24px"
+      ],
+      "spacing": [],
+      "animations": 1
+    },
+    "errors": []
+  },
+  {
+    "route": "/about",
+    "width": 320,
+    "colorScheme": "light",
+    "normal": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [
+        {
+          "text": "constellate.",
+          "width": 100.421875,
+          "height": 17
+        },
+        {
+          "text": "Search",
+          "width": 61.53125,
+          "height": 17
+        },
+        {
+          "text": "Our evidence",
+          "width": 85.734375,
+          "height": 17
+        },
+        {
+          "text": "About",
+          "width": 40,
+          "height": 17
+        },
+        {
+          "text": "Find a diagnosis",
+          "width": 104.890625,
+          "height": 17
+        },
+        {
+          "text": "Read how we use evidence",
+          "width": 173.265625,
+          "height": 17
+        },
+        {
+          "text": "Explore the source code (opens in a new tab)",
+          "width": 287.890625,
+          "height": 17
+        },
+        {
+          "text": "Sources & methods",
+          "width": 125.328125,
+          "height": 17
+        }
+      ],
+      "contrasts": [],
+      "narrow": [],
+      "sizes": [
+        "16px",
+        "32px",
+        "24px",
+        "18.72px"
+      ],
+      "spacing": [
+        {
+          "a": "constellate.",
+          "b": "Search",
+          "gap": 5
+        },
+        {
+          "a": "constellate.",
+          "b": "Our evidence",
+          "gap": 5
+        },
+        {
+          "a": "Search",
+          "b": "Our evidence",
+          "gap": 0
+        },
+        {
+          "a": "Our evidence",
+          "b": "About",
+          "gap": 0
+        }
+      ],
+      "animations": 0
+    },
+    "zoom": {
+      "overflow": false,
+      "documentWidth": 320,
+      "small": [
+        {
+          "text": "constellate.",
+          "width": 172.828125,
+          "height": 36
+        },
+        {
+          "text": "Search",
+          "width": 105.0625,
+          "height": 36
+        },
+        {
+          "text": "About",
+          "width": 80,
+          "height": 36
+        },
+        {
+          "text": "Find a diagnosis",
+          "width": 209.78125,
+          "height": 36
+        }
+      ],
+      "contrasts": [],
+      "narrow": [],
+      "sizes": [
+        "32px",
+        "64px",
+        "48px",
+        "37.44px"
+      ],
+      "spacing": [
+        {
+          "a": "constellate.",
+          "b": "Search",
+          "gap": 1
+        },
+        {
+          "a": "constellate.",
+          "b": "Our evidence",
+          "gap": 1
+        }
+      ],
+      "animations": 0
+    },
+    "errors": []
+  }
+]

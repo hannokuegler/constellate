@@ -1,0 +1,914 @@
+[
+  {
+    "name": "home",
+    "route": "/",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Constellate",
+      "Where are you right now?"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 2514
+    },
+    "screenshot": "home-light-375.png"
+  },
+  {
+    "name": "krabbe",
+    "route": "/d/MONDO_0009499",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 8890
+    },
+    "screenshot": "krabbe-light-375.png"
+  },
+  {
+    "name": "galc",
+    "route": "/g/GALC",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "GALC",
+      "All disease annotations 5",
+      "Pathways 1"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 1708
+    },
+    "screenshot": "galc-light-375.png"
+  },
+  {
+    "name": "psap",
+    "route": "/g/PSAP",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "PSAP",
+      "One gene, 4 disease names",
+      "All disease annotations 12",
+      "Pathways 4"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 3538
+    },
+    "screenshot": "psap-light-375.png"
+  },
+  {
+    "name": "mld",
+    "route": "/d/MONDO_0018868",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "metachromatic leukodystrophy",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with metachromatic leukodystrophy",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 9442
+    },
+    "screenshot": "mld-light-375.png"
+  },
+  {
+    "name": "arsa",
+    "route": "/g/ARSA",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "ARSA",
+      "All disease annotations 4",
+      "Pathways 2"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 1706
+    },
+    "screenshot": "arsa-light-375.png"
+  },
+  {
+    "name": "honest-gap",
+    "route": "/d/MONDO_0012720",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease due to saposin A deficiency",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease due to saposin A deficiency",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 830,
+      "height": 8912
+    },
+    "screenshot": "honest-gap-light-375.png"
+  },
+  {
+    "name": "pmd",
+    "route": "/d/MONDO_0010714",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Pelizaeus-Merzbacher spectrum disorder",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Pelizaeus-Merzbacher spectrum disorder",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 10688
+    },
+    "screenshot": "pmd-light-375.png"
+  },
+  {
+    "name": "action",
+    "route": "/d/MONDO_0009499/action?via=MONDO_0018868",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "What Krabbe disease can learn from metachromatic leukodystrophy",
+      "What transfers",
+      "What differs",
+      "Needs expert review",
+      "Reusable assets",
+      "Approved therapies",
+      "Newborn screening by country",
+      "Researchers bridging diseases",
+      "Prevalence"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 10215
+    },
+    "screenshot": "action-light-375.png"
+  },
+  {
+    "name": "home",
+    "route": "/",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Constellate",
+      "Where are you right now?"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 1400
+    },
+    "screenshot": "home-light-1280.png"
+  },
+  {
+    "name": "krabbe",
+    "route": "/d/MONDO_0009499",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 6247
+    },
+    "screenshot": "krabbe-light-1280.png"
+  },
+  {
+    "name": "galc",
+    "route": "/g/GALC",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "GALC",
+      "All disease annotations 5",
+      "Pathways 1"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 908
+    },
+    "screenshot": "galc-light-1280.png"
+  },
+  {
+    "name": "psap",
+    "route": "/g/PSAP",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "PSAP",
+      "One gene, 4 disease names",
+      "All disease annotations 12",
+      "Pathways 4"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 1893
+    },
+    "screenshot": "psap-light-1280.png"
+  },
+  {
+    "name": "mld",
+    "route": "/d/MONDO_0018868",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "metachromatic leukodystrophy",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with metachromatic leukodystrophy",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 6687
+    },
+    "screenshot": "mld-light-1280.png"
+  },
+  {
+    "name": "arsa",
+    "route": "/g/ARSA",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "ARSA",
+      "All disease annotations 4",
+      "Pathways 2"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 908
+    },
+    "screenshot": "arsa-light-1280.png"
+  },
+  {
+    "name": "honest-gap",
+    "route": "/d/MONDO_0012720",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease due to saposin A deficiency",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease due to saposin A deficiency",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1521,
+      "height": 6470
+    },
+    "screenshot": "honest-gap-light-1280.png"
+  },
+  {
+    "name": "pmd",
+    "route": "/d/MONDO_0010714",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Pelizaeus-Merzbacher spectrum disorder",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Pelizaeus-Merzbacher spectrum disorder",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 7725
+    },
+    "screenshot": "pmd-light-1280.png"
+  },
+  {
+    "name": "action",
+    "route": "/d/MONDO_0009499/action?via=MONDO_0018868",
+    "colorScheme": "light",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "What Krabbe disease can learn from metachromatic leukodystrophy",
+      "What transfers",
+      "What differs",
+      "Needs expert review",
+      "Reusable assets",
+      "Approved therapies",
+      "Newborn screening by country",
+      "Researchers bridging diseases",
+      "Prevalence"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 5512
+    },
+    "screenshot": "action-light-1280.png"
+  },
+  {
+    "name": "home",
+    "route": "/",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Constellate",
+      "Where are you right now?"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 2514
+    },
+    "screenshot": "home-dark-375.png"
+  },
+  {
+    "name": "krabbe",
+    "route": "/d/MONDO_0009499",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 8890
+    },
+    "screenshot": "krabbe-dark-375.png"
+  },
+  {
+    "name": "galc",
+    "route": "/g/GALC",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "GALC",
+      "All disease annotations 5",
+      "Pathways 1"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 1708
+    },
+    "screenshot": "galc-dark-375.png"
+  },
+  {
+    "name": "psap",
+    "route": "/g/PSAP",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "PSAP",
+      "One gene, 4 disease names",
+      "All disease annotations 12",
+      "Pathways 4"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 3538
+    },
+    "screenshot": "psap-dark-375.png"
+  },
+  {
+    "name": "mld",
+    "route": "/d/MONDO_0018868",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "metachromatic leukodystrophy",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with metachromatic leukodystrophy",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 9442
+    },
+    "screenshot": "mld-dark-375.png"
+  },
+  {
+    "name": "arsa",
+    "route": "/g/ARSA",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "ARSA",
+      "All disease annotations 4",
+      "Pathways 2"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 1706
+    },
+    "screenshot": "arsa-dark-375.png"
+  },
+  {
+    "name": "honest-gap",
+    "route": "/d/MONDO_0012720",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease due to saposin A deficiency",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease due to saposin A deficiency",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 830,
+      "height": 8912
+    },
+    "screenshot": "honest-gap-dark-375.png"
+  },
+  {
+    "name": "pmd",
+    "route": "/d/MONDO_0010714",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Pelizaeus-Merzbacher spectrum disorder",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Pelizaeus-Merzbacher spectrum disorder",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 10688
+    },
+    "screenshot": "pmd-dark-375.png"
+  },
+  {
+    "name": "action",
+    "route": "/d/MONDO_0009499/action?via=MONDO_0018868",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 375,
+      "height": 812
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "What Krabbe disease can learn from metachromatic leukodystrophy",
+      "What transfers",
+      "What differs",
+      "Needs expert review",
+      "Reusable assets",
+      "Approved therapies",
+      "Newborn screening by country",
+      "Researchers bridging diseases",
+      "Prevalence"
+    ],
+    "geometry": {
+      "width": 375,
+      "documentWidth": 375,
+      "height": 10215
+    },
+    "screenshot": "action-dark-375.png"
+  },
+  {
+    "name": "home",
+    "route": "/",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Constellate",
+      "Where are you right now?"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 1400
+    },
+    "screenshot": "home-dark-1280.png"
+  },
+  {
+    "name": "krabbe",
+    "route": "/d/MONDO_0009499",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 6247
+    },
+    "screenshot": "krabbe-dark-1280.png"
+  },
+  {
+    "name": "galc",
+    "route": "/g/GALC",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "GALC",
+      "All disease annotations 5",
+      "Pathways 1"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 908
+    },
+    "screenshot": "galc-dark-1280.png"
+  },
+  {
+    "name": "psap",
+    "route": "/g/PSAP",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "PSAP",
+      "One gene, 4 disease names",
+      "All disease annotations 12",
+      "Pathways 4"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 1893
+    },
+    "screenshot": "psap-dark-1280.png"
+  },
+  {
+    "name": "mld",
+    "route": "/d/MONDO_0018868",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "metachromatic leukodystrophy",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with metachromatic leukodystrophy",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 6687
+    },
+    "screenshot": "mld-dark-1280.png"
+  },
+  {
+    "name": "arsa",
+    "route": "/g/ARSA",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "ARSA",
+      "All disease annotations 4",
+      "Pathways 2"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 908
+    },
+    "screenshot": "arsa-dark-1280.png"
+  },
+  {
+    "name": "honest-gap",
+    "route": "/d/MONDO_0012720",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Krabbe disease due to saposin A deficiency",
+      "Patient organisations",
+      "Studies looking for participants with Krabbe disease due to saposin A deficiency",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1521,
+      "height": 6470
+    },
+    "screenshot": "honest-gap-dark-1280.png"
+  },
+  {
+    "name": "pmd",
+    "route": "/d/MONDO_0010714",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "Pelizaeus-Merzbacher spectrum disorder",
+      "Definition",
+      "Patient organisations",
+      "Studies looking for participants with Pelizaeus-Merzbacher spectrum disorder",
+      "Families with a related diagnosis",
+      "Key phenotypes",
+      "Genes"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 7725
+    },
+    "screenshot": "pmd-dark-1280.png"
+  },
+  {
+    "name": "action",
+    "route": "/d/MONDO_0009499/action?via=MONDO_0018868",
+    "colorScheme": "dark",
+    "viewport": {
+      "width": 1280,
+      "height": 900
+    },
+    "errors": [],
+    "status": 200,
+    "title": "Constellate",
+    "headings": [
+      "What Krabbe disease can learn from metachromatic leukodystrophy",
+      "What transfers",
+      "What differs",
+      "Needs expert review",
+      "Reusable assets",
+      "Approved therapies",
+      "Newborn screening by country",
+      "Researchers bridging diseases",
+      "Prevalence"
+    ],
+    "geometry": {
+      "width": 1280,
+      "documentWidth": 1280,
+      "height": 5512
+    },
+    "screenshot": "action-dark-1280.png"
+  }
+]

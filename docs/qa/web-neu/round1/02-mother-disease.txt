@@ -1,0 +1,282 @@
+Skip to content
+constellate.
+Our evidence
+About
+Search diseases / MONDO:0009499
+
+UNDERSTANDING A DIAGNOSIS
+
+Krabbe disease
+
+A place to start. Take one question at a time.
+
+What this is
+
+A lysosomal disorder that affects the white matter of the central and peripheral nervous systems. It includes infantile, late-infantile/juvenile and adult forms.
+
+Source: MONDO disease ontology | Dataset updated 2026-10-03
+
+Is there an approved treatment?
+
+HONEST GAP
+
+No approved treatment found for Krabbe disease
+
+Not found in the EMA medicine data (EPAR table) or openFDA drug label + Drugs@FDA / FDA CBER product pages records included in this dataset. This does not describe every care option.
+
+What was searched, as of 2026-10-03
+What already exists nearby?
+
+A related community may have an established resource. These are starting points for a conversation with a specialist.
+
+Checking resources in related communities...
+
+Families like yours
+
+Patient organisations and communities connected to this diagnosis.
+
+Hunter's Hope Foundation
+inferred
+Evidence
+US
+assets not recorded
+verified 2026-10-04
+Krabbe UK
+inferred
+Evidence
+GB
+assets not recorded
+verified 2026-10-04
+KrabbeConnect
+inferred
+Evidence
+US
+registry
+verified 2026-10-04
+ELA Deutschland e.V.
+text-mined
+Evidence
+DE
+registry
+natural history study
+verified 2026-10-04
+Visit Hunter's Hope Foundation
+Visit Krabbe UK
+Visit KrabbeConnect
+Visit ELA Deutschland e.V.
+Studies
+8
+
+Studies on ClinicalTrials.gov that list Krabbe disease and take participants now or soon.
+
+Filter by study country
+All countries
+United States (6)
+Italy (1)
+Recruiting now
+Observes, no treatment
+NCT03047369
+
+The Myelin Disorders Biorepository Project
+
+Run by
+Children's Hospital of Philadelphia
+Looking for
+12,000 participants
+Also for
+Leukodystrophy, White Matter Disease, Leukoencephalopathies, 4H Syndrome, Adrenoleukodystrophy
+Where
+23 sites in 1 country (United States)
+Contact the study team
+curated
+Why listed
+ClinicalTrials.gov | Registry checked 2026-10-03
+Recruiting now
+Observes, no treatment
+NCT03333200
+
+Longitudinal Study of Neurodegenerative Disorders
+
+Run by
+University of Pittsburgh
+Looking for
+1,500 participants
+Also for
+MLD, Krabbe Disease, ALD, MPS I, MPS II
+Where
+1 site in 1 country (United States)
+Contact the study team
+curated
+Why listed
+ClinicalTrials.gov | Registry checked 2026-10-03
+Recruiting now
+Observes, no treatment
+NCT04880356
+
+Longitudinal Study of Ultra-rare Inherited Metabolic and Degenerative Neurological Diseases.
+
+Run by
+Fondazione I.R.C.C.S. Istituto Neurologico Carlo Besta
+Looking for
+100 participants
+Ages
+18 years and older
+Also for
+Inherited Disease, Rare Diseases, Metabolic Disease, Undiagnosed Disease, Neurologic Disorder
+Where
+1 site in 1 country (Italy)
+Contact the study team
+curated
+Why listed
+ClinicalTrials.gov | Registry checked 2026-10-03
+Recruiting now
+Tests a treatment
+Phase 2
+NCT01962415
+
+Reduced Intensity Conditioning for Non-Malignant Disorders Undergoing UCBT, BMT or PBSCT
+
+Run by
+Paul Szabolcs
+Looking for
+100 participants
+Ages
+2 months to 55 years
+Also for
+Primary Immunodeficiency (PID), Congenital Bone Marrow Failure Syndromes, Inherited Metabolic Disorders (IMD), Hereditary Anemias, Inflammatory Conditions
+Where
+1 site in 1 country (United States)
+Contact the study team
+curated
+Why listed
+ClinicalTrials.gov | Registry checked 2026-10-03
+Recruiting now
+Observes, no treatment
+NCT02993796
+
+Krabbe Disease Global Patient Registry
+
+Run by
+State University of New York at Buffalo
+Looking for
+60 participants
+Where
+1 site in 1 country (United States)
+Contact the study team
+curated
+Why listed
+ClinicalTrials.gov | Registry checked 2026-10-03
+Show all 8
+
+Whether a child can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do not treat; studies that test a treatment have risks as well as possible benefits. Constellate only shows what the registry says.
+
+Your nearest neighbours
+
+Related diseases may have research or community resources to learn from. A connection does not mean a treatment will work for this diagnosis.
+
+metachromatic leukodystrophy, juvenile form
+0.27
+shares PSAP
+5+ shared phenotypes, e.g. decerebrate rigidity
+Why the mechanism call
+Why linked
+Action card
+metachromatic leukodystrophy, late infantile form
+0.26
+shares PSAP
+5+ shared phenotypes, e.g. decerebrate rigidity
+Why the mechanism call
+Why linked
+Action card
+metachromatic leukodystrophy due to saposin B deficiency
+0.24
+shares PSAP
+5+ shared phenotypes, e.g. motor deterioration
+Why the mechanism call
+Why linked
+Action card
+optic atrophy 12
+0.24
+mechanism differs
+5+ shared phenotypes, e.g. cns demyelination
+Why the mechanism call
+Why linked
+Action card
+metachromatic leukodystrophy, adult form
+0.23
+shares PSAP
+5+ shared phenotypes, e.g. decerebrate rigidity
+Why the mechanism call
+Why linked
+Action card
+Pelizaeus-Merzbacher spectrum disorder
+0.22
+mechanism differs
+5+ shared phenotypes, e.g. progressive spasticity
+Why the mechanism call
+Why linked
+Action card
+metachromatic leukodystrophy
+0.22
+shares PSAP
+5+ shared phenotypes, e.g. decerebrate rigidity
+Why the mechanism call
+Why linked
+Action card
+neurodegeneration with brain iron accumulation 2A
+0.21
+mechanism not compared
+5+ shared phenotypes, e.g. progressive spasticity
+Why the mechanism call
+Why linked
+Action card
+amyloidosis, hereditary systemic 1
+0.20
+mechanism not compared
+5+ shared phenotypes, e.g. erectile dysfunction
+Why the mechanism call
+Why linked
+Action card
+neurodegeneration with brain iron accumulation 4
+0.20
+mechanism not compared
+5+ shared phenotypes, e.g. hyperactive deep tendon reflexes
+Why the mechanism call
+Why linked
+Action card
+Krabbe disease due to saposin A deficiency
+0.47
+shares PSAP
+5+ shared phenotypes, e.g. increased csf protein concentration
+Why the mechanism call
+Why linked
+Action card
+combined PSAP deficiency
+0.47
+shares PSAP
+5+ shared phenotypes, e.g. cns demyelination
+Why the mechanism call
+Why linked
+Action card
+Gaucher disease due to saposin C deficiency
+0.47
+shares PSAP
+5+ shared phenotypes, e.g. myoclonus
+Why the mechanism call
+Why linked
+Action card
+
+A NEXT STEP
+
+Bring the questions with you
+
+An action card gathers what may carry over from a related disease, what differs, and what needs expert review.
+
+Action card
+Show the evidence
+
+Research navigation, not medical advice.
+
+Research navigation, not medical advice.
+
+Sources & methods

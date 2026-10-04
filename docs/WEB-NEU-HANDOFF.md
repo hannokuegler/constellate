@@ -1,0 +1,40 @@
+﻿# Web-neu · Weiterarbeiten
+
+Stand: 04.10.2026, Europe/Vienna. Auf ausdrücklichen Nutzerwunsch wird der Zwischenstand gepusht und an die nächste Session übergeben. Keine Endabnahme behaupten.
+
+## Kopierbarer Übergabeprompt
+
+Du führst den Neubau der Constellate-Oberfläche fort. Arbeite auf `web-neu`, Basis `origin/integrate-claude`, nie auf main. Lokal liegt der integrierte Worktree unter `.worktrees/web-neu`; im Hauptverzeichnis ist weiterhin main ausgecheckt. Wenn du anderswo startest: `git fetch origin`, eigenen Worktree von `origin/web-neu` anlegen. Nicht wieder von integrate-claude anfangen: Die Änderungen sind bereits integriert.
+
+Lies zuerst vollständig `CLAUDE.md`, `git show origin/orchestrator:docs/prompts/WEB-DESIGN-NEU.md`, `git show origin/orchestrator:docs/prompts/HIG-web.md`, `git show origin/orchestrator:docs/DECISIONS.md`, danach `pitch/DESIGN-NEU.md` und diese Übergabe. Der Nutzer hat die Richtung entschieden: ruhige Arbeitsflächen mit einem Sternbild auf der Startseite. Deutsch mit dem Nutzer, Oberfläche Englisch. Die ursprüngliche Aufgabe verlangt mindestens zwei vollständige PDCA-Runden, unabhängige Reviews und simulierte Nutzerwege mit Mutter/Forscherin/Tech-Juror. Fable/Sonnet sind in dieser Umgebung nicht verfügbar; bislang wurden verfügbare Codex-Agenten verwendet und diese Abweichung offen kommuniziert.
+
+Umgesetzt: neues semantisches Designsystem (Ivory/Teal, Dark Navy), statische SVG-Konstellation, fokussierte Landing-Suche mit zwei Beispielen, keine Persona-Umschalter. Krankheit: quellengebundene Definition, Zulassungsstatus, begrenzt lazy geladene Nachbarressourcen mit expliziten Zulassungsgrenzen, Familien, zunächst zwei Studien und drei repräsentative Nachbarn. Direkte Links Review treatment / Explore evidence; Graph, Gene und Forschung hinter Show the evidence. Gene/Action Card/Methods/About/Org/Phenotype/404 neu strukturiert, neue Trial-Route `/t/[id]`. Action Card mit Teilen, Download und Druck. Fehlende Suchprotokolle werden in der Action-Card-Präsentation zu Data pending, ohne die erhaltene Modellbibliothek zu ändern. Fokusfalle/Escape/Rückkehr im Evidenzdialog, SVG-Icon und echtes favicon.ico. Lange Gap-Suchtexte umbrechen. Krabbe/MLD haben kurze, aus vorhandenen MONDO-Definitionen abgeleitete Einleitungen; Originaldefinitionen sind aufklappbar.
+
+Geschützt und unverändert: `app/public/data/`, `pipeline/`, `app/lib/`, Explain-API, package.json/Lockfile. Keine neuen Pakete. Medizinische Aussagen nur aus vorhandenen Quellen; keine Prognosen, kein cure und keine Übertragung von Nachbar-Zulassungen behaupten. Jede fehlende Quelle bleibt sichtbar fehlend. Nicht ungefragt die Datenschicht ändern. Ein bestehender lib/actionv2-Fallback wurde nur in `ActionCard.tsx` für UI UND Export konservativ abgefangen.
+
+Prüfstatus: Exportvalidator grün (`python pipeline/validate.py`, identisches Skript wie make validate; make/uv hier nicht installiert). Aktueller Produktionsbuild einschließlich TypeScript und Build-Lint grün. Zusätzlich `npm.cmd run lint` grün. `npm.cmd run e2e` mit CHROMIUM_PATH auf installiertes Chrome: alle drei Tests grün, Hero bei1280/375 und Dark375. E2E wurde wegen der neuen Progressive-Disclosure-Zugänge im selben Arbeitsstand angepasst, Hero-Inhalte unverändert erhalten. Die Tests öffnen Explore evidence vor Graph/Gen-Klicks und Show all neighbours vor PMD.
+
+Review-Runde1 hat lange Seiten, schwierige Definitionen, fehlende Dialog-Fokusgrenzen und fälschlichen Action-Card-Gap bei leerem Suchprotokoll gefunden. Fixes sind integriert, ein frischer unabhängiger Nachtest fehlt noch. Runde1-Personatest war ausdrücklich eine heuristische TEILprüfung ohne echte Personen; insbesondere der zweite Durchlauf und die Demo wurden durch einen versehentlichen gleichzeitigen Build/Dev-Lauf abgebrochen. Dieser Umgebungsfehler ist behoben; er ist keine Produktabnahme. Nie next dev und next build gleichzeitig im selben Worktree laufen lassen: beide schreiben .next. Aktuell keine absichtlich dauerhaft gestarteten Appserver.
+
+Nächste Schritte:
+1. Produktionsserver aus vorhandenem/neuem Build auf Port3100 starten, getrennt von Build-Schritten. Keine parallelen Builds. `npm.cmd start -- -p 3100` in app. Tools auf diesem Windows: npm.cmd / npx.cmd benutzen, da PowerShell npm.ps1 blockiert. Chrome: `C:/Program Files/Google/Chrome/Application/chrome.exe`; keine Browserinstallation nötig.
+2. `node scripts/hig-audit.cjs` in app ausführen. E2E_BASE_URL/HIG_OUT/CHROMIUM_PATH optional. Das Skript prüft alle angegebenen Routen bei320/375/390/768/1280, Hell/Dunkel, 200%-Text, Controls, Schriftgrößen, Kontraste, Nachbarabstände, reduzierte Bewegung und JS-Fehler. Der bisherige Teilbericht ist VOR den letzten Spacing-/Typo-/Kontrastfixes, keine Endabnahme. Report vollständig lesen; Tool-Exitcode allein genügt nicht. Abstände rahmenlos zusätzlich gegen24px prüfen; Canvas-Kontrast/Graustufen manuell am Screenshot. 404/Org/aufgeklappte Detailzustände zusätzlich aufnehmen.
+3. Zwei frische unabhängige Agents: blinder Prüfer erhält nur Auftrag/Code/Prüfbefehle (keine Builderberichte); separater Nutzer-Test klickt alle drei Perspektiven und bewertet mit Screenshot-Beleg. Eigene Branches/Worktrees bei Codeänderungen, klar getrennte Dateien. Prüfer dürfen keinen Build im laufenden Server-Worktree starten.
+4. Besonders prüfen: mobile Lesereihenfolge/30s bis Behandlung+nächster Schritt; tatsächlicher Ladeabschluss von MLD-Nachbarressourcen; Fokusfalle+Rückkehr; Druck enthält Titel, Quellen und alle notwendigen Belege; Action-Card-Pending bei synthetisch leerem searched; Daten fehlen/404 führen sinnvoll weiter; jede Gene/Org/Trial-Behauptung belegt. Hero ARSA/Libmeldy/Lenmeldy, PMD und Gap explizit bewahren.
+5. Produktions-LCP <2,5s prüfen (bisher nicht gemessen); Landing darf nur Index laden, keinen Coregraph/Disease-Shards. Demo-Durchlauf dunkel1920x1080 bei110% Zoom und Video/aktuelle Screens sichern. Keine WebGL-Neuentwicklung; derzeit2D-Canvas nur in geöffneten Details.
+6. Funde beheben, zweite volle PDCA-Runde abschließen, nötige Tests nach geänderten Bereichen wiederholen. Nutzer hatte mindestens zwei volle Runden bestellt; bislang nur erste Prüf-/Fixrunde plus erfolgreiche technische Regression. Nicht als fertig ausgeben.
+7. Nur eigene Dateien explizit stagen, nie git add ., nie force-push/main. Jeder Commit per `git -c user.name=hannokuegler -c user.email=50925342+hannokuegler@users.noreply.github.com commit ...`; anschließend Autor UND Committer prüfen. Vor Push eigenen Branch mit Remote synchronisieren (pull --rebase). `web-neu` pushen, Orchestrator merged. Finale Übergabe: Branch, Commit, Umfang, Checks, Rest-Risiko in5Zeilen. Demo-Einstieg und Graph-Öffnung sind geändert, Drehbuch anpassen.
+
+Die Nutzerin hat ausdrücklich um diesen Übergabeprompt und Upload des bisherigen Stands gebeten. Jetzt von diesem Zwischenstand aus weiterarbeiten, nicht neu konzipieren und nicht unbelegte Prüferfolge behaupten.
+
+## Belege im Branch
+
+- `pitch/DESIGN-NEU.md`: Konzept und getroffene Designentscheidung.
+- `docs/qa/web-neu/baseline/`: 36 vorherige Live-Screens und JSON-Bericht.
+- `docs/qa/web-neu/hero/`: aktuelle Screens aus den drei erfolgreichen E2E-Tests; Krabbe-Screens nach geöffnetem Evidenzbereich, nicht die initiale Familienansicht.
+- `docs/qa/web-neu/round1/`: blinder Review, heuristische Persona-Teilprüfung samt erfolgreichen Screens, HIG-Teilbericht vor Fixes.
+- `app/scripts/hig-audit.cjs`: reproduzierbare Nachmessung. Lokale ursprüngliche Scratch-Artefakte bleiben unter app/_screens (gitignored); relevante Belege wurden oben übernommen. Fehlgeschlagene Internal-Server-Error-Screens wurden bewusst nicht als Produktbelege übernommen.
+
+## Bekannte Prüfgrenzen
+
+Keine Behauptung, dass vollständige HIG-Prüfung, zwei vollständige PDCA-Runden, Production-LCP, Druck-Visualprüfung oder Demo-Video bereits abgenommen seien. Keine Live-Deployment-Zusage: main ist unverändert, Merge durch Orchestrator. Letzte fachliche Änderungen sind implementiert und technisch regressionsgeprüft, brauchen den frischen Blind-/Persona-Review.

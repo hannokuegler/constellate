@@ -1,0 +1,90 @@
+{
+ "key": "cd8b0ecb9d8c370e",
+ "edge_ids": [
+  "e_34272bdebcd2",
+  "e_8a9c88239791",
+  "e_91a2d1ff7629",
+  "e_d56da1ee4888",
+  "e_d9b377ad254b",
+  "e_dea5f08b6182",
+  "e_e331af0d5f97",
+  "e_e5b3331b78b8"
+ ],
+ "from": "MONDO:0009266",
+ "via": "MONDO:0009265",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.565Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Gaucher disease type I and type II are both linked to the gene GBA1 in curated databases [e_d56da1ee4888] [e_8a9c88239791].",
+   "edge_ids": [
+    "e_d56da1ee4888",
+    "e_8a9c88239791"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_34272bdebcd2].",
+   "edge_ids": [
+    "e_34272bdebcd2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type II, laryngospasm, a sudden tightening of the voice box, and progressive loss of mental and movement skills are listed as frequent [e_d9b377ad254b] [e_e331af0d5f97].",
+   "edge_ids": [
+    "e_d9b377ad254b",
+    "e_e331af0d5f97"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both are curated with a confidence of 0.6 [e_d9b377ad254b] [e_e331af0d5f97].",
+   "edge_ids": [
+    "e_d9b377ad254b",
+    "e_e331af0d5f97"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type I, a completed phase 3 study in children and a recruiting study on biomarkers are listed [e_e5b3331b78b8] [e_91a2d1ff7629].",
+   "edge_ids": [
+    "e_e5b3331b78b8",
+    "e_91a2d1ff7629"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A listed study shows research is happening and does not show what it found [e_e5b3331b78b8].",
+   "edge_ids": [
+    "e_e5b3331b78b8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A grant on fat metabolism and nerve disease is listed for type I, with a low confidence of 0.5 [e_dea5f08b6182].",
+   "edge_ids": [
+    "e_dea5f08b6182"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no study and no symptoms for type I in common with type II, so they do not compare the two types [e_8a9c88239791].",
+   "edge_ids": [
+    "e_8a9c88239791"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

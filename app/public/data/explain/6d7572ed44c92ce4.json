@@ -1,0 +1,74 @@
+{
+ "key": "6d7572ed44c92ce4",
+ "edge_ids": [
+  "e_6ed67a41d3d1",
+  "e_d0709cfe492f",
+  "e_fdc90b3579e7"
+ ],
+ "from": "MONDO:0008601",
+ "via": "MONDO:0859378",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.506Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed a weak symptom similarity between triglyceride storage disease type 1 and hypomyelinating leukodystrophy 25 [e_fdc90b3579e7].",
+   "edge_ids": [
+    "e_fdc90b3579e7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The score is only 0.140, it rests on a single shared term, microcephaly, and the pair ranks 6 of 69 [e_fdc90b3579e7].",
+   "edge_ids": [
+    "e_fdc90b3579e7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_fdc90b3579e7].",
+   "edge_ids": [
+    "e_fdc90b3579e7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Hypomyelinating leukodystrophy 25 is tied to the gene TMEM163 in a curated database [e_d0709cfe492f].",
+   "edge_ids": [
+    "e_d0709cfe492f"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Triglyceride storage disease type 1 has one recorded symptom, decreased body weight, at a low confidence of 0.5 [e_6ed67a41d3d1].",
+   "edge_ids": [
+    "e_6ed67a41d3d1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show a shared cause, because no gene is recorded for triglyceride storage disease type 1 here [e_d0709cfe492f] [e_6ed67a41d3d1].",
+   "edge_ids": [
+    "e_d0709cfe492f",
+    "e_6ed67a41d3d1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies and no treatments, and they do not show that the two diseases are related in any biological way [e_fdc90b3579e7].",
+   "edge_ids": [
+    "e_fdc90b3579e7"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

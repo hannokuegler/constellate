@@ -1,11 +1,12 @@
 """09_metrics — quality numbers for the jury: writes meta.metrics into app/public/data/meta.json (nothing else changes).
 
 Schema (app/README.md, "meta.metrics"; /methods shows "pending" for every null entry):
-  extract_precision   {value, n, source}  hand review of OpenAI-extracted claims
+  extract_precision   {value, n, source}  hand review of LLM-extracted claims (05)
                       data/curated/extract_review.csv  pmid,claim_id,correct,reviewer   (correct = yes | no, other values
                       are not counted; a claim reviewed twice counts once and is correct only if every review says yes).
                       Fallback: data/curated/extract_check.csv from extract_sample.py (check = ok | wrong: ...).
-                      No file or no judged row -> null.
+                      Neither filled in: data/curated/extract_model_review.csv (verdict = ok | wrong, an independent model
+                      judged every accepted claim), then with kind "model_review" and a source that says so. Else null.
   reconcile_accuracy  {value, n, source}  06 org-name -> MONDO matches of verified orgs (data/reconcile/org_disease_edges.json)
                       that agree with the ORPHA ids Osman entered by hand in data/curated/orgs.csv (match is correct when the
                       matched disease carries one of the org's ORPHA ids as Orphanet xref in the export). No reconcile output,
@@ -72,13 +73,28 @@ def extract_precision(curated: Path) -> dict | None:
             if verdict == "ok" or verdict.startswith("wrong"):
                 verdicts[f"{row.get('pmid', '')}|{row.get('claim', '')}"].append(verdict == "ok")
     else:
-        return None
+        return extract_precision_model(curated)
     if not verdicts:
-        return None
+        return extract_precision_model(curated)  # hand sample not filled in yet
     correct = sum(all(v) for v in verdicts.values())
     by = f", {len(reviewers)} reviewer{'s' if len(reviewers) != 1 else ''}" if reviewers else ""
     return {"value": round(correct / len(verdicts), 3), "n": len(verdicts),
             "source": f"hand review of {len(verdicts)} extracted claims against the abstract (data/curated/{name}{by})"}
+
+
+def extract_precision_model(curated: Path) -> dict | None:
+    """Fallback until the hand sample is filled in: an independent model (not the extractor) judged every accepted claim."""
+    review = curated / "extract_model_review.csv"
+    if not review.exists():
+        return None
+    rows = [r for r in read_csv(review) if r.get("verdict", "").lower() in ("ok", "wrong")]
+    if not rows:
+        return None
+    reviewers = sorted({r.get("reviewer") for r in rows if r.get("reviewer")})
+    correct = sum(r["verdict"].lower() == "ok" for r in rows)
+    return {"value": round(correct / len(rows), 3), "n": len(rows), "kind": "model_review",
+            "source": f"independent model review of all {len(rows)} accepted claims against the abstract "
+                      f"({', '.join(reviewers) or 'model'}; not a hand review; data/curated/{review.name})"}
 
 
 def disease_orpha(out: Path, meta: dict, disease: str) -> set[str] | None:

@@ -1,0 +1,79 @@
+{
+ "key": "f8e422d699525959",
+ "edge_ids": [
+  "e_244c274fe2aa",
+  "e_2734b3a5f5c8",
+  "e_27996e898ba6",
+  "e_8c34ce98654b",
+  "e_e4b2e587ca9e"
+ ],
+ "from": "MONDO:0009656",
+ "via": "MONDO:0014665",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.605Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 3B and Charcot-Marie-Tooth disease axonal type 2V are both recorded as caused by the gene NAGLU [e_244c274fe2aa] [e_2734b3a5f5c8].",
+   "edge_ids": [
+    "e_244c274fe2aa",
+    "e_2734b3a5f5c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_244c274fe2aa] [e_2734b3a5f5c8].",
+   "edge_ids": [
+    "e_244c274fe2aa",
+    "e_2734b3a5f5c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.95 [e_27996e898ba6].",
+   "edge_ids": [
+    "e_27996e898ba6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_27996e898ba6].",
+   "edge_ids": [
+    "e_27996e898ba6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For mucopolysaccharidosis type 3B, two observed features are recorded, reduced activity of the NAGLU enzyme in tissue in 7 of 7 cases and dysostosis multiplex, a bone shape abnormality, in 16 of 16 cases [e_e4b2e587ca9e] [e_8c34ce98654b].",
+   "edge_ids": [
+    "e_e4b2e587ca9e",
+    "e_8c34ce98654b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how one gene leads to two different conditions, and they list no symptoms for the nerve condition [e_27996e898ba6] [e_2734b3a5f5c8].",
+   "edge_ids": [
+    "e_27996e898ba6",
+    "e_2734b3a5f5c8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, no treatments and no patient groups [e_244c274fe2aa].",
+   "edge_ids": [
+    "e_244c274fe2aa"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

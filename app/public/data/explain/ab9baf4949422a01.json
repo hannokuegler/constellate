@@ -1,0 +1,102 @@
+{
+ "key": "ab9baf4949422a01",
+ "edge_ids": [
+  "e_01e45243e60e",
+  "e_2bf07835a983",
+  "e_31fe88a3c275",
+  "e_3ca6fdfa23ea",
+  "e_5a569f5cfe31",
+  "e_8057bc286234",
+  "e_86dcbf9b0503",
+  "e_8b4757a86e16",
+  "e_8ead7864abed",
+  "e_a44e194016ef",
+  "e_c5081fe32bae",
+  "e_d96688ec4182",
+  "e_eb525d38a83f",
+  "e_ef033d154137",
+  "e_f2debbee4e0d",
+  "e_f81f198b89d9"
+ ],
+ "from": "MONDO:0008972",
+ "via": "MONDO:0019609",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.535Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Rhizomelic chondrodysplasia punctata type 1 is linked to the gene PEX7 in curated databases [e_eb525d38a83f].",
+   "edge_ids": [
+    "e_eb525d38a83f"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The Zellweger spectrum disorders are also linked to PEX7, but only by inference from one subtype, with confidence 0.45, and this may not hold for every form [e_ef033d154137].",
+   "edge_ids": [
+    "e_ef033d154137"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Zellweger spectrum disorders are linked by curated evidence to PEX1 and PEX10 directly [e_d96688ec4182] [e_f2debbee4e0d].",
+   "edge_ids": [
+    "e_d96688ec4182",
+    "e_f2debbee4e0d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "PEX1, PEX7, PEX10, PEX12, PEX13 and PEX14 all take part in the same curated pathway, peroxisomal protein import [e_8ead7864abed] [e_31fe88a3c275] [e_5a569f5cfe31] [e_8057bc286234] [e_3ca6fdfa23ea] [e_86dcbf9b0503].",
+   "edge_ids": [
+    "e_8ead7864abed",
+    "e_31fe88a3c275",
+    "e_5a569f5cfe31",
+    "e_8057bc286234",
+    "e_3ca6fdfa23ea",
+    "e_86dcbf9b0503"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two disorders look somewhat alike in their listed symptoms, with a score of 0.238 that is inferred and not a diagnosis [e_01e45243e60e].",
+   "edge_ids": [
+    "e_01e45243e60e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For Zellweger spectrum disorders, two studies are listed as completed, one drug trial and one survey of symptoms and quality of life [e_a44e194016ef] [e_f81f198b89d9].",
+   "edge_ids": [
+    "e_a44e194016ef",
+    "e_f81f198b89d9"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For rhizomelic type 1, specks of calcium in infant cartilage and severe poor growth are listed with a low confidence of 0.5 [e_2bf07835a983] [e_8b4757a86e16].",
+   "edge_ids": [
+    "e_2bf07835a983",
+    "e_8b4757a86e16"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show whether the completed drug trial helped anyone [e_a44e194016ef].",
+   "edge_ids": [
+    "e_a44e194016ef"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

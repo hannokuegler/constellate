@@ -1,0 +1,94 @@
+{
+ "key": "00e48d4462186d56",
+ "edge_ids": [
+  "e_1fcff86aef59",
+  "e_370db7375d93",
+  "e_45810198c84c",
+  "e_4f1bd32a647b",
+  "e_52e373066985",
+  "e_7f28d7b0cdcb",
+  "e_ae4fd653a152",
+  "e_b9d1b7fd988c",
+  "e_c239feee0cf8",
+  "e_dbd4ca0cd3ee",
+  "e_defc8600f133",
+  "e_e0896f6d7a10"
+ ],
+ "from": "MONDO:0009652",
+ "via": "MONDO:0018938",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.599Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "GNPTG-mucolipidosis is linked to the gene GNPTG in curated databases [e_defc8600f133].",
+   "edge_ids": [
+    "e_defc8600f133"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 4 is linked to the genes GALNS and GLB1 only by inference from subtypes, each with confidence 0.475, and this may not hold for every form [e_c239feee0cf8] [e_52e373066985].",
+   "edge_ids": [
+    "e_c239feee0cf8",
+    "e_52e373066985"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two diseases look somewhat alike, with a score of 0.218 that is inferred and not a diagnosis [e_45810198c84c].",
+   "edge_ids": [
+    "e_45810198c84c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For GNPTG-mucolipidosis, a clawed hand and a stiff shoulder joint are observed features, based on small counts of 1 of 1 and 3 of 3 [e_ae4fd653a152] [e_4f1bd32a647b].",
+   "edge_ids": [
+    "e_ae4fd653a152",
+    "e_4f1bd32a647b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Coarse facial features and intellectual disability are marked as contradicted for this disease, with 1 contradicting record each [e_b9d1b7fd988c] [e_e0896f6d7a10].",
+   "edge_ids": [
+    "e_b9d1b7fd988c",
+    "e_e0896f6d7a10"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For mucopolysaccharidosis type 4, one recruiting study of body function and one completed newborn screening study are listed [e_1fcff86aef59] [e_7f28d7b0cdcb].",
+   "edge_ids": [
+    "e_1fcff86aef59",
+    "e_7f28d7b0cdcb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A patient group is matched to type 4, but this match is text_mined and unverified [e_dbd4ca0cd3ee].",
+   "edge_ids": [
+    "e_dbd4ca0cd3ee"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no study for GNPTG-mucolipidosis [e_defc8600f133].",
+   "edge_ids": [
+    "e_defc8600f133"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

@@ -1,0 +1,80 @@
+{
+ "key": "2cc5b1c43176c0af",
+ "edge_ids": [
+  "e_07b1ff151b14",
+  "e_1dcc3789df64",
+  "e_3039823a577a",
+  "e_316e60c8ee91",
+  "e_765b0bd7ae9e",
+  "e_b52346f0801b"
+ ],
+ "from": "MONDO:0009590",
+ "via": "MONDO:0012719",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.589Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Metachromatic leukodystrophy due to saposin B deficiency and combined PSAP deficiency are both recorded as caused by the gene PSAP [e_316e60c8ee91] [e_b52346f0801b].",
+   "edge_ids": [
+    "e_316e60c8ee91",
+    "e_b52346f0801b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, and the second one is also backed by a published paper that describes the cause the same way [e_316e60c8ee91] [e_b52346f0801b].",
+   "edge_ids": [
+    "e_316e60c8ee91",
+    "e_b52346f0801b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9 [e_07b1ff151b14].",
+   "edge_ids": [
+    "e_07b1ff151b14"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_07b1ff151b14].",
+   "edge_ids": [
+    "e_07b1ff151b14"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the saposin B form, two observed features are recorded, worsening movement ability and damage to the coating of nerves outside the brain, each from a small report [e_765b0bd7ae9e] [e_3039823a577a].",
+   "edge_ids": [
+    "e_765b0bd7ae9e",
+    "e_3039823a577a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant is linked to combined PSAP deficiency, but its title is about detectors for small animal imaging, so its relevance is unclear [e_1dcc3789df64].",
+   "edge_ids": [
+    "e_1dcc3789df64"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the two conditions differ, and they list no symptoms for combined PSAP deficiency, no treatments and no studies [e_07b1ff151b14] [e_b52346f0801b].",
+   "edge_ids": [
+    "e_07b1ff151b14",
+    "e_b52346f0801b"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

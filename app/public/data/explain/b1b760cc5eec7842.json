@@ -1,0 +1,87 @@
+{
+ "key": "b1b760cc5eec7842",
+ "edge_ids": [
+  "e_224cdda7b048",
+  "e_6fbefb0b0214",
+  "e_83d258382324",
+  "e_87bf50c02933",
+  "e_997a90c6f1e1",
+  "e_c5980ec6fcf5",
+  "e_e939e060e080"
+ ],
+ "from": "MONDO:0009066",
+ "via": "MONDO:0018467",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.541Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Juvenile nephropathic cystinosis and nephropathic infantile cystinosis are both linked to the gene CTNS in curated databases [e_997a90c6f1e1] [e_6fbefb0b0214].",
+   "edge_ids": [
+    "e_997a90c6f1e1",
+    "e_6fbefb0b0214"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that their listed symptoms overlap, with a score of 0.477, which is inferred and not a diagnosis [e_224cdda7b048].",
+   "edge_ids": [
+    "e_224cdda7b048"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the juvenile form, a raised level of cystine inside cells is an observed feature [e_87bf50c02933].",
+   "edge_ids": [
+    "e_87bf50c02933"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Protein in the urine is also an observed feature of the juvenile form [e_c5980ec6fcf5].",
+   "edge_ids": [
+    "e_c5980ec6fcf5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both observations rest on small counts, 2 of 2 in the records [e_87bf50c02933] [e_c5980ec6fcf5].",
+   "edge_ids": [
+    "e_87bf50c02933",
+    "e_c5980ec6fcf5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the infantile form, one patient registry and natural history study is listed as recruiting [e_e939e060e080].",
+   "edge_ids": [
+    "e_e939e060e080"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A registry collects information and is not a treatment trial [e_e939e060e080].",
+   "edge_ids": [
+    "e_e939e060e080"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for the infantile form and no treatment study [e_6fbefb0b0214].",
+   "edge_ids": [
+    "e_6fbefb0b0214"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

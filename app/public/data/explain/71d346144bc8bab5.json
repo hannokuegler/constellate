@@ -1,0 +1,87 @@
+{
+ "key": "71d346144bc8bab5",
+ "edge_ids": [
+  "e_15edd534611d",
+  "e_2e4d981552cc",
+  "e_8d2630340a0f",
+  "e_962fdc9614a1",
+  "e_b7503373264c",
+  "e_e64053e403a6",
+  "e_e9652ca43b9a"
+ ],
+ "from": "MONDO:0009744",
+ "via": "MONDO:0010830",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.642Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Neuronal ceroid lipofuscinosis 1 is linked to the gene PPT1, and type 8 to the gene CLN8, both in curated databases [e_15edd534611d] [e_962fdc9614a1].",
+   "edge_ids": [
+    "e_15edd534611d",
+    "e_962fdc9614a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "So the two types have different genes in these edges [e_15edd534611d] [e_962fdc9614a1].",
+   "edge_ids": [
+    "e_15edd534611d",
+    "e_962fdc9614a1"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they look somewhat alike in their listed symptoms, with a score of 0.241, which is inferred and not a diagnosis [e_2e4d981552cc].",
+   "edge_ids": [
+    "e_2e4d981552cc"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 1, reduced activity of the enzyme palmitoyl-protein thioesterase in tissue is an observed feature [e_e9652ca43b9a].",
+   "edge_ids": [
+    "e_e9652ca43b9a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Deposits of a storage material in blood vessels are also an observed feature for type 1 [e_e64053e403a6].",
+   "edge_ids": [
+    "e_e64053e403a6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Vacuolated white blood cells are marked as contradicted for type 1, with 1 contradicting record [e_b7503373264c].",
+   "edge_ids": [
+    "e_b7503373264c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 8, one study of clinical and thinking skills in Batten disease is listed as recruiting [e_8d2630340a0f].",
+   "edge_ids": [
+    "e_8d2630340a0f"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for type 8 and no study for type 1 [e_962fdc9614a1].",
+   "edge_ids": [
+    "e_962fdc9614a1"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

@@ -1,0 +1,91 @@
+{
+ "key": "2d36dc1320f249bc",
+ "edge_ids": [
+  "e_00a92bfb7837",
+  "e_1dafbc162208",
+  "e_1ea565934c51",
+  "e_2c5236d2f740",
+  "e_371301408104",
+  "e_3dbc42738b5a",
+  "e_ac2aac17eb1d",
+  "e_b061bdc2342e",
+  "e_e9a5dff2e63c"
+ ],
+ "from": "MONDO:0009499",
+ "via": "MONDO:0010714",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.481Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed that Krabbe disease and Pelizaeus-Merzbacher spectrum disorder have somewhat similar symptom profiles, with a similarity score of 0.222 over 16 shared symptom terms, ranked 6 of 28 [e_00a92bfb7837].",
+   "edge_ids": [
+    "e_00a92bfb7837"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This is an \"inferred\" link, meaning Constellate calculated it from overlapping symptom terms, and it is not a database finding [e_00a92bfb7837].",
+   "edge_ids": [
+    "e_00a92bfb7837"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The top shared symptom is progressive spasticity [e_00a92bfb7837].",
+   "edge_ids": [
+    "e_00a92bfb7837"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The causes recorded in curated databases differ: Krabbe disease is tied to the gene GALC, while Pelizaeus-Merzbacher disease is tied to the gene PLP1 [e_3dbc42738b5a] [e_1dafbc162208].",
+   "edge_ids": [
+    "e_3dbc42738b5a",
+    "e_1dafbc162208"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Krabbe disease also has an inferred link to the gene PSAP, rolled up from the infantile form at confidence 0.475, and it may not hold for every form [e_2c5236d2f740].",
+   "edge_ids": [
+    "e_2c5236d2f740"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Pelizaeus-Merzbacher disease has two recruiting studies on ClinicalTrials.gov, one testing a drug called ION356 for safety and one tracking biomarkers and disease progression [e_ac2aac17eb1d] [e_1ea565934c51].",
+   "edge_ids": [
+    "e_ac2aac17eb1d",
+    "e_1ea565934c51"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant recorded in NIH RePORTER also targets this disease [e_e9a5dff2e63c].",
+   "edge_ids": [
+    "e_e9a5dff2e63c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the Pelizaeus-Merzbacher studies or their drug apply to Krabbe disease, because the link is only computed and the causing genes differ [e_00a92bfb7837] [e_3dbc42738b5a] [e_1dafbc162208].",
+   "edge_ids": [
+    "e_00a92bfb7837",
+    "e_3dbc42738b5a",
+    "e_1dafbc162208"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

@@ -1,0 +1,101 @@
+{
+ "key": "7b147ce3a4106417",
+ "edge_ids": [
+  "e_1246a2f623f5",
+  "e_26fe45bb8e67",
+  "e_293f8f633c73",
+  "e_31e8d8274b07",
+  "e_49c4b77a64bc",
+  "e_4e136943db1f",
+  "e_5b584a90f37e",
+  "e_62efcb079493",
+  "e_654c35082eb6",
+  "e_a1a9b68fc263",
+  "e_a90ca7f18504",
+  "e_b88b530788ef",
+  "e_d759ca4ddc42",
+  "e_ed375158e5b0"
+ ],
+ "from": "MONDO:0001586",
+ "via": "MONDO:0018937",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.491Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Four genes, IDUA, HGSNAT, NAGLU and SGSH, are all recorded as taking part in the same pathway for breaking down a sugar chain called heparan sulfate [e_a90ca7f18504] [e_654c35082eb6] [e_b88b530788ef] [e_5b584a90f37e].",
+   "edge_ids": [
+    "e_a90ca7f18504",
+    "e_654c35082eb6",
+    "e_b88b530788ef",
+    "e_5b584a90f37e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These pathway links are curated, which means they come from the Reactome database [e_a90ca7f18504] [e_654c35082eb6].",
+   "edge_ids": [
+    "e_a90ca7f18504",
+    "e_654c35082eb6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that mucopolysaccharidosis type 1 and type 3 have a moderately similar symptom profile, with a score of 0.258 over 21 shared terms, ranked 3 of 5 [e_d759ca4ddc42].",
+   "edge_ids": [
+    "e_d759ca4ddc42"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This similarity is inferred, meaning Constellate calculated it, and it is not a database finding [e_d759ca4ddc42].",
+   "edge_ids": [
+    "e_d759ca4ddc42"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type 1 is linked to the gene IDUA and type 3 to the genes GNS and HGSNAT, but these gene links are inferred from subtypes at confidence 0.475 and may not hold for every form [e_62efcb079493] [e_31e8d8274b07] [e_ed375158e5b0].",
+   "edge_ids": [
+    "e_62efcb079493",
+    "e_31e8d8274b07",
+    "e_ed375158e5b0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type 3 has two studies on ClinicalTrials.gov, a gene therapy study that is not yet recruiting and a cannabidiol study that is recruiting [e_293f8f633c73] [e_1246a2f623f5].",
+   "edge_ids": [
+    "e_293f8f633c73",
+    "e_1246a2f623f5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The Cure Sanfilippo Foundation is linked to type 3 only by an automatic name match, so treat that link as inferred [e_a1a9b68fc263].",
+   "edge_ids": [
+    "e_a1a9b68fc263"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the type 3 studies apply to type 1, and they do not show that a drug works [e_293f8f633c73] [e_1246a2f623f5] [e_d759ca4ddc42].",
+   "edge_ids": [
+    "e_293f8f633c73",
+    "e_1246a2f623f5",
+    "e_d759ca4ddc42"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

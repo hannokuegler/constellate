@@ -1,0 +1,94 @@
+{
+ "key": "b385589d7280ae05",
+ "edge_ids": [
+  "e_2002d33295d6",
+  "e_2593001334ed",
+  "e_2acca2d359f2",
+  "e_4b6a2b49884c",
+  "e_7bb7feb7a260",
+  "e_b7708b486598",
+  "e_c96cb9bc9690",
+  "e_d8e337b6892d",
+  "e_ebcdbdec8f81",
+  "e_f6db5c8cf813"
+ ],
+ "from": "MONDO:0009660",
+ "via": "MONDO:0018149",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.620Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 4B is curated as caused by the gene GLB1, while GM1 gangliosidosis is linked to GLB1 only by an inferred roll-up from subtypes at confidence 0.475 [e_ebcdbdec8f81] [e_4b6a2b49884c].",
+   "edge_ids": [
+    "e_ebcdbdec8f81",
+    "e_4b6a2b49884c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this gene, but at the lower confidence of 0.475, and it may not hold for every form [e_7bb7feb7a260].",
+   "edge_ids": [
+    "e_7bb7feb7a260"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_7bb7feb7a260].",
+   "edge_ids": [
+    "e_7bb7feb7a260"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GM1 gangliosidosis has two studies on ClinicalTrials.gov, a prenatal gene transfer study not yet recruiting and a recruiting study of an oral drug called nizubaglustat [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant for an AAV approach is recorded, and a patient group link comes from unverified text mining [e_d8e337b6892d] [e_b7708b486598].",
+   "edge_ids": [
+    "e_d8e337b6892d",
+    "e_b7708b486598"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 4B, two low-confidence features are curated, a thickened lining of heart arteries and pointed hand bones [e_2593001334ed] [e_f6db5c8cf813].",
+   "edge_ids": [
+    "e_2593001334ed",
+    "e_f6db5c8cf813"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Intellectual disability is listed for type 4B but marked as contradicted [e_2acca2d359f2].",
+   "edge_ids": [
+    "e_2acca2d359f2"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the GM1 studies apply to type 4B, and they do not show that any drug works [e_7bb7feb7a260] [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_7bb7feb7a260",
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

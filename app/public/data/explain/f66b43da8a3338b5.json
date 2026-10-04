@@ -1,0 +1,73 @@
+{
+ "key": "f66b43da8a3338b5",
+ "edge_ids": [
+  "e_2d725422cc40",
+  "e_87463e896c63",
+  "e_8e5e20f68208"
+ ],
+ "from": "MONDO:0009296",
+ "via": "MONDO:0010017",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.579Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Sea-blue histiocyte syndrome is linked to the gene APOE in curated databases [e_8e5e20f68208].",
+   "edge_ids": [
+    "e_8e5e20f68208"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "No gene is listed for glycoprotein storage disease in these edges [e_2d725422cc40].",
+   "edge_ids": [
+    "e_2d725422cc40"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For glycoprotein storage disease, gout is listed with a low confidence of 0.5 [e_2d725422cc40].",
+   "edge_ids": [
+    "e_2d725422cc40"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed a weak similarity between the two diseases in their listed symptoms, with a score of 0.142 [e_87463e896c63].",
+   "edge_ids": [
+    "e_87463e896c63"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That score is inferred and rests on 1 shared term, an enlarged spleen [e_87463e896c63].",
+   "edge_ids": [
+    "e_87463e896c63"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "So these edges do not show that the two diseases are closely related [e_87463e896c63].",
+   "edge_ids": [
+    "e_87463e896c63"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no trials, funding or patient groups for either disease [e_8e5e20f68208].",
+   "edge_ids": [
+    "e_8e5e20f68208"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

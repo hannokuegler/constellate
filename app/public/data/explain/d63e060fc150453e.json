@@ -1,0 +1,77 @@
+{
+ "key": "d63e060fc150453e",
+ "edge_ids": [
+  "e_46330a802f74",
+  "e_5c34bdd1fa29",
+  "e_71f9e31c0e45",
+  "e_af10a9282f7c",
+  "e_cf46ced35bdb",
+  "e_ed3a3e977216"
+ ],
+ "from": "MONDO:0009218",
+ "via": "MONDO:0008045",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.547Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Farber lipogranulomatosis and spinal muscular atrophy with progressive myoclonic epilepsy are both linked to the gene ASAH1 in curated databases [e_46330a802f74] [e_71f9e31c0e45].",
+   "edge_ids": [
+    "e_46330a802f74",
+    "e_71f9e31c0e45"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_5c34bdd1fa29].",
+   "edge_ids": [
+    "e_5c34bdd1fa29"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For Farber lipogranulomatosis, lumps under the skin near the joints are a curated, very frequent feature [e_ed3a3e977216].",
+   "edge_ids": [
+    "e_ed3a3e977216"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A sideways bend of the wrist toward the little finger is an observed feature, based on 1 of 1 in the record [e_af10a9282f7c].",
+   "edge_ids": [
+    "e_af10a9282f7c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For the spinal muscular atrophy syndrome, a research grant is listed for preparing a gene therapy [e_cf46ced35bdb].",
+   "edge_ids": [
+    "e_cf46ced35bdb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That grant has a low confidence of 0.5 and shows planned research, not a treatment that exists [e_cf46ced35bdb].",
+   "edge_ids": [
+    "e_cf46ced35bdb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for the spinal muscular atrophy syndrome [e_71f9e31c0e45].",
+   "edge_ids": [
+    "e_71f9e31c0e45"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

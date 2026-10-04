@@ -1,0 +1,81 @@
+{
+ "key": "897de35a1177fa8b",
+ "edge_ids": [
+  "e_07dc1fbfc1f3",
+  "e_2b39f1206016",
+  "e_3af42a3b13cf",
+  "e_5d159ce2f45e",
+  "e_921a2325bcdf",
+  "e_a9aea3612fad",
+  "e_c4eefef8fc23",
+  "e_daa6e78738b9"
+ ],
+ "from": "MONDO:0009657",
+ "via": "MONDO:0019200",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.612Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 3C and retinitis pigmentosa are both linked to the gene HGSNAT in curated databases [e_daa6e78738b9] [e_3af42a3b13cf].",
+   "edge_ids": [
+    "e_daa6e78738b9",
+    "e_3af42a3b13cf"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_c4eefef8fc23].",
+   "edge_ids": [
+    "e_c4eefef8fc23"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Retinitis pigmentosa is also linked to the genes ABCA4 and AGBL5 by curated evidence [e_921a2325bcdf] [e_5d159ce2f45e].",
+   "edge_ids": [
+    "e_921a2325bcdf",
+    "e_5d159ce2f45e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "It is linked to the gene CLN3 only by inference from one subtype, with confidence 0.45, and this may not hold for every form [e_2b39f1206016].",
+   "edge_ids": [
+    "e_2b39f1206016"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3C, a staining change in cells and a dense skull cap are listed, both with a low confidence of 0.5 [e_07dc1fbfc1f3] [e_a9aea3612fad].",
+   "edge_ids": [
+    "e_07dc1fbfc1f3",
+    "e_a9aea3612fad"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not explain how one gene can lead to both a whole-body storage disease and an eye disease [e_c4eefef8fc23].",
+   "edge_ids": [
+    "e_c4eefef8fc23"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, funding or patient groups for either disease [e_daa6e78738b9].",
+   "edge_ids": [
+    "e_daa6e78738b9"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

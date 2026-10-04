@@ -1,0 +1,91 @@
+{
+ "key": "03436b4254050ec8",
+ "edge_ids": [
+  "e_1261dddea3ea",
+  "e_1dcc3789df64",
+  "e_6331a370f2a1",
+  "e_80448fe78f02",
+  "e_8f8f3574e614",
+  "e_a7fe160fd817",
+  "e_b2d7ac18f1b8",
+  "e_b52346f0801b",
+  "e_fc2694619ad6"
+ ],
+ "from": "MONDO:0009591",
+ "via": "MONDO:0012719",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.592Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "The juvenile form of metachromatic leukodystrophy and combined PSAP deficiency are both linked to the gene PSAP in curated databases [e_b2d7ac18f1b8] [e_b52346f0801b].",
+   "edge_ids": [
+    "e_b2d7ac18f1b8",
+    "e_b52346f0801b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_80448fe78f02].",
+   "edge_ids": [
+    "e_80448fe78f02"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The juvenile form is also linked to the gene ARSA in curated databases [e_a7fe160fd817].",
+   "edge_ids": [
+    "e_a7fe160fd817"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "ARSA and PSAP both take part in the same curated pathway, glycosphingolipid catabolism [e_6331a370f2a1] [e_8f8f3574e614].",
+   "edge_ids": [
+    "e_6331a370f2a1",
+    "e_8f8f3574e614"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two features of the juvenile form are listed, impaired breakdown of a fatty substance and reduced activity of the enzyme arylsulfatase A in white blood cells [e_1261dddea3ea] [e_fc2694619ad6].",
+   "edge_ids": [
+    "e_1261dddea3ea",
+    "e_fc2694619ad6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both are curated with a low confidence of 0.5 [e_1261dddea3ea] [e_fc2694619ad6].",
+   "edge_ids": [
+    "e_1261dddea3ea",
+    "e_fc2694619ad6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The only funding listed for combined PSAP deficiency is a grant titled about detectors for small animal imaging, so it may not be about this disease [e_1dcc3789df64].",
+   "edge_ids": [
+    "e_1dcc3789df64"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no studies and no symptoms for combined PSAP deficiency [e_b52346f0801b].",
+   "edge_ids": [
+    "e_b52346f0801b"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

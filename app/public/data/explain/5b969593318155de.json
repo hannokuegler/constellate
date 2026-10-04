@@ -1,0 +1,78 @@
+{
+ "key": "5b969593318155de",
+ "edge_ids": [
+  "e_5fdbf8c9c69c",
+  "e_b23e0cbf8118",
+  "e_bf3d3c7f30ae",
+  "e_ce8a3471f532",
+  "e_dc4838a109f0"
+ ],
+ "from": "MONDO:0008948",
+ "via": "MONDO:0011445",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.528Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed a modest symptom similarity between cerebrotendinous xanthomatosis and hereditary spastic paraplegia 11, with a score of 0.199 over 22 shared terms [e_dc4838a109f0].",
+   "edge_ids": [
+    "e_dc4838a109f0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The top shared term is an abnormal nerve test result called EMG axonal abnormality [e_dc4838a109f0].",
+   "edge_ids": [
+    "e_dc4838a109f0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it from symptom terms, and it is not a database finding [e_dc4838a109f0].",
+   "edge_ids": [
+    "e_dc4838a109f0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The causes are different in curated databases: cerebrotendinous xanthomatosis is tied to the gene CYP27A1, while hereditary spastic paraplegia 11 is tied to the gene SPG11 [e_bf3d3c7f30ae] [e_ce8a3471f532].",
+   "edge_ids": [
+    "e_bf3d3c7f30ae",
+    "e_ce8a3471f532"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For cerebrotendinous xanthomatosis, two observed features are recorded in OMIM, raised cholestanol in spinal fluid and a brain wave test with generalized slow activity [e_b23e0cbf8118] [e_5fdbf8c9c69c].",
+   "edge_ids": [
+    "e_b23e0cbf8118",
+    "e_5fdbf8c9c69c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show a shared cause, because the two genes differ [e_bf3d3c7f30ae] [e_ce8a3471f532].",
+   "edge_ids": [
+    "e_bf3d3c7f30ae",
+    "e_ce8a3471f532"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also do not show any studies or treatments, and they do not show that the two conditions behave alike beyond the computed score [e_dc4838a109f0].",
+   "edge_ids": [
+    "e_dc4838a109f0"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

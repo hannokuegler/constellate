@@ -1,0 +1,76 @@
+{
+ "key": "70c4617a7aa518d7",
+ "edge_ids": [
+  "e_04bd923155c0",
+  "e_672bf9232141",
+  "e_91d4e3da3934",
+  "e_ad9a11398ea4"
+ ],
+ "from": "MONDO:0008752",
+ "via": "MONDO:0700295",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.513Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Alexander disease is linked to the gene GFAP in curated databases, with no contradicting evidence [e_04bd923155c0].",
+   "edge_ids": [
+    "e_04bd923155c0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two features are recorded as observed in a database for Alexander disease, a tremor of the soft palate and an unusually small pupil [e_91d4e3da3934] [e_672bf9232141].",
+   "edge_ids": [
+    "e_91d4e3da3934",
+    "e_672bf9232141"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both observations rest on very small counts, shown as 1 of 1 in the records [e_91d4e3da3934] [e_672bf9232141].",
+   "edge_ids": [
+    "e_91d4e3da3934",
+    "e_672bf9232141"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate also computed that Alexander disease looks somewhat like an adult-onset dominant demyelinating leukodystrophy in its listed symptoms [e_ad9a11398ea4].",
+   "edge_ids": [
+    "e_ad9a11398ea4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That similarity is inferred, with a score of 0.216 (simGIC, a measure of shared symptom terms), and it is not a diagnosis [e_ad9a11398ea4].",
+   "edge_ids": [
+    "e_ad9a11398ea4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how common the two features are in everyone with the disease [e_91d4e3da3934].",
+   "edge_ids": [
+    "e_91d4e3da3934"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no trials, funding or patient groups for Alexander disease [e_04bd923155c0].",
+   "edge_ids": [
+    "e_04bd923155c0"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

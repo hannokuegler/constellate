@@ -1,0 +1,99 @@
+{
+ "key": "3554a4556922616d",
+ "edge_ids": [
+  "e_1e9c9c4e3bd1",
+  "e_22b7e121e005",
+  "e_2c5236d2f740",
+  "e_3dbc42738b5a",
+  "e_6331a370f2a1",
+  "e_75f4a2222b59",
+  "e_8f8f3574e614",
+  "e_90f7d84f7668",
+  "e_993c3f6ead03",
+  "e_b85030c9d696",
+  "e_c4c319b42507",
+  "e_d896e966c8de",
+  "e_deb97136f1d7",
+  "e_e270315fe572",
+  "e_eafba62e86fa"
+ ],
+ "from": "MONDO:0018868",
+ "via": "MONDO:0009499",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.485Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Krabbe disease is linked to the gene GALC in curated databases, with no contradicting evidence [e_3dbc42738b5a].",
+   "edge_ids": [
+    "e_3dbc42738b5a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Metachromatic leukodystrophy is linked to the gene ARSA, but this link is text_mined, which means it was extracted from literature and is unverified [e_deb97136f1d7].",
+   "edge_ids": [
+    "e_deb97136f1d7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both diseases are also linked to a third gene, PSAP, but only by inference from subtypes, with confidence 0.475 for Krabbe disease and 0.45 for metachromatic leukodystrophy [e_2c5236d2f740] [e_eafba62e86fa].",
+   "edge_ids": [
+    "e_2c5236d2f740",
+    "e_eafba62e86fa"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Those PSAP links hold for the named subtypes and not necessarily for every form of each disease [e_2c5236d2f740] [e_eafba62e86fa].",
+   "edge_ids": [
+    "e_2c5236d2f740",
+    "e_eafba62e86fa"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GALC, ARSA and PSAP all take part in the same curated pathway, glycosphingolipid catabolism [e_993c3f6ead03] [e_6331a370f2a1] [e_8f8f3574e614].",
+   "edge_ids": [
+    "e_993c3f6ead03",
+    "e_6331a370f2a1",
+    "e_8f8f3574e614"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The two diseases look somewhat alike in their listed symptoms, but this is only a computed score (simGIC 0.216) from Constellate [e_e270315fe572].",
+   "edge_ids": [
+    "e_e270315fe572"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For Krabbe disease, one trial is listed as not yet recruiting and one as terminated, which is a record of studies and not a sign that anything works [e_b85030c9d696] [e_75f4a2222b59].",
+   "edge_ids": [
+    "e_b85030c9d696",
+    "e_75f4a2222b59"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the diseases differ in daily life, since the symptom edges are for metachromatic leukodystrophy and one is text_mined [e_1e9c9c4e3bd1] [e_d896e966c8de].",
+   "edge_ids": [
+    "e_1e9c9c4e3bd1",
+    "e_d896e966c8de"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

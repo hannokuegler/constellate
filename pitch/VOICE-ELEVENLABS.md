@@ -1,6 +1,6 @@
 # Voice-over-Plan · ElevenLabs Eleven v4
 
-Stand So 04.10.2026, 01:20 (Wien); Persona heißt wieder Maria (C5-Brief), D1–D7 gegen 2,3 Wörter/s nachgerechnet, Stimmen-Kandidaten in §2a. Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
+Stand So 04.10.2026, 04:25 (Europe/Vienna); D1 ohne unbelegten Therapie-Satz, T1 nach P15 gekürzt und mit VIDEO-STRATEGY synchronisiert. Nur Funktionen, die in [docs/RESOURCES.md](../docs/RESOURCES.md) §4 belegt sind (Prüfdatum dort 2026-10-03). Account: Hanno, einziger Inhaber; Login und API-Key werden nicht geteilt (Nutzungsbedingungen, §4.3). Recep liefert Text, Hanno erzeugt MP3. Entscheidung P10: ElevenLabs `eleven_v4` für die Videos mit Voice-over, Team-Video mit echten Stimmen, Offenlegung im README.
 
 ## 1. Welche Videos bekommen Voice-over
 
@@ -8,13 +8,13 @@ Seit der Team-Vorgabe (drei Videos, je maximal 60 s) gibt es **nur noch zwei** V
 
 | Video | Voice-over | Request-Aufteilung | Wörter | Zeichen (ca.) |
 |---|---|---|---|---|
-| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 124 | 750 |
-| Technical Walkthrough ≤ 60 s | gleiche Stimme | **ein Request** (T1), Absätze als Pausen; falls der Schnitt es braucht, sechs Requests T1a bis T1f je Szene | 132 | 850 |
+| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 118 | ca. 750 |
+| Technical Walkthrough ≤ 60 s | gleiche Stimme | **ein Request** (T1), Absätze als Pausen; falls der Schnitt es braucht, sechs Requests T1a bis T1f je Szene | 94 | ca. 650 |
 | Team Introduction ≤ 60 s | **keine KI-Stimme**, echte Stimmen, echte Gesichter | – | – | – |
 
 Credit-Bedarf konservativ mit 1 Credit je Zeichen: ca. 1.650 Zeichen Sprechtext, mit Probelauf und zwei Takes ca. 5.000 Credits; der Faktor für v4 steht nirgends und wird nach dem ersten Take im Dashboard abgelesen (§4.2). Selbst der Free-Plan reicht dafür.
 
-Tempo-Kontrolle: Jeder Block muss in seine Szenenzeit passen (Spalte „Zeit" in VIDEO-STRATEGY). Ist ein MP3 länger als die Szene, zuerst den Text kürzen (Streichreihenfolge in Abschnitt 6), erst dann Stability erhöhen; Tempo im Schnitt höchstens ±5 %.
+Tempo-Kontrolle: Jeder Block muss in seine Szenenzeit passen (Spalte „Zeit" in VIDEO-STRATEGY). Ist ein MP3 länger als die Szene, zuerst den Text kürzen (Streichreihenfolge in Abschnitt 6) und neu erzeugen; Verständlichkeit im finalen Take prüfen.
 
 ## 2. Modell und Stimmprofil
 
@@ -54,14 +54,14 @@ Vorgehen: alle drei mit den Testsätzen oben, je ein Take, Hanno und Recep höre
 
 | Zeit (So) | Wer | Was |
 |---|---|---|
-| 08:00–09:00 | Recep | Probe-Take der Demo gegen die Live-App timen (Cursor-Tempo, Szenenlängen); Abweichungen in die Blöcke unten eintragen |
+| 08:00–09:00 | Recep | Probe-Take nach Bereitschaft der Live-App; bei Blocker bis 09:00 an Hanno melden. Jede Demo-Szene mit Stoppuhr gegen die Live-App timen (Cursor-Tempo, Szenenlängen); Abweichungen in die Blöcke unten eintragen |
 | 09:00 | Hanno | Dashboard prüfen (Plan aktiv? Credits? „Eleven v4" in der Modellauswahl?), ein Test-Call mit den Testsätzen, Stimme Y wählen, Namen in RESOURCES §4.4 eintragen |
 | bis 11:00 | Recep | Skripte final: diese Datei ist die Quelle; daraus je Video eine `.tts.txt` (nur die Blöcke, erste Zeile der Tag, Zahlen ausgeschrieben, Lautschrift wo nötig). Ablage im Team-Drive `04_Submission/`, nicht im Repo |
 | 11:00 | alle | Skript eingefroren. Jede Textänderung danach bedeutet neuer Take und neu synchronisieren |
 | 11:15–11:45 | Hanno | MP3s erzeugen: Demo (7), Tech (1); je Datei Hörprobe mit Recep auf die Fachbegriffe unten; höchstens drei Takes je Block; Ablage Drive `04_Submission/audio/`, Namen `demo_D1_v1.mp3`, `tech_T1_v1.mp3` |
-| 12:00 | alle | Entscheidung über die Sätze mit Stern (Abschnitt 6) anhand der Live-Action-Card; betroffene Blöcke ggf. mit Ersatzsatz neu erzeugen (D1, D5) |
-| 12:00–12:30 | Recep | Aufnahme Demo (stumm), dann Audio unterlegen |
-| 12:00–12:45 | Hanno | Aufnahme Tech (Terminal, Editor, Browser), Audio unterlegen |
+| 12:00 | alle | D5 gegen die Live-Action-Card erneut prüfen; Auswahl vor 11:00 treffen, bei Änderungen D5 mit Ersatztext neu erzeugen |
+| 12:20–12:45 | Recep | Nach gemeinsamem Team-Dreh: Demo stumm aufnehmen, D1–D7 je Szene unterlegen |
+| 12:20–12:45 | Hanno | Nach gemeinsamem Team-Dreh: Aufnahme Tech (Terminal, Editor, Browser), Audio unterlegen |
 | 13:15 | Osman | Untertitel aus dem Skripttext (Schnittprogramm oder YouTube „Auto-Sync"), Fachbegriffe nachprüfen |
 
 Notlösung, wenn Hanno zum Engpass wird (§4.4): Recep legt einen eigenen Free-Account an (10.000 Credits, v4 verfügbar) und schreibt „elevenlabs.io" in den Video-Titel; nicht-kommerzieller Plan, andere Stimme möglich. Fällt ElevenLabs ganz aus: Recep spricht dieselben Blöcke selbst ein; die Offenlegung im README entfällt dann.
@@ -89,20 +89,16 @@ v4 versteht IPA in Schrägstrichen mit Anführungszeichen, z. B. `"/ˌbaɪoʊˈk
 
 ## 5. Skript-Blöcke je Request
 
-Jeder Block ist ein Request. Erste Zeile ist der Audio-Tag. Absätze sind Pausen. Sätze mit Stern nur, wenn der Beleg im Tool sichtbar ist (VIDEO-STRATEGY §2, Fußnoten * und **); sonst Ersatzsatz einsetzen, **bevor** erzeugt wird. Kanten-IDs werden nie vorgelesen.
+Jeder Block ist ein Request. Erste Zeile ist der Audio-Tag. Absätze sind Pausen. D5 nur, wenn die jeweilige Quelle gleichzeitig im Tool sichtbar ist (VIDEO-STRATEGY §2); sonst Ersatzsatz einsetzen, **bevor** erzeugt wird. Kanten-IDs werden nie vorgelesen.
 
-### Demo · D1 (0:00–0:10) · 22 Wörter
+### Demo · D1 (0:00–0:10) · 17 Wörter
 
 ```
 [calm, measured narration]
 Meet Maria, from the challenge brief. Her son has Krabbe disease, and she leads a patient group.
-
-There is no approved medicine.
 ```
 
-Seit P16 (02:45): Maria leitet die Gruppe schon im ersten Satz, weil die App keine Moment-Karten mehr hat. „anywhere in the world" ist raus (Zeit; Daten decken nur EMA und FDA ab), Hanno kann es zurückholen.
-
-Im Bild dazu die Einblendung „Maria: persona from the challenge brief, not a real person". Ersatz, nur falls Krabbe vor dem Dreh unter „Approved therapies" nicht mehr „Honest Gap: Not found …" zeigt: `Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research.`
+Maria ist die Gruppenleiterin aus dem Brief; im Bild steht „Maria: persona from the challenge brief, not a real person". D1 enthält keine Therapie-Aussage, weil der Beleg im Intro nicht gleichzeitig sichtbar ist. „anywhere in the world" bleibt offen bei Hanno und bis dahin draußen; EMA/FDA allein reichen nicht als weltweiter Beleg.
 
 ### Demo · D2 (0:10–0:17) · 16 Wörter
 
@@ -154,23 +150,23 @@ Where there is no trail, we say so, and show what we searched.
 Don't rebuild what a neighbouring disease already built.
 ```
 
-Tempo-Check (02:45, ohne Audio-Tag gezählt): D1 2,2 · D2 2,3 · D3 1,9 · D4 2,0 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
+Tempo-Check (ohne Audio-Tag, wc -w): D1 1,7 · D2 2,3 · D3 1,9 · D4 2,0 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. Das sind Planwerte; D4 mit den Fachbegriffen beim Probe-Take besonders prüfen.
 
-### Tech · T1 (0:00–0:58, ein Request) · 132 Wörter
+### Tech · T1 (0:00–0:58, ein Request) · 94 Wörter
 
-Umgestellt 01:40 auf DECISIONS P15 (keine OpenAI-Credits: Extract und Explain mit Claude Sonnet 5.5, Reconcile als Fuzzy-Fallback, OpenAI-Pfade per Key aktivierbar). Kein OpenAI im Präsens.
+P15: Extract und Explain mit Claude, Reconcile mit Fuzzy-Match. Die tatsächlich laufenden Dateien und Prüfstellen ergänzt Hanno bis 11:00; jedes behauptete Verhalten muss im Bild nachweisbar sein.
 
 ```
 [calm, measured narration]
-Open databases go through a Python pipeline into an evidence-graded graph, exported as static jay-son for a Next J-S app. No server database, nothing to go down.
+Open databases feed a Python pipeline, exporting an evidence-graded graph as static jay-son for a Next J-S app. No server database.
 
-Make validate checks every edge: source, date, confidence, a counter-evidence field that may be empty but never missing. And it asserts the hero path exists.
+Make validate checks sources, dates, confidence and counter-evidence fields, and asserts the hero path exists.
 
-A language model at three points. Extract: Claude turns abstracts into claims; code rejects any claim whose quoted snippet is not in the abstract. Reconcile: names to MONDO ids by fuzzy match.
+Extract: Claude turns abstracts into claims. Code rejects quotes missing from the abstract. Reconcile maps names to MONDO ids by fuzzy match.
 
-Explain: Claude writes the Action Card in plain words; a sentence without a source is dropped and shown struck through. OpenAI stays switchable by key.
+Explain: Claude writes the Action Card. A sentence without a source is dropped and shown struck through.
 
-The Playwright test clicks the hero path at desktop and phone width and fails on any console error.
+Playwright clicks the hero path at desktop and phone width, failing on console errors.
 
 Research navigation, not medical advice.
 ```
@@ -179,7 +175,7 @@ Falls T1 als sechs Einzel-Requests gebraucht wird (T1a bis T1f): je Absatz ein R
 
 ## 6. Streichreihenfolge, falls ein Block zu lang wird
 
-Demo (die ersten zwei Kürzungen der alten Liste sind schon drin): D4 „formula shown" → D1 „anywhere in the world" → D6 „and show what we searched". Tech: T1 Absatz 1 „nothing to go down" → Absatz 3 „by fuzzy match" → Absatz 4 „OpenAI stays switchable by key." → Absatz 6 ganz (dann Untertitel statt gesprochen).
+Demo: zuerst D4 „formula shown", dann D3 „Names hide what they share." kürzen; Quellenansicht und Honest-Gap-Suche erhalten. Tech: zuerst „No server database.", dann den Schlusssatz nur als Untertitel zeigen. Nach jeder Kürzung beide Skript-Dateien synchronisieren und neu stoppen.
 
 ## 7. Offenlegung
 
@@ -196,4 +192,4 @@ Pflicht-Attribution „elevenlabs.io" im Titel gilt nur beim Free-Plan oder nich
 
 ## 8. Was wir nicht tun (RESOURCES §4.5)
 
-Keine Soundeffekte, keine Musik, kein Dubbing, kein Voice Cloning, keine Conversational Agents, keine Mehrsprachigkeit im Produkt (bricht die Zitierpflicht), keine öffentliche TTS-Route mit freiem Text. Die optionale „Read aloud"-Funktion (A1) ist ein App-Feature mit eigener Timebox und nicht Teil dieses Plans.
+Keine Soundeffekte, Musik bis zu Hannos Entscheidung aus, kein Dubbing, kein Voice Cloning, keine Conversational Agents, keine Mehrsprachigkeit im Produkt (bricht die Zitierpflicht), keine öffentliche TTS-Route mit freiem Text. Die optionale „Read aloud"-Funktion (A1) ist ein App-Feature mit eigener Timebox und nicht Teil dieses Plans.

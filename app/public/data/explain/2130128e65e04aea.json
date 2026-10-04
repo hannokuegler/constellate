@@ -1,0 +1,80 @@
+{
+ "key": "2130128e65e04aea",
+ "edge_ids": [
+  "e_22b1bede460d",
+  "e_28481e145467",
+  "e_2dd23c2da071",
+  "e_b468f95d5f04",
+  "e_b9fc423c9631",
+  "e_d9fd43198d07"
+ ],
+ "from": "MONDO:0009738",
+ "via": "MONDO:0019346",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.637Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Sialidosis type 1 and sialidosis type 2 are both recorded as caused by the gene NEU1 [e_b9fc423c9631] [e_b468f95d5f04].",
+   "edge_ids": [
+    "e_b9fc423c9631",
+    "e_b468f95d5f04"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from Orphanet and OMIM [e_b9fc423c9631] [e_b468f95d5f04].",
+   "edge_ids": [
+    "e_b9fc423c9631",
+    "e_b468f95d5f04"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two types have fairly similar symptom profiles, with a score of 0.400 over 25 shared terms [e_2dd23c2da071].",
+   "edge_ids": [
+    "e_2dd23c2da071"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That similarity is inferred, meaning Constellate calculated it, and it is not a database finding [e_2dd23c2da071].",
+   "edge_ids": [
+    "e_2dd23c2da071"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 2, an observed feature is reduced neuraminidase activity in tissue, from one report, and kidney disease is curated as very frequent [e_d9fd43198d07] [e_28481e145467].",
+   "edge_ids": [
+    "e_d9fd43198d07",
+    "e_28481e145467"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Type 1 is linked to a research grant in NIH RePORTER about glycoprotein disorders [e_22b1bede460d].",
+   "edge_ids": [
+    "e_22b1bede460d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the two types differ, and they list no symptoms for type 1, no studies and no treatments [e_2dd23c2da071] [e_b9fc423c9631].",
+   "edge_ids": [
+    "e_2dd23c2da071",
+    "e_b9fc423c9631"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

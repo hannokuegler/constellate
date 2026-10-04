@@ -1,0 +1,96 @@
+{
+ "key": "0a77de018c2b9e34",
+ "edge_ids": [
+  "e_10f453590dd2",
+  "e_13d9d4bb1de7",
+  "e_1fcff86aef59",
+  "e_36b166c2cc71",
+  "e_370db7375d93",
+  "e_4582a554359d",
+  "e_4943f45038e0",
+  "e_52e373066985",
+  "e_59cddd3cf090",
+  "e_6ba1c1cbb7ee",
+  "e_7f28d7b0cdcb",
+  "e_9addb76c341d",
+  "e_c239feee0cf8",
+  "e_dbd4ca0cd3ee"
+ ],
+ "from": "MONDO:0009262",
+ "via": "MONDO:0018938",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.560Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "GM1 gangliosidosis type 3 is linked to the gene GLB1 in curated databases [e_36b166c2cc71].",
+   "edge_ids": [
+    "e_36b166c2cc71"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 4 is linked to GLB1 only by inference from subtype 4B, with confidence 0.475, and this may not hold for every form [e_52e373066985].",
+   "edge_ids": [
+    "e_52e373066985"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "It is also linked to a second gene, GALNS, again only by inference from subtype 4A [e_c239feee0cf8].",
+   "edge_ids": [
+    "e_c239feee0cf8"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GLB1 and GALNS both take part in the same curated pathway, keratan sulfate degradation [e_10f453590dd2] [e_9addb76c341d].",
+   "edge_ids": [
+    "e_10f453590dd2",
+    "e_9addb76c341d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two diseases share the gene GLB1, with confidence 0.475, which is inferred [e_4582a554359d].",
+   "edge_ids": [
+    "e_4582a554359d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3, reduced beta-galactosidase activity is an observed feature, while coarse facial features and seizures are marked as contradicted, with 1 contradicting record each [e_59cddd3cf090] [e_6ba1c1cbb7ee] [e_13d9d4bb1de7].",
+   "edge_ids": [
+    "e_59cddd3cf090",
+    "e_6ba1c1cbb7ee",
+    "e_13d9d4bb1de7"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For mucopolysaccharidosis type 4, one study is listed as recruiting and one newborn screening study as completed [e_1fcff86aef59] [e_7f28d7b0cdcb].",
+   "edge_ids": [
+    "e_1fcff86aef59",
+    "e_7f28d7b0cdcb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show any study for GM1 gangliosidosis type 3 [e_36b166c2cc71].",
+   "edge_ids": [
+    "e_36b166c2cc71"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

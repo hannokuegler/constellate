@@ -1,0 +1,76 @@
+{
+ "key": "d96341284b8f3a62",
+ "edge_ids": [
+  "e_182f5f2e300f",
+  "e_3b928c309c9f",
+  "e_519a07ba95a9",
+  "e_569aeea83be4",
+  "e_ebcdbdec8f81"
+ ],
+ "from": "MONDO:0009260",
+ "via": "MONDO:0009660",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.553Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "GM1 gangliosidosis type 1 and mucopolysaccharidosis type 4B are both linked to the gene GLB1 in curated databases [e_182f5f2e300f] [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_182f5f2e300f",
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that they share this causal gene, with confidence 0.95, the lowest of the two gene links [e_569aeea83be4].",
+   "edge_ids": [
+    "e_569aeea83be4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For GM1 gangliosidosis type 1, a raised level of certain sugar fragments in urine is a curated, very frequent feature [e_3b928c309c9f].",
+   "edge_ids": [
+    "e_3b928c309c9f"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A dark area in the basal ganglia, a deep brain region, on one type of scan is listed as frequent, with a lower confidence of 0.6 [e_519a07ba95a9].",
+   "edge_ids": [
+    "e_519a07ba95a9"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This shows that one gene can sit behind two conditions that are named very differently [e_569aeea83be4].",
+   "edge_ids": [
+    "e_569aeea83be4"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no symptoms for mucopolysaccharidosis type 4B [e_ebcdbdec8f81].",
+   "edge_ids": [
+    "e_ebcdbdec8f81"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "They also show no studies, funding or patient groups for either condition [e_182f5f2e300f].",
+   "edge_ids": [
+    "e_182f5f2e300f"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

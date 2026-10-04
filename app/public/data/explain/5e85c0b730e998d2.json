@@ -1,0 +1,93 @@
+{
+ "key": "5e85c0b730e998d2",
+ "edge_ids": [
+  "e_18880301ed7f",
+  "e_3970483dad5d",
+  "e_6444d735654b",
+  "e_64451e791aad",
+  "e_8010ab0e798a",
+  "e_89596e9236d9",
+  "e_98d3f35813c2",
+  "e_ad2b0bfab1c5",
+  "e_b9be2fdad34e",
+  "e_ea2d0ba2a4af"
+ ],
+ "from": "MONDO:0009290",
+ "via": "MONDO:0010006",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.576Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed a weak symptom similarity between glycogen storage disease II and Sandhoff disease, with a score of 0.166 over 8 shared terms, ranked 4 of 26 [e_ea2d0ba2a4af].",
+   "edge_ids": [
+    "e_ea2d0ba2a4af"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_ea2d0ba2a4af].",
+   "edge_ids": [
+    "e_ea2d0ba2a4af"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The causes differ: glycogen storage disease II is linked to the gene GAA, but only by an inferred roll-up from subtypes at confidence 0.475, while Sandhoff disease is curated as caused by HEXB [e_98d3f35813c2] [e_64451e791aad].",
+   "edge_ids": [
+    "e_98d3f35813c2",
+    "e_64451e791aad"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Sandhoff disease has two studies not yet recruiting on ClinicalTrials.gov, one of gene therapy using blood samples and one of a drug called PLX-200 in children [e_3970483dad5d] [e_b9be2fdad34e].",
+   "edge_ids": [
+    "e_3970483dad5d",
+    "e_b9be2fdad34e"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Two patient groups are linked to it, one by an automatic name match and one by a text-mined link that is unverified [e_18880301ed7f] [e_6444d735654b].",
+   "edge_ids": [
+    "e_18880301ed7f",
+    "e_6444d735654b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant on mouse models of sphingolipid biology is also recorded [e_89596e9236d9].",
+   "edge_ids": [
+    "e_89596e9236d9"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For glycogen storage disease II, curated records list low acid maltase activity and progressive muscle weakness, both very frequent [e_8010ab0e798a] [e_ad2b0bfab1c5].",
+   "edge_ids": [
+    "e_8010ab0e798a",
+    "e_ad2b0bfab1c5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show a shared cause or that the Sandhoff studies apply to glycogen storage disease II [e_ea2d0ba2a4af] [e_3970483dad5d].",
+   "edge_ids": [
+    "e_ea2d0ba2a4af",
+    "e_3970483dad5d"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

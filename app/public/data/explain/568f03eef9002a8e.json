@@ -1,0 +1,85 @@
+{
+ "key": "568f03eef9002a8e",
+ "edge_ids": [
+  "e_058c15a5b786",
+  "e_07c8f34728ca",
+  "e_1d4f94f48353",
+  "e_2b7cacb8c6f0",
+  "e_508743311498",
+  "e_559f3096d1b6",
+  "e_598144ced4a5",
+  "e_a59a37d44b28",
+  "e_ce47505eb383",
+  "e_f5695f800be5"
+ ],
+ "from": "MONDO:0009092",
+ "via": "MONDO:0014036",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.543Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Nasu-Hakola disease, whose full name is polycystic lipomembranous osteodysplasia with sclerosing leukoencephaly, is recorded as caused by the genes TREM2 and TYROBP in a curated database [e_ce47505eb383] [e_508743311498].",
+   "edge_ids": [
+    "e_ce47505eb383",
+    "e_508743311498"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Alzheimer disease 17 is also tied to TREM2, according to OMIM [e_2b7cacb8c6f0].",
+   "edge_ids": [
+    "e_2b7cacb8c6f0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share TREM2 as a causal gene, at confidence 0.9 [e_07c8f34728ca].",
+   "edge_ids": [
+    "e_07c8f34728ca"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated from the two curated links [e_07c8f34728ca].",
+   "edge_ids": [
+    "e_07c8f34728ca"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "TREM2 and TYROBP are both recorded as taking part in two immune-related pathways, one named DAP12 interactions [e_559f3096d1b6] [e_598144ced4a5] [e_a59a37d44b28] [e_f5695f800be5].",
+   "edge_ids": [
+    "e_559f3096d1b6",
+    "e_598144ced4a5",
+    "e_a59a37d44b28",
+    "e_f5695f800be5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Nasu-Hakola disease has two curated features, frontal lobe dementia and bone cysts, both listed as very frequent [e_058c15a5b786] [e_1d4f94f48353].",
+   "edge_ids": [
+    "e_058c15a5b786",
+    "e_1d4f94f48353"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the two conditions are the same illness or that they act alike, and they list no studies or treatments [e_07c8f34728ca].",
+   "edge_ids": [
+    "e_07c8f34728ca"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

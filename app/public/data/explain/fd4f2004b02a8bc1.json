@@ -1,0 +1,92 @@
+{
+ "key": "fd4f2004b02a8bc1",
+ "edge_ids": [
+  "e_1246a2f623f5",
+  "e_293f8f633c73",
+  "e_31e8d8274b07",
+  "e_463d5bddc92d",
+  "e_49c4b77a64bc",
+  "e_688d8420d52d",
+  "e_89b3b1a97b62",
+  "e_930197febd65",
+  "e_a1a9b68fc263",
+  "e_d7fc6c6ed56b",
+  "e_ed375158e5b0"
+ ],
+ "from": "MONDO:0009661",
+ "via": "MONDO:0018937",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.625Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 6 is linked to the gene ARSB in curated databases [e_d7fc6c6ed56b].",
+   "edge_ids": [
+    "e_d7fc6c6ed56b"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Mucopolysaccharidosis type 3 is linked to the genes GNS and HGSNAT only by inference from subtypes, each with confidence 0.475, and this may not hold for every form [e_31e8d8274b07] [e_ed375158e5b0].",
+   "edge_ids": [
+    "e_31e8d8274b07",
+    "e_ed375158e5b0"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that types 6 and 3 look somewhat alike in their listed symptoms, with a score of 0.281, which is inferred and not a diagnosis [e_89b3b1a97b62].",
+   "edge_ids": [
+    "e_89b3b1a97b62"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 6, a growth plate problem and a short trunk with short height are listed as curated, very frequent features [e_930197febd65] [e_688d8420d52d].",
+   "edge_ids": [
+    "e_930197febd65",
+    "e_688d8420d52d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Intellectual disability is marked as contradicted for type 6, with 1 contradicting record [e_463d5bddc92d].",
+   "edge_ids": [
+    "e_463d5bddc92d"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For type 3, a gene therapy study is listed as not yet recruiting and a cannabidiol study as recruiting [e_293f8f633c73] [e_1246a2f623f5].",
+   "edge_ids": [
+    "e_293f8f633c73",
+    "e_1246a2f623f5"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A patient group is matched to type 3, but only by a name match on its website [e_a1a9b68fc263].",
+   "edge_ids": [
+    "e_a1a9b68fc263"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges list no study for type 6 and do not show results of any study [e_d7fc6c6ed56b].",
+   "edge_ids": [
+    "e_d7fc6c6ed56b"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

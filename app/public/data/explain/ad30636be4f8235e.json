@@ -1,0 +1,80 @@
+{
+ "key": "ad30636be4f8235e",
+ "edge_ids": [
+  "e_054c701de9cd",
+  "e_2f08386094bb",
+  "e_900224c13836",
+  "e_ce5735336811",
+  "e_e51d1ba0bb5a",
+  "e_e7aec8de5621"
+ ],
+ "from": "MONDO:0008954",
+ "via": "MONDO:0014743",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.532Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Two conditions, peroxisome biogenesis disorder 2A (Zellweger) and rhizomelic chondrodysplasia punctata type 5, are both recorded as caused by the gene PEX5 [e_900224c13836] [e_2f08386094bb].",
+   "edge_ids": [
+    "e_900224c13836",
+    "e_2f08386094bb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Both gene links are curated, meaning they come from OMIM and Orphanet [e_900224c13836] [e_2f08386094bb].",
+   "edge_ids": [
+    "e_900224c13836",
+    "e_2f08386094bb"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "Constellate computed that the two conditions share this causal gene, at confidence 0.9, the lower of the two gene links [e_e7aec8de5621].",
+   "edge_ids": [
+    "e_e7aec8de5621"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "That shared-gene link is inferred, meaning it was calculated and is not a separate database finding [e_e7aec8de5621].",
+   "edge_ids": [
+    "e_e7aec8de5621"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The Zellweger form has two recorded features, stippled calcification of cartilage and abnormal development of the liver bile ducts, each curated at a low confidence of 0.5 [e_054c701de9cd] [e_ce5735336811].",
+   "edge_ids": [
+    "e_054c701de9cd",
+    "e_ce5735336811"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The rhizomelic condition has one recruiting registry listed on ClinicalTrials.gov [e_e51d1ba0bb5a].",
+   "edge_ids": [
+    "e_e51d1ba0bb5a"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show how the two conditions compare in symptoms, and they show no treatments [e_e7aec8de5621] [e_e51d1ba0bb5a].",
+   "edge_ids": [
+    "e_e7aec8de5621",
+    "e_e51d1ba0bb5a"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

@@ -1,0 +1,85 @@
+{
+ "key": "6d2ab28a4eac4117",
+ "edge_ids": [
+  "e_2002d33295d6",
+  "e_4b6a2b49884c",
+  "e_8af58477461f",
+  "e_8b3615af8861",
+  "e_b7708b486598",
+  "e_b901a7f62bf3",
+  "e_c96cb9bc9690",
+  "e_d7440f028524",
+  "e_d8e337b6892d"
+ ],
+ "from": "MONDO:0009561",
+ "via": "MONDO:0018149",
+ "model": "claude-sonnet-5-5",
+ "prompt_sha": "2ef1db14619b",
+ "audience": "a parent or patient-group leader without medical training",
+ "generated_at": "2026-10-03T23:59:17.582Z",
+ "sentences": [
+  {
+   "type": "sentence",
+   "text": "Constellate computed a modest symptom similarity between alpha-mannosidosis and GM1 gangliosidosis, with a score of 0.231 over 23 shared terms, ranked 5 of 5 [e_b901a7f62bf3].",
+   "edge_ids": [
+    "e_b901a7f62bf3"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "This link is inferred, meaning Constellate calculated it, and it is not a database finding [e_b901a7f62bf3].",
+   "edge_ids": [
+    "e_b901a7f62bf3"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "The causes differ: alpha-mannosidosis is curated as caused by MAN2B1, while GM1 gangliosidosis is linked to GLB1 only by an inferred roll-up from subtypes at confidence 0.475 [e_d7440f028524] [e_4b6a2b49884c].",
+   "edge_ids": [
+    "e_d7440f028524",
+    "e_4b6a2b49884c"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "GM1 gangliosidosis has two studies on ClinicalTrials.gov, a prenatal gene transfer study not yet recruiting and a recruiting study of an oral drug called nizubaglustat [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "A research grant for an AAV approach to this condition is also recorded, and a patient group link comes from unverified text mining [e_d8e337b6892d] [e_b7708b486598].",
+   "edge_ids": [
+    "e_d8e337b6892d",
+    "e_b7708b486598"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "For alpha-mannosidosis, curated records list low alpha-mannosidase activity and underdeveloped hip bones [e_8af58477461f] [e_8b3615af8861].",
+   "edge_ids": [
+    "e_8af58477461f",
+    "e_8b3615af8861"
+   ],
+   "invalid_ids": []
+  },
+  {
+   "type": "sentence",
+   "text": "These edges do not show that the GM1 gangliosidosis studies apply to alpha-mannosidosis, and they do not show that any drug works [e_b901a7f62bf3] [e_c96cb9bc9690] [e_2002d33295d6].",
+   "edge_ids": [
+    "e_b901a7f62bf3",
+    "e_c96cb9bc9690",
+    "e_2002d33295d6"
+   ],
+   "invalid_ids": []
+  }
+ ],
+ "dropped": []
+}

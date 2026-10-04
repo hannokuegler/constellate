@@ -78,7 +78,7 @@ const STAR_VERTEX = /* glsl */ `
     vColor = mix(base, litColor, lit);
     vAlpha = mix(alpha, 1.0, lit);
     float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark);
-    float attenuation = pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75);
+    float attenuation = min(pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75), 2.2);
     gl_PointSize = max(size * attenuation, 2.2) * uPixelRatio;
     gl_Position = projectionMatrix * mv;
   }
@@ -384,7 +384,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       camera.aspect = width / height;
       // wide: centre of the sky at ~64 % of the width, so the glass hero on the left keeps a calm background
       const shift = width >= 1024 ? -width * 0.16 : 0;
-      const lift = width < 1024 ? height * 0.1 : 0;
+      const lift = width < 1024 ? height * 0.28 : 0; // phones: the sky (and a flown-to star) sits above the hero card
       camera.setViewOffset(width, height, shift, lift, width, height);
       camera.updateProjectionMatrix();
       needsFrame = true;

@@ -58,7 +58,7 @@ export default function SkyFallback2D({ sky, initialFocus, onReady, onHover, onS
       const u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
       const focal = height / 2 / Math.tan(FOV / 2);
       const centreX = width >= 1024 ? width * 0.66 : width / 2;
-      const centreY = width >= 1024 ? height / 2 : height * 0.4;
+      const centreY = width >= 1024 ? height / 2 : height * 0.22;
       for (let i = 0; i < n; i++) {
         const x = sky.positions[i * 3] - cx;
         const y = sky.positions[i * 3 + 1] - cy;

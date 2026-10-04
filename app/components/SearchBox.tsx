@@ -85,8 +85,15 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
 
   return (
     <div className="relative w-full">
-      <div className={`flex items-center gap-2 rounded-full border border-line bg-surface focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-[color:var(--amber)] ${compact ? "h-12 px-4" : "h-14 px-5 shadow-[var(--shadow)] md:h-16"}`}>
-        <svg width={compact ? 16 : 20} height={compact ? 16 : 20} viewBox="0 0 20 20" className="shrink-0 text-ink-2" aria-hidden="true">
+      {/* the input fills the whole pill, so its own focus ring (global :focus-visible) follows the pill shape */}
+      <div className={`relative rounded-full border border-line bg-surface ${compact ? "h-12" : "h-14 shadow-[var(--shadow)] md:h-16"}`}>
+        <svg
+          width={compact ? 16 : 20}
+          height={compact ? 16 : 20}
+          viewBox="0 0 20 20"
+          className={`pointer-events-none absolute top-1/2 -translate-y-1/2 text-ink-2 ${compact ? "left-4" : "left-5"}`}
+          aria-hidden="true"
+        >
           <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
           <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
@@ -115,7 +122,8 @@ export default function SearchBox({ compact = false, autoFocus = false }: { comp
             setOpen(true);
           }}
           onKeyDown={onKeyDown}
-          className={`h-full min-w-0 flex-1 self-stretch bg-transparent outline-none placeholder:text-ink-2 focus-visible:outline-none ${compact ? "text-[16px]" : "text-[17px] md:text-[22px]"}`}
+          style={{ borderRadius: 9999 }}
+          className={`absolute inset-0 h-full w-full bg-transparent placeholder:text-ink-2 ${compact ? "pl-10 pr-4 text-[16px]" : "pl-[53px] pr-5 text-[17px] md:text-[22px]"}`}
         />
       </div>
       {showList && (

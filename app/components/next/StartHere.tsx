@@ -17,7 +17,7 @@ export default function StartHere() {
   return (
     <div className="w-full">
       <p className="text-center">
-        <span className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-[13px] font-semibold text-accent">Constellate · research navigation, not medical advice</span>
+        <span className="inline-flex items-center rounded-full bg-accent-soft px-3 py-1 text-[15px] font-semibold text-accent">Constellate · research navigation, not medical advice</span>
       </p>
       <h1 id="hero-title" className="mt-4 text-center text-[28px] font-bold leading-tight tracking-tight text-ink md:text-[40px]">
         Your child just got a diagnosis? Start here.
@@ -29,7 +29,7 @@ export default function StartHere() {
         <SearchBox />
       </div>
       <div className="mt-5 flex flex-wrap items-center justify-center gap-x-2 gap-y-2">
-        <span className="text-[15px] text-ink-2">Try:</span>
+        <span className="text-[16px] text-ink-2">Try:</span>
         {EXAMPLES.map((e) => (
           <Link key={e.id} href={`/d/${e.id}`} className="inline-flex min-h-11 items-center rounded-full border border-line bg-surface px-5 text-[15px] font-medium text-ink hover:bg-surface-2">
             {e.label}
@@ -52,7 +52,7 @@ export default function StartHere() {
         <div id="symptom-search" className="mt-3" hidden={!bySymptom}>
           {bySymptom && (
             <>
-              <p className="mb-3 text-[15px] text-ink-2">No diagnosis yet, or a word from a doctor&apos;s letter? Search it and see which diseases in our data list it.</p>
+              <p className="mb-3 text-[16px] text-ink-2">No diagnosis yet, or a word from a doctor&apos;s letter? Search it and see which diseases in our data list it.</p>
               <SymptomSearch autoFocus />
             </>
           )}

@@ -144,7 +144,7 @@ export default function ShareFlow() {
     <div className="mx-auto mt-8 max-w-[640px] pb-8 md:mt-12">
       <p className="t-label">Share what you know</p>
       {aboutLine && (
-        <p className="mt-1 text-[15px] text-ink-2">
+        <p className="mt-1 text-[16px] text-ink-2">
           About: <span className="font-medium text-ink">{aboutLine}</span>
         </p>
       )}
@@ -155,7 +155,7 @@ export default function ShareFlow() {
         <>
           <div className="mt-4 flex items-center gap-3" data-share-progress>
             <DotChain states={STEP_NAMES.map((_, i) => (i + 1 < step ? "linked" : i + 1 === step ? "lit" : "idle"))} />
-            <p className="text-[15px] text-ink-2">
+            <p className="text-[16px] text-ink-2">
               Step {step} of 3: {STEP_NAMES[step - 1]}
             </p>
           </div>
@@ -194,7 +194,7 @@ export default function ShareFlow() {
                         </span>
                         <span>
                           <span className="block text-[17px] font-semibold leading-snug">{option.title}</span>
-                          <span className="mt-0.5 block text-[15px] text-ink-2">{option.blurb}</span>
+                          <span className="mt-0.5 block text-[16px] text-ink-2">{option.blurb}</span>
                         </span>
                       </label>
                     );
@@ -261,7 +261,7 @@ export default function ShareFlow() {
                 </div>
               </section>
               <PrivacyNotice />
-              <p className="mt-4 text-[15px] text-ink-2">
+              <p className="mt-4 text-[16px] text-ink-2">
                 GitHub opens in a new tab with your note filled in. It is sent only when you press <span className="font-medium text-ink">Submit new issue</span> there. A person then checks it.
               </p>
               <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -274,12 +274,12 @@ export default function ShareFlow() {
               </div>
               <div className="mt-8 border-t border-line pt-5">
                 <h2 className="t-h2">No GitHub account?</h2>
-                <p className="mt-2 text-[15px] text-ink-2">Copy the text and give it to your patient group or to anyone who can post it for you. It works the same way.</p>
+                <p className="mt-2 text-[16px] text-ink-2">Copy the text and give it to your patient group or to anyone who can post it for you. It works the same way.</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3">
                   <button type="button" className="btn-secondary" onClick={copyText}>
                     Copy text
                   </button>
-                  <p role="status" className="text-[15px] text-ink-2">
+                  <p role="status" className="text-[16px] text-ink-2">
                     {copy === "copied" && "Copied. Nothing has been sent yet."}
                     {copy === "failed" && "Copying did not work here. Select the note above and copy it by hand."}
                   </p>
@@ -339,7 +339,7 @@ function Field({ spec, value, error, onChange, onBlur }: { spec: FieldSpec; valu
         {spec.required && <span className="font-normal text-ink-2"> (required)</span>}
       </label>
       {spec.hint && (
-        <p id={hintId} className="mt-0.5 text-[15px] text-ink-2">
+        <p id={hintId} className="mt-0.5 text-[16px] text-ink-2">
           {spec.hint}
         </p>
       )}
@@ -389,7 +389,7 @@ function Thanks({ headingRef, issueUrl, disease, diseaseLabel, onRestart }: { he
           {disease ? `Back to ${diseaseLabel ?? "the disease page"}` : "Back to the map"}
         </Link>
       </div>
-      <p className="mt-5 text-[15px] text-ink-2">
+      <p className="mt-5 text-[16px] text-ink-2">
         The tab did not open?{" "}
         <a href={issueUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline underline-offset-2">
           Open GitHub again<span className="sr-only"> (opens in a new tab)</span>

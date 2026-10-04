@@ -59,7 +59,7 @@ export default function DiseaseView({ id }: { id: string }) {
     return (
       <div className="card mt-6 px-5 py-5" role="alert">
         <p className="font-semibold">⚠️ The data for {id} could not be loaded.</p>
-        <p className="mt-1 text-[15px] text-ink-2">{state.message}</p>
+        <p className="mt-1 text-[16px] text-ink-2">{state.message}</p>
       </div>
     );
   if (state.status === "missing") return <MissingDisease id={id} entry={state.entry} core={state.core} meta={meta} />;
@@ -182,7 +182,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
     neighbours: (
       <Section key="neighbours" id="related" title={persona.wording.neighbours} hint={persona.wording.neighboursHint} count={file.neighbours.length}>
         {noNeighbours ? (
-          <p className="text-[15px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
+          <p className="text-[16px] text-ink-2">No related disease passed the similarity threshold. See the honest gap above.</p>
         ) : (
           <ul className="divide-y divide-line">
             {file.neighbours.map((n) => (
@@ -211,7 +211,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
             ))}
           </ul>
         ) : (
-          <p className="text-[15px] text-ink-2">No gene annotation recorded for this disease.</p>
+          <p className="text-[16px] text-ink-2">No gene annotation recorded for this disease.</p>
         )}
       </Section>
     ),
@@ -473,7 +473,7 @@ function Section({ id, title, hint, count, children }: { id?: string; title: str
         <h2 className="text-[17px] font-semibold">{title}</h2>
         <span className="tabular text-[13px] text-ink-2">{count}</span>
       </div>
-      <p className="mb-2 text-[15px] text-ink-2">{hint}</p>
+      <p className="mb-2 text-[16px] text-ink-2">{hint}</p>
       {children}
     </section>
   );
@@ -529,7 +529,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
         {n.mechanism_differs === null && <span className="rounded-full border border-line px-2 py-0.5 text-ink-2" title="Pathway data missing for at least one gene">mechanism not compared</span>}
       </div>
       {n.shared_phenotypes.length > 0 && (
-        <p className="mt-1.5 text-[15px] text-ink-2">
+        <p className="mt-1.5 text-[16px] text-ink-2">
           {n.shared_phenotypes.length}+ shared phenotypes, e.g. {n.shared_phenotypes[0].label.toLowerCase()}
         </p>
       )}

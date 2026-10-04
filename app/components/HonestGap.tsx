@@ -140,8 +140,8 @@ export function GapNote({ kind, children }: { kind: "gap" | "pending"; children:
 export function GapDot({ size = 28 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden="true" className="mt-0.5 shrink-0">
-      <circle cx="14" cy="14" r="12" fill="none" stroke="var(--star-dim, currentColor)" strokeWidth="1.3" strokeDasharray="3.2 3.6" strokeLinecap="round" />
-      <circle cx="14" cy="14" r="3.6" fill="var(--star, currentColor)" />
+      <circle cx="14" cy="14" r="12" fill="none" stroke="var(--warn, currentColor)" strokeWidth="1.3" strokeDasharray="3.2 3.6" strokeLinecap="round" />
+      <circle cx="14" cy="14" r="3.6" fill="var(--warn, currentColor)" />
     </svg>
   );
 }
@@ -202,10 +202,9 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
   return (
     <section className={`card min-w-0 ${screen ? "px-5 py-7 md:px-9 md:py-9" : "px-4 py-5 md:px-5"}`} aria-label={title}>
       <div className="flex items-start gap-3.5">
-        <GapDot size={screen ? 36 : 28} />
         <div className="min-w-0">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-ink-2">Honest gap</p>
-          <Heading className={`mt-1 break-words font-semibold leading-snug ${screen ? "text-[22px] md:text-[28px]" : "text-[19px]"}`} style={{ fontFamily: "var(--font-display, inherit)" }}>
+          <p className="text-[12px] font-semibold uppercase tracking-wide text-warn">Honest gap</p>
+          <Heading className={`mt-1 break-words font-bold leading-snug tracking-tight ${screen ? "text-[22px] md:text-[28px]" : "text-[19px]"}`}>
             {title}
           </Heading>
           <p className="mt-2 max-w-[68ch] break-words text-[17px] leading-relaxed text-ink-2">{plainReason(reason)}</p>
@@ -232,7 +231,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                     <Link href={diseaseHref(n.id)} className="flex min-h-11 items-center break-words text-[16px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
                       {n.label}
                     </Link>
-                    <p className="text-[15px] text-ink-2">
+                    <p className="text-[16px] text-ink-2">
                       {n.tier && <span className="font-semibold">{n.tier}: </span>}
                       {n.via}
                       {n.confidence !== undefined && n.confidence !== null && ` · similarity ${formatConfidence(n.confidence)}`}

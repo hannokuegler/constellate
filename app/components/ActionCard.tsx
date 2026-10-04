@@ -53,7 +53,7 @@ function Sentence({ s }: { s: CardSentence }) {
 function AtAGlance({ lines, Heading }: { lines: GlanceLine[]; Heading: "h2" | "h3" }) {
   return (
     <section aria-labelledby="at-a-glance-title" className="border-b border-line px-5 py-5 md:px-6" data-testid="at-a-glance">
-      <Heading id="at-a-glance-title" className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">At a glance</Heading>
+      <Heading id="at-a-glance-title" className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">At a glance</Heading>
       <ul className="mt-3 space-y-3 rounded-[16px] border border-line bg-surface-2 px-4 py-4 md:px-5">
         {lines.map((line) => (
           <li key={line.key} className="text-[17px] leading-snug">
@@ -89,6 +89,7 @@ function AtAGlance({ lines, Heading }: { lines: GlanceLine[]; Heading: "h2" | "h
 
 /** Meaning travels in the glyph, not in colour: ink only. */
 const SECTION_GLYPH = { transfers: "✓", differs: "≠", review: "?" } as const;
+const SECTION_ACCENT = { transfers: "var(--ok)", differs: "var(--warn)", review: "var(--n-neighbour)" } as const;
 
 export default function ActionCard({ disease, viaId, onViaChange, meta, standalone = false }: Props) {
   const { register } = useEdgePanel();
@@ -154,8 +155,8 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
   return (
     <article className="card overflow-hidden" aria-labelledby="action-card-title">
       <header className="border-b border-line px-5 py-5 md:px-6">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Action card</p>
-        <Title id="action-card-title" className="t-h2 mt-1 text-[24px] font-semibold leading-snug md:text-[28px]">
+        <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Action card</p>
+        <Title id="action-card-title" className="mt-1 text-[22px] font-bold leading-snug tracking-tight md:text-[28px]">
           What {disease.node.label} can learn from {neighbour.label}
         </Title>
         <p className="mt-1 text-[16px] text-ink-2">Template text built only from graph edges. Under every sentence sits a small source marker (an edge ID); click one to see the evidence.</p>
@@ -211,9 +212,9 @@ export default function ActionCard({ disease, viaId, onViaChange, meta, standalo
         <div className="grid grid-cols-1 gap-0 md:grid-cols-3">
           {card.sections.map((section) => (
             <section key={section.key} className="border-b border-line px-5 py-5 md:border-b-0 md:border-r md:px-6 last:border-0">
-              <SectionTitle className="t-h2 flex items-center gap-2.5 text-[20px] font-semibold" style={{ fontFamily: "var(--font-display, inherit)" }}>
+              <SectionTitle className="flex items-center gap-2.5 text-[20px] font-bold tracking-tight">
                 {section.title}
-                <span className="grid h-7 w-7 place-items-center rounded-full border border-line-strong text-[14px] font-semibold leading-none" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
+                <span className="grid h-7 w-7 place-items-center rounded-full border-[1.5px] text-[14px] font-bold leading-none" style={{ borderColor: SECTION_ACCENT[section.key], color: SECTION_ACCENT[section.key] }} aria-hidden="true">{SECTION_GLYPH[section.key]}</span>
               </SectionTitle>
               <p className="mt-0.5 text-[16px] text-ink-2">{section.hint}</p>
               {section.sentences.length ? (

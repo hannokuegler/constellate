@@ -83,9 +83,9 @@ export default function SymptomSearch({ autoFocus = false }: { autoFocus?: boole
       </div>
       {showList && (
         <ul id={listId} role="listbox" className="absolute inset-x-0 top-full z-40 mt-2 max-h-[50vh] overflow-y-auto rounded-[20px] border border-line bg-surface p-2 shadow-[var(--shadow)]">
-          {!searcher && !failed && <li className="px-3 py-3 text-[15px] text-ink-2">Loading the list of symptoms…</li>}
+          {!searcher && !failed && <li className="px-3 py-3 text-[16px] text-ink-2">Loading the list of symptoms…</li>}
           {failed && <li className="px-3 py-3 text-[15px] text-contra">The list of symptoms could not be loaded. Please try again.</li>}
-          {searcher && !hits.length && <li className="px-3 py-3 text-[15px] text-ink-2">No symptom matches “{query}”. Try another word or the term from the doctor&apos;s letter.</li>}
+          {searcher && !hits.length && <li className="px-3 py-3 text-[16px] text-ink-2">No symptom matches “{query}”. Try another word or the term from the doctor&apos;s letter.</li>}
           {hits.map((hit, i) => (
             <li
               key={hit.entry.id}

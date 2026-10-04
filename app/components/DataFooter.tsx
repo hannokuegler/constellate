@@ -36,7 +36,7 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
             Development fixture: a small slice built by app/scripts/make_fixture.py. Similarity scores are placeholders until the pipeline publishes its analytics.
           </p>
         )}
-        <p className="tabular text-[15px] text-ink">
+        <p className="tabular min-h-[44px] text-[15px] text-ink">
           <span>
             {meta ? (
               <>

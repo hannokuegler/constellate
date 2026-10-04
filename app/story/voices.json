@@ -1,0 +1,7 @@
+{
+  "model": "eleven_v4",
+  "fallback_model": "eleven_multilingual_v2",
+  "output_format": "mp3_44100_128",
+  "maria": { "voice_id": "", "stability": 0.4, "similarity_boost": 0.75 },
+  "consti": { "voice_id": "", "stability": 0.55, "similarity_boost": 0.75 }
+}

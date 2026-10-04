@@ -6,7 +6,10 @@ export type Speaker = "maria" | "consti";
 export interface StoryLine {
   id: string;
   who: Speaker;
+  /** the speech bubble and the transcript */
   text: string;
+  /** what ElevenLabs reads, when it differs: audio tags, spelled-out abbreviations */
+  tts?: string;
 }
 
 export const SPEAKERS: Record<Speaker, { name: string; role: string }> = {
@@ -16,6 +19,9 @@ export const SPEAKERS: Record<Speaker, { name: string; role: string }> = {
 
 export const STORY_TITLE = "Maria's first night";
 export const STORY_NOTE = "Maria is a composite character. Every screen is the live app; Consti only points at what the data shows.";
+/** true once the recorded video carries the ElevenLabs voice track (story/voice/*.mp3) */
+export const STORY_HAS_VOICE = false;
+
 /** H.264 first (Safari, Chrome, Edge, Firefox), VP9 for browsers without H.264 */
 export const STORY_SOURCES = [
   { src: "/story/maria.mp4", type: 'video/mp4; codecs="avc1.64001F"' },

@@ -1,6 +1,6 @@
 import { test, expect, type Locator, type Page } from "@playwright/test";
 import { execFileSync } from "node:child_process";
-import { mkdirSync, rmSync } from "node:fs";
+import { existsSync, mkdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
 
@@ -9,6 +9,14 @@ import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
 const OUT = join(__dirname, "..", "public", "story");
 const RAW = join(__dirname, "..", "story-raw");
 const SIZE = { width: 1280, height: 720 };
+const VOICE = join(__dirname, "voice"); // one MP3 per line from `npm run story:voice`; without them the video stays silent
+
+// when each voice clip starts, in ms since the context opened (the video clock)
+const cues: { file: string; at: number }[] = [];
+let t0 = 0;
+
+const seconds = (file: string) =>
+  Number(execFileSync("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", file]).toString().trim());
 
 // injected into every document: speech bubbles, title cards and a cursor, appended lazily so hydration never sees them
 function overlay() {
@@ -117,11 +125,18 @@ function overlay() {
 // reading time: about 3.8 words per second, never shorter than 2.4 s
 const readMs = (text: string) => Math.max(2400, Math.round((text.split(/\s+/).length / 3.8) * 1000) + 800);
 
+// shows the bubble; with a voice clip the line lasts as long as the clip plus a breath, otherwise reading time
 async function say(page: Page, id: string, extraMs = 0) {
   const line = storyLine(id);
   const sp = SPEAKERS[line.who];
   await page.evaluate(([who, name, role, text]) => (window as unknown as { __storySay: (...a: string[]) => void }).__storySay(who, name, role, text), [line.who, sp.name, sp.role, line.text]);
-  await page.waitForTimeout(readMs(line.text) + extraMs);
+  const clip = join(VOICE, `${id}.mp3`);
+  if (existsSync(clip)) {
+    cues.push({ file: clip, at: Date.now() - t0 });
+    await page.waitForTimeout(Math.round(seconds(clip) * 1000) + 350 + Math.max(0, extraMs));
+  } else {
+    await page.waitForTimeout(readMs(line.text) + extraMs);
+  }
 }
 
 async function card(page: Page, title: string | null, text = "") {
@@ -148,9 +163,10 @@ test("record Maria's story", async ({ browser }) => {
   rmSync(RAW, { recursive: true, force: true });
   mkdirSync(OUT, { recursive: true });
   const ctx = await browser.newContext({ viewport: SIZE, colorScheme: "light", recordVideo: { dir: RAW, size: SIZE } });
-  const t0 = Date.now();
+  cues.length = 0;
   await ctx.addInitScript(overlay);
   const page = await ctx.newPage();
+  t0 = Date.now(); // the video starts with the page
 
   // title card over the start page
   await page.goto("/");
@@ -226,12 +242,16 @@ test("record Maria's story", async ({ browser }) => {
   await ctx.close();
   const raw = await video!.path();
 
-  // trim the blank lead-in, encode H.264 for every browser, keep the file small
+  // trim the blank lead-in, lay the voice clips on the video clock, encode H.264/AAC for every browser and VP9/Opus as fallback
+  const cut = Math.max(0, lead - 200);
+  const audioIn = cues.flatMap((c) => ["-i", c.file]);
+  const mix = cues.length
+    ? ["-filter_complex", cues.map((c, i) => `[${i + 1}:a]adelay=${c.at - cut}:all=1[a${i}]`).join(";") + `;${cues.map((_, i) => `[a${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:dropout_transition=0[voice]`, "-map", "0:v", "-map", "[voice]"]
+    : ["-an"];
+  const input = ["-y", "-loglevel", "error", "-ss", (cut / 1000).toFixed(3), "-i", raw, ...audioIn, ...mix];
   const mp4 = join(OUT, "maria.mp4");
-  const start = Math.max(0, lead / 1000 - 0.2).toFixed(2);
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", start, "-i", raw, "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-tune", "stillimage", "-pix_fmt", "yuv420p", "-r", "25", "-movflags", "+faststart", "-an", mp4]);
-  // VP9 fallback for browsers without H.264 (open-source Chromium, Playwright's own build)
-  execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", start, "-i", raw, "-c:v", "libvpx-vp9", "-crf", "42", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", "-r", "25", "-an", join(OUT, "maria.webm")]);
+  execFileSync("ffmpeg", [...input, "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-tune", "stillimage", "-pix_fmt", "yuv420p", "-r", "25", ...(cues.length ? ["-c:a", "aac", "-b:a", "128k"] : []), "-movflags", "+faststart", mp4]);
+  execFileSync("ffmpeg", [...input, "-c:v", "libvpx-vp9", "-crf", "42", "-b:v", "0", "-row-mt", "1", "-deadline", "good", "-cpu-used", "4", "-r", "25", ...(cues.length ? ["-c:a", "libopus", "-b:a", "96k"] : []), join(OUT, "maria.webm")]);
   execFileSync("ffmpeg", ["-y", "-loglevel", "error", "-ss", "1.5", "-i", mp4, "-frames:v", "1", "-q:v", "4", join(OUT, "maria.jpg")]);
   rmSync(RAW, { recursive: true, force: true });
 });

@@ -12,6 +12,7 @@
     "e2e": "npm run build && playwright test",
     "e2e:run": "playwright test",
     "story:record": "playwright test -c playwright.story.config.ts",
+    "story:voice": "tsx story/voice.ts",
     "explain": "tsx scripts/precompute-explain.ts"
   },
   "engines": {

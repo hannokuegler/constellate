@@ -22,6 +22,7 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 | `data-trials` | 142 Studien-Shards | in `main` |
 | `data-quality`, `integrate-v2` | Review/Performance, 07+09 | Agents laufen |
 | `design` | lokale Design-Session | läuft |
+| `maria` | Design-Lead (So 07:40): altes helles Design von `main` plus alle neuen Funktionen (What you can do now, Studien mit Länderfilter/Alter/Kontaktknopf, Action Card mit At a glance und Klartext-Explain, `/share`, Symptom-Einstieg, neutrale Texte), Scroll-Story raus; validate, tsc, lint, E2E 6/6 grün, Abschlussprüfer bestanden ohne P1 | wartet auf Chefs Merge nach `main` |
 | `app-graph`, `app-action`, `docs-submission`, `pitch-story`, `security`, `explain-precompute` | abgeschlossene Agent-Branches | in `integrate` |
 
 ## OpenAI: wofür und wo

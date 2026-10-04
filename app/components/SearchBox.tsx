@@ -124,7 +124,7 @@ export default function SearchBox({
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
           aria-label={label}
-          placeholder={narrow ? "Search a disease or gene" : persona.placeholder}
+          placeholder={narrow ? "Type a diagnosis" : persona.placeholder}
           autoFocus={autoFocus}
           autoComplete="off"
           spellCheck={false}
@@ -170,8 +170,8 @@ export default function SearchBox({
             >
               <TypeBadge type={hit.entry.type} />
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-[15px] font-medium">{hit.entry.label}</span>
-                {hit.matched && <span className="block truncate text-[12px] text-ink-2">matches “{hit.matched}”</span>}
+                <span className="block break-words text-[15px] font-medium leading-snug">{hit.entry.label}</span>
+                {hit.matched && <span className="block break-words text-[12px] text-ink-2">matches “{hit.matched}”</span>}
               </span>
               <span className="hidden shrink-0 text-[12px] text-ink-2 sm:inline">{hit.entry.id}</span>
             </li>

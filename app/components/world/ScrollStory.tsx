@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, type ReactNode } from "react";
 import { loadCore, loadDisease, loadGene, loadIndexMap, loadMeta } from "@/lib/data";
-import { diseaseHref } from "@/lib/ids";
+import { diseaseHref, toFileKey } from "@/lib/ids";
 import { metaCount, v2Therapies } from "@/lib/normalize";
 import type { Meta } from "@/lib/types";
 import SearchBox from "../SearchBox";
@@ -59,7 +59,7 @@ interface TherapyFact {
   /** "EMA or FDA" from the searched sources, null when the shard did not say what was searched */
   authorities: string | null;
   asOf: string | null;
-  items: { label: string; authority: string | null; approved: string | null; record: string | null }[];
+  items: { label: string; authority: string | null; approved: string | null; record: string | null; url: string | null }[];
 }
 
 interface StoryFacts {
@@ -91,6 +91,7 @@ function useStoryFacts(): StoryFacts {
           authority: it.node.authority ?? it.edge.evidence[0]?.db ?? null,
           approved: day(it.node.approved ?? it.edge.evidence[0]?.date),
           record: it.edge.evidence[0]?.record ?? null,
+          url: it.node.url ?? it.edge.evidence[0]?.url ?? null,
         })),
       };
     };
@@ -148,8 +149,14 @@ function Caption({ title, children }: { title: ReactNode; children?: ReactNode }
   );
 }
 
-function EdgeId({ id }: { id?: string }) {
-  return id ? <span className="t-mono">{id}</span> : null;
+/** small external source link (registry record), instead of an edge ID in the running caption */
+function SourceLink({ href }: { href: string }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center text-ink underline underline-offset-2">
+      source
+      <span className="sr-only"> (opens in a new tab)</span>
+    </a>
+  );
 }
 
 export default function ScrollStory({ underHeader = false }: { underHeader?: boolean }) {
@@ -218,17 +225,22 @@ export default function ScrollStory({ underHeader = false }: { underHeader?: boo
       </Caption>
     ),
     neighbour: mldTherapy ? (
-      <Caption title="Its neighbour, metachromatic leukodystrophy, has an approved gene therapy.">
+      <Caption
+        title={
+          krabbeNone
+            ? "Its neighbour, metachromatic leukodystrophy, has an approved gene therapy. Krabbe disease does not."
+            : "Its neighbour, metachromatic leukodystrophy, has an approved gene therapy."
+        }
+      >
         <p className="text-ink">Approved for metachromatic leukodystrophy, not for Krabbe disease. What carries over needs expert review.</p>
-        <p className="mt-1">
+        <p className="mt-1 text-[15px]">
           {mldTherapy.label}
           {mldTherapy.authority ? ` · ${mldTherapy.authority}` : ""}
           {mldTherapy.approved ? ` · approved ${mldTherapy.approved}` : ""}
-          {mldTherapy.record ? ` · ${mldTherapy.record}` : ""}
-          {facts.mldEdge && (
+          {mldTherapy.url && (
             <>
-              {" · link "}
-              <EdgeId id={facts.mldEdge} />
+              {" · "}
+              <SourceLink href={mldTherapy.url} />
             </>
           )}
         </p>
@@ -236,10 +248,13 @@ export default function ScrollStory({ underHeader = false }: { underHeader?: boo
     ) : (
       <Caption title="Its neighbour: metachromatic leukodystrophy.">
         <p>
-          Linked by shared symptoms{facts.mldEdge ? ", " : "."}
+          Linked by shared symptoms.
           {facts.mldEdge && (
             <>
-              <EdgeId id={facts.mldEdge} />.
+              {" "}
+              <Link href={`${diseaseHref(STORY_KRABBE)}/action?via=${toFileKey(STORY_MLD)}`} className="inline-flex min-h-11 items-center text-[15px] text-ink underline underline-offset-2">
+                source
+              </Link>
             </>
           )}
         </p>

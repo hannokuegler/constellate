@@ -1,11 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { loadDisease } from "@/lib/data";
 import { allDiseaseEdges } from "@/lib/normalize";
 import type { Edge, Evidence } from "@/lib/types";
 import { LEVEL_INFO, RELATION_LABEL, formatConfidence, formatDate, hasCounterEvidence } from "@/lib/evidence";
 import { LevelBadge } from "./Badges";
+import { computedRecordLabel, humanizeRank, isSimilarityEdge, similarityWords } from "@/lib/present";
 
 interface Props {
   edge: Edge | null;
@@ -94,6 +96,9 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
     ? [...new Set([...(edge.independent_sources ?? []), ...edge.evidence.map((e) => e.db)])].filter((s) => s && s !== "computed")
     : [];
   const lead = edge?.evidence[0];
+  const similarity = edge ? isSimilarityEdge(edge) : false;
+  const sourceLabel = edge ? labelOf(edge.source) : "";
+  const targetLabel = edge ? labelOf(edge.target) : "";
   const sourceCount = edge?.independent_sources?.length ?? 0;
 
   return (
@@ -138,22 +143,24 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
             <ProvenanceChain edge={edge} lead={lead} />
 
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <LevelBadge level={edge.level} />
-                {hasCounterEvidence(edge) && (
+              {hasCounterEvidence(edge) && (
+                <div className="flex flex-wrap items-center gap-2">
                   <span className="rounded-full bg-contra-soft px-2.5 py-0.5 text-[12px] font-semibold text-contra">counter-evidence</span>
-                )}
-              </div>
-              <p className="text-[13px] leading-relaxed text-ink-2">{LEVEL_INFO[edge.level]?.meaning}</p>
+                </div>
+              )}
+              <p className="text-[15px] leading-relaxed text-ink-2">{LEVEL_INFO[edge.level]?.meaning}</p>
               {loadingFull && <p className="text-[13px] text-ink-2" aria-live="polite">Summary from the overview map; loading the full evidence…</p>}
             </div>
 
             <div>
               <div className="flex items-baseline justify-between">
-                <p className="text-[13px] text-ink-2">confidence</p>
-                <p className="tabular font-mono text-[17px] font-semibold">{formatConfidence(edge.confidence)}</p>
+                <p className="text-[13px] text-ink-2">{similarity ? "similarity (simGIC)" : "confidence"}</p>
+                <p className="tabular font-mono text-[17px] font-semibold">
+                  {formatConfidence(edge.confidence)}
+                  {similarity && similarityWords(edge.confidence) && <span className="ml-2 font-sans text-[15px] font-normal text-ink-2">{similarityWords(edge.confidence)}</span>}
+                </p>
               </div>
-              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" role="img" aria-label={`confidence ${formatConfidence(edge.confidence)} of 1`}>
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-2" role="img" aria-label={`${similarity ? "similarity" : "confidence"} ${formatConfidence(edge.confidence)} of 1`}>
                 <div className="h-full rounded-full" style={{ width: `${Math.round(Math.min(1, Math.max(0, edge.confidence ?? 0)) * 100)}%`, background: "var(--star, var(--ink))" }} />
               </div>
               <dl className="mt-4 grid grid-cols-2 gap-3 text-[13px]">
@@ -166,13 +173,18 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
                   <dt className="text-ink-2">evidence records</dt>
                 </div>
               </dl>
+              {similarity && (
+                <p className="mt-3 text-[15px] leading-relaxed text-ink-2">
+                  Similarity is how much the two symptom profiles overlap, from 0 to 1. It is not the probability that the link is true, and it says nothing about whether the cause is shared.
+                </p>
+              )}
               {!!edge.independent_sources?.length && <p className="mt-2 text-[13px] text-ink-2">Independent sources: {edge.independent_sources.join(", ")}</p>}
             </div>
 
             {edge.formula && (
               <section>
-                <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Formula (inferred)</h3>
-                <p className="mt-2 break-words rounded-[12px] bg-surface-2 px-3 py-2.5 font-mono text-[13px] leading-relaxed">{edge.formula}</p>
+                <h3 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">How it was computed (inferred)</h3>
+                <p className="mt-2 break-words rounded-[12px] bg-surface-2 px-3 py-2.5 font-mono text-[13px] leading-relaxed">{humanizeRank(edge.formula, sourceLabel, targetLabel)}</p>
               </section>
             )}
 
@@ -187,7 +199,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
               {edge.evidence.length ? (
                 <ul className="mt-2 space-y-3">
                   {edge.evidence.map((ev, i) => (
-                    <EvidenceItem key={i} ev={ev} />
+                    <EvidenceItem key={i} ev={ev} similarity={similarity} sourceLabel={sourceLabel} targetLabel={targetLabel} />
                   ))}
                 </ul>
               ) : (
@@ -200,7 +212,7 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
               {edge.contradicting.length ? (
                 <ul className="mt-2 space-y-3">
                   {edge.contradicting.map((ev, i) => (
-                    <EvidenceItem key={i} ev={ev} contra />
+                    <EvidenceItem key={i} ev={ev} contra similarity={similarity} sourceLabel={sourceLabel} targetLabel={targetLabel} />
                   ))}
                 </ul>
               ) : (
@@ -220,15 +232,37 @@ export default function EdgePanel({ edge: given, missingId, labelOf, onClose }: 
   );
 }
 
-/** Source → record (link) → date → level, as four connected points; the last one is lit. */
+/** The record of a computed edge, in words: "Computed by Constellate (pipeline step 07, build 917470a)", linked to the methods page. */
+function ComputedRecord({ record, codeUrl }: { record: string; codeUrl?: string | null }) {
+  const label = computedRecordLabel(record);
+  if (!label) return <span className="break-all">{record}</span>;
+  return (
+    <span>
+      <Link href="/methods" className="text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">{label}</Link>
+      {codeUrl && (
+        <>
+          {" · "}
+          <a href={codeUrl} target="_blank" rel="noreferrer" className="text-ink-2 underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
+            pipeline code<span className="sr-only"> (opens in a new tab)</span>
+          </a>
+        </>
+      )}
+    </span>
+  );
+}
+
+/** Source → record (link) → date → level, as four connected points; the last one is lit. A vertical chain: long record names need the width. */
 function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefined }) {
   const computed = lead?.db === "computed" || edge.level === "inferred";
+  const computedLabel = lead?.record ? computedRecordLabel(lead.record) : null;
   const steps: { key: string; value: React.ReactNode }[] = [
-    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db ? <span className="block text-[12px] font-normal text-ink-2">via {lead.origin}</span> : null}</> : "none" },
+    { key: "Source", value: lead ? <>{computed && lead.db === "computed" ? "Constellate" : lead.db}{lead.origin && lead.origin !== lead.db && !computedLabel ? <span className="block text-[12px] font-normal text-ink-2">via {lead.origin}</span> : null}</> : "none" },
     {
       key: "Record",
       value: lead?.record ? (
-        lead.url ? (
+        computedLabel ? (
+          <ComputedRecord record={lead.record} codeUrl={lead.url} />
+        ) : lead.url ? (
           <a href={lead.url} target="_blank" rel="noreferrer" className="break-all text-ink underline decoration-line underline-offset-2 hover:decoration-[var(--amber,currentColor)]">
             {lead.record}
             <span className="sr-only"> (opens in a new tab)</span>
@@ -242,17 +276,20 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
     { key: "Level", value: LEVEL_INFO[edge.level]?.label ?? edge.level },
   ];
   return (
-    <ol className="grid grid-cols-2 gap-x-3 gap-y-4 @sm:grid-cols-4 @sm:gap-x-1" aria-label="Provenance of this link">
-      {steps.map((step, i) => (
-        <li key={step.key} className="min-w-0 pr-1">
-          <div className="flex items-center" aria-hidden="true">
-            <span className="dot" data-state={i === steps.length - 1 ? "lit" : undefined} />
-            {i < steps.length - 1 && <span className={`ml-1 mr-1 h-px flex-1 bg-line-strong ${i === 1 ? "hidden @sm:block" : ""}`} />}
-          </div>
-          <p className="mt-2 text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
-          <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>
-        </li>
-      ))}
+    <ol aria-label="Provenance of this link">
+      {steps.map((step, i) => {
+        const last = i === steps.length - 1;
+        return (
+          <li key={step.key} className="relative min-w-0 pb-4 pl-7 last:pb-0">
+            {!last && <span className="absolute left-[3.5px] top-3 bottom-[-4px] w-px bg-line-strong" aria-hidden="true" />}
+            <div className="absolute left-0 top-[7px] flex items-center" aria-hidden="true">
+              <span className="dot" data-state={last ? "lit" : undefined} />
+            </div>
+            <p className="text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
+            <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>
+          </li>
+        );
+      })}
     </ol>
   );
 }
@@ -280,18 +317,22 @@ function EdgeId({ id }: { id: string }) {
   );
 }
 
-function EvidenceItem({ ev, contra = false }: { ev: Evidence; contra?: boolean }) {
+function EvidenceItem({ ev, contra = false, similarity = false, sourceLabel = "", targetLabel = "" }: { ev: Evidence; contra?: boolean; similarity?: boolean; sourceLabel?: string; targetLabel?: string }) {
   const ai = aiLabel(ev);
+  const computedLabel = ev.record ? computedRecordLabel(ev.record) : null;
+  const computedEvidence = similarity && ev.db === "Constellate";
   return (
     <li className={`rounded-[12px] border px-3 py-3 ${contra ? "border-contra/40 bg-contra-soft" : "border-line"}`}>
       <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
         <span className="font-semibold">{ev.db}</span>
-        {ev.origin && ev.origin !== ev.db && <span className="text-[13px] text-ink-2">via {ev.origin}</span>}
+        {ev.origin && ev.origin !== ev.db && ev.origin !== "computed" && <span className="text-[13px] text-ink-2">via {ev.origin}</span>}
         <span className="ml-auto"><LevelBadge level={ev.level} small /></span>
       </div>
       {ev.record && (
         <p className="mt-1 text-[13px]">
-          {ev.url ? (
+          {computedLabel ? (
+            <ComputedRecord record={ev.record} codeUrl={ev.url} />
+          ) : ev.url ? (
             <a href={ev.url} target="_blank" rel="noreferrer" className="break-all underline underline-offset-2">
               {ev.record}
               <span className="sr-only"> (opens in a new tab)</span>
@@ -317,10 +358,10 @@ function EvidenceItem({ ev, contra = false }: { ev: Evidence; contra?: boolean }
           {ev.study_context && ev.study_context !== "not_stated" ? ` (${ev.study_context.replaceAll("_", " ")})` : ""}
         </p>
       )}
-      {ev.snippet && <p className="mt-2 text-[13px] leading-relaxed text-ink-2">“{ev.snippet}”</p>}
+      {ev.snippet && <p className="mt-2 text-[13px] leading-relaxed text-ink-2">“{computedEvidence ? humanizeRank(ev.snippet, sourceLabel, targetLabel) : ev.snippet}”</p>}
       {ev.reason && <p className="mt-1 text-[12px] text-ink-2">Reason given: {ev.reason}</p>}
       <p className="tabular mt-2 text-[12px] text-ink-2">
-        {formatDate(ev.date)} · confidence {formatConfidence(ev.confidence)}
+        {formatDate(ev.date)} · {computedEvidence ? "similarity" : "confidence"} {formatConfidence(ev.confidence)}
       </p>
     </li>
   );

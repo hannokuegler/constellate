@@ -75,7 +75,8 @@ export default function GeneView({ symbol }: { symbol: string }) {
     return { causal, other, familyList, nodes, links, labels, pathways, pathwaysMore };
   }, [file, index]);
 
-  useEffect(() => {
+  // registered during render (idempotent ref write) so the evidence buttons can name their link on first paint
+  useMemo(() => {
     if (view && file) register([...file.diseases, ...view.pathways.map((p) => p.edge), ...view.pathwaysMore.map((p) => p.edge), ...(file.text_mined ?? [])], view.labels);
   }, [view, file, register]);
 
@@ -106,14 +107,14 @@ export default function GeneView({ symbol }: { symbol: string }) {
 
       {manyNames && (
         <section className="card mt-6 overflow-hidden" aria-labelledby="names-title">
-          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
-            <NamesOrbit gene={file.node.id} names={v.familyList.map((f) => f.name)} />
+          <div className="grid grid-cols-1 md:grid-cols-[minmax(0,440px)_minmax(0,1fr)]">
+            <NamesOrbit gene={file.node.id} names={v.familyList.map((f) => f.name)} annotations={v.causal.length} />
             <div className="min-w-0 px-5 py-5 md:px-7 md:py-6">
               <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Names hide mechanisms</p>
               <h2 id="names-title" className="mt-1 text-[24px] font-semibold leading-snug md:text-[28px]" style={{ fontFamily: "var(--font-display, inherit)" }}>
                 One gene, {v.familyList.length} disease names
               </h2>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-ink-2">Each name below is annotated with {file.node.id} as its disease gene in curated sources. Grouping by name is for display only.</p>
               <ol className="mt-4 grid grid-cols-1 gap-x-8 sm:grid-cols-2">
                 {v.familyList.map((f, i) => (
                   <li key={f.name} className="min-w-0 border-t border-line py-3">
@@ -121,16 +122,13 @@ export default function GeneView({ symbol }: { symbol: string }) {
                       <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-line-strong text-[12px] font-semibold tabular-nums" aria-hidden="true">{i + 1}</span>
                       <span className="min-w-0 break-words">{f.name}</span>
                     </p>
-                    <ul className="mt-1 space-y-0.5 pl-[34px]">
+                    <ul className="mt-1 space-y-0 pl-[34px]">
                       {f.edges.map((e) => (
                         <li key={e.id} className="flex flex-wrap items-center gap-x-3">
-                          <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 basis-full items-center break-words text-[13px] underline decoration-line underline-offset-2 hover:decoration-current">
+                          <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 basis-[12rem] items-center break-words text-[15px] underline decoration-line underline-offset-2 hover:decoration-current">
                             {label(e.source)}
                           </Link>
-                          <span className="-mt-2 text-[12px] text-ink-2">
-                            <span className="font-mono">{e.id}</span> · {e.evidence[0]?.db ?? "source n/a"}
-                          </span>
-                          <span className="-mt-2 ml-auto"><EvidenceButton edge={e} onEdge={openEdge} /></span>
+                          <SourceMarker edge={e} onEdge={openEdge} labelOf={label} />
                         </li>
                       ))}
                     </ul>
@@ -208,34 +206,58 @@ export default function GeneView({ symbol }: { symbol: string }) {
   );
 }
 
-/** The gene as a ring in the middle of the sky, its disease names as points around it (numbers match the list). */
-function NamesOrbit({ gene, names }: { gene: string; names: string[] }) {
-  const cx = 150;
-  const cy = 150;
-  const radius = 98;
+/** Edge ID and source as one small mono marker that is also the evidence button: "e_b2d7ac18f1b8 · Orphanet". */
+function SourceMarker({ edge, onEdge, labelOf }: { edge: Edge; onEdge: (e: Edge) => void; labelOf: (id: string) => string }) {
+  return (
+    <button
+      onClick={() => onEdge(edge)}
+      className="inline-flex min-h-11 items-center rounded-full px-2 font-mono text-[12px] text-ink-2 underline decoration-line decoration-dotted underline-offset-4 hover:bg-surface-2 hover:text-ink hover:decoration-current"
+      aria-label={`Evidence: ${edge.type.replaceAll("_", " ")} ${labelOf(edge.source)} to ${labelOf(edge.target)}`}
+      title={`Source: ${edge.evidence[0]?.db ?? "n/a"}. Opens the evidence for this link.`}
+    >
+      {edge.id}
+    </button>
+  );
+}
+
+const shortName = (name: string, max = 14) => (name.length > max ? `${name.slice(0, max - 1).trimEnd()}…` : name);
+
+/** The gene as a ring in the middle of the sky, its disease names as points around it, named at the point (full name on hover; numbers match the list). */
+function NamesOrbit({ gene, names, annotations }: { gene: string; names: string[]; annotations: number }) {
+  const cx = 272;
+  const cy = 200;
+  const radius = 100;
   const points = names.map((name, i) => {
     const angle = -Math.PI / 2 + (i * 2 * Math.PI) / names.length;
-    return { name, n: i + 1, x: cx + radius * Math.cos(angle), y: cy + radius * Math.sin(angle) };
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const side: "start" | "middle" | "end" = Math.abs(cos) < 0.3 ? "middle" : cos > 0 ? "start" : "end";
+    const labelX = side === "middle" ? cx + radius * cos : cx + (radius + 22) * cos;
+    const labelY = side === "middle" ? cy + radius * sin + (sin > 0 ? 38 : -30) : cy + radius * sin + 4;
+    return { name, n: i + 1, x: cx + radius * cos, y: cy + radius * sin, side, labelX, labelY };
   });
   return (
-    <div className="grid place-items-center border-b border-line p-4 md:border-b-0 md:border-r" style={{ ...SKY_VARS, background: SKY_BACKGROUND }}>
-      <svg viewBox="0 0 300 300" className="h-auto w-full max-w-[300px]" role="img" aria-label={`${gene} in the middle, ${names.length} disease names around it: ${names.join(", ")}`}>
+    <div className="flex flex-col items-center justify-center border-b border-line p-4 md:border-b-0 md:border-r" style={{ ...SKY_VARS, background: SKY_BACKGROUND }}>
+      <svg viewBox="0 0 544 400" className="h-auto w-full max-w-[544px]" role="img" aria-label={`${gene} in the middle, ${names.length} disease names around it: ${names.join(", ")}`}>
         <circle cx={cx} cy={cy} r={radius} fill="none" stroke="var(--line)" strokeWidth="1" strokeDasharray="2 5" strokeLinecap="round" />
         {points.map((p) => (
           <line key={p.n} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="var(--star-dim)" strokeWidth="1.2" opacity="0.7" />
         ))}
-        <circle cx={cx} cy={cy} r="46" fill="var(--amber)" opacity="0.08" />
-        <circle cx={cx} cy={cy} r="34" fill="var(--amber)" opacity="0.13" />
-        <circle cx={cx} cy={cy} r="19" fill="var(--bg)" stroke="var(--amber)" strokeWidth="3" />
-        <text x={cx} y={cy + 4} textAnchor="middle" fontSize="12" fontWeight="600" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{gene}</text>
+        <circle cx={cx} cy={cy} r="50" fill="var(--amber)" opacity="0.08" />
+        <circle cx={cx} cy={cy} r="37" fill="var(--amber)" opacity="0.13" />
+        <circle cx={cx} cy={cy} r="24" fill="var(--bg)" stroke="var(--amber)" strokeWidth="3" />
+        <text x={cx} y={cy + 4} textAnchor="middle" fontSize="14" fontWeight="600" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{gene}</text>
         {points.map((p) => (
           <g key={p.n}>
-            <circle cx={p.x} cy={p.y} r="16" fill="var(--star)" opacity="0.14" />
-            <circle cx={p.x} cy={p.y} r="10.5" fill="var(--star)" />
-            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize="12" fontWeight="700" fill="var(--bg)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{p.n}</text>
+            <title>{p.name}</title>
+            <circle cx={p.x} cy={p.y} r="17" fill="var(--star)" opacity="0.14" />
+            <circle cx={p.x} cy={p.y} r="12.5" fill="var(--star)" />
+            <text x={p.x} y={p.y + 4} textAnchor="middle" fontSize="14" fontWeight="700" fill="var(--bg)" style={{ fontFamily: "var(--font-sans, inherit)" }}>{p.n}</text>
+            <text x={p.labelX} y={p.labelY} textAnchor={p.side} fontSize="17" fontWeight="500" fill="var(--ink)" style={{ fontFamily: "var(--font-sans, inherit)" }} aria-hidden="true">{shortName(p.name)}</text>
           </g>
         ))}
       </svg>
+      <p className="tabular -mt-2 pb-2 text-center text-[13px] text-ink-2">{annotations} curated annotations under {names.length} names</p>
     </div>
   );
 }

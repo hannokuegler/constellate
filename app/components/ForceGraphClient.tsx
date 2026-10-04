@@ -371,10 +371,11 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
               const hovered = node.id === hoverNode;
               const isCenter = node.kind === "center";
               const sizePx = isCenter ? (narrow ? 14 : 16) : 12;
-              const maxWidthPx = narrow ? 112 : isCenter ? 220 : 168;
+              const maxWidthPx = isCenter ? (narrow ? 176 : 260) : narrow ? 112 : 168;
               ctx.font = isCenter
                 ? `600 ${sizePx * px}px ${palette.display}`
                 : `${hovered ? 600 : 500} ${sizePx * px}px ${palette.sans}`;
+              // centre: wraps onto up to three lines and is cut with an ellipsis only beyond that (almost no disease name gets there)
               const lines = wrapLines(ctx, node.label, maxWidthPx * px, isCenter || hovered || node.kind === "family" ? 3 : 2);
               const lineHeight = (sizePx + 3) * px;
               const textWidth = Math.max(...lines.map((l) => ctx.measureText(l).width));
@@ -388,7 +389,7 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
                 const margin = 4 * px;
                 cx = Math.min(Math.max(cx, topLeft.x + boxW / 2 + margin), bottomRight.x - boxW / 2 - margin);
               }
-              const gap = RADIUS[node.kind] + (node.kind === "family" ? 9 : isCenter ? 14 : 6);
+              const gap = RADIUS[node.kind] + (node.kind === "family" ? 9 : isCenter ? 24 : 6);
               const boxAt = (top: number): LabelBox => ({ x0: cx - boxW / 2, y0: top - padY, x1: cx + boxW / 2, y1: top - padY + boxH });
               const belowTop = (node.y as number) + gap;
               const aboveTop = (node.y as number) - gap - boxH + padY * 2 - 1 * px;
@@ -423,10 +424,16 @@ export default function ForceGraphClient({ nodes, links, height, onLinkClick, on
               cx = chosen.x;
               placed.push(box);
               ctx.globalAlpha = hovered || isCenter ? 1 : alpha;
-              ctx.fillStyle = withAlpha(palette["--bg"], 0.8);
+              // the centre label is an opaque pill under the centre point, so lines and points behind it do not run through the text
+              ctx.fillStyle = withAlpha(palette["--bg"], isCenter ? 0.94 : 0.8);
               ctx.beginPath();
               ctx.roundRect(box.x0, box.y0, boxW, boxH, 7 * px);
               ctx.fill();
+              if (isCenter) {
+                ctx.strokeStyle = withAlpha(palette["--amber"], 0.55);
+                ctx.lineWidth = 1 * px;
+                ctx.stroke();
+              }
               ctx.fillStyle = node.kind === "counter" ? palette["--contra"] : palette["--ink"];
               lines.forEach((line, i) => ctx.fillText(line, cx, top + i * lineHeight));
             }

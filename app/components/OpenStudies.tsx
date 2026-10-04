@@ -5,6 +5,7 @@ import type { DiseaseFile, Edge, EnrichmentItem, TrialDetail } from "@/lib/types
 import { loadTrial } from "@/lib/data";
 import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
+import { phaseText } from "@/lib/present";
 import { LevelBadge } from "./Badges";
 import HonestGap, { coverageSearches } from "./HonestGap";
 
@@ -70,7 +71,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
         <h2 id="open-studies-title" className="text-[17px] font-semibold">{family ? `Studies looking for participants with ${file.node.label}` : "Open studies"}</h2>
         <span className="tabular text-[13px] text-ink-2">{trials.length}</span>
       </div>
-      <p className="mb-3 text-[13px] text-ink-2">
+      <p className="mb-3 text-[15px] text-ink-2">
         Studies on ClinicalTrials.gov that list {file.node.label} and take participants now or soon.
       </p>
 
@@ -103,7 +104,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
             </label>
           )}
           {shown.length === 0 ? (
-            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[13px] text-warn">
+            <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[15px] text-warn">
               None of these studies lists a site in {country}. Studies abroad sometimes accept international families: ask the study team.
             </p>
           ) : (
@@ -118,7 +119,7 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
               {showAll ? "Show fewer" : `Show all ${shown.length}`}
             </button>
           )}
-          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[13px] leading-relaxed">
+          <p className="mt-3 rounded-[12px] bg-surface-2 px-3 py-2 text-[15px] leading-relaxed">
             Whether a child can join is decided by the study team together with your doctor. Studies that only observe collect data over time and do
             not treat; studies that test a treatment have risks as well as possible benefits. Constellate only shows what the registry says.
           </p>
@@ -143,11 +144,11 @@ function StudyRow({ item, detail, country, onEdge }: { item: EnrichmentItem; det
       <div className="flex flex-wrap items-center gap-2 text-[12px]">
         <span className={`rounded-full px-2 py-0.5 font-semibold ${status === "RECRUITING" ? "bg-ok-soft text-ok" : "bg-accent-soft text-accent"}`}>{trialStatusLabel(status)}</span>
         <span className="rounded-full border border-line px-2 py-0.5">{observational ? "Observes, no treatment" : "Tests a treatment"}</span>
-        {!observational && trialPhase(n) && <span className="text-ink-2">{trialPhase(n)}</span>}
+        {!observational && phaseText(n, trialPhase(n)) && <span className="text-ink-2">{phaseText(n, trialPhase(n))}</span>}
         <span className="tabular text-ink-2">{n.id}</span>
       </div>
       <p className="mt-1.5 text-[15px] font-semibold leading-snug">{n.label}</p>
-      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[13px]">
+      <dl className="mt-1.5 grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-[15px]">
         {typeof n.sponsor === "string" && (
           <>
             <dt className="text-ink-2">Run by</dt>

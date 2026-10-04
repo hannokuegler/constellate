@@ -58,6 +58,8 @@ export default function DataFooter({ meta: given }: { meta?: Meta | null }) {
           <Link href="/about" className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-[15px] underline underline-offset-2">About</Link>
           <span aria-hidden="true">·</span>
           <Link href="/methods" className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-[15px] underline underline-offset-2">How we know</Link>
+          <span aria-hidden="true">·</span>
+          <Link href="/share" className="inline-flex min-h-11 min-w-11 items-center justify-center px-2 text-[15px] underline underline-offset-2">Share what you know</Link>
         </p>
         {!!meta?.sources.length && (
           <details className="mt-1">

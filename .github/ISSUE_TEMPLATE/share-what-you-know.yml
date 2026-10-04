@@ -1,0 +1,43 @@
+name: Share what you know
+description: Tell us about a patient group, registry, study, correction or something that helped. A person reads it before anything is used.
+title: "Share: "
+labels: ["share"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for sharing. **A person checks every note before it can appear in the data. Nothing is published automatically.**
+
+        **Please do not include names, dates of birth, medical records or anything that identifies a person.**
+        This page is public. Do not paste email addresses, phone numbers or photos of documents.
+  - type: input
+    id: kind
+    attributes:
+      label: What would you like to share?
+      description: A patient organisation or support group, a registry or natural-history study, a study looking for participants, a broken link or correction, or what helped a family.
+    validations:
+      required: true
+  - type: input
+    id: disease
+    attributes:
+      label: Which disease is it about?
+      description: Optional. Disease name or MONDO id.
+  - type: input
+    id: source
+    attributes:
+      label: Link to a public source
+      description: A public web page that shows it. Required, except for "what helped a family".
+  - type: textarea
+    id: details
+    attributes:
+      label: Details
+      description: Name, country and a short description, in your own words.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: This note contains no names, dates of birth, medical records or anything else that identifies a person.
+          required: true

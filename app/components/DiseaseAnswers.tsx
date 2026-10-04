@@ -18,7 +18,7 @@ export default function DiseaseAnswers({ file, meta, onEdge, onCard }: { file: D
   const therapies = v2Therapies(file);
   const searched = therapies.searched.map((s) => ({ source: s.source, fetched_at: s.retrieved ?? undefined, hits: s.hits ?? undefined }));
   const pending = !therapies.present || (!therapies.items.length && !searched.length);
-  return <section className="answer-card" aria-labelledby="treatment-heading">
+  return <section id="treatment" className="answer-card scroll-mt-24" aria-labelledby="treatment-heading">
     <h2 className="section-heading" id="treatment-heading">Is there an approved treatment?</h2>
     {therapies.items.length ? <ul className="mt-4 divide-y divide-line">{therapies.items.map(({ node, edge }) => {
       const source = edge.evidence[0];

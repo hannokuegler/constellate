@@ -13,6 +13,7 @@ import { SourceLine } from "./DiseaseAnswers";
 export default function NeighbourResources({ file, onEdge, onCard }: { file: DiseaseFile; onEdge: (edge: Edge) => void; onCard: (id: string) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [records, setRecords] = useState<(DiseaseFile | null)[] | null>(null);
   const { register } = useEdgePanel();
   const candidates = useMemo(() => {
@@ -44,10 +45,13 @@ export default function NeighbourResources({ file, onEdge, onCard }: { file: Dis
     });
     return () => { alive = false; };
   }, [visible, candidates, register]);
+  const firstResourceIndex = records?.findIndex((neighbour) => neighbour && (v2Therapies(neighbour).items.length > 0 || v2Assets(neighbour).items.some((item) => ["natural_history_study", "registry"].includes(item.node.asset_type)) || openTrials(neighbour).length > 0)) ?? -1;
+  const featuredIndex = firstResourceIndex < 0 ? 0 : firstResourceIndex;
+  const shownCandidates = candidates.map((candidate, index) => ({ candidate, index })).filter(({ index }) => showMore || index === featuredIndex);
   return <div ref={ref} className="mt-6 border-t border-line pt-6">
     <h3 className="text-lg font-semibold">What already exists nearby?</h3>
     <p className="subtle mt-2">A related community may have an established resource. These are starting points for a conversation with a specialist.</p>
-    {!candidates.length ? <p className="mt-3">No shared-gene or shared-pathway neighbour is recorded yet. Explore the evidence below to see what is missing.</p> : records === null ? <p className="source-line mt-4" role="status">Checking resources in related communities...</p> : <ul className="mt-4 divide-y divide-line">{candidates.map((candidate, index) => {
+    {!candidates.length ? <p className="mt-3">No shared-gene or shared-pathway neighbour is recorded yet. Explore the evidence below to see what is missing.</p> : records === null ? <p className="source-line mt-4" role="status">Checking resources in related communities...</p> : <ul className="mt-4 divide-y divide-line">{shownCandidates.map(({ candidate, index }) => {
       const neighbour = records[index];
       const therapies = neighbour ? v2Therapies(neighbour).items : [];
       const assets = neighbour ? v2Assets(neighbour).items.filter((item) => ["natural_history_study", "registry"].includes(item.node.asset_type)) : [];
@@ -57,11 +61,12 @@ export default function NeighbourResources({ file, onEdge, onCard }: { file: Dis
         <Link href={diseaseHref(candidate.id)} className="inline-flex min-h-11 items-center text-lg font-semibold text-accent">{candidate.label}</Link>
         {edge && <button className="button ml-0 sm:ml-3" onClick={() => onEdge(edge)}>Why linked</button>}
         {therapies.slice(0, 2).map(({ node, edge }) => <div className="mt-3" key={node.id}><p className="font-semibold">{node.label} | {node.authority ?? edge.evidence[0]?.db}</p><p className="mt-1">Approved for {candidate.label}, not for {file.node.label}. What carries over and what differs needs expert review.</p><SourceLine edge={edge} /></div>)}
-        {assets.slice(0, 2).map(({ node, edge }) => <div className="mt-3" key={node.id}><p className="font-semibold">{node.asset_type === "registry" ? "Registry" : "Natural history study"}: {node.label}</p><p className="source-line">Resource for {candidate.label}.</p><SourceLine edge={edge} /></div>)}
+        {assets.slice(0, showMore ? 2 : 1).map(({ node, edge }) => <div className="mt-3" key={node.id}><p className="font-semibold">{node.asset_type === "registry" ? "Registry" : "Natural history study"}: {node.label}</p><p className="source-line">Resource for {candidate.label}.</p><SourceLine edge={edge} /></div>)}
         {trials.slice(0, 1).map(({ node, edge }) => <div className="mt-3" key={node.id}><p className="font-semibold">Study: {node.label}</p><p className="source-line">{trialStatusLabel(node.status)} | Listed for {candidate.label}; eligibility needs review.</p><SourceLine edge={edge} /></div>)}
         {!therapies.length && !assets.length && !trials.length && <p className="subtle mt-2">{neighbour ? "No approval, registry, natural history study or open study is available in the displayed records for this neighbour." : "Data pending: this neighbour's resource records are not available."}</p>}
         <button className="button mt-3" onClick={() => onCard(candidate.id)}>Action card</button>
       </li>;
     })}</ul>}
+    {records !== null && candidates.length > 1 && <button className="button mt-3" onClick={() => setShowMore((value) => !value)} aria-expanded={showMore}>{showMore ? "Show fewer related resources" : "Show more related resources"}</button>}
   </div>;
 }

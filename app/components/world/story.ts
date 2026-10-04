@@ -149,7 +149,8 @@ const CAPTIONED: readonly ChapterId[] = STORY_CHAPTERS.filter((id) => id !== "he
 export function activeCaption(chapter: number, t: number, has: (id: ChapterId) => boolean): ChapterId | null {
   const id = STORY_CHAPTERS[chapter];
   if (!CAPTIONED.includes(id)) return null;
-  const due = id === "lens" ? t >= 0.32 : t >= 0.04;
+  // the lens caption is due as soon as its chapter starts: the glasses come in with it, never under the previous caption
+  const due = t >= 0.04;
   if (due && has(id)) return id;
   for (let k = chapter - 1; k >= 0; k--) {
     const prev = STORY_CHAPTERS[k];

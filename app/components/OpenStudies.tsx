@@ -6,6 +6,7 @@ import { loadTrial } from "@/lib/data";
 import { ageRange, openTrials, trialPhase, trialStatusLabel } from "@/lib/normalize";
 import { formatDate } from "@/lib/evidence";
 import { phaseText } from "@/lib/present";
+import { plainDate } from "@/lib/nextSteps";
 import { LevelBadge } from "./Badges";
 import HonestGap, { coverageSearches } from "./HonestGap";
 
@@ -55,10 +56,14 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
     return [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   }, [details]);
   const hasDetails = countries.length > 0;
+  // "as of": the newest registry retrieval among the trial shards, else the ClinicalTrials.gov search date
+  const withoutSites = trials.filter((t) => !details[t.node.id]).length;
 
   const shown = trials.filter((t) => !country || details[t.node.id]?.countries.some((c) => c.country === country));
   const visible = showAll ? shown : shown.slice(0, 5);
   const ctgov = coverageSearches(file.coverage, ["ctgov"]);
+  const siteDates = [...Object.values(details).map((d) => d?.retrieved), ...ctgov.map((c) => c.fetched_at)].filter((d): d is string => Boolean(d)).sort();
+  const sitesAsOf = plainDate(siteDates[siteDates.length - 1]);
 
   const pickCountry = (value: string) => {
     setCountry(value);
@@ -102,6 +107,12 @@ export default function OpenStudies({ file, onEdge, family }: { file: DiseaseFil
                 ))}
               </select>
             </label>
+          )}
+          {hasDetails && (
+            <p className="-mt-1 mb-3 text-[15px] text-ink-2" data-testid="study-countries">
+              Listed in: {countries.map(([c, n]) => `${c} (${n})`).join(", ")}. No listed study in other countries{sitesAsOf ? ` as of ${sitesAsOf}` : ""}.
+              {withoutSites > 0 && ` Site data is missing for ${withoutSites} ${withoutSites === 1 ? "study" : "studies"}; see the registry entry.`}
+            </p>
           )}
           {shown.length === 0 ? (
             <p className="rounded-[12px] bg-warn-soft px-3 py-2 text-[15px] text-warn">

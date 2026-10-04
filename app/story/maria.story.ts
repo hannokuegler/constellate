@@ -9,6 +9,7 @@ import { SPEAKERS, STORY_NOTE, STORY_TITLE, storyLine } from "../lib/story";
 const OUT = join(__dirname, "..", "public", "story");
 const RAW = join(__dirname, "..", "story-raw");
 const SIZE = { width: 1280, height: 720 };
+const MAX_SECONDS = 59.5;
 const VOICE = join(__dirname, "voice"); // one MP3 per line from `npm run story:voice`; without them the video stays silent
 
 // when each voice clip starts, in ms since the context opened (the video clock)
@@ -25,6 +26,7 @@ function overlay() {
   const css = `
     #story-root{position:fixed;inset:0;pointer-events:none;z-index:2147483646;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
     #story-chat{position:absolute;left:24px;bottom:24px;width:470px;display:flex;flex-direction:column;gap:10px}
+    #story-chat.right{left:auto;right:24px}
     .story-msg{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1px solid #dfe2ea;border-radius:20px;padding:14px 16px;
       box-shadow:0 2px 4px rgb(20 24 38/.08),0 16px 40px rgb(20 24 38/.18);opacity:0;transform:translateY(10px);transition:opacity .35s,transform .35s}
     .story-msg.in{opacity:1;transform:none}
@@ -97,6 +99,7 @@ function overlay() {
     chat.appendChild(msg);
     requestAnimationFrame(() => requestAnimationFrame(() => msg.classList.add("in")));
   };
+  w.__storyDock = (side: string) => ensure().querySelector("#story-chat")!.classList.toggle("right", side === "right");
   w.__storyClear = () => ensure().querySelector("#story-chat")!.replaceChildren();
   w.__storyCard = (title: string | null, text: string) => {
     const r = ensure();
@@ -125,18 +128,29 @@ function overlay() {
 // reading time: about 3.8 words per second, never shorter than 2.4 s
 const readMs = (text: string) => Math.max(2400, Math.round((text.split(/\s+/).length / 3.8) * 1000) + 800);
 
-// shows the bubble; with a voice clip the line lasts as long as the clip plus a breath, otherwise reading time
-async function say(page: Page, id: string, extraMs = 0) {
+// shows the bubble and returns when the line ends: the voice clip plus a breath, or reading time without a clip;
+// actions between show() and until() run while the line is spoken
+async function show(page: Page, id: string, bubble = true): Promise<number> {
   const line = storyLine(id);
   const sp = SPEAKERS[line.who];
-  await page.evaluate(([who, name, role, text]) => (window as unknown as { __storySay: (...a: string[]) => void }).__storySay(who, name, role, text), [line.who, sp.name, sp.role, line.text]);
+  if (bubble) await page.evaluate(([who, name, role, text]) => (window as unknown as { __storySay: (...a: string[]) => void }).__storySay(who, name, role, text), [line.who, sp.name, sp.role, line.text]);
   const clip = join(VOICE, `${id}.mp3`);
-  if (existsSync(clip)) {
-    cues.push({ file: clip, at: Date.now() - t0 });
-    await page.waitForTimeout(Math.round(seconds(clip) * 1000) + 350 + Math.max(0, extraMs));
-  } else {
-    await page.waitForTimeout(readMs(line.text) + extraMs);
-  }
+  if (!existsSync(clip)) return Date.now() + readMs(line.text);
+  cues.push({ file: clip, at: Date.now() - t0 });
+  return Date.now() + Math.round(seconds(clip) * 1000) + 250;
+}
+
+async function until(page: Page, end: number) {
+  const left = end - Date.now();
+  if (left > 0) await page.waitForTimeout(left);
+}
+
+async function say(page: Page, id: string, bubble = true) {
+  await until(page, await show(page, id, bubble));
+}
+
+async function dock(page: Page, side: "left" | "right") {
+  await page.evaluate((x) => (window as unknown as { __storyDock: (s: string) => void }).__storyDock(x), side);
 }
 
 async function card(page: Page, title: string | null, text = "") {
@@ -145,16 +159,20 @@ async function card(page: Page, title: string | null, text = "") {
 
 async function scrollTo(page: Page, target: Locator, block: "start" | "center" = "center") {
   await target.evaluate((el, b) => el.scrollIntoView({ behavior: "smooth", block: b }), block);
-  await page.waitForTimeout(1100);
+  await page.waitForTimeout(750);
 }
 
-// glide the cursor to the element, then click it
-async function glideClick(page: Page, target: Locator) {
+// glide the cursor to the element (and click it)
+async function glideTo(page: Page, target: Locator) {
   await target.scrollIntoViewIfNeeded();
   const box = await target.boundingBox();
   if (!box) throw new Error("target not visible");
-  await page.mouse.move(box.x + Math.min(box.width / 2, 60), box.y + box.height / 2, { steps: 28 });
-  await page.waitForTimeout(250);
+  await page.mouse.move(box.x + Math.min(box.width / 2, 60), box.y + box.height / 2, { steps: 16 });
+}
+
+async function glideClick(page: Page, target: Locator) {
+  await glideTo(page, target);
+  await page.waitForTimeout(120);
   await target.click();
 }
 
@@ -174,69 +192,75 @@ test("record Maria's story", async ({ browser }) => {
   await card(page, STORY_TITLE, STORY_NOTE);
   const lead = Date.now() - t0;
   await page.mouse.move(900, 300);
-  await page.waitForTimeout(3600);
+  await page.waitForTimeout(1900);
   await card(page, null);
-  await page.waitForTimeout(700);
+  await page.waitForTimeout(400);
 
-  // moment 1 (the start page default): Maria types the name she cannot spell
+  // the first night: Maria cannot spell it, Consti introduces herself while Maria types (bubbles right, clear of the search list)
+  await dock(page, "right");
   await say(page, "m-start");
-  await say(page, "c-hello");
+  let end = await show(page, "c-hello");
   const box = page.getByRole("combobox", { name: /search diseases/i });
   await glideClick(page, box);
-  await box.pressSequentially("krabe", { delay: 230 });
+  await box.pressSequentially("krabe", { delay: 150 });
   const hit = page.getByRole("listbox").getByRole("option", { name: /Krabbe disease/ }).first();
   await expect(hit).toBeVisible();
-  await say(page, "c-typo", -600);
+  await until(page, end);
   await glideClick(page, hit);
-
-  // the neighbourhood map
   await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
   await expect(page.locator("canvas").first()).toBeVisible();
-  await page.waitForTimeout(1500);
-  await say(page, "c-map", 600);
+  await dock(page, "left");
+  await page.waitForTimeout(500);
 
-  // honest gap, then open studies
-  await say(page, "m-alone", -400);
+  // alone: the honest gap, then the open studies
+  end = await show(page, "m-alone");
   await scrollTo(page, page.locator("#patient-organisations"));
-  await say(page, "c-gap", 500);
+  await until(page, end);
+  await say(page, "c-gap");
+  end = await show(page, "c-studies");
   await scrollTo(page, page.getByRole("heading", { name: /Studies looking for participants/ }), "start");
-  await say(page, "c-studies", 400);
+  await until(page, end);
 
-  // evidence panel on one line of the graph
-  await say(page, "m-trust", -400);
+  // trust: one line of the graph opens its evidence
+  end = await show(page, "m-trust");
   await scrollTo(page, page.getByRole("heading", { level: 1, name: "Krabbe disease" }), "start");
-  await glideClick(page, page.getByRole("button", { name: /Evidence: (caused by|associated gene|disease gene)/i }).first());
+  const line = page.getByRole("button", { name: /Evidence: (caused by|associated gene|disease gene)/i }).first();
+  await glideTo(page, line);
+  await until(page, end);
+  await line.click();
   await expect(page.getByRole("dialog")).toBeVisible();
-  await page.waitForTimeout(700);
-  await say(page, "c-evidence", 900);
-  await glideClick(page, page.getByRole("button", { name: /close evidence panel/i }));
+  await page.waitForTimeout(250);
+  await say(page, "c-evidence");
 
-  // related families: MLD via PSAP, then the PSAP gene page
+  // next door: MLD shares PSAP, then the PSAP page
+  end = await show(page, "c-related");
+  await glideClick(page, page.getByRole("button", { name: /close evidence panel/i }));
   await scrollTo(page, page.locator("#related"), "start");
-  await say(page, "c-related");
+  await until(page, end);
   await glideClick(page, page.getByRole("link", { name: "PSAP", exact: true }).first());
   await expect(page).toHaveURL(/\/g\/PSAP/);
   await expect(page.getByText(/One gene, \d+ disease names/)).toBeVisible();
-  await page.waitForTimeout(800);
-  await say(page, "c-psap", 600);
+  await page.waitForTimeout(300);
+  await say(page, "c-psap");
 
-  // action card
-  await say(page, "m-what", -400);
+  // the action card
   await page.goBack();
   await expect(page).toHaveURL(/\/d\/MONDO_0009499/);
   await page.evaluate(() => window.scrollTo({ top: 0, behavior: "smooth" }));
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(400);
   await glideClick(page, page.getByRole("button", { name: "Action card" }).first());
   await expect(page.locator("#action-card")).toBeVisible();
-  await page.waitForTimeout(1300);
-  await say(page, "c-card", 1200);
+  await page.waitForTimeout(500);
+  await say(page, "c-card");
   await say(page, "m-end");
-  await say(page, "c-end", -300);
 
-  // closing card
+  // silence, then the last line over the closing card
+  await page.waitForTimeout(900);
   await page.evaluate(() => (window as unknown as { __storyClear: () => void }).__storyClear());
   await card(page, "Your family is not the first.", "Now try it yourself: search your diagnosis, open any line, take your action card.");
-  await page.waitForTimeout(3800);
+  await page.waitForTimeout(400);
+  await say(page, "c-end", false); // the card carries the words
+  await page.waitForTimeout(900);
 
   const video = page.video();
   await ctx.close();
@@ -245,9 +269,13 @@ test("record Maria's story", async ({ browser }) => {
   // trim the blank lead-in, lay the voice clips on the video clock, encode H.264/AAC for every browser and VP9/Opus as fallback
   const cut = Math.max(0, lead - 200);
   const audioIn = cues.flatMap((c) => ["-i", c.file]);
+  // the story must stay under a minute: if it runs long, play everything up to 5 % faster (atempo keeps the pitch)
+  const length = seconds(raw) - cut / 1000;
+  const tempo = Math.min(1.05, Math.max(1, length / MAX_SECONDS));
+  if (length / tempo > MAX_SECONDS) console.warn(`story is ${(length / tempo).toFixed(1)} s even at +5 %: shorten a line or a pause`);
   const mix = cues.length
-    ? ["-filter_complex", cues.map((c, i) => `[${i + 1}:a]adelay=${c.at - cut}:all=1[a${i}]`).join(";") + `;${cues.map((_, i) => `[a${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:dropout_transition=0[voice]`, "-map", "0:v", "-map", "[voice]"]
-    : ["-an"];
+    ? ["-filter_complex", cues.map((c, i) => `[${i + 1}:a]adelay=${c.at - cut}:all=1[a${i}]`).join(";") + `;${cues.map((_, i) => `[a${i}]`).join("")}amix=inputs=${cues.length}:normalize=0:dropout_transition=0,atempo=${tempo.toFixed(4)}[voice];[0:v]setpts=PTS/${tempo.toFixed(4)}[v]`, "-map", "[v]", "-map", "[voice]"]
+    : ["-vf", `setpts=PTS/${tempo.toFixed(4)}`, "-an"];
   const input = ["-y", "-loglevel", "error", "-ss", (cut / 1000).toFixed(3), "-i", raw, ...audioIn, ...mix];
   const mp4 = join(OUT, "maria.mp4");
   execFileSync("ffmpeg", [...input, "-c:v", "libx264", "-preset", "slow", "-crf", "27", "-tune", "stillimage", "-pix_fmt", "yuv420p", "-r", "25", ...(cues.length ? ["-c:a", "aac", "-b:a", "128k"] : []), "-movflags", "+faststart", mp4]);

@@ -119,10 +119,10 @@ Die Detail-Ebene liegt unter den Klartext-Blöcken: Graph, Evidence-Panel mit Ge
 - Auf der Action Card ist „Explain in plain language" ganz unten.
 - Auf der Startseite fehlt der zweite Einstieg (Befund oder Symptom).
 
-**Nachaufträge an A und B (über Chef):**
+**Nachaufträge an A und B (über Chef, raus 05:10).** Ego-Graph: nach unten schieben, nicht einklappen, E2E bleibt (Entscheidung Hanno 05:10).
 
 1. A · `DiseaseView.tsx`: Bei 375 px stehen „What you can do now" (Behandlung ja/nein plus Alternativen), Patientengruppen und Studien vor dem Graphen. Kriterium: In den ersten 2 Bildschirmhöhen (1.624 px) stehen die Behandlungsantwort und mindestens eine Patientengruppe.
 2. A · `DiseaseView.tsx` / `components/next/*`: Nachbarn im einfachen Block höchstens 3, der Rest hinter „Show all N related diagnoses". Kriterium: Seitenhöhe bis zum Graphen bei 375 px ≤ 5.000 px.
 3. A · Linktext „Why the mechanism call" → „How these two are linked". Kriterium: kein „mechanism call" mehr im sichtbaren Text (der E2E-Button „Why linked" bleibt).
-4. A und B · „Share what you know" verlinkt `/share?d=<MONDO_id>`, und `/share` füllt die Krankheit daraus vor. Kriterium: `/share?d=MONDO_0009499` zeigt „Krabbe disease" im ersten Schritt.
-5. A · Patientengruppen: Auf der einfachen Ebene steht „hand-checked list, verified <Datum>" statt des Level-Badges „inferred". Das Badge bleibt im Evidence-Panel.
+4. A und B · „Share what you know" verlinkt `/share?d=<MONDO_id>` (`?disease=` geht auch), und `/share` füllt die Krankheit daraus vor. Kriterium: `/share?d=MONDO_0009499` zeigt „Krabbe disease" im ersten Schritt.
+5. A · Patientengruppen: Auf der einfachen Ebene steht „checked against the organisation's website, <Datum>" statt des Level-Badges „inferred". Die 39 Orgs hat ein Agent geprüft, kein Mensch, deshalb nirgends „hand-checked" (Korrektur Hanno 05:10). Betrifft auch die vier Stellen in `DiseaseView.tsx` (Zeilen 172, 655, 656, 658). Das Badge bleibt im Evidence-Panel.

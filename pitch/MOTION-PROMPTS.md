@@ -21,7 +21,7 @@ Einzige Ausnahme, die in 60 s passt: eine **Titelkarte von höchstens 2 s** (Kla
 
 ## Harte Regel (RESOURCES Regel 9 und Video-Pipeline)
 
-Motion-Clips **ersetzen keines der drei Pflichtvideos** (Team, Demo, Tech). **Ausnahme seit 01:25 (Hannos Wunsch, Go offen):** Prompt 7 und 8 als Opener und Outro der Product Demo (Motion-Hybrid, VIDEO-STRATEGY §2a); die Mitte der Demo bleibt die echte App. Team und Tech bleiben ohne Motion. Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
+Motion-Clips **ersetzen keines der drei Pflichtvideos** (Team, Demo, Tech). **Ausnahme seit 01:25 (Hannos Wunsch, seit P16 um 02:45 neu zur Entscheidung, Empfehlung: nicht nutzen, VIDEO-STRATEGY §2a):** Prompt 7 und 8 als Opener und Outro der Product Demo (Motion-Hybrid, VIDEO-STRATEGY §2a); die Mitte der Demo bleibt die echte App. Team und Tech bleiben ohne Motion. Die Jury muss die echte App mit sichtbarer Live-URL sehen; Motion erzeugt keine Aufnahme unserer Seite. Motion recherchiert laut Beschreibung selbst und kann Aussagen einbauen, die wir nicht belegt haben. Deshalb gilt für jeden Prompt:
 
 - Keine medizinischen Aussagen, keine Krankheitsnamen, keine Gennamen, keine Zahlen, keine Jahreszahlen, keine Organisations-Logos.
 - Erlaubter Text steht **wörtlich** im Prompt. Alles andere ist verboten („no other text, no voice-over, no numbers").

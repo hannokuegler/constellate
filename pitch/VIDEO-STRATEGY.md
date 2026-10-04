@@ -92,7 +92,9 @@ Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisations
 
 **Kernbotschaft:** Dein Problem hat einen Nachbarn, der es schon halb gelöst hat, und die Karte zeigt dir mit Quelle, wo.
 
-**Dramaturgie:** Problem (0:00–0:09) → Herangehensweise: Karte mit Quelle, ein Gen, drei Namen (0:09–0:25) → Lösung: Nachbar MLD, Action Card (0:25–0:49) → Honest Gap (0:49–0:55) → Schlusssatz (0:55–0:58).
+**Dramaturgie:** Problem und Himmel (0:00–0:10) → Herangehensweise: Karte mit Quelle, ein Gen, vier Namen (0:10–0:24) → Lösung: Nachbar MLD, Action Card (0:24–0:48) → Honest Gap (0:48–0:54) → Schlusssatz (0:54–0:58).
+
+**Seit P16 (Hanno 02:40):** In der App gibt es keine Personas, keine Linsen und keine Moment-Karten mehr. Die Startseite ist eine Scroll-Story („Brille aufsetzen"): ein unscharfer Himmel aus echten, isolierten Punkten, die Brille macht die Sternbilder sichtbar, dann fährt die Kamera auf Krabbe → GALC/PSAP → MLD → Honest Gap. Maria gibt es nur noch in Video und Pitch. Szenen 0:00–0:10 und 0:54–0:58 ab ca. 05:00 gegen `origin/design-v2` prüfen (Texte, Suchfeld, Scroll-Tempo).
 
 **Aufnahme:** Hero-Pfad stumm in einem Take durchklicken (zwei bis drei Takes, den ruhigsten nehmen), Voice-over im Schnitt unterlegen. Live-URL `https://constellate-vert.vercel.app` in der Browserleiste, Fenster 1920×1080, Browser-Zoom 110 %, Dark Mode (vorher an 375 px und Dark Mode getestet, BUGS.md), Cursor langsam, Mausklicks sichtbar (QuickTime ⌘⇧5 mit „Mausklicks anzeigen", oder OBS). Keine Lesezeichen-Leiste, keine anderen Tabs.
 
@@ -100,15 +102,15 @@ Regeln: kein „revolutionary", kein „cure", keine Zahlen, keine Organisations
 
 | Zeit | Screen / Route | Klick / sichtbar | Voice-over (Englisch, Wort für Wort) | Beleg im Bild |
 |---|---|---|---|---|
-| 0:00–0:10 | `/` Startseite, Karten „We just got the diagnosis" und „I lead a patient group" | Karte Moment 1 anklicken, „Krabbe" tippen | „Meet Maria, from the challenge brief. Her son has Krabbe disease. There is no approved medicine, anywhere in the world.*" | Einblendung „Maria: persona from the challenge brief, not a real person"; Karten im Bild |
+| 0:00–0:10 | `/` Startseite, Scroll-Story: unscharfer Himmel → „Brille" → Sternbilder sichtbar | langsam scrollen bis die Sternbilder scharf sind, dann „Krabbe" ins Suchfeld (Ort in design-v2 prüfen) | „Meet Maria, from the challenge brief. Her son has Krabbe disease, and she leads a patient group. There is no approved medicine.*" | Einblendung „Maria: persona from the challenge brief, not a real person"; echte Punkte im Bild |
 | 0:10–0:17 | `/d/MONDO_0009499` Krabbe disease, Graph | Linie Krabbe → GALC anklicken, Edge-Panel öffnet | „She types Krabbe. Every line shows its source, how sure we are, what speaks against it." | `e_3dbc42738b5a`, Badge `curated`, OMIM:245200, Konfidenz 0,90, „Counter-evidence (0)" |
 | 0:17–0:24 | `/g/PSAP` „One gene, 4 disease names" | vom Gen-Kästchen PSAP auf die Gen-Seite, Zeilen Saposin A, B, C sichtbar | „One gene, P-S-A-P, sits behind four disease names. Names hide what they share." | `e_795da9c4a6cd` OMIM:611722 · `e_316e60c8ee91` OMIM:249900 · `e_b4f9b02250a7` ORPHA:309252 / OMIM:610539 |
-| 0:24–0:33 | zurück `/d/MONDO_0009499`, Umschalter „I lead a patient group", „Related communities" | Zeile „metachromatic leukodystrophy", Button „Why linked", Edge-Panel | „Now she leads a patient group. Her neighbour on the map: metachromatic leukodystrophy, M-L-D, linked by shared symptoms, formula shown." | `e_e270315fe572`, Badge `inferred`, Abschnitt „Formula (inferred)", Konfidenz 0,22 |
+| 0:24–0:33 | zurück `/d/MONDO_0009499`, direkt zu „Related communities" scrollen (kein Umschalter mehr, P16) | Zeile „metachromatic leukodystrophy", Button „Why linked", Edge-Panel | „Below, the related communities. Her neighbour on the map: metachromatic leukodystrophy, M-L-D, linked by shared symptoms, formula shown." | `e_e270315fe572`, Badge `inferred`, Abschnitt „Formula (inferred)", Konfidenz 0,22 |
 | 0:33–0:48 | `/d/MONDO_0009499/action?via=MONDO_0018868` Action Card | Spalten „What transfers / What differs / Needs expert review", ein `[e_…]`-Zitat anklicken, Abschnitt „Approved therapies" ins Bild | „The Action Card: what carries over, what differs, what an expert must check. MLD has an approved gene therapy, and a study of how the disease unfolds over time.** That study design exists." | `[e_…]` öffnet Edge-Panel; „Approved therapies" Libmeldy `e_f3ef159024b6` (EMA 2020-12-17); „Reusable assets" HOME-Studie `e_7ee9ef63ec03` (NCT04628364, Natural history study) |
 | 0:48–0:54 | `/d/MONDO_0012720` Krabbe disease due to saposin A deficiency | Abschnitte „What was searched, as of …" und „What would close this gap" | „Where there is no trail, we say so, and show what we searched." | ClinicalTrials.gov 0, NIH RePORTER 0, Europe PMC 2, Datum 2026-10-03 (Export prüfen) |
-| 0:54–0:58 | `/about`, Überschrift „Your family is not the first …", URL sichtbar | kein Klick, Cursor weg | „Don't rebuild what a neighbouring disease already built." | URL |
+| 0:54–0:58 | `/` Startseite, Himmel mit sichtbaren Sternbildern (Ende der Scroll-Story), oder `/about`; URL sichtbar | kein Klick, Cursor weg | „Don't rebuild what a neighbouring disease already built." | URL |
 
-Summe 0:58. Wortzahl Voice-over: 123 (je Szene ≤ 2,3 Wörter/s, nachgerechnet 01:20). Szenenzeiten gegenüber 01:15 verschoben (D1 +1 s, D2 −2 s, D7 +1 s), weil D1, D5, D6 und D7 vorher zu dicht waren.
+Summe 0:58. Wortzahl Voice-over: 124 (je Szene ≤ 2,3 Wörter/s, nachgerechnet 02:45). D1 und D4 seit P16 umgeschrieben: Maria leitet die Gruppe schon im ersten Satz (kein Moment-Wechsel mehr; damit ist auch die Devon-Reibung aus STORY §2a weg), D4 schaltet nichts mehr um. „anywhere in the world" ist aus D1 raus (Zeit, und die Daten decken nur EMA und FDA ab); Hanno kann es zurückholen, dann D1 auf 0:00–0:11 strecken.
 
 \* Nur, wenn die Action Card für Krabbe „Approved therapies: Not found in EMA, FDA as of …" aus Pipeline-Daten zeigt (im Bild ab 0:34, also auch dann sprechbar, wenn es in Szene 1 noch nicht sichtbar ist). Stand 01:30: im Live-Tool belegt (Krabbe „Honest Gap" unter „Approved therapies"). Ersatzsatz nur noch für den Notfall: „Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research." (C5-Brief S. 1.)
 
@@ -118,20 +120,17 @@ Das Gegenbeispiel Pelizaeus-Merzbacher passt nicht in 60 s und bleibt im Tool (`
 
 **Aufnahme-Checkliste:** Live-URL (Production-Domain, nicht Deployment-URL) sichtbar; Browser-Zoom 110 %; Dark Mode; Cursor langsam, nach jedem Klick eine Sekunde stehen; keine Fixture-Badges, keine Dev-Hinweise, keine Konsole; Kanten-IDs aus Abschnitt 0 vorher im Live-Tool geöffnet. **Schnitt:** ein Take, Geschwindigkeit nicht verändern (höchstens Wartezeiten kürzen), Voice-over-Blöcke D1 bis D7 je Szene unterlegen, Untertitel aus dem Skript, Export MP4 H.264 1920×1080 30 fps, Länge unter 60 s prüfen. **Wer:** Recep nimmt auf und schneidet, Hanno liefert die MP3s, Osman Untertitel und Upload. **Deadline:** Probe-Take 08:00–09:00 gegen die Live-App, Aufnahme 12:00–12:30, Schnitt bis 13:30, Upload bis 14:00.
 
-### 2a. Motion-Hybrid (Hannos Wunsch 01:25: „brutale Motion-Animation, super Video-Geschichte") · Vorschlag, Go offen
+### 2a. Motion-Opener: ja, kurz oder nein? (Frage an Hanno seit P16, 02:45)
 
-**Problem vorab:** Eine Demo komplett als Motion-Animation geht nicht. Der Brief verlangt „Follow a family or patient group **through the graph**" (S. 6) und einen live erkundbaren Prototyp; die Jury muss die echte App mit Live-URL sehen. Motion zeichnet nicht unsere Oberfläche nach, sondern erfindet Bilder und recherchiert selbst (Risiko: unbelegte Aussagen im Bild). Deshalb Hybrid: Motion erzählt Anfang und Ende, die Mitte ist die echte App, filmisch geschnitten.
+Stand vorher (01:25): Motion-Hybrid mit 10 s Opener und 4 s Outro (Prompts 7 und 8 in [MOTION-PROMPTS.md](MOTION-PROMPTS.md)). Seit P16 ist die echte Startseite selbst ein animierter Himmel, der sich zu Sternbildern ordnet. Ein Motion-Himmel davor zeigt dasselbe Bild zweimal.
 
-| Zeit | Was | Voice-over |
-|---|---|---|
-| 0:00–0:10 | **Motion-Opener** (Prompt 7 in [MOTION-PROMPTS.md](MOTION-PROMPTS.md)): dunkles Feld, Tausende isolierte Lichtpunkte, einer leuchtet auf und ist allein; Einblendung „Meet Maria · persona from the challenge brief, not a real person". Kein Kind, kein Gesicht, kein Krankenhaus | D1 |
-| 0:10–0:48 | **Echte App**, Bildschirmaufnahme der Live-URL, im Schnitt mit Zooms auf Edge-Panel, `/g/PSAP`, Action Card und weichen Highlight-Rahmen (Screen Studio, CapCut oder iMovie; nichts übermalen, keine erfundenen UI-Elemente) | D2–D5 |
-| 0:48–0:54 | Echte App: Honest Gap `/d/MONDO_0012720` | D6 |
-| 0:54–0:58 | **Motion-Outro** (Prompt 8): Punkte verbinden sich zu Sternbildern, Schlusssatz und URL als Text | D7 |
+| Option | Was | Pro | Contra |
+|---|---|---|---|
+| **A · nein** (Empfehlung) | Opener und Outro sind die echte Scroll-Story (0:00–0:10 und 0:54–0:58) | echte Daten statt Illustration (Evidence integrity), keine Doppelung, keine Credits, kein Prüfaufwand für Motion-Output, Jury sieht ab Sekunde 0 das Produkt | hängt an design-v2; ist die Story bis 09:00 nicht stabil, fehlt der Wow-Einstieg |
+| B · kurz | 3 s Motion-Titel („Constellate", nur Wortmarke) vor der Scroll-Story, Szenen danach je 0,5 s kürzer | kinoreifer erster Moment | zwei Himmel hintereinander, 3 s weniger für Inhalte, Credits |
+| C · wie geplant | 10 s Motion-Opener + 4 s Outro | maximal „Film" | doppelt zur Startseite, frisst ein Viertel der Demo, Motion erfindet Bilder neben echten Daten |
 
-Regeln bleiben: jeder gesprochene Fakt steht im selben Moment im Bild, im Motion-Teil werden keine Fakten gesprochen außer „Her son has Krabbe disease … no approved medicine" (D1, belegt ab 0:33 in der Action Card); keine Zahlen, Krankheits- oder Gennamen im Motion-Bild; Musik höchstens ganz leise unter Opener und Outro, nie unter dem Voice-over (Entscheidung Hanno). Die Live-URL ist in der Mitte durchgehend in der Browserleiste lesbar.
-
-Ablauf: Opener und Outro hängen nicht an der App, also **vor dem Freeze** erzeugen (Hanno, 09:00–11:00, Motion-Connector, Credits laut Dashboard). Clip gegen die Verbotsliste in MOTION-PROMPTS prüfen; fällt etwas auf, verwerfen. Ab 12:00 nimmt Recep die Mitte auf und schneidet alles zusammen. **Fallback**, wenn Motion bis 11:00 nichts Brauchbares liefert: Opener und Outro als ruhige Titelkarte (Standbild mit Text), die Mitte bleibt gleich. Die Demo hängt so nie an Motion.
+**Empfehlung A**, mit Fallback: Ist die Scroll-Story um 09:00 nicht stabil, erzeugt Hanno Prompt 7 (gekürzt auf 5 s) als Ersatz-Opener. Motion bleibt für den Pitch am 10.10. und für Teaser (Prompts 1–6).
 
 ## 3. Technical Walkthrough · ≤ 60 s · Hanno, Terminal und Editor, Voice-over ElevenLabs
 

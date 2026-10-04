@@ -28,7 +28,7 @@ Warum das jeder fühlt, auch ohne Medizinwissen: Jeder kennt das Gefühl, bei nu
 | **Unterscheidbarkeit** | jedes C5-Team kann Maria verwenden | **Risiko:** weniger eigen als Maria. Dafür maximale Wiedererkennung bei der Jury, und der Unterschied liegt bei uns im Tool (Quelle je Linie, Honest Gap), nicht im Namen |
 | Name realer Personen | Maria ist ein sehr häufiger Vorname, keine bekannte Gründerin in diesem Feld laut MEDICAL-BACKGROUND §3/§4 | ja |
 
-Fazit: Maria passt zum Brief. Die eine echte Reibung ist Moment 1 (Devon); sie ist mit der Vorgeschichte-Erzählung gelöst. DECISIONS P9 nennt noch Maria und sagt „Maria aus dem Brief als Hauptfigur" sei verworfen; das muss Hanno bzw. der Orchestrator nachtragen.
+Fazit: Maria passt zum Brief. **Update P16 (02:45):** Die App hat keine Moment-Karten mehr; in Video und Pitch leitet Maria die Gruppe ab dem ersten Satz, damit ist die Devon-Reibung weg. Vorher: Die eine echte Reibung war Moment 1 (Devon); sie ist mit der Vorgeschichte-Erzählung gelöst. DECISIONS P9 nennt noch Maria und sagt „Maria aus dem Brief als Hauptfigur" sei verworfen; das muss Hanno bzw. der Orchestrator nachtragen.
 
 **Das Kind bleibt namenlos** („her son"). Begründung: Ein Kindername plus Diagnose plus Stadt liest sich wie eine echte Familie, auch mit Persona-Hinweis. „Her son" hält die Figur erkennbar als Konstruktion und schützt reale Familien. Keine Kinderfotos, kein Stock-Leid, kein Krankenhausbild (VIDEOS.md, RESOURCES Video-Pipeline).
 

@@ -10,7 +10,7 @@ Tempo ruhig, ca. 2,3 Wörter pro Sekunde. Fett = Betonung. Pausen sind Teil der 
 
 **Problem (0:00–0:15)**
 
-[Bild: Startseite von Constellate, die zwei Karten „We just got the diagnosis" und „I lead a patient group". Sprecher ruhig, kein Trailer-Ton. Blick ins Publikum.]
+[Bild: Startseite von Constellate, unscharfer Himmel aus isolierten Punkten (Scroll-Story seit P16, keine Moment-Karten mehr). Sprecher ruhig, kein Trailer-Ton. Blick ins Publikum.]
 
 **Your family is not the first.** What you need may already exist under another disease's name.
 

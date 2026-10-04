@@ -8,7 +8,7 @@ Seit der Team-Vorgabe (drei Videos, je maximal 60 s) gibt es **nur noch zwei** V
 
 | Video | Voice-over | Request-Aufteilung | Wörter | Zeichen (ca.) |
 |---|---|---|---|---|
-| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 123 | 740 |
+| Product Demo ≤ 60 s | ElevenLabs, Stimme Y | **sieben Requests, einer je Szene** (D1 bis D7), damit Recep jede Szene einzeln unter die Aufnahme legen kann | 124 | 750 |
 | Technical Walkthrough ≤ 60 s | gleiche Stimme | **ein Request** (T1), Absätze als Pausen; falls der Schnitt es braucht, sechs Requests T1a bis T1f je Szene | 132 | 850 |
 | Team Introduction ≤ 60 s | **keine KI-Stimme**, echte Stimmen, echte Gesichter | – | – | – |
 
@@ -91,14 +91,16 @@ v4 versteht IPA in Schrägstrichen mit Anführungszeichen, z. B. `"/ˌbaɪoʊˈk
 
 Jeder Block ist ein Request. Erste Zeile ist der Audio-Tag. Absätze sind Pausen. Sätze mit Stern nur, wenn der Beleg im Tool sichtbar ist (VIDEO-STRATEGY §2, Fußnoten * und **); sonst Ersatzsatz einsetzen, **bevor** erzeugt wird. Kanten-IDs werden nie vorgelesen.
 
-### Demo · D1 (0:00–0:10) · 20 Wörter
+### Demo · D1 (0:00–0:10) · 22 Wörter
 
 ```
 [calm, measured narration]
-Meet Maria, from the challenge brief. Her son has Krabbe disease.
+Meet Maria, from the challenge brief. Her son has Krabbe disease, and she leads a patient group.
 
-There is no approved medicine, anywhere in the world.
+There is no approved medicine.
 ```
+
+Seit P16 (02:45): Maria leitet die Gruppe schon im ersten Satz, weil die App keine Moment-Karten mehr hat. „anywhere in the world" ist raus (Zeit; Daten decken nur EMA und FDA ab), Hanno kann es zurückholen.
 
 Im Bild dazu die Einblendung „Maria: persona from the challenge brief, not a real person". Ersatz, nur falls Krabbe vor dem Dreh unter „Approved therapies" nicht mehr „Honest Gap: Not found …" zeigt: `Meet Maria, from the challenge brief. Her son has Krabbe disease, and families like hers end up leading the research.`
 
@@ -118,11 +120,11 @@ One gene, P-S-A-P, sits behind four disease names. Names hide what they share.
 
 Geändert 01:25: „three … Krabbe-like, M-L-D-like, Gaucher-like" raus, weil `/g/PSAP` „One gene, 4 disease names" zeigt; die Zeilen (Krabbe-, MLD-, Gaucher-ähnlich, kombinierte Defizienz) liest die Jury im Bild.
 
-### Demo · D4 (0:24–0:33) · 20 Wörter
+### Demo · D4 (0:24–0:33) · 18 Wörter
 
 ```
 [calm, measured narration]
-Now she leads a patient group. Her neighbour on the map: metachromatic leukodystrophy… M-L-D, linked by shared symptoms, formula shown.
+Below, the related communities. Her neighbour on the map: metachromatic leukodystrophy… M-L-D, linked by shared symptoms, formula shown.
 ```
 
 ### Demo · D5 (0:33–0:48) · 33 Wörter
@@ -152,7 +154,7 @@ Where there is no trail, we say so, and show what we searched.
 Don't rebuild what a neighbouring disease already built.
 ```
 
-Tempo-Check (01:20, ohne Audio-Tag gezählt): D1 2,0 · D2 2,3 · D3 1,9 · D4 2,2 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
+Tempo-Check (02:45, ohne Audio-Tag gezählt): D1 2,2 · D2 2,3 · D3 1,9 · D4 2,0 · D5 2,2 · D6 2,2 · D7 2,0 Wörter/s. „metachromatic leukodystrophy" zählt als zwei Wörter, spricht sich aber wie fünf; D4 deshalb beim Probe-Take zuerst prüfen.
 
 ### Tech · T1 (0:00–0:58, ein Request) · 132 Wörter
 

@@ -103,6 +103,7 @@ Status: ☐ offen · ◐ läuft · ☑ fertig. Nach jeder Aufgabe hier und in `p
 | ☑ | bis 01:10 | Übernahme, Dauer-Prompt, Mentor-Vorstellung | Marketing | diese Datei, `pitch/MENTOR-INTRO.md` |
 | ☑ | 01:10–01:15 | Abgabetexte Entwurf (Aufgabe 4): Einzeiler, 50 Wörter, Langbeschreibung, Stack, Quellen mit Lizenz aus `meta.json`, Team | Marketing | `pitch/SUBMISSION-TEXTS.md` v1 |
 | ☑ | 01:15–01:20 | Osman-Feedback: Team-Video auf Background umgebaut (VIDEO-STRATEGY §1, Texte H/O/R), Persona Nora → Maria mit Brief-Abgleich (STORY §2a) | Marketing | `pitch/` |
+| ☑ | 02:45 | P16 umgesetzt: Demo-Drehbuch ohne Moment-Karten und Umschalter, Startseite als Scroll-Story, D1/D4 neu, Motion-Frage A/B/C an Hanno (Empfehlung nein) | Marketing | VIDEO-STRATEGY §2, §2a |
 | ☑ | 01:45 | Osmans zweites Feedback: Team-Texte v3 (Person + Interessen, kein Projekt-Schlusssatz je Person, Hanno WU Wirtschaftsinformatik + zwei Master, Osman Geodaten, Recep Gesundheitsinteresse als Vorschlag) | Marketing | VIDEO-STRATEGY §1 |
 | ☑ | 01:40 | P15 umgesetzt: KI-Texte auf Claude (T1, Tech-Video, SUBMISSION §5b Variante C, Stack), Track-Preis-Risiko an Hanno | Marketing | `pitch/` |
 | ☑ | 01:25 | Motion-Hybrid für die Demo (Opener/Outro, Prompts 7 und 8), Update-Mail an Osman und Recep | Marketing | VIDEO-STRATEGY §2a, MOTION-PROMPTS |

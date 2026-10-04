@@ -84,7 +84,7 @@ export interface StoryFrame {
 export const NEIGHBOUR_SHIFT = 400;
 const HOME = 235;
 const LENS = 175; // closer while the glasses are on: the sky fills both lenses
-const NEAR = 88;
+const NEAR = 66;
 
 export function storyFrame(chapter: number, t: number, width: number): StoryFrame {
   const id = STORY_CHAPTERS[chapter];
@@ -146,7 +146,7 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "gap":
       return {
         ...frame,
-        camera: { from: "krabbe", to: "gap", k: ease(span(t, 0, 0.6)), fromDistance: NEAR + 14, toDistance: 72 },
+        camera: { from: "krabbe", to: "gap", k: ease(span(t, 0, 0.6)), fromDistance: NEAR + 14, toDistance: 60 },
         focus: true,
         clock: 3000,
         amberEdge: 1 - span(t, 0, 0.4),
@@ -155,7 +155,7 @@ export function storyFrame(chapter: number, t: number, width: number): StoryFram
     case "end":
       return {
         ...frame,
-        camera: { from: "gap", to: "between", k: ease(span(t, 0, 0.6)), fromDistance: 72, toDistance: 150 },
+        camera: { from: "gap", to: "between", k: ease(span(t, 0, 0.6)), fromDistance: 60, toDistance: 130 },
         focus: true,
         clock: 3000,
         ring: 1,

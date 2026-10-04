@@ -38,6 +38,15 @@ export default function SearchBox({
   const [searcher, setSearcher] = useState<Searcher | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const deferred = useDeferredValue(query);
+  // phones: the long placeholder would be cut off inside the pill
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 480px)");
+    const update = () => setNarrow(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
 
   const warm = useCallback(() => {
     if (searcher) return;
@@ -115,7 +124,7 @@ export default function SearchBox({
           aria-autocomplete="list"
           aria-activedescendant={showList && hits[active] ? `${listId}-${active}` : undefined}
           aria-label={label}
-          placeholder={persona.placeholder}
+          placeholder={narrow ? "Search a disease or gene" : persona.placeholder}
           autoFocus={autoFocus}
           autoComplete="off"
           spellCheck={false}

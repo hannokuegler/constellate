@@ -8,8 +8,6 @@ import { diseaseHref } from "@/lib/ids";
 import { metaCount, v2Therapies } from "@/lib/normalize";
 import type { Meta } from "@/lib/types";
 import SearchBox from "./SearchBox";
-import DataFooter from "./DataFooter";
-import { familyName } from "./GeneView";
 import StoryStage from "./world/StoryStage";
 import { constellationOf, onSkyReady, skyBus, KIND, type Sky } from "./world/sky";
 import { STORY_GAP, STORY_KRABBE, STORY_MLD, type ChapterId } from "./world/story";
@@ -81,7 +79,8 @@ function useStoryFacts() {
       };
     };
     const psapNames = async () => {
-      const [gene, index] = await Promise.all([loadGene("PSAP").catch(() => null), loadIndexMap().catch(() => null)]);
+      // the gene page's own grouping rule, loaded lazily so the start page bundle stays small
+      const [gene, index, { familyName }] = await Promise.all([loadGene("PSAP").catch(() => null), loadIndexMap().catch(() => null), import("./GeneView")]);
       if (!gene || !index) return undefined;
       // same counting as the gene page: causal, non-rolled-up edges, grouped by family name
       const causal = gene.diseases.filter((e) => e.type === "caused_by" && e.evidence.length && !e.rolled_up_from?.length);
@@ -300,7 +299,6 @@ export default function StartView() {
         </ol>
       </section>
 
-      <DataFooter meta={meta} />
     </div>
   );
 }

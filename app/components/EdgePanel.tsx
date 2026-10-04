@@ -246,11 +246,8 @@ function ProvenanceChain({ edge, lead }: { edge: Edge; lead: Evidence | undefine
       {steps.map((step, i) => (
         <li key={step.key} className="min-w-0 pr-1">
           <div className="flex items-center" aria-hidden="true">
-            <span
-              className="h-2.5 w-2.5 shrink-0 rounded-full"
-              style={i === steps.length - 1 ? { background: "var(--amber, #F5C46B)", boxShadow: "0 0 0 4px var(--amber-soft, rgb(245 196 107 / 0.14))" } : { background: "var(--star, var(--ink))" }}
-            />
-            {i < steps.length - 1 && <span className="ml-1 h-px flex-1 bg-line" style={{ background: "var(--star-dim, var(--line))", opacity: 0.55 }} />}
+            <span className="dot" data-state={i === steps.length - 1 ? "lit" : undefined} />
+            {i < steps.length - 1 && <span className="ml-1 mr-1 h-px flex-1 bg-line-strong" />}
           </div>
           <p className="mt-2 text-[12px] uppercase tracking-[0.08em] text-ink-2">{step.key}</p>
           <div className="mt-0.5 break-words text-[13px] font-medium leading-snug">{step.value}</div>

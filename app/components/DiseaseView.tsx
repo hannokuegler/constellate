@@ -12,7 +12,7 @@ import { useEdgePanel, usePrefs } from "./Providers";
 import EgoGraph from "./EgoGraph";
 import type { GraphLink, GraphNode } from "./ForceGraphClient";
 import { LevelBadge } from "./Badges";
-import HonestGap, { gapProps } from "./HonestGap";
+import HonestGap, { coverageSearches, gapProps, type GapSearch } from "./HonestGap";
 import { OrgList } from "./Orgs";
 import TextMined from "./TextMined";
 import OpenStudies from "./OpenStudies";
@@ -20,7 +20,7 @@ import MomentBar from "./MomentBar";
 import ActionCard from "./ActionCard";
 import { pickDefaultVia } from "@/lib/actioncard";
 import { Skeleton } from "./Skeleton";
-import { allDiseaseEdges, coverageRows, enrichmentItems, enrichmentTotal, nodeLabels, openTrials, orgItems, paperRecords, trialPhase, type CoverageRow } from "@/lib/normalize";
+import { allDiseaseEdges, enrichmentItems, enrichmentTotal, nodeLabels, openTrials, orgItems, paperRecords, trialPhase } from "@/lib/normalize";
 
 type State =
   | { status: "loading" }
@@ -163,14 +163,14 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
 
   const omim = node.xrefs.filter((x) => /^(OMIM|ORPHA|Orphanet):/.test(x)).slice(0, 4);
   const noNeighbours = file.neighbours.length === 0;
-  const coverage = coverageRows(file.coverage);
-  const gapSearched: CoverageRow[] = coverage.length ? coverage : (meta?.sources ?? []).map((s) => ({ source: s.db }));
+  const coverage = coverageSearches(file.coverage);
+  const gapSearched: GapSearch[] = coverage.length ? coverage : (meta?.sources ?? []).map((s) => ({ source: s.db }));
 
   const ownCommunity = persona.panelOrder.includes("community");
   const sections: Record<PanelSection, React.ReactNode> = {
     community: (
       <Section key="community" title="Patient organisations" hint="Groups for this diagnosis, from a hand-checked list" count={orgs.length}>
-        <CommunityBlock file={file} onEdge={openEdge} />
+        <CommunityBlock file={file} onEdge={openEdge} builtAt={meta?.built_at} />
       </Section>
     ),
     studies: <OpenStudies key="studies" file={file} onEdge={openEdge} family={persona.id === "family"} />,
@@ -193,7 +193,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           <ul className="divide-y divide-line">
             {file.genes.map((e) => (
               <li key={e.id} className="flex min-h-11 flex-wrap items-center gap-x-3 gap-y-1 py-2">
-                <Link href={geneHref(e.target)} className="inline-flex min-h-11 min-w-11 items-center text-[15px] font-semibold text-accent underline-offset-2 hover:underline">
+                <Link href={geneHref(e.target)} className="inline-flex min-h-11 min-w-11 items-center text-[15px] font-semibold text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                   {e.target}
                 </Link>
                 <span className="text-[13px] text-ink-2">{RELATION_LABEL[e.type] ?? e.type}</span>
@@ -227,13 +227,13 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
           ))}
         </ul>
         {file.phenotypes.length > 8 && (
-          <button onClick={() => setShowAllPhenotypes((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-accent">
+          <button onClick={() => setShowAllPhenotypes((v) => !v)} className="mt-2 min-h-11 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">
             {showAllPhenotypes ? "Show fewer" : `Show all ${file.phenotypes.length}`}
           </button>
         )}
       </Section>
     ),
-    research: <ResearchSection key="research" file={file} onEdge={openEdge} gapSearched={gapSearched} withCommunity={!ownCommunity} />,
+    research: <ResearchSection key="research" file={file} onEdge={openEdge} gapSearched={gapSearched} withCommunity={!ownCommunity} builtAt={meta?.built_at} />,
   };
 
   return (
@@ -292,7 +292,7 @@ function DiseaseReady({ file, meta }: { file: DiseaseFile; meta: Meta | null }) 
         {!noNeighbours && (
           <button
             onClick={() => (cardOpen ? setCardOpen(false) : openCard(via ?? defaultVia!))}
-            className="btn-primary inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-5 text-[15px] font-semibold text-accent-ink"
+            className="btn-primary"
             aria-expanded={cardOpen}
             aria-controls="action-card"
           >
@@ -469,7 +469,7 @@ export function EvidenceButton({ edge, onEdge, label = "Evidence" }: { edge: Edg
   return (
     <button
       onClick={() => onEdge(edge)}
-      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft"
+      className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2"
       aria-label={`${label}: ${edge.type.replaceAll("_", " ")} ${edge.source} to ${edge.target}`}
     >
       {label}
@@ -518,7 +518,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
       )}
       <div className="mt-1 flex flex-wrap gap-1">
         <EvidenceButton edge={n.edge} onEdge={onEdge} label="Why linked" />
-        <button onClick={() => onCard(n.id)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+        <button onClick={() => onCard(n.id)} className="inline-flex min-h-11 items-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
           Action card
         </button>
       </div>
@@ -526,7 +526,7 @@ function NeighbourRow({ n, onEdge, onCard }: { n: Neighbour; onEdge: (e: Edge) =
   );
 }
 
-function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: DiseaseFile; onEdge: (e: Edge) => void; gapSearched: CoverageRow[]; withCommunity: boolean }) {
+function ResearchSection({ file, onEdge, gapSearched, withCommunity, builtAt }: { file: DiseaseFile; onEdge: (e: Edge) => void; gapSearched: GapSearch[]; withCommunity: boolean; builtAt?: string }) {
   const groups = [
     { key: "trials" as const, title: "Trials", items: enrichmentItems(file, "trials") },
     { key: "grants" as const, title: "Grants", items: enrichmentItems(file, "grants") },
@@ -535,6 +535,7 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: D
   const papers = paperRecords(file);
   const total = groups.reduce((n, g) => n + g.items.length, 0) + papers.length;
   const orgCount = withCommunity ? orgItems(file).length : 0;
+  const researchSearched = gapSearched.filter((g) => ["ClinicalTrials.gov", "NIH RePORTER", "Europe PMC"].includes(g.source));
   return (
     <Section title={withCommunity ? "Research and community" : "Research"} hint={withCommunity ? "Trials, grants, papers and patient organisations" : "Trials, grants and papers"} count={total + orgCount}>
       {total === 0 ? (
@@ -542,7 +543,7 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: D
           variant="section"
           title="No trials, grants or papers linked"
           reason="Nothing from the enrichment step is attached to this disease yet."
-          searched={gapSearched}
+          searched={researchSearched.length ? researchSearched : gapSearched}
           close={["Run the enrichment for this disease's name and synonyms (ClinicalTrials.gov, NIH RePORTER, Europe PMC)"]}
         />
       ) : (
@@ -579,7 +580,7 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: D
                   <li key={p.id} className="flex min-h-11 items-center gap-2 py-1.5">
                     <span className="min-w-0 flex-1">
                       {p.url ? (
-                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[13px] text-accent underline-offset-2 hover:underline">{p.title ?? p.id}</a>
+                        <a href={p.url} target="_blank" rel="noreferrer" className="flex min-h-11 items-center text-[13px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">{p.title ?? p.id}</a>
                       ) : (
                         <span className="line-clamp-2 text-[13px]">{p.title ?? p.id}</span>
                       )}
@@ -596,15 +597,19 @@ function ResearchSection({ file, onEdge, gapSearched, withCommunity }: { file: D
       {withCommunity && (
         <div className="mt-4">
           <h3 className="text-[13px] font-semibold uppercase tracking-wide text-ink-2">Patient organisations</h3>
-          <CommunityBlock file={file} onEdge={onEdge} />
+          <CommunityBlock file={file} onEdge={onEdge} builtAt={builtAt} />
         </div>
       )}
     </Section>
   );
 }
 
-/** Patient organisations for this diagnosis, or the honest gap with the nearest communities. */
-function CommunityBlock({ file, onEdge }: { file: DiseaseFile; onEdge: (e: Edge) => void }) {
+/** Patient organisations for this diagnosis, or the honest gap with the nearest communities (from the gap block, else from the related diagnoses of the shard). */
+function CommunityBlock({ file, onEdge, builtAt }: { file: DiseaseFile; onEdge: (e: Edge) => void; builtAt?: string }) {
+  const nearest = [...file.neighbours]
+    .sort((a, b) => b.edge.confidence - a.edge.confidence)
+    .slice(0, 5)
+    .map((n) => ({ id: n.id, label: n.label, via: RELATION_LABEL[n.edge.type] ?? n.edge.type.replaceAll("_", " "), confidence: n.edge.confidence, edge: n.edge, mechanismDiffers: n.mechanism_differs }));
   return (
     <div id="patient-organisations">
       {orgItems(file).length ? (
@@ -623,9 +628,16 @@ function CommunityBlock({ file, onEdge }: { file: DiseaseFile; onEdge: (e: Edge)
           <HonestGap
             variant="section"
             title="No patient organisation linked"
-            reason="The curated organisation list has no entry for this diagnosis in the current data."
-            searched={[{ source: "Curated organisation list (data/curated/orgs.csv)" }]}
-            close={["A hand-verified organisation entry with URL and verification date"]}
+            reason={
+              nearest.length
+                ? `The hand-checked organisation list has no entry for this exact diagnosis. ${nearest.length === 1 ? "A related diagnosis" : "Related diagnoses"} below share genes or symptoms with it, so their communities are the nearest place to ask.`
+                : "The hand-checked organisation list has no entry for this diagnosis in the current data."
+            }
+            searched={[{ source: "Curated organisation list (hand-checked)", query: `entries for ${file.node.label}`, hits: 0, fetched_at: builtAt }]}
+            asOf={builtAt}
+            nearest={nearest}
+            onEdge={onEdge}
+            close={["A hand-verified organisation entry with URL and verification date", ...(nearest.length ? ["An entry for one of the related diagnoses that also covers this one"] : [])]}
           />
         </div>
       )}

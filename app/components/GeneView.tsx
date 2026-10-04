@@ -107,7 +107,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
       {manyNames && (
         <section className="card mt-6 overflow-hidden" aria-labelledby="names-title">
           <div className="border-b border-line bg-accent-soft px-5 py-4 md:px-6">
-            <p className="text-[12px] font-semibold uppercase tracking-wide text-accent">Names hide mechanisms</p>
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Names hide mechanisms</p>
             <h2 id="names-title" className="mt-1 text-[22px] font-semibold">
               One gene, {v.familyList.length} disease names
             </h2>
@@ -120,7 +120,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
                 <ul className="mt-2 space-y-1">
                   {f.edges.map((e) => (
                     <li key={e.id} className="flex min-h-11 items-center gap-2">
-                      <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 items-center text-[13px] text-accent underline-offset-2 hover:underline">
+                      <Link href={diseaseHref(e.source)} className="flex min-h-11 min-w-0 flex-1 items-center text-[13px] text-ink underline decoration-line underline-offset-2 hover:decoration-current">
                         {label(e.source)}
                       </Link>
                       <EvidenceButton edge={e} onEdge={openEdge} />
@@ -180,7 +180,7 @@ export default function GeneView({ symbol }: { symbol: string }) {
             )}
             {v.pathwaysMore.length > 0 && (
               <details className="mt-2">
-                <summary className="min-h-11 cursor-pointer py-2 text-[13px] font-medium text-accent">{v.pathwaysMore.length} more general pathways</summary>
+                <summary className="min-h-11 cursor-pointer py-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current">{v.pathwaysMore.length} more general pathways</summary>
                 <ul className="divide-y divide-line">
                   {v.pathwaysMore.map((p) => (
                     <li key={p.id} className="flex min-h-11 items-center gap-2 py-1">

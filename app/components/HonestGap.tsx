@@ -88,6 +88,7 @@ interface Props {
   reason: string;
   searched: GapSearch[];
   asOf?: string;
+  /** omitted = this gap has no "nearest community" question (studies, papers); [] = asked, nobody found */
   nearest?: GapNeighbour[];
   close: string[];
   onEdge?: (edge: Edge) => void;
@@ -109,7 +110,7 @@ export function GapNote({ kind, children }: { kind: "gap" | "pending"; children:
 /** One point without a line, inside a dashed ring: a finding, not a failure. */
 export function GapDot({ size = 28 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden="true" className="mt-0.5 shrink-0 dot-ring">
+    <svg width={size} height={size} viewBox="0 0 28 28" aria-hidden="true" className="mt-0.5 shrink-0">
       <circle cx="14" cy="14" r="12" fill="none" stroke="var(--star-dim, currentColor)" strokeWidth="1.3" strokeDasharray="3.2 3.6" strokeLinecap="round" />
       <circle cx="14" cy="14" r="3.6" fill="var(--star, currentColor)" />
     </svg>
@@ -123,10 +124,10 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
       : [{ key: `${s.source}-0`, first: true, source: s.source, query: s.query, url: null as string | null | undefined, hits: s.hits, date: s.fetched_at, note: s.note, draft: s.draft }],
   );
   return (
-    <table className="mt-3 w-full border-collapse text-[13px] sm:table-fixed">
-      <thead className="sr-only sm:table-header-group sm:not-sr-only">
+    <div className="@container"><table className="mt-3 w-full border-collapse text-[13px] @lg:table-fixed">
+      <thead className="sr-only @lg:table-header-group @lg:not-sr-only">
         <tr className="border-b border-line text-left text-[12px] uppercase tracking-[0.08em] text-ink-2">
-          <th scope="col" className="w-[30%] py-2 pr-3 font-medium sm:w-[26%]">Source</th>
+          <th scope="col" className="w-[30%] py-2 pr-3 font-medium @lg:w-[26%]">Source</th>
           <th scope="col" className="py-2 pr-3 font-medium">Query</th>
           <th scope="col" className="w-16 py-2 pr-3 text-right font-medium">Hits</th>
           <th scope="col" className="w-[6.5rem] py-2 text-right font-medium">Date</th>
@@ -134,12 +135,12 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
       </thead>
       <tbody>
         {rows.map((r) => (
-          <tr key={r.key} className="block border-b border-line py-2.5 last:border-0 sm:table-row sm:py-0">
-            <td className="block min-w-0 font-semibold sm:table-cell sm:py-2.5 sm:pr-3 sm:align-top">
+          <tr key={r.key} className="block border-b border-line py-2.5 last:border-0 @lg:table-row @lg:py-0">
+            <td className="block min-w-0 font-semibold @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
               {r.first ? r.source : <span className="sr-only">{r.source}</span>}
               {r.first && r.draft && <span className="ml-2 rounded-full border border-line px-2 text-[12px] font-medium text-ink-2">draft list</span>}
             </td>
-            <td className="block min-w-0 text-ink-2 sm:table-cell sm:py-2.5 sm:pr-3 sm:align-top">
+            <td className="block min-w-0 text-ink-2 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:align-top">
               {r.query ? (
                 r.url ? (
                   <a href={r.url} target="_blank" rel="noreferrer" className="line-clamp-3 min-w-0 break-words text-ink underline decoration-line underline-offset-2 hover:decoration-current [overflow-wrap:anywhere]" title={r.query}>
@@ -154,19 +155,19 @@ function SearchedTable({ searched }: { searched: GapSearch[] }) {
               )}
               {r.note && <span className="mt-0.5 block text-[12px]">{r.note}</span>}
             </td>
-            <td className="tabular mt-1 inline-block pr-4 text-ink-2 sm:mt-0 sm:table-cell sm:py-2.5 sm:pr-3 sm:text-right sm:align-top">
-              {r.hits !== undefined ? <><span className="text-ink">{r.hits.toLocaleString("en")}</span> hits</> : <span aria-label="no hit count recorded">n/a</span>}
+            <td className="tabular mt-1 inline-block pr-4 text-ink-2 @lg:mt-0 @lg:table-cell @lg:py-2.5 @lg:pr-3 @lg:text-right @lg:align-top">
+              {r.hits !== undefined ? <><span className="text-ink">{r.hits.toLocaleString("en")}</span> {r.hits === 1 ? "hit" : "hits"}</> : <span aria-label="no hit count recorded">n/a</span>}
             </td>
-            <td className="tabular mt-1 inline-block text-ink-2 sm:mt-0 sm:table-cell sm:py-2.5 sm:text-right sm:align-top">{r.date ? formatDate(r.date) : "n/a"}</td>
+            <td className="tabular mt-1 inline-block text-ink-2 @lg:mt-0 @lg:table-cell @lg:py-2.5 @lg:text-right @lg:align-top">{r.date ? formatDate(r.date) : "n/a"}</td>
           </tr>
         ))}
       </tbody>
-    </table>
+    </table></div>
   );
 }
 
 /** A first-class state: what we looked for, when, and what would change the answer. Never an error page. */
-export default function HonestGap({ variant, title, reason, searched, asOf, nearest = [], close, onEdge }: Props) {
+export default function HonestGap({ variant, title, reason, searched, asOf, nearest, close, onEdge }: Props) {
   const Heading = variant === "screen" ? "h1" : "h3";
   const screen = variant === "screen";
   return (
@@ -184,7 +185,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
 
       <div className={`mt-6 grid gap-x-8 gap-y-6 ${screen ? "md:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]" : ""}`}>
         <div className="min-w-0">
-          <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">What was searched{asOf ? `, as of ${formatDate(asOf)}` : ""}</h4>
+          <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">What was searched{asOf ? <>, as of <span className="whitespace-nowrap">{formatDate(asOf)}</span></> : ""}</h4>
           {searched.length ? (
             <SearchedTable searched={searched} />
           ) : (
@@ -192,6 +193,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
           )}
         </div>
         <div className="min-w-0 space-y-6">
+          {nearest !== undefined && (
           <div>
             <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">Nearest related communities</h4>
             {nearest.length ? (
@@ -218,16 +220,16 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
                     )}
                   </li>
                 ) : (
-                  <li key={n.id} className="flex min-h-11 items-center gap-2 border-b border-line last:border-0">
-                    <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 flex-1 items-center truncate text-[15px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
+                  <li key={n.id} className="flex flex-wrap items-center gap-x-3 border-b border-line last:border-0">
+                    <Link href={diseaseHref(n.id)} className="flex min-h-11 min-w-0 grow basis-[13rem] items-center break-words py-1 text-[15px] font-medium underline decoration-line underline-offset-2 hover:decoration-current">
                       {n.label}
                     </Link>
                     {n.edge && onEdge ? (
-                      <button onClick={() => onEdge(n.edge!)} className="tabular min-h-11 shrink-0 rounded-full px-2 text-[12px] text-ink-2 underline underline-offset-2">
+                      <button onClick={() => onEdge(n.edge!)} className="tabular min-h-11 shrink-0 rounded-full pr-1 text-left text-[12px] text-ink-2 underline underline-offset-2">
                         {n.via} {n.confidence !== undefined && formatConfidence(n.confidence)}
                       </button>
                     ) : (
-                      <span className="shrink-0 text-[12px] text-ink-2">{n.via}</span>
+                      <span className="text-[12px] text-ink-2">{n.via}</span>
                     )}
                   </li>
                 ))}
@@ -236,6 +238,7 @@ export default function HonestGap({ variant, title, reason, searched, asOf, near
               <p className="mt-2 text-[13px] text-ink-2">None found with the current data. That is a finding, not a failure.</p>
             )}
           </div>
+          )}
           <div>
             <h4 className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-2">What would close this gap</h4>
             <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13px] leading-relaxed">

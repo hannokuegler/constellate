@@ -53,7 +53,7 @@ export function OrgList({ orgs, onEdge }: { orgs: { org: OrgCard; edge: Edge }[]
             </Link>
             {org.draft_input && <DraftBadge />}
             <LevelBadge level={edge.level} small />
-            <button onClick={() => onEdge(edge)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-accent hover:bg-accent-soft">
+            <button onClick={() => onEdge(edge)} className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full px-2 text-[13px] font-medium text-ink underline decoration-line underline-offset-4 hover:decoration-current hover:bg-surface-2">
               Evidence
             </button>
           </div>

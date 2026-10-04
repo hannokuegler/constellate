@@ -22,7 +22,8 @@ import {
   WebGLRenderer,
 } from "three";
 import { KIND, constellationOf, readPalette, registerSkyController, watchTheme, type Sky, type SkyPalette } from "./sky";
-import { NEIGHBOUR_SHIFT, STORY_CHAPTERS, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyFrame, type CameraKey } from "./story";
+import { NEIGHBOUR_SHIFT, STORY_CHAPTERS, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyFit, storyFrame, type CameraKey } from "./story";
+import { placeStarLabels } from "./labels";
 
 export interface HoverInfo {
   index: number;
@@ -72,6 +73,7 @@ const STAR_VERTEX = /* glsl */ `
   uniform float uDim;
   uniform float uTwinkle;
   uniform float uBlur;
+  uniform float uFocusDist;
   uniform vec2 uViewport;
   uniform vec3 uStar;
   uniform vec3 uStarDim;
@@ -104,7 +106,7 @@ const STAR_VERTEX = /* glsl */ `
     vec3 litColor = center ? uAmber : uStar;
     vColor = mix(mix(base, litColor, lit), uStarDim, aGap * uRing);
     vAlpha = mix(alpha, 1.0, lit) * mix(aKind > 2.5 ? 0.3 : 0.5, 1.0, sharp) * mix(1.0, 0.3, aGap * uRing);
-    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix(aKind > 2.5 ? 2.4 : 3.4, 1.0, sharp);
+    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix((aKind > 2.5 ? 1.6 : 2.2) + 2.4 * clamp(abs(-mv.z - uFocusDist) / 90.0, 0.0, 1.0), 1.0, sharp);
     float attenuation = min(pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75), 2.2);
     gl_PointSize = max(size * attenuation, 2.2) * uPixelRatio;
     gl_Position = clip;
@@ -321,6 +323,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const starUniforms = {
       ...shared,
       uBlur: { value: 0 },
+      uFocusDist: { value: HOME_DISTANCE },
       uRing: { value: 0 },
       uViewport: { value: new Vector2(1, 1) },
       uTwinkle: { value: motion ? 1 : 0 },
@@ -429,11 +432,23 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const mldIndex = sky.indexById.get(STORY_MLD);
     const starPosition = (index: number | undefined) =>
       index === undefined ? new Vector3() : new Vector3(sky.positions[index * 3], sky.positions[index * 3 + 1], sky.positions[index * 3 + 2]);
+    // frame Krabbe's constellation: camera on its centroid, distance so ~85 % of its stars fill ~55 % of the height
+    const krabbeCentre = new Vector3();
+    if (krabbeIndex !== undefined) {
+      const members = [...constellationOf(sky, krabbeIndex).stars.keys()];
+      for (const i of members) krabbeCentre.add(starPosition(i));
+      krabbeCentre.multiplyScalar(1 / members.length);
+      const radii = members.map((i) => starPosition(i).distanceTo(krabbeCentre)).sort((a, b) => a - b);
+      const radius = radii[Math.floor((radii.length - 1) * 0.85)] || 10;
+      const halfHeight = Math.tan((21 * Math.PI) / 180);
+      storyFit.near = Math.max(28, radius / (0.55 * halfHeight));
+      storyFit.gap = storyFit.near * 0.8;
+    }
     const cameraKeys: Record<CameraKey, Vector3> = {
       home: new Vector3(0, 0, 0),
-      krabbe: starPosition(krabbeIndex),
+      krabbe: krabbeCentre.clone(),
       gap: starPosition(gapIndex),
-      between: starPosition(krabbeIndex).add(starPosition(gapIndex)).multiplyScalar(0.5),
+      between: krabbeCentre.clone().add(starPosition(gapIndex)).multiplyScalar(0.5),
     };
     // every edge between Krabbe and MLD turns amber together (they share one line on screen)
     if (krabbeIndex !== undefined && mldIndex !== undefined) {
@@ -442,6 +457,45 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
         if (other === mldIndex) lineAmber[e * 2] = lineAmber[e * 2 + 1] = 1;
       }
     }
+    // the read edge: a glowing amber band (dense soft points along the line; WebGL lines stay 1 px)
+    const glowCount = 90;
+    const glowPositions = new Float32Array(glowCount * 3);
+    if (krabbeIndex !== undefined && mldIndex !== undefined) {
+      const a = starPosition(krabbeIndex);
+      const b = starPosition(mldIndex);
+      for (let k = 0; k < glowCount; k++) {
+        const p = a.clone().lerp(b, k / (glowCount - 1));
+        glowPositions.set([p.x, p.y, p.z], k * 3);
+      }
+    }
+    const glowGeometry = new BufferGeometry();
+    glowGeometry.setAttribute("position", new BufferAttribute(glowPositions, 3));
+    const glowMaterial = new ShaderMaterial({
+      vertexShader: /* glsl */ `
+        uniform float uPixelRatio;
+        void main() {
+          gl_PointSize = 7.0 * uPixelRatio;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform vec3 uColor;
+        uniform float uOpacity;
+        void main() {
+          float d = length(gl_PointCoord - 0.5) * 2.0;
+          if (d > 1.0) discard;
+          gl_FragColor = vec4(uColor, exp(-d * d * 3.5) * 0.32 * uOpacity);
+        }
+      `,
+      uniforms: { uPixelRatio: shared.uPixelRatio, uColor: { value: new Color() }, uOpacity: { value: 0 } },
+      transparent: true,
+      depthWrite: false,
+      depthTest: false,
+    });
+    const glow = new Points(glowGeometry, glowMaterial);
+    glow.frustumCulled = false;
+    glow.renderOrder = 1;
+    world.add(glow);
     const mldHalo = makeHalo(30);
     if (mldIndex !== undefined) {
       mldHalo.geometry.attributes.position.array.set(sky.positions.subarray(mldIndex * 3, mldIndex * 3 + 3));
@@ -471,11 +525,12 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       lineUniforms.uLensLine.value = palette.dark ? 0.22 : 0.2;
       halo.material.uniforms.uColor.value.set(palette.amber);
       mldHalo.material.uniforms.uColor.value.set(palette.amber);
+      glowMaterial.uniforms.uColor.value.set(palette.amber);
       hoverRing.material.uniforms.uColor.value.set(palette.star);
       gapRing.material.uniforms.uColor.value.set(palette.star);
       lineUniforms.uAmber.value.set(palette.amber);
       const blending = palette.dark ? AdditiveBlending : NormalBlending;
-      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material, mldHalo.material]) {
+      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material, mldHalo.material, glowMaterial]) {
         material.blending = blending;
         material.needsUpdate = true;
       }
@@ -807,6 +862,8 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       gapRing.material.uniforms.uOpacity.value = ringOpacity;
       starUniforms.uRing.value = ringOpacity;
       mldHalo.material.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value * 0.9;
+      glowMaterial.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value;
+      starUniforms.uFocusDist.value = view.distance;
 
       if (storyCamera) {
         // camera already placed by the story
@@ -845,6 +902,13 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       placeCamera();
       renderer.render(scene, camera);
       frames++;
+      placeStarLabels((id) => {
+        const i = sky.indexById.get(id);
+        if (i === undefined) return null;
+        const v = starPosition(i).project(camera);
+        if (v.z > 1) return null;
+        return [(v.x * 0.5 + 0.5) * width, (-v.y * 0.5 + 0.5) * height];
+      });
       if (frames === 3) {
         let ok = false;
         try {
@@ -917,6 +981,8 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       gapRing.material.dispose();
       mldHalo.geometry.dispose();
       mldHalo.material.dispose();
+      glowGeometry.dispose();
+      glowMaterial.dispose();
       renderer.dispose();
       canvas.remove();
     };

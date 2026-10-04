@@ -1,6 +1,6 @@
 # Status · Constellate
 
-**Letzte Aktualisierung: So 04.10.2026, 01:00 (Wien)**. Freeze So 12:00 (in 11 h), Abgabe So 15:00 (in 14 h). Mentor-Gespräch Woan-Yu Lin 03:45. **Orchestrierung ab jetzt lokal:** [prompts/LOCAL-ORCHESTRATOR.md](prompts/LOCAL-ORCHESTRATOR.md), Daten: [prompts/LOCAL-DATA-STEWARD.md](prompts/LOCAL-DATA-STEWARD.md). Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt).
+**Letzte Aktualisierung: So 04.10.2026, 09:10 (Wien)**. **Fertig und abgabebereit:** App, Daten und alle Videos stehen, die Abgabe (HackOS und Google Form) läuft jetzt, Frist 15:00. Ab 14:45 keine Pushes mehr. Live: **https://constellate-vert.vercel.app** (Vercel, Root `app`, jeder Push auf `main` deployt), Einstieg mit Video: **https://constellate-vert.vercel.app/intro**.
 
 Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skill `/constellate` ([.claude/skills/constellate/SKILL.md](../.claude/skills/constellate/SKILL.md)) hält die Status-Karte im Teamboard und diese Datei im Gleichschritt. Was entschieden ist und was offen: [DECISIONS.md](DECISIONS.md).
 
@@ -8,10 +8,10 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 
 | Status | Was |
 |---|---|
-| **Fertig** | App live (Suche, Ego-Graph mit Familienknoten, Edge-Panel, Action Card v2, Honest Gap, offene Studien mit 142 Trial-Shards, `/methods`, `/about`) · Hero-Pfad-E2E grün · Security-Review (keine Secrets in der History, `/api/explain` mit Limits, Security-Header) · Explain wird vorberechnet (`make explain`), die Webseite braucht keinen Key · Data Chief fertig: PR hannokuegler/constellate#1 (`data-v2`: 135 Beobachtungsstudien + 9 Outcome-Skalen, 39 Medikamente inkl. Libmeldy/Lenmeldy, keine Krabbe-Zulassung, NBS 11 belegt/11 UNBELEGT, Prävalenz 638 Einträge, Monarch ρ = 0,661) · Data Steward: Review-Fixes C1–C8 in 04b, Re-Export `2026-10-04+917470a` seit So 01:27 auf `main` und live (validate, tsc, lint, E2E grün; Krabbe 140 KB, MLD 144 KB, größter Shard 149 KB); Dauer-Prompt `docs/prompts/DATA-STEWARD-STANDING.md` · `pitch/` (Story, 60-s-Pitch, Video-Strategie, ElevenLabs, Motion) · Entscheidungen P9–P13 |
-| **Dran** | Review von PR #1 und Datenmanagement/Performance (Branch `data-quality`) · Code für 07-Integration und `09_metrics.py` (Branch `integrate-v2`, läuft danach lokal mit den echten Daten) · Design-Session lokal (Branch `design`) · Mentor-Vorbereitung Woan-Yu Lin (RTW Foundation) · Osman: `orgs.csv` · Recep: `hero_path` Block A, `MOONSHOT.md` |
-| **Blockiert** | Daten: Krägeloh-Mann-Brücke nicht belegbar (ORCID ohne PMIDs), US-NBS (HRSA 403) ohne Bright-Data-Zone · `OPENAI_API_KEY` fehlt lokal (Extract, Reconcile, Explain; HackOS hat keine OpenAI-Credits) · `BRIGHTDATA_ZONE` fehlt (B8) · `orgs.csv` und `hero_path.yaml` leer · `MOONSHOT.md` fehlt |
-| **Nächster Block** | PR #1 nach Review mergen · 07+09 lokal laufen lassen, Daten committen · Key holen, Extract/Reconcile/Explain lokal · E2E gegen die Live-URL bis 06:00 · ab 11:00 Gates, Repo public, 12:00 Freeze, Videos |
+| **Fertig** | App live (Suche, Ego-Graph mit Familienknoten, Edge-Panel, Action Card v2, Honest Gap, offene Studien mit 142 Trial-Shards, `/methods`, `/about`) · Hero-Pfad-E2E grün · Security-Review (keine Secrets in der History, `/api/explain` mit Limits, Security-Header) · Explain wird vorberechnet (`make explain`), die Webseite braucht keinen Key · Data Chief fertig: PR hannokuegler/constellate#1 (`data-v2`: 135 Beobachtungsstudien + 9 Outcome-Skalen, 39 Medikamente inkl. Libmeldy/Lenmeldy, keine Krabbe-Zulassung, NBS 11 belegt/11 UNBELEGT, Prävalenz 638 Einträge, Monarch ρ = 0,661) · Data Steward: Review-Fixes C1–C8 in 04b, Re-Export `2026-10-04+917470a` seit So 01:27 auf `main` und live (validate, tsc, lint, E2E grün; Krabbe 140 KB, MLD 144 KB, größter Shard 149 KB); Dauer-Prompt `docs/prompts/DATA-STEWARD-STANDING.md` · `pitch/` (Story, 60-s-Pitch, Video-Strategie, ElevenLabs, Motion) · Entscheidungen P9–P13 · Neue Seite (Branch `maria`, klassisches Design mit allen neuen Funktionen) und `/impact` live auf `main` · Story `/intro` live: „Maria's first night“, 59,6 s, Playwright-Aufnahme der Live-App mit ElevenLabs-Stimmen (Maria und Consti), Rahmen auf jedem erklärten Bereich, Button „Play with sound“, Transkript, Link auf der Startseite, E2E `e2e/intro.spec.ts`; Skript und Stimmwahl in `app/story/VOICE.md`, Neuaufnahme mit `npm run story:voice` und `npm run story:record` · Alle Videos fertig |
+| **Dran** | Abgabe auf HackOS und im Google Form bis 15:00 |
+| **Blockiert** | nichts |
+| **Nächster Block** | Abgabe, ab 14:45 kein Push und kein Redeploy · Sa 10.10. Preisverleihung (Top 2 pitchen live) |
 
 ## Branches (P8: ein Branch je Agent, `main` = live)
 
@@ -22,7 +22,8 @@ Pflege: nach jeder Arbeitseinheit nachziehen (Zeitstempel oben setzen). Der Skil
 | `data-trials` | 142 Studien-Shards | in `main` |
 | `data-quality`, `integrate-v2` | Review/Performance, 07+09 | Agents laufen |
 | `design` | lokale Design-Session | läuft |
-| `maria` | Design-Lead (So 07:40): altes helles Design von `main` plus alle neuen Funktionen (What you can do now, Studien mit Länderfilter/Alter/Kontaktknopf, Action Card mit At a glance und Klartext-Explain, `/share`, Symptom-Einstieg, neutrale Texte), Scroll-Story raus; validate, tsc, lint, E2E 6/6 grün, Abschlussprüfer bestanden ohne P1 | wartet auf Chefs Merge nach `main` |
+| `maria` | Design-Lead (So 07:40): altes helles Design von `main` plus alle neuen Funktionen, dazu die Story `/intro` | in `main` (So 09:05), live |
+| `claude/mother-walkthrough` | Story `/intro` mit Playwright-Aufnahme und ElevenLabs-Stimmen | in `maria` und `main`, live |
 | `app-graph`, `app-action`, `docs-submission`, `pitch-story`, `security`, `explain-precompute` | abgeschlossene Agent-Branches | in `integrate` |
 
 ## OpenAI: wofür und wo

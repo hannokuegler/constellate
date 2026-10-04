@@ -1,8 +1,8 @@
 # Tech-Video · Voice-over für den Motion-Clip (50 s)
 
-Stand So 04.10.2026 (Wien). Voice-over für den stummen Motion-Clip über den Tech-Stack (Prompt im Chat vom 04.10., Hintergrund [docs/TECH-SETUP.md](../docs/TECH-SETUP.md)). Die Blöcke sind auf das gelieferte Video getimt (50,0 s, 1920×1080, Szenen Sekunde für Sekunde gesichtet).
+Stand So 04.10.2026 (Wien). **Fertig und angenommen**, siehe „Finaler Lauf“. Voice-over für den stummen Motion-Clip über den Tech-Stack (Prompt im Chat vom 04.10., Hintergrund [docs/TECH-SETUP.md](../docs/TECH-SETUP.md)). Die Blöcke sind auf das gelieferte Video getimt (50,0 s, 1920×1080, Szenen Sekunde für Sekunde gesichtet).
 
-Einordnung: [docs/VIDEOS.md](../docs/VIDEOS.md) und [MOTION-PROMPTS.md](MOTION-PROMPTS.md) sagen, dass das Pflicht-Tech-Video die echte App zeigt und kein Motion-Clip ist. Dieser Clip ist damit für Pitch, README und Teaser sicher; ob er das Technical Walkthrough ersetzt, entscheidet Hanno (Regel 6).
+Einordnung: [docs/VIDEOS.md](../docs/VIDEOS.md) und [MOTION-PROMPTS.md](MOTION-PROMPTS.md) sagen, dass das Pflicht-Tech-Video die echte App zeigt und kein Motion-Clip ist. Hanno hat den Clip am 04.10. angenommen. Offen ist nur noch, ob er das Technical Walkthrough ersetzt; dann müssen `docs/VIDEOS.md` und `MOTION-PROMPTS.md` nachgezogen werden.
 
 ## In einem Befehl (auf Hannos Mac)
 
@@ -22,7 +22,20 @@ Das Skript erzeugt fehlende Blöcke als `tech_voice/V1.mp3` bis `V8.mp3` neben d
 | MP3s kommen aus der Web-App | als `V1.mp3` bis `V8.mp3` in `tech_voice/` legen, dann `--mix-only` |
 | Andere Stimme | `ELEVENLABS_VOICE_TECH=<voice_id>` setzen oder `voice_id` in [tech_voice.json](tech_voice.json) |
 
-Getestet in der Cloud mit Platzhalter-Tönen auf dem echten Motion-Video: Ausgabe 50,00 s, H.264 kopiert, AAC, −15,9 LUFS; Tempo-Anpassung und Abbruch bei zu langen Blöcken greifen. Mit echten ElevenLabs-Stimmen ist es noch nicht gelaufen.
+**Finaler Lauf** (So 04.10., Hannos Mac, `eleven_v4`, Consti-Stimme, Commit `4eff52a`): `constellate_tech.mp4`, 50,00 s, von Hanno als Tech-Video angenommen. Die Datei liegt nicht im Repo, Ablage wie die anderen Videos für die Abgabe.
+
+| Block | Start (s) | Länge (s) | Platz (s) | Tempo |
+|---|---|---|---|---|
+| V1 | 0,0 | 3,20 | 3,80 | 1,000 |
+| V2 | 4,0 | 5,12 | 5,80 | 1,000 |
+| V3 | 10,0 | 5,68 | 6,80 | 1,000 |
+| V4 | 17,0 | 7,76 | 7,80 | 1,000 |
+| V5 | 25,0 | 7,76 | 7,80 | 1,000 |
+| V6 | 33,0 | 5,84 | 6,80 | 1,000 |
+| V7 | 40,0 | 5,60 | 6,30 | 1,000 |
+| V8 | 46,5 | 3,52 | 3,40 | 1,035 |
+
+Vorher in der Cloud mit Platzhalter-Tönen getestet: H.264 wird kopiert, AAC, −15,9 LUFS; Tempo-Anpassung und Abbruch bei zu langen Blöcken greifen.
 
 ## Einstellungen
 

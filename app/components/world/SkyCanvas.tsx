@@ -22,7 +22,8 @@ import {
   WebGLRenderer,
 } from "three";
 import { KIND, constellationOf, readPalette, registerSkyController, watchTheme, type Sky, type SkyPalette } from "./sky";
-import { NEIGHBOUR_SHIFT, STORY_CHAPTERS, STORY_GAP, STORY_KRABBE, STORY_MLD, lensGeometry, story, storyFrame, type CameraKey } from "./story";
+import { NEIGHBOUR_SHIFT, STORY_CHAPTERS, STORY_GAP, STORY_KRABBE, STORY_MLD, computeStoryFit, lensGeometry, story, storyFrame, type CameraKey } from "./story";
+import { placeStarLabels } from "./labels";
 
 export interface HoverInfo {
   index: number;
@@ -72,6 +73,8 @@ const STAR_VERTEX = /* glsl */ `
   uniform float uDim;
   uniform float uTwinkle;
   uniform float uBlur;
+  uniform float uFocusDist;
+  uniform float uPreview;
   uniform vec2 uViewport;
   uniform vec3 uStar;
   uniform vec3 uStarDim;
@@ -96,7 +99,8 @@ const STAR_VERTEX = /* glsl */ `
     float twinkle = 1.0 - uTwinkle * 0.22 * (0.5 + 0.5 * sin(uTime * (0.6 + aSeed * 1.7) + aSeed * 40.0));
     alpha *= mix(1.0, twinkle, step(0.5, aKind));
     alpha *= mix(aKind > 2.5 ? 0.6 : 0.85, 1.0, uDark);                            // day atlas: dark ink, lighter dust
-    alpha *= mix(1.0, 0.28, uDim * (1.0 - lit));
+    float preview = uPreview * step(0.5, aHop) * step(aHop, 1.5);                 // direct neighbour, not yet lit
+    alpha *= mix(1.0, 0.28, uDim * (1.0 - max(lit, preview)));
     // out of focus (bokeh) unless the lens is over this star, or it is lit
     vec2 px = (clip.xy / clip.w * 0.5 + 0.5) * uViewport;
     float sharp = max(max(1.0 - uBlur, lensInside(px, 3.0 * uPixelRatio)), lit);
@@ -104,7 +108,7 @@ const STAR_VERTEX = /* glsl */ `
     vec3 litColor = center ? uAmber : uStar;
     vColor = mix(mix(base, litColor, lit), uStarDim, aGap * uRing);
     vAlpha = mix(alpha, 1.0, lit) * mix(aKind > 2.5 ? 0.3 : 0.5, 1.0, sharp) * mix(1.0, 0.3, aGap * uRing);
-    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix(aKind > 2.5 ? 2.4 : 3.4, 1.0, sharp);
+    float size = aSize * mix(1.0, center ? 2.6 : 1.45, lit) * mix(0.68, 1.0, uDark) * mix((aKind > 2.5 ? 1.6 : 2.2) + 2.4 * clamp(abs(-mv.z - uFocusDist) / 90.0, 0.0, 1.0), 1.0, sharp);
     float attenuation = min(pow(${REF_DISTANCE.toFixed(1)} / max(-mv.z, 1.0), 0.75), 2.2);
     gl_PointSize = max(size * attenuation, 2.2) * uPixelRatio;
     gl_Position = clip;
@@ -146,6 +150,7 @@ const LINE_VERTEX = /* glsl */ `
   uniform vec3 uStarDim;
   uniform vec3 uAmber;
   uniform float uAmberAmount;
+  uniform float uPreview;
   uniform float uBase;
   uniform float uDim;
   varying vec3 vColor;
@@ -159,11 +164,14 @@ const LINE_VERTEX = /* glsl */ `
     float litAlpha = aHop < 1.5 ? 0.9 : 0.42;
     vColor = mix(uStarDim, litColor, lit);
     vAlpha = mix(uBase * mix(1.0, 0.4, uDim), litAlpha, lit);
+    // before the neighbours ignite, Krabbe's direct links show as faint hairlines
+    float preview = uPreview * step(0.5, aHop) * step(aHop, 1.5) * (1.0 - lit);
+    vAlpha = max(vAlpha, 0.38 * preview);
     // the one edge the story reads aloud turns amber
     float amber = aAmber * uAmberAmount;
     vColor = mix(vColor, uAmber, amber);
     vAlpha = mix(vAlpha, 1.0, amber);
-    vLit = max(lit, amber);
+    vLit = max(max(lit, amber), preview);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
@@ -317,10 +325,12 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       uLensA: { value: new Vector3(0, 0, 0) },
       uLensB: { value: new Vector3(0, 0, 0) },
       uLensOn: { value: 0 },
+      uPreview: { value: 0 },
     };
     const starUniforms = {
       ...shared,
       uBlur: { value: 0 },
+      uFocusDist: { value: HOME_DISTANCE },
       uRing: { value: 0 },
       uViewport: { value: new Vector2(1, 1) },
       uTwinkle: { value: motion ? 1 : 0 },
@@ -370,6 +380,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       uLensA: shared.uLensA,
       uLensB: shared.uLensB,
       uLensOn: shared.uLensOn,
+      uPreview: shared.uPreview,
       uLineOutside: { value: 1 },
       uLensLine: { value: 0.2 },
       uAmber: { value: new Color() },
@@ -429,11 +440,14 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
     const mldIndex = sky.indexById.get(STORY_MLD);
     const starPosition = (index: number | undefined) =>
       index === undefined ? new Vector3() : new Vector3(sky.positions[index * 3], sky.positions[index * 3 + 1], sky.positions[index * 3 + 2]);
+    // frame Krabbe's constellation: the camera looks at its centroid, the distance comes from fitDistance()
+    const fitCentre = computeStoryFit(sky);
+    const krabbeCentre = fitCentre ? new Vector3(...fitCentre) : starPosition(krabbeIndex);
     const cameraKeys: Record<CameraKey, Vector3> = {
       home: new Vector3(0, 0, 0),
-      krabbe: starPosition(krabbeIndex),
+      krabbe: krabbeCentre.clone(),
       gap: starPosition(gapIndex),
-      between: starPosition(krabbeIndex).add(starPosition(gapIndex)).multiplyScalar(0.5),
+      between: krabbeCentre.clone().add(starPosition(gapIndex)).multiplyScalar(0.5),
     };
     // every edge between Krabbe and MLD turns amber together (they share one line on screen)
     if (krabbeIndex !== undefined && mldIndex !== undefined) {
@@ -442,6 +456,61 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
         if (other === mldIndex) lineAmber[e * 2] = lineAmber[e * 2 + 1] = 1;
       }
     }
+    // the read edge: an amber band with a glow (dense soft points along the line; WebGL lines stay 1 px wide).
+    // Two layers: a tight bright core (~4 px) and a wide soft glow (~22 px).
+    const glowCount = 260;
+    const glowPositions = new Float32Array(glowCount * 3);
+    if (krabbeIndex !== undefined && mldIndex !== undefined) {
+      const a = starPosition(krabbeIndex);
+      const b = starPosition(mldIndex);
+      for (let k = 0; k < glowCount; k++) {
+        const p = a.clone().lerp(b, k / (glowCount - 1));
+        glowPositions.set([p.x, p.y, p.z], k * 3);
+      }
+    }
+    const glowGeometry = new BufferGeometry();
+    glowGeometry.setAttribute("position", new BufferAttribute(glowPositions, 3));
+    const makeBand = (size: number, falloff: number, strength: number) => {
+      const material = new ShaderMaterial({
+        vertexShader: /* glsl */ `
+          uniform float uPixelRatio;
+          uniform float uSize;
+          void main() {
+            gl_PointSize = uSize * uPixelRatio;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }
+        `,
+        fragmentShader: /* glsl */ `
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          uniform float uFalloff;
+          uniform float uStrength;
+          void main() {
+            float d = length(gl_PointCoord - 0.5) * 2.0;
+            if (d > 1.0) discard;
+            gl_FragColor = vec4(uColor, exp(-d * d * uFalloff) * uStrength * uOpacity);
+          }
+        `,
+        uniforms: {
+          uPixelRatio: shared.uPixelRatio,
+          uSize: { value: size },
+          uColor: { value: new Color() },
+          uOpacity: { value: 0 },
+          uFalloff: { value: falloff },
+          uStrength: { value: strength },
+        },
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+      });
+      const points = new Points(glowGeometry, material);
+      points.frustumCulled = false;
+      points.renderOrder = 1;
+      world.add(points);
+      return material;
+    };
+    const glowMaterial = makeBand(22, 4.5, 0.09);
+    const coreMaterial = makeBand(4.5, 2.2, 0.75);
     const mldHalo = makeHalo(30);
     if (mldIndex !== undefined) {
       mldHalo.geometry.attributes.position.array.set(sky.positions.subarray(mldIndex * 3, mldIndex * 3 + 3));
@@ -471,11 +540,16 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       lineUniforms.uLensLine.value = palette.dark ? 0.22 : 0.2;
       halo.material.uniforms.uColor.value.set(palette.amber);
       mldHalo.material.uniforms.uColor.value.set(palette.amber);
+      glowMaterial.uniforms.uColor.value.set(palette.amber);
+      coreMaterial.uniforms.uColor.value.set(palette.amber);
+      // day atlas (normal blending): a stronger core so the dark amber reads as a line, a lighter glow
+      coreMaterial.uniforms.uStrength.value = palette.dark ? 0.75 : 0.95;
+      glowMaterial.uniforms.uStrength.value = palette.dark ? 0.09 : 0.06;
       hoverRing.material.uniforms.uColor.value.set(palette.star);
       gapRing.material.uniforms.uColor.value.set(palette.star);
       lineUniforms.uAmber.value.set(palette.amber);
       const blending = palette.dark ? AdditiveBlending : NormalBlending;
-      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material, mldHalo.material]) {
+      for (const material of [starMaterial, lineMaterial, halo.material, hoverRing.material, gapRing.material, mldHalo.material, glowMaterial, coreMaterial]) {
         material.blending = blending;
         material.needsUpdate = true;
       }
@@ -767,7 +841,7 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
           flight?.resolve();
           flight = null;
         }
-        const f = storyFrame(story.chapter, story.t, width);
+        const f = storyFrame(story.chapter, story.t, width, height);
         const smooth = motion ? 1 - Math.exp(-dt * 7) : 1;
         const shift = offset.shift + (f.shift - offset.shift) * smooth;
         const lift = offset.lift + (f.lift - offset.lift) * smooth;
@@ -790,23 +864,28 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
           view.distance += (goalDistance - view.distance) * smooth;
           if (f.focus && krabbeIndex !== undefined && focus !== krabbeIndex) setConstellation(krabbeIndex);
           if (!f.focus && focus !== null) setConstellation(null);
-          dimTarget = f.focus ? 1 : 0;
+          dimTarget = f.focus ? f.dim : 0;
           shared.uNeighbourShift.value = NEIGHBOUR_SHIFT;
           storyClock += (f.clock - storyClock) * smooth;
           lineUniforms.uAmberAmount.value += (f.amberEdge - lineUniforms.uAmberAmount.value) * smooth;
           ringOpacity += (f.ring - ringOpacity) * smooth;
+          shared.uPreview.value += (f.preview - shared.uPreview.value) * smooth;
           const early = STORY_CHAPTERS.indexOf("krabbe");
           if (motion && story.chapter < early && !drag) view.yaw += dt * 0.018;
         } else {
           shared.uNeighbourShift.value = 0;
           lineUniforms.uAmberAmount.value = 0;
           ringOpacity = 0;
+          shared.uPreview.value = 0;
         }
         projectedValid = false;
       }
       gapRing.material.uniforms.uOpacity.value = ringOpacity;
       starUniforms.uRing.value = ringOpacity;
       mldHalo.material.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value * 0.9;
+      glowMaterial.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value;
+      coreMaterial.uniforms.uOpacity.value = lineUniforms.uAmberAmount.value;
+      starUniforms.uFocusDist.value = view.distance;
 
       if (storyCamera) {
         // camera already placed by the story
@@ -845,6 +924,13 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       placeCamera();
       renderer.render(scene, camera);
       frames++;
+      placeStarLabels((id) => {
+        const i = sky.indexById.get(id);
+        if (i === undefined) return null;
+        const v = starPosition(i).project(camera);
+        if (v.z > 1) return null;
+        return [(v.x * 0.5 + 0.5) * width, (-v.y * 0.5 + 0.5) * height];
+      });
       if (frames === 3) {
         let ok = false;
         try {
@@ -917,6 +1003,9 @@ export default function SkyCanvas({ sky, motion, initialFocus, onReady, onFail, 
       gapRing.material.dispose();
       mldHalo.geometry.dispose();
       mldHalo.material.dispose();
+      glowGeometry.dispose();
+      glowMaterial.dispose();
+      coreMaterial.dispose();
       renderer.dispose();
       canvas.remove();
     };

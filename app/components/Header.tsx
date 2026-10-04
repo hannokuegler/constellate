@@ -13,7 +13,7 @@ export default function Header() {
 
   return (
     <header className="glass sticky top-0 z-30 border-0 border-b pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex max-w-[1400px] items-center gap-2 px-4 py-1.5 md:gap-4 md:px-6">
+      <div className="mx-auto flex max-w-[1400px] flex-wrap items-center gap-2 px-4 py-1.5 sm:flex-nowrap md:gap-4 md:px-6">
         <Link href="/" className="flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-[12px] pr-1" aria-label="Constellate home">
           <Wordmark />
         </Link>
@@ -21,7 +21,7 @@ export default function Header() {
         <div className="hidden min-w-0 flex-1 sm:block">{!onStart && <SearchBox compact />}</div>
         <div className="flex-1 sm:hidden" />
         {!onStart && (
-          <Link href="/" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line-strong text-ink-2 sm:hidden" aria-label="Search">
+          <Link href="/" className="grid h-[44px] w-[44px] shrink-0 place-items-center rounded-full border border-line-strong text-ink-2 sm:hidden" aria-label="Search">
             <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true">
               <circle cx="8.5" cy="8.5" r="6" fill="none" stroke="currentColor" strokeWidth="2" />
               <path d="M13 13l5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -34,7 +34,7 @@ export default function Header() {
         </nav>
         <button
           onClick={() => setTheme(nextTheme)}
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-line-strong text-ink-2 hover:text-ink"
+          className="ml-auto grid h-[44px] w-[44px] shrink-0 place-items-center rounded-full border border-line-strong text-ink-2 hover:text-ink sm:ml-0"
           aria-label={`Theme: ${theme}. Switch to ${nextTheme}`}
           title={`Theme: ${theme}`}
         >

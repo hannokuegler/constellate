@@ -1,0 +1,76 @@
+{
+  "video_seconds": 50.0,
+  "model": "eleven_v4",
+  "fallback_model": "eleven_multilingual_v2",
+  "output_format": "mp3_44100_128",
+  "seed": 404,
+  "voice_id": "",
+  "voice_note": "empty = the Consti voice from app/story/voices.json (same voice as the in-app intro); override with ELEVENLABS_VOICE_TECH",
+  "stability": 0.5,
+  "similarity_boost": 0.75,
+  "loudness_lufs": -16,
+  "blocks": [
+    {
+      "id": "V1",
+      "start": 0.0,
+      "max": 3.5,
+      "scene": "Constellate · The tech stack",
+      "text": "[calm, measured narration]\nThis is Constellate. Here's the stack."
+    },
+    {
+      "id": "V2",
+      "start": 4.0,
+      "max": 5.5,
+      "scene": "19 open sources",
+      "text": "[calm, measured narration]\nNineteen open sources: licensed, cached, reproducible."
+    },
+    {
+      "id": "V3",
+      "start": 10.0,
+      "max": 6.5,
+      "scene": "Pipeline, make reproduce",
+      "text": "[calm, measured narration]\nA Python pipeline, ten steps, one command: make reproduce.",
+      "short": "[calm, measured narration]\nA Python pipeline. One command: make reproduce."
+    },
+    {
+      "id": "V4",
+      "start": 17.0,
+      "max": 7.5,
+      "scene": "Graph, evidence card, legend",
+      "text": "[calm, measured narration]\nOut comes the graph. Every edge carries its evidence: source, date, confidence, counter-evidence.",
+      "short": "[calm, measured narration]\nOut comes the graph. Every edge carries its source, and its counter-evidence."
+    },
+    {
+      "id": "V5",
+      "start": 25.0,
+      "max": 7.5,
+      "scene": "OpenAI: Extract, Reconcile, Explain",
+      "text": "[calm, measured narration]\nOpenAI at three points: extract, reconcile, explain. Code checks every answer.",
+      "honest": "[calm, measured narration]\nOpenAI is wired in at three points. Code checks every answer."
+    },
+    {
+      "id": "V6",
+      "start": 33.0,
+      "max": 6.5,
+      "scene": "6,802 static JSON files, app stack",
+      "text": "[calm, measured narration]\nStatic jay-son, served on Vercel. No database, nothing to crash.",
+      "short": "[calm, measured narration]\nStatic files on Vercel. Nothing to crash."
+    },
+    {
+      "id": "V7",
+      "start": 40.0,
+      "max": 5.5,
+      "scene": "Quality gates",
+      "text": "[calm, measured narration]\nThen the gates: validator, tests, and a cross-check against Monarch.",
+      "short": "[calm, measured narration]\nThen the gates: tests, and a check against Monarch."
+    },
+    {
+      "id": "V8",
+      "start": 46.5,
+      "max": 3.5,
+      "scene": "Outro with URL",
+      "text": "[calm, measured narration]\nConstellate. Every edge has a source."
+    }
+  ],
+  "measured_words_per_second": 1.95
+}

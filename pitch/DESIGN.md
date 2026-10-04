@@ -2,6 +2,9 @@
 
 Stand So 04.10.2026, 02:10 (Wien). Verbindlich für alle Design-Agents auf `design-v2`. Grundlage: Apple HIG (Skill `/design`, `HIG-web.md`), Fable-Richtungen A/B/C, Konkurrenz Rare Atlas (nur lokal angesehen, nie ins Repo). Entscheidung Hanno 02:00: 3D ja, `three` 0.186 freigegeben.
 
+
+**Entscheidung Hanno 06:05:** Das Design „Deep Sky" (dunkler Himmel, Brille, Scroll-Story, Fraunces, Glas, Bernstein) fällt. Zurück zum alten hellen Design von `main` (Inter, Indigo-Akzent, weiße Karten). Alle Funktionen aus §9 bleiben, Personas bleiben draußen (P16). Rückbau auf Branch `maria-classic`. Die Abschnitte 1 bis 8 unten sind damit historisch.
+
 ## 1. Referenzen
 
 - Konkurrenz: begehbare 3D-Bibliothek mit schwebenden Knoten, „Evidence Desk", alles als synthetische Demo markiert. Stark im ersten Blick, leer in der Sache.
